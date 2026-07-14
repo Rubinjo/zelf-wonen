@@ -1,0 +1,536 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Locale {
+  NL
+  EN
+}
+
+enum ListingPurpose {
+  SALE
+  RENT
+}
+
+enum ListingStatus {
+  DRAFT
+  READY_FOR_VERIFICATION
+  LIVE
+  UNDER_OFFER
+  SOLD
+  RENTED
+  ARCHIVED
+}
+
+enum PropertyType {
+  HOUSE
+  APARTMENT
+  PARKING
+  LAND
+  COMMERCIAL
+  OTHER
+}
+
+enum EnergyLabelClass {
+  A_PLUS_PLUS_PLUS_PLUS_PLUS
+  A_PLUS_PLUS_PLUS_PLUS
+  A_PLUS_PLUS_PLUS
+  A_PLUS_PLUS
+  A_PLUS
+  A
+  B
+  C
+  D
+  E
+  F
+  G
+  UNKNOWN
+}
+
+enum MediaKind {
+  PHOTO
+  FLOOR_PLAN_STATIC
+  DOCUMENT
+}
+
+enum MediaStatus {
+  PENDING_UPLOAD
+  PROCESSING
+  READY
+  REJECTED
+}
+
+enum FloorPlanMode {
+  STATIC_UPLOAD
+  FLOORPLANNER_EMBED
+}
+
+enum VerificationKind {
+  EMAIL
+  IDIN
+}
+
+enum VerificationStatus {
+  INITIATED
+  PENDING
+  VERIFIED
+  FAILED
+  EXPIRED
+  CANCELLED
+}
+
+enum VerificationPurpose {
+  ACCOUNT_ACCESS
+  LISTING_PUBLICATION
+  EXTERNAL_PUBLICATION
+}
+
+enum PublicationPackage {
+  BRONZE
+  SILVER
+  GOLD
+}
+
+enum OrderStatus {
+  CREATED
+  PAYMENT_PENDING
+  PAID
+  CANCELLED
+  REFUNDED
+}
+
+enum PublicationChannel {
+  PLATFORM
+  FUNDA
+}
+
+enum PublicationStatus {
+  QUEUED
+  SUBMITTED
+  LIVE
+  REJECTED
+  WITHDRAWN
+  FAILED
+}
+
+enum BidEventType {
+  SUBMITTED
+  WITHDRAWN
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+enum EstimateTier {
+  MULTIMODAL_ML
+  BASIC_ML
+  POSTCODE_SQM
+}
+
+// Better Auth core model. Never store BSN or raw iDIN assertions on this record.
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  locale        Locale    @default(NL)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions             Session[]
+  accounts             Account[]
+  properties           Property[]
+  listings             Listing[]
+  bids                  Bid[]
+  identityAttempts      IdentityVerificationAttempt[]
+  verificationAuditLogs VerificationAuditLog[]
+  publicationOrders     PublicationOrder[]
+  auditEvents           AuditEvent[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(uuid()) @db.Uuid
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id @default(uuid()) @db.Uuid
+  accountId             String
+  providerId            String
+  userId                String    @db.Uuid
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id @default(uuid()) @db.Uuid
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verifications")
+}
+
+model Property {
+  id                    String       @id @default(uuid()) @db.Uuid
+  ownerId               String       @db.Uuid
+  bagAddressId           String?      @unique
+  bagBuildingId          String?
+  cadastralParcelId      String?
+  postcode               String       @db.VarChar(6)
+  houseNumber            Int
+  houseNumberAddition    String?
+  street                 String
+  city                   String
+  municipality           String?
+  province               String?
+  latitude               Decimal?     @db.Decimal(9, 6)
+  longitude              Decimal?     @db.Decimal(9, 6)
+  propertyType           PropertyType
+  livingAreaSqm          Decimal?      @db.Decimal(8, 2)
+  officialLandAreaSqm    Decimal?      @db.Decimal(10, 2)
+  volumeCubicMeters      Decimal?      @db.Decimal(10, 2)
+  roomCount              Int?
+  bedroomCount           Int?
+  constructionYear      Int?
+  layout                 Json?
+  kadasterSourcePayload  Json?
+  kadasterRetrievedAt    DateTime?
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+  owner                  User          @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  energyLabels           EnergyLabel[]
+  listings               Listing[]
+
+  @@index([ownerId])
+  @@index([postcode, houseNumber, houseNumberAddition])
+  @@map("properties")
+}
+
+model EnergyLabel {
+  id                           String           @id @default(uuid()) @db.Uuid
+  propertyId                   String           @db.Uuid
+  registrationNumber          String?          @unique
+  labelClass                   EnergyLabelClass
+  primaryFossilEnergyKwhSqmYear Decimal?         @db.Decimal(10, 2)
+  registeredAt                 DateTime?
+  validUntil                   DateTime?
+  source                       String           @default("RVO_EP_ONLINE")
+  sourcePayload                Json?
+  retrievedAt                  DateTime         @default(now())
+  property                     Property         @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId, registeredAt])
+  @@map("energy_labels")
+}
+
+model Listing {
+  id                       String        @id @default(uuid()) @db.Uuid
+  ownerId                  String        @db.Uuid
+  propertyId               String        @db.Uuid
+  purpose                  ListingPurpose
+  status                   ListingStatus @default(DRAFT)
+  titleNl                  String?
+  titleEn                  String?
+  descriptionNl            String?
+  descriptionEn            String?
+  askingPriceCents         BigInt?
+  monthlyRentCents         BigInt?
+  serviceCostsCents        BigInt?
+  availableFrom            DateTime?
+  viewingNotes             String?
+  validatedAt              DateTime?
+  publicationRequestedAt   DateTime?
+  liveAt                   DateTime?
+  finalizedAt              DateTime?
+  version                  Int           @default(1)
+  createdAt                DateTime      @default(now())
+  updatedAt                DateTime      @updatedAt
+  owner                    User          @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  property                 Property      @relation(fields: [propertyId], references: [id], onDelete: Restrict)
+  media                    ListingMedia[]
+  floorPlans               FloorPlan[]
+  bids                     Bid[]
+  publicationOrders        PublicationOrder[]
+  publications             ListingPublication[]
+  identityAttempts         IdentityVerificationAttempt[]
+  logbookExports           BidLogbookExport[]
+  auditEvents              AuditEvent[]
+
+  @@index([ownerId, status])
+  @@index([propertyId])
+  @@map("listings")
+}
+
+model ListingMedia {
+  id            String      @id @default(uuid()) @db.Uuid
+  listingId     String      @db.Uuid
+  kind          MediaKind
+  status        MediaStatus @default(PENDING_UPLOAD)
+  storageKey    String      @unique
+  mimeType      String
+  sha256        String      @db.Char(64)
+  fileName      String
+  sizeBytes     BigInt
+  width         Int?
+  height        Int?
+  sortOrder     Int         @default(0)
+  altTextNl     String?
+  altTextEn     String?
+  createdAt     DateTime    @default(now())
+  listing       Listing     @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId, kind, sortOrder])
+  @@map("listing_media")
+}
+
+model FloorPlan {
+  id                    String        @id @default(uuid()) @db.Uuid
+  listingId             String        @db.Uuid
+  mode                  FloorPlanMode
+  floorName             String?
+  floorplannerProjectId String?
+  embedUrl              String?
+  staticMediaId         String?       @db.Uuid
+  sortOrder             Int           @default(0)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  listing               Listing       @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId, sortOrder])
+  @@map("floor_plans")
+}
+
+model IdentityVerificationAttempt {
+  id                    String              @id @default(uuid()) @db.Uuid
+  userId                String              @db.Uuid
+  listingId             String?             @db.Uuid
+  purpose               VerificationPurpose
+  provider              String
+  providerReference     String              @unique
+  status                VerificationStatus  @default(INITIATED)
+  subjectReferenceHash  String?             @db.Char(64)
+  attributesMatched     Json?
+  requestedAt           DateTime            @default(now())
+  completedAt           DateTime?
+  expiresAt             DateTime?
+  failureCode           String?
+  responsePayloadHash   String?             @db.Char(64)
+  user                  User                @relation(fields: [userId], references: [id], onDelete: Restrict)
+  listing               Listing?            @relation(fields: [listingId], references: [id], onDelete: Restrict)
+
+  @@index([userId, status, completedAt])
+  @@index([listingId, purpose, status])
+  @@map("identity_verification_attempts")
+}
+
+model VerificationAuditLog {
+  id                String             @id @default(uuid()) @db.Uuid
+  userId            String             @db.Uuid
+  kind              VerificationKind
+  status            VerificationStatus
+  purpose           VerificationPurpose
+  provider          String
+  providerReference String?
+  metadata          Json?
+  occurredAt        DateTime           @default(now())
+  previousHash      String?            @db.Char(64)
+  entryHash         String             @unique @db.Char(64)
+  user              User               @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([userId, kind, occurredAt])
+  @@map("verification_audit_logs")
+}
+
+model PublicationOrder {
+  id                    String             @id @default(uuid()) @db.Uuid
+  listingId             String             @db.Uuid
+  userId                String             @db.Uuid
+  package               PublicationPackage
+  status                OrderStatus        @default(CREATED)
+  amountCents           BigInt
+  currency              String             @default("EUR") @db.Char(3)
+  paymentProvider       String?
+  paymentReference      String?            @unique
+  paidAt                DateTime?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  listing               Listing            @relation(fields: [listingId], references: [id], onDelete: Restrict)
+  user                  User               @relation(fields: [userId], references: [id], onDelete: Restrict)
+  publications          ListingPublication[]
+
+  @@index([listingId, status])
+  @@index([userId, createdAt])
+  @@map("publication_orders")
+}
+
+model ListingPublication {
+  id                  String             @id @default(uuid()) @db.Uuid
+  listingId           String             @db.Uuid
+  orderId             String?            @db.Uuid
+  idempotencyKey      String             @unique
+  channel             PublicationChannel
+  status              PublicationStatus  @default(QUEUED)
+  package             PublicationPackage?
+  externalReference   String?
+  requestPayloadHash  String?            @db.Char(64)
+  responsePayloadHash String?            @db.Char(64)
+  submittedAt         DateTime?
+  liveAt              DateTime?
+  failedAt            DateTime?
+  failureCode         String?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  listing             Listing            @relation(fields: [listingId], references: [id], onDelete: Restrict)
+  order               PublicationOrder?  @relation(fields: [orderId], references: [id], onDelete: Restrict)
+
+  @@unique([channel, externalReference])
+  @@index([listingId, channel, status])
+  @@map("listing_publications")
+}
+
+// Bid rows and events are append-only. PostgreSQL triggers in immutability.sql enforce this.
+model Bid {
+  id                    String     @id @default(uuid()) @db.Uuid
+  listingId             String     @db.Uuid
+  bidderUserId          String?    @db.Uuid
+  idempotencyKey        String     @unique
+  bidderPseudonym       String
+  amountCents           BigInt
+  currency              String     @default("EUR") @db.Char(3)
+  resolutiveConditions  Json
+  financingDeadline     DateTime?
+  transferDateRequested DateTime?
+  submittedAt           DateTime   @default(now())
+  sourceIpHash          String?    @db.Char(64)
+  previousHash          String?    @db.Char(64)
+  entryHash             String     @unique @db.Char(64)
+  listing               Listing    @relation(fields: [listingId], references: [id], onDelete: Restrict)
+  bidderUser            User?      @relation(fields: [bidderUserId], references: [id], onDelete: SetNull)
+  events                BidEvent[]
+
+  @@index([listingId, submittedAt])
+  @@index([bidderUserId])
+  @@map("bids")
+}
+
+model BidEvent {
+  id           String       @id @default(uuid()) @db.Uuid
+  bidId        String       @db.Uuid
+  type         BidEventType
+  reason       String?
+  occurredAt   DateTime     @default(now())
+  previousHash String?      @db.Char(64)
+  entryHash    String       @unique @db.Char(64)
+  bid          Bid          @relation(fields: [bidId], references: [id], onDelete: Restrict)
+
+  @@index([bidId, occurredAt])
+  @@map("bid_events")
+}
+
+model BidLogbookExport {
+  id                String   @id @default(uuid()) @db.Uuid
+  listingId         String   @db.Uuid
+  storageKey        String   @unique
+  documentSha256    String   @db.Char(64)
+  logbookHeadHash   String   @db.Char(64)
+  anonymizationVersion String
+  generatedAt       DateTime @default(now())
+  sharedAt          DateTime?
+  recipientCount    Int      @default(0)
+  listing           Listing  @relation(fields: [listingId], references: [id], onDelete: Restrict)
+
+  @@index([listingId, generatedAt])
+  @@map("bid_logbook_exports")
+}
+
+model EstimateCache {
+  id                    String       @id @default(uuid()) @db.Uuid
+  inputHash             String       @unique @db.Char(64)
+  normalizedInput       Json
+  qualitativeFeatures   Json?
+  imageHashes           Json?
+  tier                  EstimateTier
+  estimatedValueCents   BigInt
+  lowerBoundCents       BigInt
+  upperBoundCents       BigInt
+  confidenceBasisPoints Int
+  llmModelVersion       String?
+  mlModelVersion        String?
+  publicDatasetVersion  String?
+  explanation           Json?
+  createdAt             DateTime     @default(now())
+  expiresAt             DateTime?
+
+  @@index([expiresAt])
+  @@map("estimate_cache")
+}
+
+model PostcodePriceStat {
+  id                   String   @id @default(uuid()) @db.Uuid
+  postcodeSector       String
+  propertyType         PropertyType
+  averagePricePerSqmCents BigInt
+  sampleSize           Int
+  source               String
+  datasetVersion       String
+  effectiveAt          DateTime
+  createdAt            DateTime @default(now())
+
+  @@unique([postcodeSector, propertyType, datasetVersion])
+  @@index([postcodeSector, effectiveAt])
+  @@map("postcode_price_stats")
+}
+
+model AuditEvent {
+  id           String   @id @default(uuid()) @db.Uuid
+  actorUserId  String?  @db.Uuid
+  listingId    String?  @db.Uuid
+  aggregateType String
+  aggregateId  String
+  eventType    String
+  payload      Json
+  occurredAt   DateTime @default(now())
+  requestId    String?
+  previousHash String?  @db.Char(64)
+  entryHash    String   @unique @db.Char(64)
+  actor        User?    @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+  listing      Listing? @relation(fields: [listingId], references: [id], onDelete: Restrict)
+
+  @@index([aggregateType, aggregateId, occurredAt])
+  @@index([listingId, occurredAt])
+  @@map("audit_events")
+}
