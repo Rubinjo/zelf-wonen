@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import {
     ArrowRight,
@@ -108,12 +109,22 @@ export function AuthActions({
     useEffect(() => {
         if (!mode) return;
 
+        const previousBodyOverflow = document.body.style.overflow;
+        const previousHtmlOverflow = document.documentElement.style.overflow;
+
+        document.body.style.overflow = "hidden";
+        document.documentElement.style.overflow = "hidden";
+
         function handleEscape(event: KeyboardEvent) {
             if (event.key === "Escape") setMode(null);
         }
 
         document.addEventListener("keydown", handleEscape);
-        return () => document.removeEventListener("keydown", handleEscape);
+        return () => {
+            document.removeEventListener("keydown", handleEscape);
+            document.body.style.overflow = previousBodyOverflow;
+            document.documentElement.style.overflow = previousHtmlOverflow;
+        };
     }, [mode]);
 
     function open(nextMode: AuthMode) {
@@ -264,179 +275,184 @@ export function AuthActions({
                 </button>
             )}
 
-            {mode ? (
-                <div
-                    className="fixed inset-0 z-50 grid place-items-center bg-brand-dark/55 p-4 backdrop-blur-sm"
-                    role="presentation"
-                    onMouseDown={(event) => {
-                        if (event.currentTarget === event.target) setMode(null);
-                    }}
-                >
-                    <section
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="auth-title"
-                        className="w-full max-w-md rounded-4xl border border-white/20 bg-white p-6 text-left shadow-[0_30px_100px_rgba(6,74,58,.35)] sm:p-8"
-                    >
-                        <div className="flex items-start justify-between gap-4">
-                            <span className="grid size-11 place-items-center rounded-2xl bg-accent text-brand-dark">
-                                {verificationSent ? (
-                                    <Mail size={21} />
-                                ) : (
-                                    <UserRound size={21} />
-                                )}
-                            </span>
-                            <button
-                                type="button"
-                                onClick={() => setMode(null)}
-                                className="grid size-9 place-items-center rounded-full text-muted transition hover:bg-background hover:text-foreground"
-                                aria-label={t.close}
-                            >
-                                <X size={18} />
-                            </button>
-                        </div>
+            {mode && typeof document !== "undefined"
+                ? createPortal(
+                      <div
+                          className="fixed inset-0 z-[100] flex min-h-dvh items-center justify-center overflow-y-auto bg-brand-dark/55 p-4 backdrop-blur-sm sm:p-8"
+                          role="presentation"
+                          onMouseDown={(event) => {
+                              if (event.currentTarget === event.target)
+                                  setMode(null);
+                          }}
+                      >
+                          <section
+                              role="dialog"
+                              aria-modal="true"
+                              aria-labelledby="auth-title"
+                              className="my-auto max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto rounded-4xl border border-white/20 bg-white p-6 text-left shadow-[0_30px_100px_rgba(6,74,58,.35)] sm:max-h-[calc(100dvh-4rem)] sm:p-8"
+                          >
+                              <div className="flex items-start justify-between gap-4">
+                                  <span className="grid size-11 place-items-center rounded-2xl bg-accent text-brand-dark">
+                                      {verificationSent ? (
+                                          <Mail size={21} />
+                                      ) : (
+                                          <UserRound size={21} />
+                                      )}
+                                  </span>
+                                  <button
+                                      type="button"
+                                      onClick={() => setMode(null)}
+                                      className="grid size-9 place-items-center rounded-full text-muted transition hover:bg-background hover:text-foreground"
+                                      aria-label={t.close}
+                                  >
+                                      <X size={18} />
+                                  </button>
+                              </div>
 
-                        {verificationSent ? (
-                            <div className="mt-7">
-                                <h2
-                                    id="auth-title"
-                                    className="text-2xl font-semibold tracking-tight"
-                                >
-                                    {t.verifyTitle}
-                                </h2>
-                                <p className="mt-3 leading-7 text-muted">
-                                    {t.verifyText}
-                                </p>
-                                {process.env.NEXT_PUBLIC_EMAIL_DELIVERY_MODE ===
-                                "console" ? (
-                                    <p className="mt-4 rounded-2xl bg-background p-4 text-sm leading-6 text-muted">
-                                        {t.localVerify}
-                                    </p>
-                                ) : null}
-                                <button
-                                    type="button"
-                                    onClick={() => setMode(null)}
-                                    className="mt-7 h-12 w-full rounded-full bg-brand font-semibold text-white transition hover:bg-brand-dark"
-                                >
-                                    {t.close}
-                                </button>
-                            </div>
-                        ) : (
-                            <>
-                                <div className="mt-7">
-                                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
-                                        {t.account}
-                                    </p>
-                                    <h2
-                                        id="auth-title"
-                                        className="mt-2 text-3xl font-semibold tracking-[-0.03em]"
-                                    >
-                                        {mode === "sign-in"
-                                            ? t.titleSignIn
-                                            : t.titleSignUp}
-                                    </h2>
-                                    <p className="mt-2 text-sm leading-6 text-muted">
-                                        {mode === "sign-in"
-                                            ? t.introSignIn
-                                            : t.introSignUp}
-                                    </p>
-                                </div>
+                              {verificationSent ? (
+                                  <div className="mt-7">
+                                      <h2
+                                          id="auth-title"
+                                          className="text-2xl font-semibold tracking-tight"
+                                      >
+                                          {t.verifyTitle}
+                                      </h2>
+                                      <p className="mt-3 leading-7 text-muted">
+                                          {t.verifyText}
+                                      </p>
+                                      {process.env
+                                          .NEXT_PUBLIC_EMAIL_DELIVERY_MODE ===
+                                      "console" ? (
+                                          <p className="mt-4 rounded-2xl bg-background p-4 text-sm leading-6 text-muted">
+                                              {t.localVerify}
+                                          </p>
+                                      ) : null}
+                                      <button
+                                          type="button"
+                                          onClick={() => setMode(null)}
+                                          className="mt-7 h-12 w-full rounded-full bg-brand font-semibold text-white transition hover:bg-brand-dark"
+                                      >
+                                          {t.close}
+                                      </button>
+                                  </div>
+                              ) : (
+                                  <>
+                                      <div className="mt-7">
+                                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
+                                              {t.account}
+                                          </p>
+                                          <h2
+                                              id="auth-title"
+                                              className="mt-2 text-3xl font-semibold tracking-[-0.03em]"
+                                          >
+                                              {mode === "sign-in"
+                                                  ? t.titleSignIn
+                                                  : t.titleSignUp}
+                                          </h2>
+                                          <p className="mt-2 text-sm leading-6 text-muted">
+                                              {mode === "sign-in"
+                                                  ? t.introSignIn
+                                                  : t.introSignUp}
+                                          </p>
+                                      </div>
 
-                                <form
-                                    onSubmit={handleSubmit}
-                                    className="mt-7 space-y-4"
-                                >
-                                    {mode === "sign-up" ? (
-                                        <label className="block text-sm font-semibold">
-                                            {t.name}
-                                            <input
-                                                name="name"
-                                                type="text"
-                                                autoComplete="name"
-                                                required
-                                                className="mt-2 h-12 w-full rounded-2xl border border-line bg-background px-4 font-normal outline-none transition focus:border-brand focus:ring-3 focus:ring-brand/10"
-                                            />
-                                        </label>
-                                    ) : null}
-                                    <label className="block text-sm font-semibold">
-                                        {t.email}
-                                        <input
-                                            name="email"
-                                            type="email"
-                                            autoComplete="email"
-                                            required
-                                            className="mt-2 h-12 w-full rounded-2xl border border-line bg-background px-4 font-normal outline-none transition focus:border-brand focus:ring-3 focus:ring-brand/10"
-                                        />
-                                    </label>
-                                    <label className="block text-sm font-semibold">
-                                        {t.password}
-                                        <input
-                                            name="password"
-                                            type="password"
-                                            autoComplete={
-                                                mode === "sign-in"
-                                                    ? "current-password"
-                                                    : "new-password"
-                                            }
-                                            minLength={10}
-                                            required
-                                            className="mt-2 h-12 w-full rounded-2xl border border-line bg-background px-4 font-normal outline-none transition focus:border-brand focus:ring-3 focus:ring-brand/10"
-                                        />
-                                        {mode === "sign-up" ? (
-                                            <span className="mt-1.5 block text-xs font-normal text-muted">
-                                                {t.passwordHint}
-                                            </span>
-                                        ) : null}
-                                    </label>
+                                      <form
+                                          onSubmit={handleSubmit}
+                                          className="mt-7 space-y-4"
+                                      >
+                                          {mode === "sign-up" ? (
+                                              <label className="block text-sm font-semibold">
+                                                  {t.name}
+                                                  <input
+                                                      name="name"
+                                                      type="text"
+                                                      autoComplete="name"
+                                                      required
+                                                      className="mt-2 h-12 w-full rounded-2xl border border-line bg-background px-4 font-normal outline-none transition focus:border-brand focus:ring-3 focus:ring-brand/10"
+                                                  />
+                                              </label>
+                                          ) : null}
+                                          <label className="block text-sm font-semibold">
+                                              {t.email}
+                                              <input
+                                                  name="email"
+                                                  type="email"
+                                                  autoComplete="email"
+                                                  required
+                                                  className="mt-2 h-12 w-full rounded-2xl border border-line bg-background px-4 font-normal outline-none transition focus:border-brand focus:ring-3 focus:ring-brand/10"
+                                              />
+                                          </label>
+                                          <label className="block text-sm font-semibold">
+                                              {t.password}
+                                              <input
+                                                  name="password"
+                                                  type="password"
+                                                  autoComplete={
+                                                      mode === "sign-in"
+                                                          ? "current-password"
+                                                          : "new-password"
+                                                  }
+                                                  minLength={10}
+                                                  required
+                                                  className="mt-2 h-12 w-full rounded-2xl border border-line bg-background px-4 font-normal outline-none transition focus:border-brand focus:ring-3 focus:ring-brand/10"
+                                              />
+                                              {mode === "sign-up" ? (
+                                                  <span className="mt-1.5 block text-xs font-normal text-muted">
+                                                      {t.passwordHint}
+                                                  </span>
+                                              ) : null}
+                                          </label>
 
-                                    {error ? (
-                                        <p
-                                            role="alert"
-                                            className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700"
-                                        >
-                                            {error}
-                                        </p>
-                                    ) : null}
+                                          {error ? (
+                                              <p
+                                                  role="alert"
+                                                  className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700"
+                                              >
+                                                  {error}
+                                              </p>
+                                          ) : null}
 
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-brand font-semibold text-white transition hover:bg-brand-dark disabled:cursor-wait disabled:opacity-60"
-                                    >
-                                        {isSubmitting ? (
-                                            <LoaderCircle className="size-4 animate-spin" />
-                                        ) : null}
-                                        {mode === "sign-in"
-                                            ? t.submitSignIn
-                                            : t.submitSignUp}
-                                    </button>
-                                </form>
+                                          <button
+                                              type="submit"
+                                              disabled={isSubmitting}
+                                              className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-brand font-semibold text-white transition hover:bg-brand-dark disabled:cursor-wait disabled:opacity-60"
+                                          >
+                                              {isSubmitting ? (
+                                                  <LoaderCircle className="size-4 animate-spin" />
+                                              ) : null}
+                                              {mode === "sign-in"
+                                                  ? t.submitSignIn
+                                                  : t.submitSignUp}
+                                          </button>
+                                      </form>
 
-                                <p className="mt-6 text-center text-sm text-muted">
-                                    {mode === "sign-in"
-                                        ? t.noAccount
-                                        : t.hasAccount}{" "}
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            open(
-                                                mode === "sign-in"
-                                                    ? "sign-up"
-                                                    : "sign-in",
-                                            )
-                                        }
-                                        className="font-semibold text-brand hover:underline"
-                                    >
-                                        {mode === "sign-in"
-                                            ? t.signUp
-                                            : t.signIn}
-                                    </button>
-                                </p>
-                            </>
-                        )}
-                    </section>
-                </div>
-            ) : null}
+                                      <p className="mt-6 text-center text-sm text-muted">
+                                          {mode === "sign-in"
+                                              ? t.noAccount
+                                              : t.hasAccount}{" "}
+                                          <button
+                                              type="button"
+                                              onClick={() =>
+                                                  open(
+                                                      mode === "sign-in"
+                                                          ? "sign-up"
+                                                          : "sign-in",
+                                                  )
+                                              }
+                                              className="font-semibold text-brand hover:underline"
+                                          >
+                                              {mode === "sign-in"
+                                                  ? t.signUp
+                                                  : t.signIn}
+                                          </button>
+                                      </p>
+                                  </>
+                              )}
+                          </section>
+                      </div>,
+                      document.body,
+                  )
+                : null}
         </>
     );
 }
