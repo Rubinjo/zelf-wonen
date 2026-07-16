@@ -17,14 +17,15 @@ Self-service Dutch real-estate platform for owners who want to sell or rent with
 
 ## Local setup
 
-Requirements: Node.js 20.9+, npm, and Docker Desktop with Linux containers.
+Requirements: Node.js 20.9+, npm, and Docker Desktop with Linux containers. Python 3.12 and uv are only required when running the estimator outside Docker.
 
 1. Copy `.env.example` to `.env.local` and replace every required placeholder. A local file is already configured in this workspace.
 2. Install dependencies with `npm install`.
 3. Start PostgreSQL 17, generate Prisma, migrate, and apply immutable-history triggers with `npm run db:setup`.
-4. Start the application with `npm run dev`.
+4. Start the deterministic estimator with `npm run estimator:start`.
+5. Start the application with `npm run dev`.
 
-The database runs from `compose.yaml` as `houser-postgres`, publishes port 5432, and persists data in the `houser_postgres_data` Docker volume. Local verification links are printed in the Next.js terminal when no delivery webhook is configured.
+PostgreSQL and the estimator are defined in `compose.yaml`. Use `npm run services:start` to build and start both. PostgreSQL publishes port 5432 and persists data in the `houser_postgres_data` Docker volume; the estimator publishes port 8000. Local verification links are printed in the Next.js terminal when no delivery webhook is configured.
 
 Do not run a production deployment with the example Better Auth secret, IP salt, media URL, or simulated provider endpoints.
 
@@ -39,6 +40,10 @@ Do not run a production deployment with the example Better Auth secret, IP salt,
 | `npm run db:start` | Start the PostgreSQL container |
 | `npm run db:stop` | Stop the PostgreSQL container |
 | `npm run db:logs` | Follow PostgreSQL container logs |
+| `npm run services:start` | Build and start PostgreSQL and the estimator |
+| `npm run services:stop` | Stop all local service containers |
+| `npm run estimator:start` | Build and start the deterministic estimator |
+| `npm run estimator:logs` | Follow estimator container logs |
 | `npm run db:setup` | Start PostgreSQL and initialize the complete schema |
 | `npm run db:generate` | Generate Prisma Client |
 | `npm run db:migrate` | Create/apply a development migration |
@@ -56,4 +61,4 @@ Do not run a production deployment with the example Better Auth secret, IP salt,
 
 ## Production gaps
 
-This is an architectural scaffold, not a legally certified production system. Before launch, implement the listing wizard UI, signed uploads/scanning, official Kadaster and EP-Online ingestion jobs, certified iDIN callbacks, payments, anonymized PDF generation, provider webhooks, rate limits, notification delivery, admin moderation, tests, observability, GDPR workflows, and independent Dutch legal/privacy review.
+This is not yet a legally certified production system. The owner listing workflow, bid logbook/PDF, estimator, development iDIN/payment simulations, and publisher adapter are implemented. Before launch, replace simulations with certified iDIN/payment/provider integrations and signed object storage; add malware scanning, official Kadaster and EP-Online ingestion jobs, rate limits, notifications, admin moderation, broader automated tests, observability, GDPR workflows, accessibility/localization review, and independent Dutch legal/privacy review.

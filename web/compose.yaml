@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: houser-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: houser
+      POSTGRES_USER: houser
+      POSTGRES_PASSWORD: houser_dev_password
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - houser_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U houser -d houser"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  estimator:
+    build:
+      context: ../estimator
+      dockerfile: Dockerfile
+    image: houser-estimator:local
+    container_name: houser-estimator
+    restart: unless-stopped
+    init: true
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      ML_ESTIMATOR_TOKEN: ${ML_ESTIMATOR_TOKEN:-}
+    ports:
+      - "${ESTIMATOR_PORT:-8000}:8000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=2)",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  houser_postgres_data:

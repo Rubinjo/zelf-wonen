@@ -1,24 +1,32 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+/web/node_modules
+/web/.pnp
+/web/.pnp.*
+/web/.yarn/*
+!/web/.yarn/patches
+!/web/.yarn/plugins
+!/web/.yarn/releases
+!/web/.yarn/versions
+/estimator/.venv/
 
 # testing
-/coverage
+/web/coverage
+/estimator/.coverage
+/estimator/.pytest_cache/
 
 # next.js
-/.next/
-/out/
+/web/.next/
+/web/out/
 
 # production
-/build
+/web/build
+
+# python
+__pycache__/
+*.py[cod]
+/estimator/.ruff_cache/
 
 # misc
 .DS_Store
