@@ -6,9 +6,6 @@ config();
 
 export default defineConfig({
     schema: "prisma/schema.prisma",
-    migrations: {
-        path: "prisma/migrations",
-    },
     datasource: {
         // The fallback lets `prisma generate` run in CI without opening a connection.
         url:

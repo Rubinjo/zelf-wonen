@@ -19,10 +19,9 @@
     "services:stop": "docker compose down",
     "estimator:start": "docker compose up -d --build --wait estimator",
     "estimator:logs": "docker compose logs -f estimator",
-    "db:setup": "npm run db:start && npm run db:generate && prisma migrate deploy",
+    "db:setup": "npm run db:start && npm run db:push && npm run db:generate",
     "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:deploy": "prisma migrate deploy",
+    "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "validate": "npm run db:generate && npm run lint && npm run typecheck && npm run build"
   },

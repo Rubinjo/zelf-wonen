@@ -1,4 +1,4 @@
--- Apply after the first Prisma migration. Prisma does not model PostgreSQL triggers.
+-- Apply after `prisma db push`. Prisma does not model PostgreSQL triggers.
 -- The application role may INSERT, but cannot rewrite legally significant history.
 CREATE OR REPLACE FUNCTION reject_immutable_mutation()
 RETURNS trigger AS $$
