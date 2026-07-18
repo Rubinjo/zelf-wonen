@@ -46,6 +46,8 @@ Do not run a production deployment with the example Better Auth secret, IP salt,
 | `npm run estimator:logs` | Follow estimator container logs |
 | `npm run db:setup` | Start PostgreSQL and initialize the complete schema |
 | `npm run db:generate` | Generate Prisma Client |
+| `npm run db:push` | Push the Prisma schema to the database |
+| `npm run db:immutability` | Apply append-only PostgreSQL triggers |
 | `npm run db:migrate` | Create/apply a development migration |
 | `npm run db:deploy` | Apply committed migrations in deployment |
 | `npm run db:studio` | Open Prisma Studio |
