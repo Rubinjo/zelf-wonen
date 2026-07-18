@@ -110,6 +110,7 @@ type EditorState = {
     descriptionNl: string;
     descriptionEn: string;
     livingAreaSqm: string;
+    officialLandAreaSqm: string;
     roomCount: string;
     bedroomCount: string;
     bathroomCount: string;
@@ -173,6 +174,8 @@ export function ListingEditor({
         descriptionNl: listing.descriptionNl ?? "",
         descriptionEn: listing.descriptionEn ?? "",
         livingAreaSqm: listing.property.livingAreaSqm?.toString() ?? "",
+        officialLandAreaSqm:
+            listing.property.officialLandAreaSqm?.toString() ?? "",
         roomCount: listing.property.roomCount?.toString() ?? "",
         bedroomCount: listing.property.bedroomCount?.toString() ?? "",
         bathroomCount: listing.property.bathroomCount?.toString() ?? "",
@@ -211,6 +214,9 @@ export function ListingEditor({
                 body: JSON.stringify({
                     version: listing.version,
                     livingAreaSqm: Number(editor.livingAreaSqm) || null,
+                    officialLandAreaSqm: editor.officialLandAreaSqm
+                        ? Number(editor.officialLandAreaSqm)
+                        : null,
                     roomCount: Number(editor.roomCount) || null,
                     bedroomCount: editor.bedroomCount
                         ? Number(editor.bedroomCount)
@@ -585,22 +591,33 @@ function DetailsSection({
                     onChange={set("livingAreaSqm")}
                 />
                 <Input
+                    label="Perceeloppervlak (m²)"
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    value={editor.officialLandAreaSqm}
+                    onChange={set("officialLandAreaSqm")}
+                />
+                <Input
+                    label="Externe bergruimte (m²)"
+                    type="number"
+                    min="0"
+                    max="10000"
+                    step="0.1"
+                    value={editor.externalStorageAreaSqm}
+                    onChange={set("externalStorageAreaSqm")}
+                />
+                <Input
                     label="Aantal kamers"
                     type="number"
                     value={editor.roomCount}
                     onChange={set("roomCount")}
                 />
                 <Input
-                    label="Slaapkamers"
+                    label="Aantal slaapkamers"
                     type="number"
                     value={editor.bedroomCount}
                     onChange={set("bedroomCount")}
-                />
-                <Input
-                    label="Bouwjaar"
-                    type="number"
-                    value={editor.constructionYear}
-                    onChange={set("constructionYear")}
                 />
                 <Input
                     label="Aantal badkamers"
@@ -609,6 +626,12 @@ function DetailsSection({
                     max="100"
                     value={editor.bathroomCount}
                     onChange={set("bathroomCount")}
+                />
+                <Input
+                    label="Bouwjaar"
+                    type="number"
+                    value={editor.constructionYear}
+                    onChange={set("constructionYear")}
                 />
                 <Input
                     label="Aantal woonlagen"
@@ -633,15 +656,6 @@ function DetailsSection({
                         ))}
                     </select>
                 </label>
-                <Input
-                    label="Externe bergruimte (m²)"
-                    type="number"
-                    min="0"
-                    max="10000"
-                    step="0.1"
-                    value={editor.externalStorageAreaSqm}
-                    onChange={set("externalStorageAreaSqm")}
-                />
                 <div className="sm:col-span-2">
                     <OptionCheckboxes
                         title="Voorzieningen"

@@ -92,6 +92,7 @@ export function ListingCreateWizard() {
     const [propertyData, setPropertyData] = useState<PropertyData | null>(null);
     const [lookupError, setLookupError] = useState("");
     const [energyLabelFile, setEnergyLabelFile] = useState<File | null>(null);
+    const [parkingSpaceForSale, setParkingSpaceForSale] = useState(false);
     const [createdListingId, setCreatedListingId] = useState<string | null>(
         null,
     );
@@ -421,6 +422,16 @@ export function ListingCreateWizard() {
                                 className="input"
                             />
                         </Field>
+                        <Field label="Externe bergruimte (m²)">
+                            <input
+                                name="externalStorageAreaSqm"
+                                type="number"
+                                min="0"
+                                max="10000"
+                                step="0.1"
+                                className="input"
+                            />
+                        </Field>
                         <Field label="Aantal kamers">
                             <input
                                 name="roomCount"
@@ -431,12 +442,21 @@ export function ListingCreateWizard() {
                                 className="input"
                             />
                         </Field>
-                        <Field label="Slaapkamers">
+                        <Field label="Aantal slaapkamers">
                             <input
                                 name="bedroomCount"
                                 type="number"
                                 min="0"
                                 defaultValue={propertyData?.bedroomCount ?? ""}
+                                className="input"
+                            />
+                        </Field>
+                        <Field label="Aantal badkamers">
+                            <input
+                                name="bathroomCount"
+                                type="number"
+                                min="0"
+                                max="100"
                                 className="input"
                             />
                         </Field>
@@ -449,15 +469,6 @@ export function ListingCreateWizard() {
                                 defaultValue={
                                     propertyData?.constructionYear ?? ""
                                 }
-                                className="input"
-                            />
-                        </Field>
-                        <Field label="Aantal badkamers">
-                            <input
-                                name="bathroomCount"
-                                type="number"
-                                min="0"
-                                max="100"
                                 className="input"
                             />
                         </Field>
@@ -483,16 +494,6 @@ export function ListingCreateWizard() {
                                 ))}
                             </select>
                         </Field>
-                        <Field label="Externe bergruimte (m²)">
-                            <input
-                                name="externalStorageAreaSqm"
-                                type="number"
-                                min="0"
-                                max="10000"
-                                step="0.1"
-                                className="input"
-                            />
-                        </Field>
                     </div>
                     <PropertyOptionsSection
                         title="Voorzieningen"
@@ -503,18 +504,25 @@ export function ListingCreateWizard() {
                         title="Parkeren"
                         name="parkingOptions"
                         options={parkingOptions}
+                        onOptionChange={(value, selected) => {
+                            if (value === "SPACE_FOR_SALE") {
+                                setParkingSpaceForSale(selected);
+                            }
+                        }}
                     />
-                    <div className="mt-5 max-w-sm">
-                        <Field label="Prijs parkeerplaats apart te koop (€)">
-                            <input
-                                name="parkingSpacePrice"
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                className="input"
-                            />
-                        </Field>
-                    </div>
+                    {parkingSpaceForSale ? (
+                        <div className="mt-5 max-w-sm">
+                            <Field label="Prijs parkeerplaats apart te koop (€)">
+                                <input
+                                    name="parkingSpacePrice"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    className="input"
+                                />
+                            </Field>
+                        </div>
+                    ) : null}
                     <EnergyLabelSection
                         energy={propertyData?.energy ?? null}
                         file={energyLabelFile}
@@ -556,10 +564,12 @@ function PropertyOptionsSection({
     title,
     name,
     options,
+    onOptionChange,
 }: {
     title: string;
     name: string;
     options: ReadonlyArray<{ value: string; label: string }>;
+    onOptionChange?: (value: string, selected: boolean) => void;
 }) {
     return (
         <fieldset className="mt-8 border-t border-line pt-7">
@@ -574,6 +584,12 @@ function PropertyOptionsSection({
                             type="checkbox"
                             name={name}
                             value={option.value}
+                            onChange={(event) =>
+                                onOptionChange?.(
+                                    option.value,
+                                    event.target.checked,
+                                )
+                            }
                             className="size-4 accent-brand"
                         />
                         {option.label}

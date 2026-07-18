@@ -34,6 +34,6 @@ ALTER TABLE "properties"
     ADD COLUMN "floorCount" INTEGER,
     ADD COLUMN "roofType" "RoofType",
     ADD COLUMN "externalStorageAreaSqm" DECIMAL(8, 2),
-    ADD COLUMN "amenities" "PropertyAmenity"[] DEFAULT ARRAY[]::"PropertyAmenity"[],
-    ADD COLUMN "parkingOptions" "ParkingOption"[] DEFAULT ARRAY[]::"ParkingOption"[],
+    ADD COLUMN "amenities" "PropertyAmenity"[] NOT NULL DEFAULT ARRAY[]::"PropertyAmenity"[],
+    ADD COLUMN "parkingOptions" "ParkingOption"[] NOT NULL DEFAULT ARRAY[]::"ParkingOption"[],
     ADD COLUMN "parkingSpacePriceCents" BIGINT;
