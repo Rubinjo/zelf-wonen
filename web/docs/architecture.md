@@ -35,6 +35,7 @@ flowchart TB
 
   Property --> PDOK[PDOK Locatieserver\nBAG address/geocoding]
   Property --> Kadaster[BRK/BAG OGC or licensed feed\nparcel + official land area]
+  Property --> EnergyLabelNl[Energielabel.nl\nbest-effort single-address lookup]
   Property --> RVO[EP-Online ingestion\nAPI-key mutation files]
 
   Listing --> IDIN[iDIN provider adapter\nlate-stage identity check]

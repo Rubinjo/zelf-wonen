@@ -1,10 +1,26 @@
 import { randomUUID } from "node:crypto";
 import { Prisma } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
+import { EnergielabelNlClient } from "@/lib/integrations/property-data/energielabel-nl-client";
 import type {
     CreateListingInput,
     UpdateListingInput,
 } from "@/lib/schemas/listing";
+
+const energielabelNl = new EnergielabelNlClient();
+const storedEnergyLabelClasses = {
+    "A++++": "A_PLUS_PLUS_PLUS_PLUS",
+    "A+++": "A_PLUS_PLUS_PLUS",
+    "A++": "A_PLUS_PLUS",
+    "A+": "A_PLUS",
+    A: "A",
+    B: "B",
+    C: "C",
+    D: "D",
+    E: "E",
+    F: "F",
+    G: "G",
+} as const;
 
 export class ListingMutationError extends Error {
     constructor(
@@ -82,6 +98,16 @@ export async function createOwnerListing(
     ownerId: string,
     input: CreateListingInput,
 ) {
+    const liveEnergy = await energielabelNl
+        .lookupAddress({
+            postcode: input.postcode,
+            houseNumber: input.houseNumber,
+            addition: input.houseNumberAddition ?? undefined,
+        })
+        .catch((error) => {
+            console.error("Energielabel.nl lookup during creation failed", error);
+            return null;
+        });
     const listingId = randomUUID();
     const listing = await db.$transaction(async (tx) => {
         const sourceEnergy = await tx.energyLabel.findFirst({
@@ -95,6 +121,29 @@ export async function createOwnerListing(
             },
             orderBy: { registeredAt: "desc" },
         });
+                const energyData = liveEnergy
+                        ? {
+                                    registrationNumber: null,
+                                    labelClass:
+                                            storedEnergyLabelClasses[liveEnergy.labelClass],
+                                    primaryFossilEnergyKwhSqmYear: null,
+                                    registeredAt: liveEnergy.registeredAt,
+                                    validUntil: liveEnergy.validUntil,
+                                    source: "ENERGIELABEL_NL",
+                                    retrievedAt: new Date(),
+                            }
+                        : sourceEnergy
+                            ? {
+                                        registrationNumber: sourceEnergy.registrationNumber,
+                                        labelClass: sourceEnergy.labelClass,
+                                        primaryFossilEnergyKwhSqmYear:
+                                                sourceEnergy.primaryFossilEnergyKwhSqmYear,
+                                        registeredAt: sourceEnergy.registeredAt,
+                                        validUntil: sourceEnergy.validUntil,
+                                        source: sourceEnergy.source,
+                                        retrievedAt: sourceEnergy.retrievedAt,
+                                }
+                            : null;
 
         // Property facts are snapshotted per listing. Reusing a row would let a
         // later draft silently change facts already shown on a live listing.
@@ -119,19 +168,9 @@ export async function createOwnerListing(
                 livingAreaSqm: input.livingAreaSqm,
                 roomCount: input.roomCount,
                 bedroomCount: input.bedroomCount,
-                energyLabels: sourceEnergy
+                energyLabels: energyData
                     ? {
-                          create: {
-                              registrationNumber:
-                                  sourceEnergy.registrationNumber,
-                              labelClass: sourceEnergy.labelClass,
-                              primaryFossilEnergyKwhSqmYear:
-                                  sourceEnergy.primaryFossilEnergyKwhSqmYear,
-                              registeredAt: sourceEnergy.registeredAt,
-                              validUntil: sourceEnergy.validUntil,
-                              source: sourceEnergy.source,
-                              retrievedAt: sourceEnergy.retrievedAt,
-                          },
+                          create: energyData,
                       }
                     : undefined,
             },

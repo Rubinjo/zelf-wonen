@@ -6,6 +6,7 @@ import {
 } from "@/features/auth/guards";
 import { db } from "@/lib/db";
 import { BagWfsClient } from "@/lib/integrations/property-data/bag-wfs-client";
+import { EnergielabelNlClient } from "@/lib/integrations/property-data/energielabel-nl-client";
 import { KadasterWfsClient } from "@/lib/integrations/property-data/kadaster-wfs-client";
 import { PdokClient } from "@/lib/integrations/property-data/pdok-client";
 import {
@@ -16,6 +17,7 @@ import {
 const pdok = new PdokClient();
 const bag = new BagWfsClient();
 const kadaster = new KadasterWfsClient();
+const energielabelNl = new EnergielabelNlClient();
 
 const energyLabelNames = {
     A_PLUS_PLUS_PLUS_PLUS_PLUS: "A+++++",
@@ -55,7 +57,7 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const [bagData, cadastralData] = await Promise.all([
+        const [bagData, cadastralData, liveEnergy] = await Promise.all([
             pdokAddress.bagObjectId
                 ? bag.lookupObject(pdokAddress.bagObjectId).catch((error) => {
                       console.error("BAG enrichment failed", error);
@@ -70,6 +72,10 @@ export async function GET(request: NextRequest) {
                           return null;
                       })
                 : null,
+            energielabelNl.lookupAddress(input).catch((error) => {
+                console.error("Energielabel.nl enrichment failed", error);
+                return null;
+            }),
         ]);
 
         // Kadaster/EP-Online sync workers normalize licensed/API data into these tables.
@@ -118,8 +124,8 @@ export async function GET(request: NextRequest) {
             bedroomCount: null,
             constructionYear:
                 bagData?.constructionYear ?? pdokAddress.constructionYear,
-            energy:
-                latestEnergy && labelClass
+            energy: liveEnergy ??
+                (latestEnergy && labelClass
                     ? {
                           registrationNumber: latestEnergy.registrationNumber,
                           labelClass,
@@ -135,7 +141,7 @@ export async function GET(request: NextRequest) {
                           validUntil:
                               latestEnergy.validUntil?.toISOString() ?? null,
                       }
-                    : null,
+                                        : null),
             sources: [
                 { provider: "PDOK", retrievedAt: new Date().toISOString() },
                 ...(bagData
@@ -160,6 +166,14 @@ export async function GET(request: NextRequest) {
                               provider: "RVO_EP_ONLINE" as const,
                               retrievedAt:
                                   latestEnergy.retrievedAt.toISOString(),
+                          },
+                      ]
+                    : []),
+                ...(liveEnergy
+                    ? [
+                          {
+                              provider: "ENERGIELABEL_NL" as const,
+                              retrievedAt: new Date().toISOString(),
                           },
                       ]
                     : []),

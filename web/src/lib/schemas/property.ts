@@ -61,7 +61,13 @@ export const propertyDataSchema = z.object({
         .nullable(),
     sources: z.array(
         z.object({
-            provider: z.enum(["PDOK", "BAG", "KADASTER", "RVO_EP_ONLINE"]),
+            provider: z.enum([
+                "PDOK",
+                "BAG",
+                "KADASTER",
+                "RVO_EP_ONLINE",
+                "ENERGIELABEL_NL",
+            ]),
             retrievedAt: z.string().datetime(),
         }),
     ),
