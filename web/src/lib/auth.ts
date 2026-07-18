@@ -89,6 +89,9 @@ async function appendEmailVerificationAudit(userId: string) {
 
 export const auth = betterAuth({
     appName: "ZelfWonen",
+    logger: {
+        level: process.env.NODE_ENV === "development" ? "info" : "warn",
+    },
     database: prismaAdapter(db, { provider: "postgresql" }),
     advanced: {
         database: {
