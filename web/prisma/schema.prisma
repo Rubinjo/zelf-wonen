@@ -261,7 +261,7 @@ model Property {
 model EnergyLabel {
   id                            String           @id @default(uuid()) @db.Uuid
   propertyId                    String           @db.Uuid
-  registrationNumber            String?          @unique
+  registrationNumber            String?
   labelClass                    EnergyLabelClass
   primaryFossilEnergyKwhSqmYear Decimal?         @db.Decimal(10, 2)
   registeredAt                  DateTime?
@@ -272,6 +272,7 @@ model EnergyLabel {
   property                      Property         @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 
   @@index([propertyId, registeredAt])
+  @@index([registrationNumber])
   @@map("energy_labels")
 }
 

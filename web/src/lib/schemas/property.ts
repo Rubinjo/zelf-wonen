@@ -56,6 +56,7 @@ export const propertyDataSchema = z.object({
             ]),
             primaryFossilEnergyKwhSqmYear: z.number().nonnegative().nullable(),
             registeredAt: z.string().datetime().nullable(),
+            validUntil: z.string().datetime().nullable(),
         })
         .nullable(),
     sources: z.array(

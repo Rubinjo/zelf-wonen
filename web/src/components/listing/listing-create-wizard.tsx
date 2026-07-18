@@ -5,8 +5,12 @@ import { useMutation } from "@tanstack/react-query";
 import {
     ArrowLeft,
     ArrowRight,
+    CalendarDays,
     Check,
+    CircleAlert,
+    ExternalLink,
     Home,
+    Leaf,
     LoaderCircle,
     MapPin,
     Search,
@@ -21,6 +25,34 @@ type DraftAddress = {
     street: string;
     city: string;
 };
+
+const energyLabelStyles: Record<
+    NonNullable<PropertyData["energy"]>["labelClass"],
+    string
+> = {
+    "A+++++": "bg-emerald-700 text-white",
+    "A++++": "bg-emerald-700 text-white",
+    "A+++": "bg-emerald-700 text-white",
+    "A++": "bg-emerald-700 text-white",
+    "A+": "bg-emerald-700 text-white",
+    A: "bg-emerald-600 text-white",
+    B: "bg-lime-500 text-stone-950",
+    C: "bg-yellow-400 text-stone-950",
+    D: "bg-amber-400 text-stone-950",
+    E: "bg-orange-500 text-white",
+    F: "bg-orange-700 text-white",
+    G: "bg-red-700 text-white",
+};
+
+const dutchDateFormatter = new Intl.DateTimeFormat("nl-NL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+});
+
+function formatDate(value: string) {
+    return dutchDateFormatter.format(new Date(value));
+}
 
 async function parseResponse(response: Response) {
     const payload = await response.json();
@@ -367,6 +399,7 @@ export function ListingCreateWizard() {
                             />
                         </Field>
                     </div>
+                    <EnergyLabelSection energy={propertyData?.energy ?? null} />
                     {createListing.error ? (
                         <p className="mt-5 rounded-2xl bg-red-50 p-4 text-sm text-red-700">
                             {createListing.error.message}
@@ -396,6 +429,138 @@ export function ListingCreateWizard() {
                 </form>
             )}
         </div>
+    );
+}
+
+function EnergyLabelSection({
+    energy,
+}: {
+    energy: PropertyData["energy"];
+}) {
+    const isExpired = Boolean(
+        energy?.validUntil && new Date(energy.validUntil) < new Date(),
+    );
+
+    return (
+        <section className="mt-9 border-t border-line pt-8">
+            <div className="flex items-start gap-3">
+                <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-emerald-50 text-emerald-700">
+                    <Leaf size={19} />
+                </span>
+                <div>
+                    <h2 className="text-xl font-semibold">Energielabel</h2>
+                    <p className="mt-1 text-sm leading-6 text-muted">
+                        We zoeken ook oudere registraties op, zodat je weet of
+                        er al een label voor deze woning bekend is.
+                    </p>
+                </div>
+            </div>
+
+            {energy ? (
+                <div className="mt-5 grid gap-5 bg-background p-5 sm:grid-cols-[112px_1fr] sm:items-center">
+                    <div
+                        className={`grid h-20 w-28 place-items-center text-3xl font-bold ${energyLabelStyles[energy.labelClass]}`}
+                    >
+                        {energy.labelClass}
+                    </div>
+                    <div>
+                        <p className="font-semibold">
+                            {isExpired
+                                ? "Ouder, verlopen label gevonden"
+                                : "Energielabel gevonden"}
+                        </p>
+                        <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted">
+                            {energy.registeredAt ? (
+                                <span className="inline-flex items-center gap-2">
+                                    <CalendarDays size={15} /> Geregistreerd op{" "}
+                                    {formatDate(energy.registeredAt)}
+                                </span>
+                            ) : null}
+                            {energy.validUntil ? (
+                                <span
+                                    className={
+                                        isExpired
+                                            ? "font-semibold text-amber-800"
+                                            : undefined
+                                    }
+                                >
+                                    {isExpired ? "Verlopen op" : "Geldig tot"}{" "}
+                                    {formatDate(energy.validUntil)}
+                                </span>
+                            ) : null}
+                        </div>
+                        {energy.registrationNumber ? (
+                            <p className="mt-2 text-xs text-muted">
+                                Registratienummer: {energy.registrationNumber}
+                            </p>
+                        ) : null}
+                        {!energy.validUntil ? (
+                            <p className="mt-3 inline-flex items-start gap-2 text-sm leading-6 text-amber-900">
+                                <CircleAlert className="mt-1 shrink-0" size={15} />
+                                De geldigheidsdatum is niet beschikbaar.
+                                Controleer het label voordat je publiceert.
+                            </p>
+                        ) : null}
+                    </div>
+                </div>
+            ) : (
+                <div className="mt-5 flex items-start gap-3 bg-amber-50 p-5 text-amber-950">
+                    <CircleAlert className="mt-0.5 shrink-0" size={19} />
+                    <div>
+                        <p className="font-semibold">
+                            Geen energielabel gevonden
+                        </p>
+                        <p className="mt-1 text-sm leading-6">
+                            Er kan toch een label bestaan. Controleer dit eerst
+                            in de officiële energielabelzoeker.
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            <div className="mt-6">
+                <h3 className="font-semibold">
+                    {isExpired || !energy
+                        ? "Zo vraag je een nieuw energielabel aan"
+                        : "Wil je het energielabel vernieuwen?"}
+                </h3>
+                <ol className="mt-3 grid gap-3 text-sm leading-6 text-muted sm:grid-cols-3">
+                    <li>
+                        <span className="font-semibold text-foreground">1.</span>{" "}
+                        Vraag offertes aan bij een gecertificeerd
+                        energieadviseur.
+                    </li>
+                    <li>
+                        <span className="font-semibold text-foreground">2.</span>{" "}
+                        Plan de woningopname en leg bouwtekeningen en
+                        verduurzamingsfacturen klaar.
+                    </li>
+                    <li>
+                        <span className="font-semibold text-foreground">3.</span>{" "}
+                        De adviseur registreert het label; daarna kun je het via
+                        MijnOverheid downloaden.
+                    </li>
+                </ol>
+                <div className="mt-5 flex flex-wrap gap-3">
+                    <a
+                        href="https://www.energielabel.nl/woningen/zoek-je-energielabel/"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex h-11 items-center gap-2 rounded-full border border-line px-4 text-sm font-semibold"
+                    >
+                        Controleer bestaand label <ExternalLink size={15} />
+                    </a>
+                    <a
+                        href="https://www.centraalregistertechniek.nl/energielabel/particulieren/woning"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex h-11 items-center gap-2 rounded-full bg-foreground px-4 text-sm font-semibold text-white"
+                    >
+                        Zoek een energieadviseur <ExternalLink size={15} />
+                    </a>
+                </div>
+            </div>
+        </section>
     );
 }
 

@@ -83,6 +83,7 @@ export async function GET(request: NextRequest) {
                 cadastralParcelId: true,
                 officialLandAreaSqm: true,
                 energyLabels: {
+                    where: { labelClass: { not: "UNKNOWN" } },
                     orderBy: { registeredAt: "desc" },
                     take: 1,
                     select: {
@@ -90,6 +91,7 @@ export async function GET(request: NextRequest) {
                         labelClass: true,
                         primaryFossilEnergyKwhSqmYear: true,
                         registeredAt: true,
+                        validUntil: true,
                         retrievedAt: true,
                     },
                 },
@@ -130,6 +132,8 @@ export async function GET(request: NextRequest) {
                                     ),
                           registeredAt:
                               latestEnergy.registeredAt?.toISOString() ?? null,
+                          validUntil:
+                              latestEnergy.validUntil?.toISOString() ?? null,
                       }
                     : null,
             sources: [

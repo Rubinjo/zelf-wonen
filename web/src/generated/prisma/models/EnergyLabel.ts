@@ -271,11 +271,11 @@ export type EnergyLabelOrderByWithRelationInput = {
 
 export type EnergyLabelWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  registrationNumber?: string
   AND?: Prisma.EnergyLabelWhereInput | Prisma.EnergyLabelWhereInput[]
   OR?: Prisma.EnergyLabelWhereInput[]
   NOT?: Prisma.EnergyLabelWhereInput | Prisma.EnergyLabelWhereInput[]
   propertyId?: Prisma.UuidFilter<"EnergyLabel"> | string
+  registrationNumber?: Prisma.StringNullableFilter<"EnergyLabel"> | string | null
   labelClass?: Prisma.EnumEnergyLabelClassFilter<"EnergyLabel"> | $Enums.EnergyLabelClass
   primaryFossilEnergyKwhSqmYear?: Prisma.DecimalNullableFilter<"EnergyLabel"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   registeredAt?: Prisma.DateTimeNullableFilter<"EnergyLabel"> | Date | string | null
@@ -284,7 +284,7 @@ export type EnergyLabelWhereUniqueInput = Prisma.AtLeast<{
   sourcePayload?: Prisma.JsonNullableFilter<"EnergyLabel">
   retrievedAt?: Prisma.DateTimeFilter<"EnergyLabel"> | Date | string
   property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
-}, "id" | "registrationNumber">
+}, "id">
 
 export type EnergyLabelOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

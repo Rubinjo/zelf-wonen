@@ -84,6 +84,18 @@ export async function createOwnerListing(
 ) {
     const listingId = randomUUID();
     const listing = await db.$transaction(async (tx) => {
+        const sourceEnergy = await tx.energyLabel.findFirst({
+            where: {
+                labelClass: { not: "UNKNOWN" },
+                property: {
+                    postcode: input.postcode,
+                    houseNumber: input.houseNumber,
+                    houseNumberAddition: input.houseNumberAddition ?? null,
+                },
+            },
+            orderBy: { registeredAt: "desc" },
+        });
+
         // Property facts are snapshotted per listing. Reusing a row would let a
         // later draft silently change facts already shown on a live listing.
         const property = await tx.property.create({
@@ -107,6 +119,21 @@ export async function createOwnerListing(
                 livingAreaSqm: input.livingAreaSqm,
                 roomCount: input.roomCount,
                 bedroomCount: input.bedroomCount,
+                energyLabels: sourceEnergy
+                    ? {
+                          create: {
+                              registrationNumber:
+                                  sourceEnergy.registrationNumber,
+                              labelClass: sourceEnergy.labelClass,
+                              primaryFossilEnergyKwhSqmYear:
+                                  sourceEnergy.primaryFossilEnergyKwhSqmYear,
+                              registeredAt: sourceEnergy.registeredAt,
+                              validUntil: sourceEnergy.validUntil,
+                              source: sourceEnergy.source,
+                              retrievedAt: sourceEnergy.retrievedAt,
+                          },
+                      }
+                    : undefined,
             },
         });
 
