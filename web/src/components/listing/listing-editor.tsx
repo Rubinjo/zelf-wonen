@@ -202,7 +202,7 @@ export function ListingEditor({
         biddingMethod: listing.biddingMethod,
         minimumBid: euros(listing.minimumBidCents),
         bidIncrement: euros(listing.bidIncrementCents),
-        allowBidConditions: listing.allowBidConditions,
+        allowBidConditions: listing.allowBidConditions ?? true,
         viewingNotes: listing.viewingNotes ?? "",
         floorplannerEmbedUrl: listing.floorPlans[0]?.embedUrl ?? "",
         bidWindowOpensAt: listing.bidWindowOpensAt?.slice(0, 16) ?? "",
@@ -1281,14 +1281,20 @@ function PriceAndBiddingSection({
                                 onChange={set("serviceCosts")}
                             />
                         ) : (
-                            <Input
-                                label="Minimaal bod (€)"
-                                type="number"
-                                min="1"
-                                step="1"
-                                value={editor.minimumBid}
-                                onChange={set("minimumBid")}
-                            />
+                            <div>
+                                <Input
+                                    label="Minimaal bod (€)"
+                                    type="number"
+                                    min="1"
+                                    step="1"
+                                    value={editor.minimumBid}
+                                    onChange={set("minimumBid")}
+                                />
+                                <p className="mt-2 text-xs leading-5 text-muted">
+                                    Dit bedrag is niet zichtbaar op de
+                                    advertentie.
+                                </p>
+                            </div>
                         )}
                     </div>
                 </div>
@@ -1360,7 +1366,7 @@ function PriceAndBiddingSection({
                     <label className="flex items-center gap-3 self-end border border-line px-4 py-3 text-sm font-semibold">
                         <input
                             type="checkbox"
-                            checked={editor.allowBidConditions}
+                            checked={Boolean(editor.allowBidConditions)}
                             onChange={(event) =>
                                 setEditor((current) => ({
                                     ...current,
