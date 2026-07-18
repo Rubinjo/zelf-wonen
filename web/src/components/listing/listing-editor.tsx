@@ -22,6 +22,14 @@ import {
     Trash2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import {
+    parkingOptions,
+    propertyAmenityOptions,
+    roofTypeOptions,
+    type ParkingOption,
+    type PropertyAmenity,
+    type RoofType,
+} from "@/lib/property-options";
 
 type MediaItem = {
     id: string;
@@ -68,6 +76,13 @@ export type ListingView = {
         officialLandAreaSqm: number | null;
         roomCount: number | null;
         bedroomCount: number | null;
+        bathroomCount: number | null;
+        floorCount: number | null;
+        roofType: RoofType | null;
+        externalStorageAreaSqm: number | null;
+        amenities: PropertyAmenity[];
+        parkingOptions: ParkingOption[];
+        parkingSpacePriceCents: string | null;
         constructionYear: number | null;
         energyLabels: Array<{
             labelClass: string;
@@ -97,6 +112,13 @@ type EditorState = {
     livingAreaSqm: string;
     roomCount: string;
     bedroomCount: string;
+    bathroomCount: string;
+    floorCount: string;
+    roofType: RoofType | "";
+    externalStorageAreaSqm: string;
+    amenities: PropertyAmenity[];
+    parkingOptions: ParkingOption[];
+    parkingSpacePrice: string;
     constructionYear: string;
     askingPrice: string;
     monthlyRent: string;
@@ -153,6 +175,14 @@ export function ListingEditor({
         livingAreaSqm: listing.property.livingAreaSqm?.toString() ?? "",
         roomCount: listing.property.roomCount?.toString() ?? "",
         bedroomCount: listing.property.bedroomCount?.toString() ?? "",
+        bathroomCount: listing.property.bathroomCount?.toString() ?? "",
+        floorCount: listing.property.floorCount?.toString() ?? "",
+        roofType: listing.property.roofType ?? "",
+        externalStorageAreaSqm:
+            listing.property.externalStorageAreaSqm?.toString() ?? "",
+        amenities: listing.property.amenities,
+        parkingOptions: listing.property.parkingOptions,
+        parkingSpacePrice: euros(listing.property.parkingSpacePriceCents),
         constructionYear: listing.property.constructionYear?.toString() ?? "",
         askingPrice: euros(listing.askingPriceCents),
         monthlyRent: euros(listing.monthlyRentCents),
@@ -184,6 +214,23 @@ export function ListingEditor({
                     roomCount: Number(editor.roomCount) || null,
                     bedroomCount: editor.bedroomCount
                         ? Number(editor.bedroomCount)
+                        : null,
+                    bathroomCount: editor.bathroomCount
+                        ? Number(editor.bathroomCount)
+                        : null,
+                    floorCount: editor.floorCount
+                        ? Number(editor.floorCount)
+                        : null,
+                    roofType: editor.roofType || null,
+                    externalStorageAreaSqm: editor.externalStorageAreaSqm
+                        ? Number(editor.externalStorageAreaSqm)
+                        : null,
+                    amenities: editor.amenities,
+                    parkingOptions: editor.parkingOptions,
+                    parkingSpacePriceCents: editor.parkingOptions.includes(
+                        "SPACE_FOR_SALE",
+                    )
+                        ? toCents(editor.parkingSpacePrice)
                         : null,
                     constructionYear: editor.constructionYear
                         ? Number(editor.constructionYear)
@@ -501,8 +548,25 @@ function DetailsSection({
 }) {
     const set =
         (key: string) =>
-        (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+        (
+            event: ChangeEvent<
+                HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+            >,
+        ) =>
             setEditor((current) => ({ ...current, [key]: event.target.value }));
+    const toggleOption = (
+        key: "amenities" | "parkingOptions",
+        value: PropertyAmenity | ParkingOption,
+    ) =>
+        setEditor((current) => {
+            const values: string[] = current[key];
+            return {
+                ...current,
+                [key]: values.includes(value)
+                    ? values.filter((item) => item !== value)
+                    : [...values, value],
+            };
+        });
     return (
         <div>
             <SectionHeading
@@ -538,6 +602,74 @@ function DetailsSection({
                     value={editor.constructionYear}
                     onChange={set("constructionYear")}
                 />
+                <Input
+                    label="Aantal badkamers"
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={editor.bathroomCount}
+                    onChange={set("bathroomCount")}
+                />
+                <Input
+                    label="Aantal woonlagen"
+                    type="number"
+                    min="1"
+                    max="100"
+                    value={editor.floorCount}
+                    onChange={set("floorCount")}
+                />
+                <label className="block text-sm font-semibold">
+                    Daktype
+                    <select
+                        value={editor.roofType}
+                        onChange={set("roofType")}
+                        className="input mt-2"
+                    >
+                        <option value="">Niet opgegeven</option>
+                        {roofTypeOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+                <Input
+                    label="Externe bergruimte (m²)"
+                    type="number"
+                    min="0"
+                    max="10000"
+                    step="0.1"
+                    value={editor.externalStorageAreaSqm}
+                    onChange={set("externalStorageAreaSqm")}
+                />
+                <div className="sm:col-span-2">
+                    <OptionCheckboxes
+                        title="Voorzieningen"
+                        options={propertyAmenityOptions}
+                        values={editor.amenities}
+                        onToggle={(value) => toggleOption("amenities", value)}
+                    />
+                </div>
+                <div className="sm:col-span-2">
+                    <OptionCheckboxes
+                        title="Parkeren"
+                        options={parkingOptions}
+                        values={editor.parkingOptions}
+                        onToggle={(value) =>
+                            toggleOption("parkingOptions", value)
+                        }
+                    />
+                </div>
+                {editor.parkingOptions.includes("SPACE_FOR_SALE") ? (
+                    <Input
+                        label="Prijs parkeerplaats apart te koop (€)"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={editor.parkingSpacePrice}
+                        onChange={set("parkingSpacePrice")}
+                    />
+                ) : null}
                 <Input
                     label={
                         listing.purpose === "SALE"
@@ -650,6 +782,40 @@ function DetailsSection({
     );
 }
 
+function OptionCheckboxes<Option extends string>({
+    title,
+    options,
+    values,
+    onToggle,
+}: {
+    title: string;
+    options: ReadonlyArray<{ value: Option; label: string }>;
+    values: Option[];
+    onToggle: (value: Option) => void;
+}) {
+    return (
+        <fieldset className="border-t border-line pt-6">
+            <legend className="font-semibold">{title}</legend>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {options.map((option) => (
+                    <label
+                        key={option.value}
+                        className="flex min-h-11 cursor-pointer items-center gap-3 border border-line px-4 py-2.5 text-sm font-normal"
+                    >
+                        <input
+                            type="checkbox"
+                            checked={values.includes(option.value)}
+                            onChange={() => onToggle(option.value)}
+                            className="size-4 accent-brand"
+                        />
+                        {option.label}
+                    </label>
+                ))}
+            </div>
+        </fieldset>
+    );
+}
+
 const energyLabelNames: Record<string, string> = {
     A_PLUS_PLUS_PLUS_PLUS_PLUS: "A+++++",
     A_PLUS_PLUS_PLUS_PLUS: "A++++",
@@ -711,7 +877,8 @@ function EnergyLabelPanel({
             {energy ? (
                 <div className="mt-5 flex items-center gap-4 bg-emerald-50 p-5">
                     <span className="grid h-14 min-w-20 place-items-center bg-emerald-700 px-3 text-xl font-bold text-white">
-                        {energyLabelNames[energy.labelClass] ?? energy.labelClass}
+                        {energyLabelNames[energy.labelClass] ??
+                            energy.labelClass}
                     </span>
                     <p className="font-semibold">Energielabel gevonden</p>
                 </div>
@@ -741,7 +908,9 @@ function EnergyLabelPanel({
                             className="flex items-center gap-3 border border-line px-4 py-3 text-sm font-semibold hover:bg-background"
                         >
                             <FileImage size={17} className="text-brand" />
-                            <span className="truncate">{document.fileName}</span>
+                            <span className="truncate">
+                                {document.fileName}
+                            </span>
                         </a>
                     ))}
                 </div>
@@ -881,44 +1050,47 @@ function MediaSection({
                 {listing.media
                     .filter((media) => media.kind !== "DOCUMENT")
                     .map((media) => (
-                    <article
-                        key={media.id}
-                        className="group relative overflow-hidden rounded-2xl border border-line bg-background"
-                    >
-                        {media.mimeType.startsWith("image/") ? (
-                            <Image
-                                src={`/${media.storageKey}`}
-                                alt=""
-                                width={800}
-                                height={480}
-                                className="h-36 w-full object-cover"
-                            />
-                        ) : (
-                            <div className="grid h-36 place-items-center">
-                                <FileImage size={30} className="text-brand" />
+                        <article
+                            key={media.id}
+                            className="group relative overflow-hidden rounded-2xl border border-line bg-background"
+                        >
+                            {media.mimeType.startsWith("image/") ? (
+                                <Image
+                                    src={`/${media.storageKey}`}
+                                    alt=""
+                                    width={800}
+                                    height={480}
+                                    className="h-36 w-full object-cover"
+                                />
+                            ) : (
+                                <div className="grid h-36 place-items-center">
+                                    <FileImage
+                                        size={30}
+                                        className="text-brand"
+                                    />
+                                </div>
+                            )}
+                            <div className="p-3">
+                                <p className="truncate text-xs font-semibold">
+                                    {media.fileName}
+                                </p>
+                                <p className="mt-1 text-[11px] text-muted">
+                                    {media.kind === "PHOTO"
+                                        ? "Foto"
+                                        : "Plattegrond"}
+                                </p>
                             </div>
-                        )}
-                        <div className="p-3">
-                            <p className="truncate text-xs font-semibold">
-                                {media.fileName}
-                            </p>
-                            <p className="mt-1 text-[11px] text-muted">
-                                {media.kind === "PHOTO"
-                                    ? "Foto"
-                                    : "Plattegrond"}
-                            </p>
-                        </div>
-                        {editable ? (
-                            <button
-                                type="button"
-                                onClick={() => remove.mutate(media.id)}
-                                className="absolute right-2 top-2 grid size-9 place-items-center rounded-full bg-white text-red-700 shadow"
-                            >
-                                <Trash2 size={16} />
-                            </button>
-                        ) : null}
-                    </article>
-                ))}
+                            {editable ? (
+                                <button
+                                    type="button"
+                                    onClick={() => remove.mutate(media.id)}
+                                    className="absolute right-2 top-2 grid size-9 place-items-center rounded-full bg-white text-red-700 shadow"
+                                >
+                                    <Trash2 size={16} />
+                                </button>
+                            ) : null}
+                        </article>
+                    ))}
             </div>
             <div className="mt-9 border-t border-line pt-7">
                 <Input

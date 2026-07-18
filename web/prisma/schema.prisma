@@ -36,6 +36,37 @@ enum PropertyType {
   OTHER
 }
 
+enum RoofType {
+  FLAT
+  GABLE
+  HIP
+  MANSARD
+  SHED
+  COMBINATION
+  OTHER
+}
+
+enum PropertyAmenity {
+  SOLAR_PANELS
+  AIR_CONDITIONING
+  FIBER_OPTIC
+  HEAT_PUMP
+  EV_CHARGER
+  FIREPLACE
+  MECHANICAL_VENTILATION
+  ALARM_SYSTEM
+}
+
+enum ParkingOption {
+  ON_PROPERTY
+  FREE_STREET
+  PAID_STREET
+  PARKING_PERMIT
+  PUBLIC_GARAGE
+  PRIVATE_GARAGE
+  SPACE_FOR_SALE
+}
+
 enum EnergyLabelClass {
   A_PLUS_PLUS_PLUS_PLUS_PLUS
   A_PLUS_PLUS_PLUS_PLUS
@@ -222,35 +253,42 @@ model Verification {
 }
 
 model Property {
-  id                    String        @id @default(uuid()) @db.Uuid
-  ownerId               String        @db.Uuid
-  bagAddressId          String?
-  bagBuildingId         String?
-  cadastralParcelId     String?
-  postcode              String        @db.VarChar(6)
-  houseNumber           Int
-  houseNumberAddition   String?
-  street                String
-  city                  String
-  municipality          String?
-  province              String?
-  latitude              Decimal?      @db.Decimal(9, 6)
-  longitude             Decimal?      @db.Decimal(9, 6)
-  propertyType          PropertyType
-  livingAreaSqm         Decimal?      @db.Decimal(8, 2)
-  officialLandAreaSqm   Decimal?      @db.Decimal(10, 2)
-  volumeCubicMeters     Decimal?      @db.Decimal(10, 2)
-  roomCount             Int?
-  bedroomCount          Int?
-  constructionYear      Int?
-  layout                Json?
-  kadasterSourcePayload Json?
-  kadasterRetrievedAt   DateTime?
-  createdAt             DateTime      @default(now())
-  updatedAt             DateTime      @updatedAt
-  owner                 User          @relation(fields: [ownerId], references: [id], onDelete: Restrict)
-  energyLabels          EnergyLabel[]
-  listings              Listing[]
+  id                     String            @id @default(uuid()) @db.Uuid
+  ownerId                String            @db.Uuid
+  bagAddressId           String?
+  bagBuildingId          String?
+  cadastralParcelId      String?
+  postcode               String            @db.VarChar(6)
+  houseNumber            Int
+  houseNumberAddition    String?
+  street                 String
+  city                   String
+  municipality           String?
+  province               String?
+  latitude               Decimal?          @db.Decimal(9, 6)
+  longitude              Decimal?          @db.Decimal(9, 6)
+  propertyType           PropertyType
+  livingAreaSqm          Decimal?          @db.Decimal(8, 2)
+  officialLandAreaSqm    Decimal?          @db.Decimal(10, 2)
+  volumeCubicMeters      Decimal?          @db.Decimal(10, 2)
+  roomCount              Int?
+  bedroomCount           Int?
+  bathroomCount          Int?
+  floorCount             Int?
+  roofType               RoofType?
+  externalStorageAreaSqm Decimal?          @db.Decimal(8, 2)
+  amenities              PropertyAmenity[] @default([])
+  parkingOptions         ParkingOption[]   @default([])
+  parkingSpacePriceCents BigInt?
+  constructionYear       Int?
+  layout                 Json?
+  kadasterSourcePayload  Json?
+  kadasterRetrievedAt    DateTime?
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+  owner                  User              @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  energyLabels           EnergyLabel[]
+  listings               Listing[]
 
   @@index([ownerId, bagAddressId])
   @@index([ownerId])

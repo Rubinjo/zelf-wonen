@@ -50,6 +50,46 @@ export const PropertyType = {
 export type PropertyType = (typeof PropertyType)[keyof typeof PropertyType]
 
 
+export const RoofType = {
+  FLAT: 'FLAT',
+  GABLE: 'GABLE',
+  HIP: 'HIP',
+  MANSARD: 'MANSARD',
+  SHED: 'SHED',
+  COMBINATION: 'COMBINATION',
+  OTHER: 'OTHER'
+} as const
+
+export type RoofType = (typeof RoofType)[keyof typeof RoofType]
+
+
+export const PropertyAmenity = {
+  SOLAR_PANELS: 'SOLAR_PANELS',
+  AIR_CONDITIONING: 'AIR_CONDITIONING',
+  FIBER_OPTIC: 'FIBER_OPTIC',
+  HEAT_PUMP: 'HEAT_PUMP',
+  EV_CHARGER: 'EV_CHARGER',
+  FIREPLACE: 'FIREPLACE',
+  MECHANICAL_VENTILATION: 'MECHANICAL_VENTILATION',
+  ALARM_SYSTEM: 'ALARM_SYSTEM'
+} as const
+
+export type PropertyAmenity = (typeof PropertyAmenity)[keyof typeof PropertyAmenity]
+
+
+export const ParkingOption = {
+  ON_PROPERTY: 'ON_PROPERTY',
+  FREE_STREET: 'FREE_STREET',
+  PAID_STREET: 'PAID_STREET',
+  PARKING_PERMIT: 'PARKING_PERMIT',
+  PUBLIC_GARAGE: 'PUBLIC_GARAGE',
+  PRIVATE_GARAGE: 'PRIVATE_GARAGE',
+  SPACE_FOR_SALE: 'SPACE_FOR_SALE'
+} as const
+
+export type ParkingOption = (typeof ParkingOption)[keyof typeof ParkingOption]
+
+
 export const EnergyLabelClass = {
   A_PLUS_PLUS_PLUS_PLUS_PLUS: 'A_PLUS_PLUS_PLUS_PLUS_PLUS',
   A_PLUS_PLUS_PLUS_PLUS: 'A_PLUS_PLUS_PLUS_PLUS',

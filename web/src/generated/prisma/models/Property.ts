@@ -35,6 +35,10 @@ export type PropertyAvgAggregateOutputType = {
   volumeCubicMeters: runtime.Decimal | null
   roomCount: number | null
   bedroomCount: number | null
+  bathroomCount: number | null
+  floorCount: number | null
+  externalStorageAreaSqm: runtime.Decimal | null
+  parkingSpacePriceCents: number | null
   constructionYear: number | null
 }
 
@@ -47,6 +51,10 @@ export type PropertySumAggregateOutputType = {
   volumeCubicMeters: runtime.Decimal | null
   roomCount: number | null
   bedroomCount: number | null
+  bathroomCount: number | null
+  floorCount: number | null
+  externalStorageAreaSqm: runtime.Decimal | null
+  parkingSpacePriceCents: bigint | null
   constructionYear: number | null
 }
 
@@ -71,6 +79,11 @@ export type PropertyMinAggregateOutputType = {
   volumeCubicMeters: runtime.Decimal | null
   roomCount: number | null
   bedroomCount: number | null
+  bathroomCount: number | null
+  floorCount: number | null
+  roofType: $Enums.RoofType | null
+  externalStorageAreaSqm: runtime.Decimal | null
+  parkingSpacePriceCents: bigint | null
   constructionYear: number | null
   kadasterRetrievedAt: Date | null
   createdAt: Date | null
@@ -98,6 +111,11 @@ export type PropertyMaxAggregateOutputType = {
   volumeCubicMeters: runtime.Decimal | null
   roomCount: number | null
   bedroomCount: number | null
+  bathroomCount: number | null
+  floorCount: number | null
+  roofType: $Enums.RoofType | null
+  externalStorageAreaSqm: runtime.Decimal | null
+  parkingSpacePriceCents: bigint | null
   constructionYear: number | null
   kadasterRetrievedAt: Date | null
   createdAt: Date | null
@@ -125,6 +143,13 @@ export type PropertyCountAggregateOutputType = {
   volumeCubicMeters: number
   roomCount: number
   bedroomCount: number
+  bathroomCount: number
+  floorCount: number
+  roofType: number
+  externalStorageAreaSqm: number
+  amenities: number
+  parkingOptions: number
+  parkingSpacePriceCents: number
   constructionYear: number
   layout: number
   kadasterSourcePayload: number
@@ -144,6 +169,10 @@ export type PropertyAvgAggregateInputType = {
   volumeCubicMeters?: true
   roomCount?: true
   bedroomCount?: true
+  bathroomCount?: true
+  floorCount?: true
+  externalStorageAreaSqm?: true
+  parkingSpacePriceCents?: true
   constructionYear?: true
 }
 
@@ -156,6 +185,10 @@ export type PropertySumAggregateInputType = {
   volumeCubicMeters?: true
   roomCount?: true
   bedroomCount?: true
+  bathroomCount?: true
+  floorCount?: true
+  externalStorageAreaSqm?: true
+  parkingSpacePriceCents?: true
   constructionYear?: true
 }
 
@@ -180,6 +213,11 @@ export type PropertyMinAggregateInputType = {
   volumeCubicMeters?: true
   roomCount?: true
   bedroomCount?: true
+  bathroomCount?: true
+  floorCount?: true
+  roofType?: true
+  externalStorageAreaSqm?: true
+  parkingSpacePriceCents?: true
   constructionYear?: true
   kadasterRetrievedAt?: true
   createdAt?: true
@@ -207,6 +245,11 @@ export type PropertyMaxAggregateInputType = {
   volumeCubicMeters?: true
   roomCount?: true
   bedroomCount?: true
+  bathroomCount?: true
+  floorCount?: true
+  roofType?: true
+  externalStorageAreaSqm?: true
+  parkingSpacePriceCents?: true
   constructionYear?: true
   kadasterRetrievedAt?: true
   createdAt?: true
@@ -234,6 +277,13 @@ export type PropertyCountAggregateInputType = {
   volumeCubicMeters?: true
   roomCount?: true
   bedroomCount?: true
+  bathroomCount?: true
+  floorCount?: true
+  roofType?: true
+  externalStorageAreaSqm?: true
+  amenities?: true
+  parkingOptions?: true
+  parkingSpacePriceCents?: true
   constructionYear?: true
   layout?: true
   kadasterSourcePayload?: true
@@ -350,6 +400,13 @@ export type PropertyGroupByOutputType = {
   volumeCubicMeters: runtime.Decimal | null
   roomCount: number | null
   bedroomCount: number | null
+  bathroomCount: number | null
+  floorCount: number | null
+  roofType: $Enums.RoofType | null
+  externalStorageAreaSqm: runtime.Decimal | null
+  amenities: $Enums.PropertyAmenity[]
+  parkingOptions: $Enums.ParkingOption[]
+  parkingSpacePriceCents: bigint | null
   constructionYear: number | null
   layout: runtime.JsonValue | null
   kadasterSourcePayload: runtime.JsonValue | null
@@ -402,6 +459,13 @@ export type PropertyWhereInput = {
   volumeCubicMeters?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: Prisma.IntNullableFilter<"Property"> | number | null
   bedroomCount?: Prisma.IntNullableFilter<"Property"> | number | null
+  bathroomCount?: Prisma.IntNullableFilter<"Property"> | number | null
+  floorCount?: Prisma.IntNullableFilter<"Property"> | number | null
+  roofType?: Prisma.EnumRoofTypeNullableFilter<"Property"> | $Enums.RoofType | null
+  externalStorageAreaSqm?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.EnumPropertyAmenityNullableListFilter<"Property">
+  parkingOptions?: Prisma.EnumParkingOptionNullableListFilter<"Property">
+  parkingSpacePriceCents?: Prisma.BigIntNullableFilter<"Property"> | bigint | number | null
   constructionYear?: Prisma.IntNullableFilter<"Property"> | number | null
   layout?: Prisma.JsonNullableFilter<"Property">
   kadasterSourcePayload?: Prisma.JsonNullableFilter<"Property">
@@ -434,6 +498,13 @@ export type PropertyOrderByWithRelationInput = {
   volumeCubicMeters?: Prisma.SortOrderInput | Prisma.SortOrder
   roomCount?: Prisma.SortOrderInput | Prisma.SortOrder
   bedroomCount?: Prisma.SortOrderInput | Prisma.SortOrder
+  bathroomCount?: Prisma.SortOrderInput | Prisma.SortOrder
+  floorCount?: Prisma.SortOrderInput | Prisma.SortOrder
+  roofType?: Prisma.SortOrderInput | Prisma.SortOrder
+  externalStorageAreaSqm?: Prisma.SortOrderInput | Prisma.SortOrder
+  amenities?: Prisma.SortOrder
+  parkingOptions?: Prisma.SortOrder
+  parkingSpacePriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
   constructionYear?: Prisma.SortOrderInput | Prisma.SortOrder
   layout?: Prisma.SortOrderInput | Prisma.SortOrder
   kadasterSourcePayload?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -469,6 +540,13 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   volumeCubicMeters?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: Prisma.IntNullableFilter<"Property"> | number | null
   bedroomCount?: Prisma.IntNullableFilter<"Property"> | number | null
+  bathroomCount?: Prisma.IntNullableFilter<"Property"> | number | null
+  floorCount?: Prisma.IntNullableFilter<"Property"> | number | null
+  roofType?: Prisma.EnumRoofTypeNullableFilter<"Property"> | $Enums.RoofType | null
+  externalStorageAreaSqm?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.EnumPropertyAmenityNullableListFilter<"Property">
+  parkingOptions?: Prisma.EnumParkingOptionNullableListFilter<"Property">
+  parkingSpacePriceCents?: Prisma.BigIntNullableFilter<"Property"> | bigint | number | null
   constructionYear?: Prisma.IntNullableFilter<"Property"> | number | null
   layout?: Prisma.JsonNullableFilter<"Property">
   kadasterSourcePayload?: Prisma.JsonNullableFilter<"Property">
@@ -501,6 +579,13 @@ export type PropertyOrderByWithAggregationInput = {
   volumeCubicMeters?: Prisma.SortOrderInput | Prisma.SortOrder
   roomCount?: Prisma.SortOrderInput | Prisma.SortOrder
   bedroomCount?: Prisma.SortOrderInput | Prisma.SortOrder
+  bathroomCount?: Prisma.SortOrderInput | Prisma.SortOrder
+  floorCount?: Prisma.SortOrderInput | Prisma.SortOrder
+  roofType?: Prisma.SortOrderInput | Prisma.SortOrder
+  externalStorageAreaSqm?: Prisma.SortOrderInput | Prisma.SortOrder
+  amenities?: Prisma.SortOrder
+  parkingOptions?: Prisma.SortOrder
+  parkingSpacePriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
   constructionYear?: Prisma.SortOrderInput | Prisma.SortOrder
   layout?: Prisma.SortOrderInput | Prisma.SortOrder
   kadasterSourcePayload?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -538,6 +623,13 @@ export type PropertyScalarWhereWithAggregatesInput = {
   volumeCubicMeters?: Prisma.DecimalNullableWithAggregatesFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
   bedroomCount?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
+  bathroomCount?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
+  floorCount?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
+  roofType?: Prisma.EnumRoofTypeNullableWithAggregatesFilter<"Property"> | $Enums.RoofType | null
+  externalStorageAreaSqm?: Prisma.DecimalNullableWithAggregatesFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.EnumPropertyAmenityNullableListFilter<"Property">
+  parkingOptions?: Prisma.EnumParkingOptionNullableListFilter<"Property">
+  parkingSpacePriceCents?: Prisma.BigIntNullableWithAggregatesFilter<"Property"> | bigint | number | null
   constructionYear?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
   layout?: Prisma.JsonNullableWithAggregatesFilter<"Property">
   kadasterSourcePayload?: Prisma.JsonNullableWithAggregatesFilter<"Property">
@@ -566,6 +658,13 @@ export type PropertyCreateInput = {
   volumeCubicMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: number | null
   bedroomCount?: number | null
+  bathroomCount?: number | null
+  floorCount?: number | null
+  roofType?: $Enums.RoofType | null
+  externalStorageAreaSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyCreateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -598,6 +697,13 @@ export type PropertyUncheckedCreateInput = {
   volumeCubicMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: number | null
   bedroomCount?: number | null
+  bathroomCount?: number | null
+  floorCount?: number | null
+  roofType?: $Enums.RoofType | null
+  externalStorageAreaSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyCreateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -628,6 +734,13 @@ export type PropertyUpdateInput = {
   volumeCubicMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bedroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floorCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roofType?: Prisma.NullableEnumRoofTypeFieldUpdateOperationsInput | $Enums.RoofType | null
+  externalStorageAreaSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyUpdateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -660,6 +773,13 @@ export type PropertyUncheckedUpdateInput = {
   volumeCubicMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bedroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floorCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roofType?: Prisma.NullableEnumRoofTypeFieldUpdateOperationsInput | $Enums.RoofType | null
+  externalStorageAreaSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyUpdateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -691,6 +811,13 @@ export type PropertyCreateManyInput = {
   volumeCubicMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: number | null
   bedroomCount?: number | null
+  bathroomCount?: number | null
+  floorCount?: number | null
+  roofType?: $Enums.RoofType | null
+  externalStorageAreaSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyCreateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -719,6 +846,13 @@ export type PropertyUpdateManyMutationInput = {
   volumeCubicMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bedroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floorCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roofType?: Prisma.NullableEnumRoofTypeFieldUpdateOperationsInput | $Enums.RoofType | null
+  externalStorageAreaSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyUpdateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -748,6 +882,13 @@ export type PropertyUncheckedUpdateManyInput = {
   volumeCubicMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bedroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floorCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roofType?: Prisma.NullableEnumRoofTypeFieldUpdateOperationsInput | $Enums.RoofType | null
+  externalStorageAreaSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyUpdateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -764,6 +905,22 @@ export type PropertyListRelationFilter = {
 
 export type PropertyOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type EnumPropertyAmenityNullableListFilter<$PrismaModel = never> = {
+  equals?: $Enums.PropertyAmenity[] | Prisma.ListEnumPropertyAmenityFieldRefInput<$PrismaModel> | null
+  has?: $Enums.PropertyAmenity | Prisma.EnumPropertyAmenityFieldRefInput<$PrismaModel> | null
+  hasEvery?: $Enums.PropertyAmenity[] | Prisma.ListEnumPropertyAmenityFieldRefInput<$PrismaModel>
+  hasSome?: $Enums.PropertyAmenity[] | Prisma.ListEnumPropertyAmenityFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
+export type EnumParkingOptionNullableListFilter<$PrismaModel = never> = {
+  equals?: $Enums.ParkingOption[] | Prisma.ListEnumParkingOptionFieldRefInput<$PrismaModel> | null
+  has?: $Enums.ParkingOption | Prisma.EnumParkingOptionFieldRefInput<$PrismaModel> | null
+  hasEvery?: $Enums.ParkingOption[] | Prisma.ListEnumParkingOptionFieldRefInput<$PrismaModel>
+  hasSome?: $Enums.ParkingOption[] | Prisma.ListEnumParkingOptionFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type PropertyCountOrderByAggregateInput = {
@@ -787,6 +944,13 @@ export type PropertyCountOrderByAggregateInput = {
   volumeCubicMeters?: Prisma.SortOrder
   roomCount?: Prisma.SortOrder
   bedroomCount?: Prisma.SortOrder
+  bathroomCount?: Prisma.SortOrder
+  floorCount?: Prisma.SortOrder
+  roofType?: Prisma.SortOrder
+  externalStorageAreaSqm?: Prisma.SortOrder
+  amenities?: Prisma.SortOrder
+  parkingOptions?: Prisma.SortOrder
+  parkingSpacePriceCents?: Prisma.SortOrder
   constructionYear?: Prisma.SortOrder
   layout?: Prisma.SortOrder
   kadasterSourcePayload?: Prisma.SortOrder
@@ -804,6 +968,10 @@ export type PropertyAvgOrderByAggregateInput = {
   volumeCubicMeters?: Prisma.SortOrder
   roomCount?: Prisma.SortOrder
   bedroomCount?: Prisma.SortOrder
+  bathroomCount?: Prisma.SortOrder
+  floorCount?: Prisma.SortOrder
+  externalStorageAreaSqm?: Prisma.SortOrder
+  parkingSpacePriceCents?: Prisma.SortOrder
   constructionYear?: Prisma.SortOrder
 }
 
@@ -828,6 +996,11 @@ export type PropertyMaxOrderByAggregateInput = {
   volumeCubicMeters?: Prisma.SortOrder
   roomCount?: Prisma.SortOrder
   bedroomCount?: Prisma.SortOrder
+  bathroomCount?: Prisma.SortOrder
+  floorCount?: Prisma.SortOrder
+  roofType?: Prisma.SortOrder
+  externalStorageAreaSqm?: Prisma.SortOrder
+  parkingSpacePriceCents?: Prisma.SortOrder
   constructionYear?: Prisma.SortOrder
   kadasterRetrievedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -855,6 +1028,11 @@ export type PropertyMinOrderByAggregateInput = {
   volumeCubicMeters?: Prisma.SortOrder
   roomCount?: Prisma.SortOrder
   bedroomCount?: Prisma.SortOrder
+  bathroomCount?: Prisma.SortOrder
+  floorCount?: Prisma.SortOrder
+  roofType?: Prisma.SortOrder
+  externalStorageAreaSqm?: Prisma.SortOrder
+  parkingSpacePriceCents?: Prisma.SortOrder
   constructionYear?: Prisma.SortOrder
   kadasterRetrievedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -870,6 +1048,10 @@ export type PropertySumOrderByAggregateInput = {
   volumeCubicMeters?: Prisma.SortOrder
   roomCount?: Prisma.SortOrder
   bedroomCount?: Prisma.SortOrder
+  bathroomCount?: Prisma.SortOrder
+  floorCount?: Prisma.SortOrder
+  externalStorageAreaSqm?: Prisma.SortOrder
+  parkingSpacePriceCents?: Prisma.SortOrder
   constructionYear?: Prisma.SortOrder
 }
 
@@ -920,6 +1102,14 @@ export type PropertyUncheckedUpdateManyWithoutOwnerNestedInput = {
   deleteMany?: Prisma.PropertyScalarWhereInput | Prisma.PropertyScalarWhereInput[]
 }
 
+export type PropertyCreateamenitiesInput = {
+  set: $Enums.PropertyAmenity[]
+}
+
+export type PropertyCreateparkingOptionsInput = {
+  set: $Enums.ParkingOption[]
+}
+
 export type NullableDecimalFieldUpdateOperationsInput = {
   set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -938,6 +1128,28 @@ export type NullableIntFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type NullableEnumRoofTypeFieldUpdateOperationsInput = {
+  set?: $Enums.RoofType | null
+}
+
+export type PropertyUpdateamenitiesInput = {
+  set?: $Enums.PropertyAmenity[]
+  push?: $Enums.PropertyAmenity | $Enums.PropertyAmenity[]
+}
+
+export type PropertyUpdateparkingOptionsInput = {
+  set?: $Enums.ParkingOption[]
+  push?: $Enums.ParkingOption | $Enums.ParkingOption[]
+}
+
+export type NullableBigIntFieldUpdateOperationsInput = {
+  set?: bigint | number | null
+  increment?: bigint | number
+  decrement?: bigint | number
+  multiply?: bigint | number
+  divide?: bigint | number
 }
 
 export type PropertyCreateNestedOneWithoutEnergyLabelsInput = {
@@ -988,6 +1200,13 @@ export type PropertyCreateWithoutOwnerInput = {
   volumeCubicMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: number | null
   bedroomCount?: number | null
+  bathroomCount?: number | null
+  floorCount?: number | null
+  roofType?: $Enums.RoofType | null
+  externalStorageAreaSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyCreateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1018,6 +1237,13 @@ export type PropertyUncheckedCreateWithoutOwnerInput = {
   volumeCubicMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: number | null
   bedroomCount?: number | null
+  bathroomCount?: number | null
+  floorCount?: number | null
+  roofType?: $Enums.RoofType | null
+  externalStorageAreaSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyCreateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1078,6 +1304,13 @@ export type PropertyScalarWhereInput = {
   volumeCubicMeters?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: Prisma.IntNullableFilter<"Property"> | number | null
   bedroomCount?: Prisma.IntNullableFilter<"Property"> | number | null
+  bathroomCount?: Prisma.IntNullableFilter<"Property"> | number | null
+  floorCount?: Prisma.IntNullableFilter<"Property"> | number | null
+  roofType?: Prisma.EnumRoofTypeNullableFilter<"Property"> | $Enums.RoofType | null
+  externalStorageAreaSqm?: Prisma.DecimalNullableFilter<"Property"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.EnumPropertyAmenityNullableListFilter<"Property">
+  parkingOptions?: Prisma.EnumParkingOptionNullableListFilter<"Property">
+  parkingSpacePriceCents?: Prisma.BigIntNullableFilter<"Property"> | bigint | number | null
   constructionYear?: Prisma.IntNullableFilter<"Property"> | number | null
   layout?: Prisma.JsonNullableFilter<"Property">
   kadasterSourcePayload?: Prisma.JsonNullableFilter<"Property">
@@ -1106,6 +1339,13 @@ export type PropertyCreateWithoutEnergyLabelsInput = {
   volumeCubicMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: number | null
   bedroomCount?: number | null
+  bathroomCount?: number | null
+  floorCount?: number | null
+  roofType?: $Enums.RoofType | null
+  externalStorageAreaSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyCreateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1137,6 +1377,13 @@ export type PropertyUncheckedCreateWithoutEnergyLabelsInput = {
   volumeCubicMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: number | null
   bedroomCount?: number | null
+  bathroomCount?: number | null
+  floorCount?: number | null
+  roofType?: $Enums.RoofType | null
+  externalStorageAreaSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyCreateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1182,6 +1429,13 @@ export type PropertyUpdateWithoutEnergyLabelsInput = {
   volumeCubicMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bedroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floorCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roofType?: Prisma.NullableEnumRoofTypeFieldUpdateOperationsInput | $Enums.RoofType | null
+  externalStorageAreaSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyUpdateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1213,6 +1467,13 @@ export type PropertyUncheckedUpdateWithoutEnergyLabelsInput = {
   volumeCubicMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bedroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floorCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roofType?: Prisma.NullableEnumRoofTypeFieldUpdateOperationsInput | $Enums.RoofType | null
+  externalStorageAreaSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyUpdateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1242,6 +1503,13 @@ export type PropertyCreateWithoutListingsInput = {
   volumeCubicMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: number | null
   bedroomCount?: number | null
+  bathroomCount?: number | null
+  floorCount?: number | null
+  roofType?: $Enums.RoofType | null
+  externalStorageAreaSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyCreateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1273,6 +1541,13 @@ export type PropertyUncheckedCreateWithoutListingsInput = {
   volumeCubicMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: number | null
   bedroomCount?: number | null
+  bathroomCount?: number | null
+  floorCount?: number | null
+  roofType?: $Enums.RoofType | null
+  externalStorageAreaSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyCreateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1318,6 +1593,13 @@ export type PropertyUpdateWithoutListingsInput = {
   volumeCubicMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bedroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floorCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roofType?: Prisma.NullableEnumRoofTypeFieldUpdateOperationsInput | $Enums.RoofType | null
+  externalStorageAreaSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyUpdateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1349,6 +1631,13 @@ export type PropertyUncheckedUpdateWithoutListingsInput = {
   volumeCubicMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bedroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floorCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roofType?: Prisma.NullableEnumRoofTypeFieldUpdateOperationsInput | $Enums.RoofType | null
+  externalStorageAreaSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyUpdateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1378,6 +1667,13 @@ export type PropertyCreateManyOwnerInput = {
   volumeCubicMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: number | null
   bedroomCount?: number | null
+  bathroomCount?: number | null
+  floorCount?: number | null
+  roofType?: $Enums.RoofType | null
+  externalStorageAreaSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyCreateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1406,6 +1702,13 @@ export type PropertyUpdateWithoutOwnerInput = {
   volumeCubicMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bedroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floorCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roofType?: Prisma.NullableEnumRoofTypeFieldUpdateOperationsInput | $Enums.RoofType | null
+  externalStorageAreaSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyUpdateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1436,6 +1739,13 @@ export type PropertyUncheckedUpdateWithoutOwnerInput = {
   volumeCubicMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bedroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floorCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roofType?: Prisma.NullableEnumRoofTypeFieldUpdateOperationsInput | $Enums.RoofType | null
+  externalStorageAreaSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyUpdateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1466,6 +1776,13 @@ export type PropertyUncheckedUpdateManyWithoutOwnerInput = {
   volumeCubicMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   roomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bedroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  floorCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roofType?: Prisma.NullableEnumRoofTypeFieldUpdateOperationsInput | $Enums.RoofType | null
+  externalStorageAreaSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amenities?: Prisma.PropertyUpdateamenitiesInput | $Enums.PropertyAmenity[]
+  parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
+  parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1535,6 +1852,13 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   volumeCubicMeters?: boolean
   roomCount?: boolean
   bedroomCount?: boolean
+  bathroomCount?: boolean
+  floorCount?: boolean
+  roofType?: boolean
+  externalStorageAreaSqm?: boolean
+  amenities?: boolean
+  parkingOptions?: boolean
+  parkingSpacePriceCents?: boolean
   constructionYear?: boolean
   layout?: boolean
   kadasterSourcePayload?: boolean
@@ -1568,6 +1892,13 @@ export type PropertySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   volumeCubicMeters?: boolean
   roomCount?: boolean
   bedroomCount?: boolean
+  bathroomCount?: boolean
+  floorCount?: boolean
+  roofType?: boolean
+  externalStorageAreaSqm?: boolean
+  amenities?: boolean
+  parkingOptions?: boolean
+  parkingSpacePriceCents?: boolean
   constructionYear?: boolean
   layout?: boolean
   kadasterSourcePayload?: boolean
@@ -1598,6 +1929,13 @@ export type PropertySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   volumeCubicMeters?: boolean
   roomCount?: boolean
   bedroomCount?: boolean
+  bathroomCount?: boolean
+  floorCount?: boolean
+  roofType?: boolean
+  externalStorageAreaSqm?: boolean
+  amenities?: boolean
+  parkingOptions?: boolean
+  parkingSpacePriceCents?: boolean
   constructionYear?: boolean
   layout?: boolean
   kadasterSourcePayload?: boolean
@@ -1628,6 +1966,13 @@ export type PropertySelectScalar = {
   volumeCubicMeters?: boolean
   roomCount?: boolean
   bedroomCount?: boolean
+  bathroomCount?: boolean
+  floorCount?: boolean
+  roofType?: boolean
+  externalStorageAreaSqm?: boolean
+  amenities?: boolean
+  parkingOptions?: boolean
+  parkingSpacePriceCents?: boolean
   constructionYear?: boolean
   layout?: boolean
   kadasterSourcePayload?: boolean
@@ -1636,7 +1981,7 @@ export type PropertySelectScalar = {
   updatedAt?: boolean
 }
 
-export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "bagAddressId" | "bagBuildingId" | "cadastralParcelId" | "postcode" | "houseNumber" | "houseNumberAddition" | "street" | "city" | "municipality" | "province" | "latitude" | "longitude" | "propertyType" | "livingAreaSqm" | "officialLandAreaSqm" | "volumeCubicMeters" | "roomCount" | "bedroomCount" | "constructionYear" | "layout" | "kadasterSourcePayload" | "kadasterRetrievedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
+export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "bagAddressId" | "bagBuildingId" | "cadastralParcelId" | "postcode" | "houseNumber" | "houseNumberAddition" | "street" | "city" | "municipality" | "province" | "latitude" | "longitude" | "propertyType" | "livingAreaSqm" | "officialLandAreaSqm" | "volumeCubicMeters" | "roomCount" | "bedroomCount" | "bathroomCount" | "floorCount" | "roofType" | "externalStorageAreaSqm" | "amenities" | "parkingOptions" | "parkingSpacePriceCents" | "constructionYear" | "layout" | "kadasterSourcePayload" | "kadasterRetrievedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
 export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   energyLabels?: boolean | Prisma.Property$energyLabelsArgs<ExtArgs>
@@ -1678,6 +2023,13 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     volumeCubicMeters: runtime.Decimal | null
     roomCount: number | null
     bedroomCount: number | null
+    bathroomCount: number | null
+    floorCount: number | null
+    roofType: $Enums.RoofType | null
+    externalStorageAreaSqm: runtime.Decimal | null
+    amenities: $Enums.PropertyAmenity[]
+    parkingOptions: $Enums.ParkingOption[]
+    parkingSpacePriceCents: bigint | null
     constructionYear: number | null
     layout: runtime.JsonValue | null
     kadasterSourcePayload: runtime.JsonValue | null
@@ -2130,6 +2482,13 @@ export interface PropertyFieldRefs {
   readonly volumeCubicMeters: Prisma.FieldRef<"Property", 'Decimal'>
   readonly roomCount: Prisma.FieldRef<"Property", 'Int'>
   readonly bedroomCount: Prisma.FieldRef<"Property", 'Int'>
+  readonly bathroomCount: Prisma.FieldRef<"Property", 'Int'>
+  readonly floorCount: Prisma.FieldRef<"Property", 'Int'>
+  readonly roofType: Prisma.FieldRef<"Property", 'RoofType'>
+  readonly externalStorageAreaSqm: Prisma.FieldRef<"Property", 'Decimal'>
+  readonly amenities: Prisma.FieldRef<"Property", 'PropertyAmenity[]'>
+  readonly parkingOptions: Prisma.FieldRef<"Property", 'ParkingOption[]'>
+  readonly parkingSpacePriceCents: Prisma.FieldRef<"Property", 'BigInt'>
   readonly constructionYear: Prisma.FieldRef<"Property", 'Int'>
   readonly layout: Prisma.FieldRef<"Property", 'Json'>
   readonly kadasterSourcePayload: Prisma.FieldRef<"Property", 'Json'>

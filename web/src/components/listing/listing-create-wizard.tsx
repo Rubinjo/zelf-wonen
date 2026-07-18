@@ -17,6 +17,11 @@ import {
     Search,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import {
+    parkingOptions,
+    propertyAmenityOptions,
+    roofTypeOptions,
+} from "@/lib/property-options";
 import type { PropertyData } from "@/lib/schemas/property";
 
 type DraftAddress = {
@@ -53,6 +58,18 @@ const dutchDateFormatter = new Intl.DateTimeFormat("nl-NL", {
 
 function formatDate(value: string) {
     return dutchDateFormatter.format(new Date(value));
+}
+
+function formNumber(form: FormData, name: string) {
+    const value = String(form.get(name) ?? "").trim();
+    return value ? Number(value) : null;
+}
+
+function formEurosToCents(form: FormData, name: string) {
+    const value = String(form.get(name) ?? "").trim();
+    return value
+        ? String(Math.round(Number(value.replace(",", ".")) * 100))
+        : null;
 }
 
 async function parseResponse(response: Response) {
@@ -110,6 +127,7 @@ export function ListingCreateWizard() {
             let listingId = createdListingId;
             if (!listingId) {
                 const number = Number(address.houseNumber);
+                const selectedParkingOptions = form.getAll("parkingOptions");
                 const input = {
                     purpose: form.get("purpose"),
                     propertyType: form.get("propertyType"),
@@ -132,6 +150,20 @@ export function ListingCreateWizard() {
                     livingAreaSqm: Number(form.get("livingAreaSqm")) || null,
                     roomCount: Number(form.get("roomCount")) || null,
                     bedroomCount: Number(form.get("bedroomCount")) || null,
+                    bathroomCount: formNumber(form, "bathroomCount"),
+                    floorCount: formNumber(form, "floorCount"),
+                    roofType: form.get("roofType") || null,
+                    externalStorageAreaSqm: formNumber(
+                        form,
+                        "externalStorageAreaSqm",
+                    ),
+                    amenities: form.getAll("amenities"),
+                    parkingOptions: selectedParkingOptions,
+                    parkingSpacePriceCents: selectedParkingOptions.includes(
+                        "SPACE_FOR_SALE",
+                    )
+                        ? formEurosToCents(form, "parkingSpacePrice")
+                        : null,
                 };
                 const listing = (await parseResponse(
                     await fetch("/api/listings", {
@@ -373,9 +405,7 @@ export function ListingCreateWizard() {
                                 min="1"
                                 step="0.1"
                                 required
-                                defaultValue={
-                                    propertyData?.livingAreaSqm ?? ""
-                                }
+                                defaultValue={propertyData?.livingAreaSqm ?? ""}
                                 className="input"
                             />
                         </Field>
@@ -422,6 +452,68 @@ export function ListingCreateWizard() {
                                 className="input"
                             />
                         </Field>
+                        <Field label="Aantal badkamers">
+                            <input
+                                name="bathroomCount"
+                                type="number"
+                                min="0"
+                                max="100"
+                                className="input"
+                            />
+                        </Field>
+                        <Field label="Aantal woonlagen">
+                            <input
+                                name="floorCount"
+                                type="number"
+                                min="1"
+                                max="100"
+                                className="input"
+                            />
+                        </Field>
+                        <Field label="Daktype">
+                            <select name="roofType" className="input">
+                                <option value="">Niet opgegeven</option>
+                                {roofTypeOptions.map((option) => (
+                                    <option
+                                        key={option.value}
+                                        value={option.value}
+                                    >
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </Field>
+                        <Field label="Externe bergruimte (m²)">
+                            <input
+                                name="externalStorageAreaSqm"
+                                type="number"
+                                min="0"
+                                max="10000"
+                                step="0.1"
+                                className="input"
+                            />
+                        </Field>
+                    </div>
+                    <PropertyOptionsSection
+                        title="Voorzieningen"
+                        name="amenities"
+                        options={propertyAmenityOptions}
+                    />
+                    <PropertyOptionsSection
+                        title="Parkeren"
+                        name="parkingOptions"
+                        options={parkingOptions}
+                    />
+                    <div className="mt-5 max-w-sm">
+                        <Field label="Prijs parkeerplaats apart te koop (€)">
+                            <input
+                                name="parkingSpacePrice"
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                className="input"
+                            />
+                        </Field>
                     </div>
                     <EnergyLabelSection
                         energy={propertyData?.energy ?? null}
@@ -457,6 +549,38 @@ export function ListingCreateWizard() {
                 </form>
             )}
         </div>
+    );
+}
+
+function PropertyOptionsSection({
+    title,
+    name,
+    options,
+}: {
+    title: string;
+    name: string;
+    options: ReadonlyArray<{ value: string; label: string }>;
+}) {
+    return (
+        <fieldset className="mt-8 border-t border-line pt-7">
+            <legend className="font-semibold">{title}</legend>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {options.map((option) => (
+                    <label
+                        key={option.value}
+                        className="flex min-h-11 cursor-pointer items-center gap-3 border border-line px-4 py-2.5 text-sm"
+                    >
+                        <input
+                            type="checkbox"
+                            name={name}
+                            value={option.value}
+                            className="size-4 accent-brand"
+                        />
+                        {option.label}
+                    </label>
+                ))}
+            </div>
+        </fieldset>
     );
 }
 
@@ -528,7 +652,10 @@ function EnergyLabelSection({
                         ) : null}
                         {!energy.validUntil ? (
                             <p className="mt-3 inline-flex items-start gap-2 text-sm leading-6 text-amber-900">
-                                <CircleAlert className="mt-1 shrink-0" size={15} />
+                                <CircleAlert
+                                    className="mt-1 shrink-0"
+                                    size={15}
+                                />
                                 De geldigheidsdatum is niet beschikbaar.
                                 Controleer het label voordat je publiceert.
                             </p>
@@ -589,17 +716,23 @@ function EnergyLabelSection({
                 </h3>
                 <ol className="mt-3 grid gap-3 text-sm leading-6 text-muted sm:grid-cols-3">
                     <li>
-                        <span className="font-semibold text-foreground">1.</span>{" "}
+                        <span className="font-semibold text-foreground">
+                            1.
+                        </span>{" "}
                         Vraag offertes aan bij een gecertificeerd
                         energieadviseur.
                     </li>
                     <li>
-                        <span className="font-semibold text-foreground">2.</span>{" "}
+                        <span className="font-semibold text-foreground">
+                            2.
+                        </span>{" "}
                         Plan de woningopname en leg bouwtekeningen en
                         verduurzamingsfacturen klaar.
                     </li>
                     <li>
-                        <span className="font-semibold text-foreground">3.</span>{" "}
+                        <span className="font-semibold text-foreground">
+                            3.
+                        </span>{" "}
                         De adviseur registreert het label; daarna kun je het via
                         MijnOverheid downloaden.
                     </li>

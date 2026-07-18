@@ -973,14 +973,6 @@ export type EnumListingStatusFieldUpdateOperationsInput = {
   set?: $Enums.ListingStatus
 }
 
-export type NullableBigIntFieldUpdateOperationsInput = {
-  set?: bigint | number | null
-  increment?: bigint | number
-  decrement?: bigint | number
-  multiply?: bigint | number
-  divide?: bigint | number
-}
-
 export type ListingCreateNestedOneWithoutMediaInput = {
   create?: Prisma.XOR<Prisma.ListingCreateWithoutMediaInput, Prisma.ListingUncheckedCreateWithoutMediaInput>
   connectOrCreate?: Prisma.ListingCreateOrConnectWithoutMediaInput

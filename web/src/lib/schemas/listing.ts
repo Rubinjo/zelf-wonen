@@ -19,6 +19,37 @@ export const propertyTypeSchema = z.enum([
     "OTHER",
 ]);
 
+export const roofTypeSchema = z.enum([
+    "FLAT",
+    "GABLE",
+    "HIP",
+    "MANSARD",
+    "SHED",
+    "COMBINATION",
+    "OTHER",
+]);
+
+export const propertyAmenitySchema = z.enum([
+    "SOLAR_PANELS",
+    "AIR_CONDITIONING",
+    "FIBER_OPTIC",
+    "HEAT_PUMP",
+    "EV_CHARGER",
+    "FIREPLACE",
+    "MECHANICAL_VENTILATION",
+    "ALARM_SYSTEM",
+]);
+
+export const parkingOptionSchema = z.enum([
+    "ON_PROPERTY",
+    "FREE_STREET",
+    "PAID_STREET",
+    "PARKING_PERMIT",
+    "PUBLIC_GARAGE",
+    "PRIVATE_GARAGE",
+    "SPACE_FOR_SALE",
+]);
+
 export const listingAttributesSchema = z.object({
     condition: z.enum(["POOR", "FAIR", "GOOD", "EXCELLENT"]).optional(),
     outdoorSpace: z.boolean().optional(),
@@ -61,6 +92,24 @@ export const createListingSchema = z.object({
     livingAreaSqm: z.number().positive().max(10_000).nullable().optional(),
     roomCount: z.number().int().positive().max(100).nullable().optional(),
     bedroomCount: z.number().int().nonnegative().max(100).nullable().optional(),
+    bathroomCount: z
+        .number()
+        .int()
+        .nonnegative()
+        .max(100)
+        .nullable()
+        .optional(),
+    floorCount: z.number().int().positive().max(100).nullable().optional(),
+    roofType: roofTypeSchema.nullable().optional(),
+    externalStorageAreaSqm: z
+        .number()
+        .nonnegative()
+        .max(10_000)
+        .nullable()
+        .optional(),
+    amenities: z.array(propertyAmenitySchema).max(20).optional(),
+    parkingOptions: z.array(parkingOptionSchema).max(20).optional(),
+    parkingSpacePriceCents: centsSchema.nullable().optional(),
 });
 
 export const updateListingSchema = z
@@ -83,6 +132,24 @@ export const updateListingSchema = z
             .max(100)
             .nullable()
             .optional(),
+        bathroomCount: z
+            .number()
+            .int()
+            .nonnegative()
+            .max(100)
+            .nullable()
+            .optional(),
+        floorCount: z.number().int().positive().max(100).nullable().optional(),
+        roofType: roofTypeSchema.nullable().optional(),
+        externalStorageAreaSqm: z
+            .number()
+            .nonnegative()
+            .max(10_000)
+            .nullable()
+            .optional(),
+        amenities: z.array(propertyAmenitySchema).max(20).optional(),
+        parkingOptions: z.array(parkingOptionSchema).max(20).optional(),
+        parkingSpacePriceCents: centsSchema.nullable().optional(),
         constructionYear: z
             .number()
             .int()

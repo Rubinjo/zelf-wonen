@@ -105,7 +105,10 @@ export async function createOwnerListing(
             addition: input.houseNumberAddition ?? undefined,
         })
         .catch((error) => {
-            console.error("Energielabel.nl lookup during creation failed", error);
+            console.error(
+                "Energielabel.nl lookup during creation failed",
+                error,
+            );
             return null;
         });
     const listingId = randomUUID();
@@ -121,29 +124,28 @@ export async function createOwnerListing(
             },
             orderBy: { registeredAt: "desc" },
         });
-                const energyData = liveEnergy
-                        ? {
-                                    registrationNumber: null,
-                                    labelClass:
-                                            storedEnergyLabelClasses[liveEnergy.labelClass],
-                                    primaryFossilEnergyKwhSqmYear: null,
-                                    registeredAt: liveEnergy.registeredAt,
-                                    validUntil: liveEnergy.validUntil,
-                                    source: "ENERGIELABEL_NL",
-                                    retrievedAt: new Date(),
-                            }
-                        : sourceEnergy
-                            ? {
-                                        registrationNumber: sourceEnergy.registrationNumber,
-                                        labelClass: sourceEnergy.labelClass,
-                                        primaryFossilEnergyKwhSqmYear:
-                                                sourceEnergy.primaryFossilEnergyKwhSqmYear,
-                                        registeredAt: sourceEnergy.registeredAt,
-                                        validUntil: sourceEnergy.validUntil,
-                                        source: sourceEnergy.source,
-                                        retrievedAt: sourceEnergy.retrievedAt,
-                                }
-                            : null;
+        const energyData = liveEnergy
+            ? {
+                  registrationNumber: null,
+                  labelClass: storedEnergyLabelClasses[liveEnergy.labelClass],
+                  primaryFossilEnergyKwhSqmYear: null,
+                  registeredAt: liveEnergy.registeredAt,
+                  validUntil: liveEnergy.validUntil,
+                  source: "ENERGIELABEL_NL",
+                  retrievedAt: new Date(),
+              }
+            : sourceEnergy
+              ? {
+                    registrationNumber: sourceEnergy.registrationNumber,
+                    labelClass: sourceEnergy.labelClass,
+                    primaryFossilEnergyKwhSqmYear:
+                        sourceEnergy.primaryFossilEnergyKwhSqmYear,
+                    registeredAt: sourceEnergy.registeredAt,
+                    validUntil: sourceEnergy.validUntil,
+                    source: sourceEnergy.source,
+                    retrievedAt: sourceEnergy.retrievedAt,
+                }
+              : null;
 
         // Property facts are snapshotted per listing. Reusing a row would let a
         // later draft silently change facts already shown on a live listing.
@@ -168,6 +170,18 @@ export async function createOwnerListing(
                 livingAreaSqm: input.livingAreaSqm,
                 roomCount: input.roomCount,
                 bedroomCount: input.bedroomCount,
+                bathroomCount: input.bathroomCount,
+                floorCount: input.floorCount,
+                roofType: input.roofType,
+                externalStorageAreaSqm: input.externalStorageAreaSqm,
+                amenities: input.amenities,
+                parkingOptions: input.parkingOptions,
+                parkingSpacePriceCents:
+                    !input.parkingOptions?.includes("SPACE_FOR_SALE") ||
+                    input.parkingSpacePriceCents === undefined ||
+                    input.parkingSpacePriceCents === null
+                        ? null
+                        : BigInt(input.parkingSpacePriceCents),
                 energyLabels: energyData
                     ? {
                           create: energyData,
@@ -243,6 +257,21 @@ export async function updateOwnerListing(
                 officialLandAreaSqm: input.officialLandAreaSqm,
                 roomCount: input.roomCount,
                 bedroomCount: input.bedroomCount,
+                bathroomCount: input.bathroomCount,
+                floorCount: input.floorCount,
+                roofType: input.roofType,
+                externalStorageAreaSqm: input.externalStorageAreaSqm,
+                amenities: input.amenities,
+                parkingOptions: input.parkingOptions,
+                parkingSpacePriceCents:
+                    input.parkingOptions &&
+                    !input.parkingOptions.includes("SPACE_FOR_SALE")
+                        ? null
+                        : input.parkingSpacePriceCents === undefined
+                          ? undefined
+                          : input.parkingSpacePriceCents === null
+                            ? null
+                            : BigInt(input.parkingSpacePriceCents),
                 constructionYear: input.constructionYear,
             },
         });
