@@ -97,8 +97,9 @@ export async function POST(
         }
 
         const kind =
-            requestedKind === "FLOOR_PLAN_STATIC"
-                ? "FLOOR_PLAN_STATIC"
+            requestedKind === "FLOOR_PLAN_STATIC" ||
+            requestedKind === "DOCUMENT"
+                ? requestedKind
                 : "PHOTO";
         if (kind === "PHOTO" && file.type === "application/pdf") {
             return NextResponse.json(
@@ -106,6 +107,17 @@ export async function POST(
                     error: {
                         code: "UNSUPPORTED_PHOTO",
                         message: "Photos must be JPG, PNG or WebP",
+                    },
+                },
+                { status: 415 },
+            );
+        }
+        if (kind === "DOCUMENT" && file.type !== "application/pdf") {
+            return NextResponse.json(
+                {
+                    error: {
+                        code: "UNSUPPORTED_DOCUMENT",
+                        message: "Documents must be PDF files",
                     },
                 },
                 { status: 415 },
@@ -188,7 +200,7 @@ export async function POST(
                         sortOrder,
                     },
                 });
-                await tx.listing.update({
+                const updatedListing = await tx.listing.update({
                     where: { id: listingId },
                     data: {
                         status:
@@ -202,7 +214,7 @@ export async function POST(
                         version: { increment: 1 },
                     },
                 });
-                return created;
+                return { media: created, listingVersion: updatedListing.version };
             })
             .catch(async (error) => {
                 await unlink(target).catch(() => undefined);
@@ -212,8 +224,9 @@ export async function POST(
         return NextResponse.json(
             {
                 data: {
-                    ...media,
-                    sizeBytes: media.sizeBytes.toString(),
+                    ...media.media,
+                    sizeBytes: media.media.sizeBytes.toString(),
+                    listingVersion: media.listingVersion,
                     url: `/${relativeKey}`,
                 },
             },

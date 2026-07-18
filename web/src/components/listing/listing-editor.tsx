@@ -9,7 +9,9 @@ import {
     Building2,
     Check,
     ChevronRight,
+    CircleAlert,
     FileImage,
+    FileUp,
     Fingerprint,
     ImagePlus,
     LoaderCircle,
@@ -30,6 +32,8 @@ type MediaItem = {
     sha256: string;
     fileName: string;
 };
+
+type UploadedMedia = MediaItem & { listingVersion: number };
 
 export type ListingView = {
     id: string;
@@ -432,6 +436,7 @@ export function ListingEditor({
                     {section === "details" ? (
                         <DetailsSection
                             listing={listing}
+                            setListing={setListing}
                             editor={editor}
                             setEditor={setEditor}
                             editable={editable}
@@ -481,12 +486,14 @@ export function ListingEditor({
 
 function DetailsSection({
     listing,
+    setListing,
     editor,
     setEditor,
     editable,
     aiWriter,
 }: {
     listing: ListingView;
+    setListing: React.Dispatch<React.SetStateAction<ListingView>>;
     editor: EditorState;
     setEditor: React.Dispatch<React.SetStateAction<EditorState>>;
     editable: boolean;
@@ -570,6 +577,11 @@ function DetailsSection({
                     onChange={set("bidWindowClosesAt")}
                 />
             </fieldset>
+            <EnergyLabelPanel
+                listing={listing}
+                setListing={setListing}
+                editable={editable}
+            />
             <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-8">
                 <div>
                     <h3 className="text-xl font-semibold">Advertentietekst</h3>
@@ -638,6 +650,131 @@ function DetailsSection({
     );
 }
 
+const energyLabelNames: Record<string, string> = {
+    A_PLUS_PLUS_PLUS_PLUS_PLUS: "A+++++",
+    A_PLUS_PLUS_PLUS_PLUS: "A++++",
+    A_PLUS_PLUS_PLUS: "A+++",
+    A_PLUS_PLUS: "A++",
+    A_PLUS: "A+",
+};
+
+function EnergyLabelPanel({
+    listing,
+    setListing,
+    editable,
+}: {
+    listing: ListingView;
+    setListing: React.Dispatch<React.SetStateAction<ListingView>>;
+    editable: boolean;
+}) {
+    const energy = listing.property.energyLabels[0];
+    const documents = listing.media.filter((item) => item.kind === "DOCUMENT");
+    const upload = useMutation({
+        mutationFn: async (file: File) => {
+            const form = new FormData();
+            form.set("file", file);
+            form.set("kind", "DOCUMENT");
+            const response = await fetch(`/api/listings/${listing.id}/media`, {
+                method: "POST",
+                body: form,
+            });
+            const payload = await response.json();
+            if (!response.ok)
+                throw new Error(payload.error?.message ?? "Upload mislukt");
+            return payload.data as UploadedMedia;
+        },
+        onSuccess(uploaded) {
+            const { listingVersion, ...media } = uploaded;
+            setListing((current) => ({
+                ...current,
+                version: listingVersion,
+                media: [...current.media, media],
+            }));
+        },
+    });
+
+    return (
+        <section className="mt-10 border-t border-line pt-8">
+            <div className="flex items-start gap-3">
+                <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-emerald-50 text-emerald-700">
+                    <FileUp size={18} />
+                </span>
+                <div>
+                    <h3 className="text-xl font-semibold">Energielabel</h3>
+                    <p className="mt-1 text-sm leading-6 text-muted">
+                        Bekijk het gevonden label en bewaar het officiële
+                        document bij je concept.
+                    </p>
+                </div>
+            </div>
+
+            {energy ? (
+                <div className="mt-5 flex items-center gap-4 bg-emerald-50 p-5">
+                    <span className="grid h-14 min-w-20 place-items-center bg-emerald-700 px-3 text-xl font-bold text-white">
+                        {energyLabelNames[energy.labelClass] ?? energy.labelClass}
+                    </span>
+                    <p className="font-semibold">Energielabel gevonden</p>
+                </div>
+            ) : (
+                <div className="mt-5 flex items-start gap-3 bg-amber-50 p-5 text-amber-950">
+                    <CircleAlert className="mt-0.5 shrink-0" size={19} />
+                    <div>
+                        <p className="font-semibold">
+                            Geen energielabel gevonden
+                        </p>
+                        <p className="mt-1 text-sm leading-6">
+                            Voeg het officiële PDF-document toe zodra je dit
+                            hebt ontvangen.
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            {documents.length ? (
+                <div className="mt-4 space-y-2">
+                    {documents.map((document) => (
+                        <a
+                            key={document.id}
+                            href={`/${document.storageKey}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex items-center gap-3 border border-line px-4 py-3 text-sm font-semibold hover:bg-background"
+                        >
+                            <FileImage size={17} className="text-brand" />
+                            <span className="truncate">{document.fileName}</span>
+                        </a>
+                    ))}
+                </div>
+            ) : null}
+
+            <label className="mt-4 inline-flex h-11 cursor-pointer items-center gap-2 rounded-full border border-line px-4 text-sm font-semibold">
+                {upload.isPending ? (
+                    <LoaderCircle className="animate-spin" size={16} />
+                ) : (
+                    <FileUp size={16} />
+                )}
+                {documents.length ? "Nog een PDF toevoegen" : "PDF toevoegen"}
+                <input
+                    type="file"
+                    accept="application/pdf"
+                    className="sr-only"
+                    disabled={!editable || upload.isPending}
+                    onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        if (file) upload.mutate(file);
+                        event.target.value = "";
+                    }}
+                />
+            </label>
+            {upload.error ? (
+                <p className="mt-3 text-sm text-red-700">
+                    {upload.error.message}
+                </p>
+            ) : null}
+        </section>
+    );
+}
+
 function MediaSection({
     listing,
     setListing,
@@ -664,11 +801,13 @@ function MediaSection({
             const payload = await response.json();
             if (!response.ok)
                 throw new Error(payload.error?.message ?? "Upload mislukt");
-            return payload.data as MediaItem;
+            return payload.data as UploadedMedia;
         },
-        onSuccess(media) {
+        onSuccess(uploaded) {
+            const { listingVersion, ...media } = uploaded;
             setListing((current) => ({
                 ...current,
+                version: listingVersion,
                 media: [...current.media, media],
             }));
         },
@@ -739,7 +878,9 @@ function MediaSection({
                 </p>
             ) : null}
             <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {listing.media.map((media) => (
+                {listing.media
+                    .filter((media) => media.kind !== "DOCUMENT")
+                    .map((media) => (
                     <article
                         key={media.id}
                         className="group relative overflow-hidden rounded-2xl border border-line bg-background"

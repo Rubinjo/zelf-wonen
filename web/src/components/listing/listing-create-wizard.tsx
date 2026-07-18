@@ -9,6 +9,7 @@ import {
     Check,
     CircleAlert,
     ExternalLink,
+    FileUp,
     Home,
     Leaf,
     LoaderCircle,
@@ -73,6 +74,10 @@ export function ListingCreateWizard() {
     });
     const [propertyData, setPropertyData] = useState<PropertyData | null>(null);
     const [lookupError, setLookupError] = useState("");
+    const [energyLabelFile, setEnergyLabelFile] = useState<File | null>(null);
+    const [createdListingId, setCreatedListingId] = useState<string | null>(
+        null,
+    );
 
     const lookup = useMutation({
         mutationFn: async () => {
@@ -102,37 +107,56 @@ export function ListingCreateWizard() {
 
     const createListing = useMutation({
         mutationFn: async (form: FormData) => {
-            const number = Number(address.houseNumber);
-            const input = {
-                purpose: form.get("purpose"),
-                propertyType: form.get("propertyType"),
-                postcode: address.postcode,
-                houseNumber: number,
-                houseNumberAddition: address.addition || null,
-                street: propertyData?.address.street ?? address.street,
-                city: propertyData?.address.city ?? address.city,
-                municipality: propertyData?.address.municipality ?? null,
-                province: propertyData?.address.province ?? null,
-                bagAddressId: propertyData?.bagAddressId ?? null,
-                bagBuildingId: propertyData?.bagBuildingId ?? null,
-                cadastralParcelId: propertyData?.cadastralParcelId ?? null,
-                latitude: propertyData?.coordinates?.latitude ?? null,
-                longitude: propertyData?.coordinates?.longitude ?? null,
-                officialLandAreaSqm:
-                    Number(form.get("officialLandAreaSqm")) || null,
-                constructionYear:
-                    Number(form.get("constructionYear")) || null,
-                livingAreaSqm: Number(form.get("livingAreaSqm")) || null,
-                roomCount: Number(form.get("roomCount")) || null,
-                bedroomCount: Number(form.get("bedroomCount")) || null,
-            };
-            return parseResponse(
-                await fetch("/api/listings", {
-                    method: "POST",
-                    headers: { "content-type": "application/json" },
-                    body: JSON.stringify(input),
-                }),
-            );
+            let listingId = createdListingId;
+            if (!listingId) {
+                const number = Number(address.houseNumber);
+                const input = {
+                    purpose: form.get("purpose"),
+                    propertyType: form.get("propertyType"),
+                    postcode: address.postcode,
+                    houseNumber: number,
+                    houseNumberAddition: address.addition || null,
+                    street: propertyData?.address.street ?? address.street,
+                    city: propertyData?.address.city ?? address.city,
+                    municipality: propertyData?.address.municipality ?? null,
+                    province: propertyData?.address.province ?? null,
+                    bagAddressId: propertyData?.bagAddressId ?? null,
+                    bagBuildingId: propertyData?.bagBuildingId ?? null,
+                    cadastralParcelId: propertyData?.cadastralParcelId ?? null,
+                    latitude: propertyData?.coordinates?.latitude ?? null,
+                    longitude: propertyData?.coordinates?.longitude ?? null,
+                    officialLandAreaSqm:
+                        Number(form.get("officialLandAreaSqm")) || null,
+                    constructionYear:
+                        Number(form.get("constructionYear")) || null,
+                    livingAreaSqm: Number(form.get("livingAreaSqm")) || null,
+                    roomCount: Number(form.get("roomCount")) || null,
+                    bedroomCount: Number(form.get("bedroomCount")) || null,
+                };
+                const listing = (await parseResponse(
+                    await fetch("/api/listings", {
+                        method: "POST",
+                        headers: { "content-type": "application/json" },
+                        body: JSON.stringify(input),
+                    }),
+                )) as { id: string };
+                listingId = listing.id;
+                setCreatedListingId(listingId);
+            }
+
+            if (energyLabelFile) {
+                const upload = new FormData();
+                upload.set("file", energyLabelFile);
+                upload.set("kind", "DOCUMENT");
+                await parseResponse(
+                    await fetch(`/api/listings/${listingId}/media`, {
+                        method: "POST",
+                        body: upload,
+                    }),
+                );
+            }
+
+            return { id: listingId };
         },
         onSuccess(data: { id: string }) {
             router.push(`/dashboard/listings/${data.id}`);
@@ -399,7 +423,11 @@ export function ListingCreateWizard() {
                             />
                         </Field>
                     </div>
-                    <EnergyLabelSection energy={propertyData?.energy ?? null} />
+                    <EnergyLabelSection
+                        energy={propertyData?.energy ?? null}
+                        file={energyLabelFile}
+                        onFileChange={setEnergyLabelFile}
+                    />
                     {createListing.error ? (
                         <p className="mt-5 rounded-2xl bg-red-50 p-4 text-sm text-red-700">
                             {createListing.error.message}
@@ -434,8 +462,12 @@ export function ListingCreateWizard() {
 
 function EnergyLabelSection({
     energy,
+    file,
+    onFileChange,
 }: {
     energy: PropertyData["energy"];
+    file: File | null;
+    onFileChange: (file: File | null) => void;
 }) {
     const isExpired = Boolean(
         energy?.validUntil && new Date(energy.validUntil) < new Date(),
@@ -517,6 +549,37 @@ function EnergyLabelSection({
                     </div>
                 </div>
             )}
+
+            <div className="mt-5 border border-line bg-white p-5">
+                <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                    <div>
+                        <p className="font-semibold">
+                            Energielabel als PDF toevoegen
+                        </p>
+                        <p className="mt-1 text-sm leading-6 text-muted">
+                            Upload het officiële document nu, of voeg het later
+                            toe in je concept.
+                        </p>
+                        {file ? (
+                            <p className="mt-2 text-sm font-semibold text-brand-dark">
+                                {file.name}
+                            </p>
+                        ) : null}
+                    </div>
+                    <label className="inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full border border-line px-4 text-sm font-semibold">
+                        <FileUp size={16} />
+                        {file ? "Ander bestand" : "PDF kiezen"}
+                        <input
+                            type="file"
+                            accept="application/pdf"
+                            className="sr-only"
+                            onChange={(event) =>
+                                onFileChange(event.target.files?.[0] ?? null)
+                            }
+                        />
+                    </label>
+                </div>
+            </div>
 
             <div className="mt-6">
                 <h3 className="font-semibold">
