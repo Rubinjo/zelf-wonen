@@ -10,6 +10,7 @@ import {
     Check,
     ChevronRight,
     CircleAlert,
+    ExternalLink,
     FileImage,
     FileUp,
     Fingerprint,
@@ -971,27 +972,46 @@ function MediaSection({
     editor: EditorState;
     setEditor: React.Dispatch<React.SetStateAction<EditorState>>;
 }) {
-    const [kind, setKind] = useState<"PHOTO" | "FLOOR_PLAN_STATIC">("PHOTO");
     const upload = useMutation({
-        mutationFn: async (file: File) => {
-            const form = new FormData();
-            form.set("file", file);
-            form.set("kind", kind);
-            const response = await fetch(`/api/listings/${listing.id}/media`, {
-                method: "POST",
-                body: form,
-            });
-            const payload = await response.json();
-            if (!response.ok)
-                throw new Error(payload.error?.message ?? "Upload mislukt");
-            return payload.data as UploadedMedia;
+        mutationFn: async ({
+            files,
+            kind,
+        }: {
+            files: File[];
+            kind: "PHOTO" | "FLOOR_PLAN_STATIC";
+        }) => {
+            const uploaded: MediaItem[] = [];
+            let listingVersion = listing.version;
+            for (const file of files) {
+                const form = new FormData();
+                form.set("file", file);
+                form.set("kind", kind);
+                const response = await fetch(
+                    `/api/listings/${listing.id}/media`,
+                    {
+                        method: "POST",
+                        body: form,
+                    },
+                );
+                const payload = await response.json();
+                if (!response.ok)
+                    throw new Error(
+                        payload.error?.message ?? "Upload mislukt",
+                    );
+                const {
+                    listingVersion: nextListingVersion,
+                    ...media
+                } = payload.data as UploadedMedia;
+                listingVersion = nextListingVersion;
+                uploaded.push(media);
+            }
+            return { media: uploaded, listingVersion };
         },
         onSuccess(uploaded) {
-            const { listingVersion, ...media } = uploaded;
             setListing((current) => ({
                 ...current,
-                version: listingVersion,
-                media: [...current.media, media],
+                version: uploaded.listingVersion,
+                media: [...current.media, ...uploaded.media],
             }));
         },
     });
@@ -1016,97 +1036,89 @@ function MediaSection({
             <SectionHeading
                 icon={FileImage}
                 title="Foto's & plattegronden"
-                text="Upload JPG, PNG, WebP of een PDF-plattegrond tot 20 MB. Je kunt ook een Floorplanner-link toevoegen."
+                text="Voeg woningfoto's en plattegronden afzonderlijk toe. Per bestand geldt een maximum van 20 MB."
             />
-            <div className="mt-8 flex flex-wrap gap-3">
+            <section className="mt-8">
+                <h3 className="text-xl font-semibold">
+                    {"Woningfoto's"}
+                </h3>
+                <p className="mt-1 text-sm leading-6 text-muted">
+                    {"Selecteer meerdere JPG-, PNG- of WebP-foto's tegelijk."}
+                </p>
                 <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-semibold text-white">
                     {upload.isPending ? (
                         <LoaderCircle className="animate-spin" size={17} />
                     ) : (
                         <ImagePlus size={17} />
                     )}{" "}
-                    Bestand kiezen
+                    {"Woningfoto's kiezen"}
                     <input
                         type="file"
+                        multiple
                         className="sr-only"
                         disabled={!editable || upload.isPending}
-                        accept={
-                            kind === "PHOTO"
-                                ? "image/jpeg,image/png,image/webp"
-                                : "image/jpeg,image/png,application/pdf"
-                        }
+                        accept="image/jpeg,image/png,image/webp"
                         onChange={(event) => {
-                            const file = event.target.files?.[0];
-                            if (file) upload.mutate(file);
+                            const files = Array.from(event.target.files ?? []);
+                            if (files.length)
+                                upload.mutate({ files, kind: "PHOTO" });
                             event.target.value = "";
                         }}
                     />
                 </label>
-                <select
-                    value={kind}
-                    onChange={(event) =>
-                        setKind(event.target.value as typeof kind)
-                    }
-                    className="rounded-full border border-line bg-white px-4 text-sm font-semibold"
-                >
-                    <option value="PHOTO">Woningfoto</option>
-                    <option value="FLOOR_PLAN_STATIC">
-                        Statische plattegrond
-                    </option>
-                </select>
-            </div>
+                <MediaGrid
+                    media={listing.media.filter(
+                        (item) => item.kind === "PHOTO",
+                    )}
+                    editable={editable}
+                    remove={(mediaId) => remove.mutate(mediaId)}
+                    label="Foto"
+                />
+            </section>
             {upload.error ? (
                 <p className="mt-4 text-sm text-red-700">
                     {upload.error.message}
                 </p>
             ) : null}
-            <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {listing.media
-                    .filter((media) => media.kind !== "DOCUMENT")
-                    .map((media) => (
-                        <article
-                            key={media.id}
-                            className="group relative overflow-hidden rounded-2xl border border-line bg-background"
-                        >
-                            {media.mimeType.startsWith("image/") ? (
-                                <Image
-                                    src={`/${media.storageKey}`}
-                                    alt=""
-                                    width={800}
-                                    height={480}
-                                    className="h-36 w-full object-cover"
-                                />
-                            ) : (
-                                <div className="grid h-36 place-items-center">
-                                    <FileImage
-                                        size={30}
-                                        className="text-brand"
-                                    />
-                                </div>
-                            )}
-                            <div className="p-3">
-                                <p className="truncate text-xs font-semibold">
-                                    {media.fileName}
-                                </p>
-                                <p className="mt-1 text-[11px] text-muted">
-                                    {media.kind === "PHOTO"
-                                        ? "Foto"
-                                        : "Plattegrond"}
-                                </p>
-                            </div>
-                            {editable ? (
-                                <button
-                                    type="button"
-                                    onClick={() => remove.mutate(media.id)}
-                                    className="absolute right-2 top-2 grid size-9 place-items-center rounded-full bg-white text-red-700 shadow"
-                                >
-                                    <Trash2 size={16} />
-                                </button>
-                            ) : null}
-                        </article>
-                    ))}
-            </div>
-            <div className="mt-9 border-t border-line pt-7">
+            <section className="mt-9 border-t border-line pt-7">
+                <h3 className="text-xl font-semibold">Plattegronden</h3>
+                <p className="mt-1 text-sm leading-6 text-muted">
+                    Upload meerdere afbeeldingen of PDF-bestanden, of voeg een
+                    interactieve Floorplanner-link toe.
+                </p>
+                <label className="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-full border border-line px-5 py-3 text-sm font-semibold text-brand">
+                    {upload.isPending ? (
+                        <LoaderCircle className="animate-spin" size={17} />
+                    ) : (
+                        <FileUp size={17} />
+                    )}{" "}
+                    Plattegronden kiezen
+                    <input
+                        type="file"
+                        multiple
+                        className="sr-only"
+                        disabled={!editable || upload.isPending}
+                        accept="image/jpeg,image/png,image/webp,application/pdf"
+                        onChange={(event) => {
+                            const files = Array.from(event.target.files ?? []);
+                            if (files.length)
+                                upload.mutate({
+                                    files,
+                                    kind: "FLOOR_PLAN_STATIC",
+                                });
+                            event.target.value = "";
+                        }}
+                    />
+                </label>
+                <MediaGrid
+                    media={listing.media.filter(
+                        (item) => item.kind === "FLOOR_PLAN_STATIC",
+                    )}
+                    editable={editable}
+                    remove={(mediaId) => remove.mutate(mediaId)}
+                    label="Plattegrond"
+                />
+                <div className="mt-7 border-t border-line pt-6">
                 <Input
                     label="Floorplanner embed-URL"
                     type="url"
@@ -1120,11 +1132,77 @@ function MediaSection({
                     }
                     placeholder="https://floorplanner.com/..."
                 />
-                <p className="mt-2 text-xs text-muted">
-                    De interactieve plattegrond wordt na opslaan aan de
-                    advertentie gekoppeld.
-                </p>
-            </div>
+                    <p className="mt-2 text-xs leading-5 text-muted">
+                        Gebruik de Viewer- of Spaceplanner-link van een openbaar
+                        Level 3-project. De interactieve plattegrond wordt na
+                        opslaan aan de advertentie gekoppeld.{" "}
+                        <a
+                            href="https://floorplanner.readme.io/reference/viewer-spaceplanner"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 font-semibold text-brand underline underline-offset-2"
+                        >
+                            Zo vind je de embed-URL
+                            <ExternalLink size={12} />
+                        </a>
+                    </p>
+                </div>
+            </section>
+        </div>
+    );
+}
+
+function MediaGrid({
+    media,
+    editable,
+    remove,
+    label,
+}: {
+    media: MediaItem[];
+    editable: boolean;
+    remove: (mediaId: string) => void;
+    label: string;
+}) {
+    if (!media.length) return null;
+
+    return (
+        <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {media.map((item) => (
+                <article
+                    key={item.id}
+                    className="group relative overflow-hidden rounded-2xl border border-line bg-background"
+                >
+                    {item.mimeType.startsWith("image/") ? (
+                        <Image
+                            src={`/${item.storageKey}`}
+                            alt=""
+                            width={800}
+                            height={480}
+                            className="h-36 w-full object-cover"
+                        />
+                    ) : (
+                        <div className="grid h-36 place-items-center">
+                            <FileImage size={30} className="text-brand" />
+                        </div>
+                    )}
+                    <div className="p-3">
+                        <p className="truncate text-xs font-semibold">
+                            {item.fileName}
+                        </p>
+                        <p className="mt-1 text-[11px] text-muted">{label}</p>
+                    </div>
+                    {editable ? (
+                        <button
+                            type="button"
+                            onClick={() => remove(item.id)}
+                            aria-label={`${item.fileName} verwijderen`}
+                            className="absolute right-2 top-2 grid size-9 place-items-center rounded-full bg-white text-red-700 shadow"
+                        >
+                            <Trash2 size={16} />
+                        </button>
+                    ) : null}
+                </article>
+            ))}
         </div>
     );
 }
