@@ -329,6 +329,20 @@ export async function updateOwnerListing(
                     : input.attributes === null
                       ? Prisma.JsonNull
                       : (input.attributes as Prisma.InputJsonValue),
+            biddingMethod: input.biddingMethod,
+            minimumBidCents:
+                input.minimumBidCents === undefined
+                    ? undefined
+                    : input.minimumBidCents === null
+                      ? null
+                      : BigInt(input.minimumBidCents),
+            bidIncrementCents:
+                input.bidIncrementCents === undefined
+                    ? undefined
+                    : input.bidIncrementCents === null
+                      ? null
+                      : BigInt(input.bidIncrementCents),
+            allowBidConditions: input.allowBidConditions,
             bidWindowOpensAt:
                 input.bidWindowOpensAt === undefined
                     ? undefined
@@ -372,6 +386,8 @@ export function collectReadinessIssues(listing: {
     descriptionNl: string | null;
     askingPriceCents: bigint | null;
     monthlyRentCents: bigint | null;
+    biddingMethod: "PRIVATE" | "SEALED" | "OPEN";
+    bidIncrementCents: bigint | null;
     bidWindowOpensAt: Date | null;
     bidWindowClosesAt: Date | null;
     property: { livingAreaSqm: unknown; roomCount: number | null };
@@ -413,6 +429,18 @@ export function collectReadinessIssues(listing: {
             field: "monthlyRentCents",
             code: "REQUIRED",
             message: "Add a monthly rent",
+        });
+    if (listing.biddingMethod === "SEALED" && !listing.bidWindowClosesAt)
+        issues.push({
+            field: "bidWindowClosesAt",
+            code: "REQUIRED",
+            message: "Add a closing time for the sealed bidding round",
+        });
+    if (listing.biddingMethod === "OPEN" && !listing.bidIncrementCents)
+        issues.push({
+            field: "bidIncrementCents",
+            code: "REQUIRED",
+            message: "Add a minimum increment for open bidding",
         });
     if (
         !listing.media.some(

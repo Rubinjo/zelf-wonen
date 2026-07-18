@@ -4,13 +4,61 @@ import { useState, type FormEvent } from "react";
 import { CheckCircle2, LoaderCircle, Send, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
-export function BidForm({ listingId }: { listingId: string }) {
+type BidFormProps = {
+    listingId: string;
+    biddingMethod: "PRIVATE" | "SEALED" | "OPEN";
+    minimumBidCents: string | null;
+    bidIncrementCents: string | null;
+    highestBidCents: string | null;
+    allowBidConditions: boolean;
+    opensAt: string | null;
+    closesAt: string | null;
+};
+
+const methodCopy = {
+    PRIVATE: {
+        title: "Breng een bod uit",
+        text: "Je bod en voorwaarden zijn alleen zichtbaar voor de verkoper.",
+    },
+    SEALED: {
+        title: "Dien je eindbod in",
+        text: "Je kunt binnen deze gesloten inschrijving één definitief bod uitbrengen.",
+    },
+    OPEN: {
+        title: "Bied mee",
+        text: "Het hoogste bod is openbaar. Je nieuwe bod moet minimaal de vereiste biedstap hoger zijn.",
+    },
+} as const;
+
+function formatMoney(cents: string) {
+    return new Intl.NumberFormat("nl-NL", {
+        style: "currency",
+        currency: "EUR",
+        maximumFractionDigits: 0,
+    }).format(Number(cents) / 100);
+}
+
+export function BidForm({
+    listingId,
+    biddingMethod,
+    minimumBidCents,
+    bidIncrementCents,
+    highestBidCents,
+    allowBidConditions,
+    opensAt,
+    closesAt,
+}: BidFormProps) {
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState("");
     const [receipt, setReceipt] = useState<{
         submittedAt: string;
         entryHash: string;
     } | null>(null);
+    const nextBidCents =
+        biddingMethod === "OPEN" && highestBidCents
+            ? String(BigInt(highestBidCents) + BigInt(bidIncrementCents ?? "1"))
+            : minimumBidCents;
+    const copy = methodCopy[biddingMethod];
 
     async function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -96,75 +144,113 @@ export function BidForm({ listingId }: { listingId: string }) {
             <span className="grid size-11 place-items-center rounded-2xl bg-accent text-brand-dark">
                 <ShieldCheck size={21} />
             </span>
-            <h2 className="mt-5 text-2xl font-semibold">Doe een bod</h2>
+            <h2 className="mt-5 text-2xl font-semibold">{copy.title}</h2>
             <p className="mt-2 text-sm leading-6 text-muted">
-                Bedrag, tijdstip en voorwaarden worden veilig en chronologisch
+                {copy.text} Bedrag en tijdstip worden veilig en chronologisch
                 vastgelegd.
             </p>
+            {opensAt || closesAt ? (
+                <p className="mt-3 text-xs leading-5 text-muted">
+                    {opensAt
+                        ? `Start: ${new Date(opensAt).toLocaleString("nl-NL")}`
+                        : ""}
+                    {opensAt && closesAt ? " · " : ""}
+                    {closesAt
+                        ? `Sluiting: ${new Date(closesAt).toLocaleString("nl-NL")}`
+                        : ""}
+                </p>
+            ) : null}
+            {biddingMethod === "OPEN" && highestBidCents ? (
+                <div className="mt-5 border-y border-line py-4">
+                    <p className="text-xs font-semibold uppercase text-muted">
+                        Huidig hoogste bod
+                    </p>
+                    <p className="mt-1 text-2xl font-semibold">
+                        {formatMoney(highestBidCents)}
+                    </p>
+                </div>
+            ) : null}
             <label className="mt-6 block text-sm font-semibold">
                 Bedrag (€)
                 <input
                     name="amount"
                     type="number"
-                    min="1"
-                    step="1"
+                    min={nextBidCents ? Number(nextBidCents) / 100 : 1}
+                    step={
+                        biddingMethod === "OPEN" && bidIncrementCents
+                            ? Number(bidIncrementCents) / 100
+                            : 1
+                    }
                     required
                     className="input mt-2 text-lg font-semibold"
                 />
+                {nextBidCents ? (
+                    <span className="mt-2 block text-xs font-normal text-muted">
+                        Minimaal {formatMoney(nextBidCents)}
+                    </span>
+                ) : null}
             </label>
-            <div className="mt-5 space-y-3 text-sm">
-                <label className="flex items-center gap-3">
-                    <input
-                        name="financing"
-                        type="checkbox"
-                        className="size-4 accent-brand"
-                    />{" "}
-                    Voorbehoud van financiering
-                </label>
-                <label className="flex items-center gap-3">
-                    <input
-                        name="inspection"
-                        type="checkbox"
-                        className="size-4 accent-brand"
-                    />{" "}
-                    Voorbehoud bouwkundige keuring
-                </label>
-                <label className="flex items-center gap-3">
-                    <input
-                        name="saleOfCurrentHome"
-                        type="checkbox"
-                        className="size-4 accent-brand"
-                    />{" "}
-                    Voorbehoud verkoop eigen woning
-                </label>
-            </div>
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                <label className="text-sm font-semibold">
-                    Financiering uiterlijk
-                    <input
-                        name="financingDeadline"
-                        type="date"
-                        className="input mt-2"
-                    />
-                </label>
-                <label className="text-sm font-semibold">
-                    Gewenste overdracht
-                    <input
-                        name="transferDate"
-                        type="date"
-                        className="input mt-2"
-                    />
-                </label>
-            </div>
-            <label className="mt-5 block text-sm font-semibold">
-                Aanvullende voorwaarden
-                <textarea
-                    name="additionalConditions"
-                    maxLength={500}
-                    rows={3}
-                    className="input mt-2 py-3"
-                />
-            </label>
+            {allowBidConditions ? (
+                <>
+                    <div className="mt-5 space-y-3 text-sm">
+                        <label className="flex items-center gap-3">
+                            <input
+                                name="financing"
+                                type="checkbox"
+                                className="size-4 accent-brand"
+                            />{" "}
+                            Voorbehoud van financiering
+                        </label>
+                        <label className="flex items-center gap-3">
+                            <input
+                                name="inspection"
+                                type="checkbox"
+                                className="size-4 accent-brand"
+                            />{" "}
+                            Voorbehoud bouwkundige keuring
+                        </label>
+                        <label className="flex items-center gap-3">
+                            <input
+                                name="saleOfCurrentHome"
+                                type="checkbox"
+                                className="size-4 accent-brand"
+                            />{" "}
+                            Voorbehoud verkoop eigen woning
+                        </label>
+                    </div>
+                    <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                        <label className="text-sm font-semibold">
+                            Financiering uiterlijk
+                            <input
+                                name="financingDeadline"
+                                type="date"
+                                className="input mt-2"
+                            />
+                        </label>
+                        <label className="text-sm font-semibold">
+                            Gewenste overdracht
+                            <input
+                                name="transferDate"
+                                type="date"
+                                className="input mt-2"
+                            />
+                        </label>
+                    </div>
+                    <label className="mt-5 block text-sm font-semibold">
+                        Aanvullende voorwaarden
+                        <textarea
+                            name="additionalConditions"
+                            maxLength={500}
+                            rows={3}
+                            className="input mt-2 py-3"
+                        />
+                    </label>
+                </>
+            ) : (
+                <div className="mt-5 bg-background p-4 text-sm text-muted">
+                    De verkoper accepteert alleen biedingen zonder voorbehouden.
+                </div>
+            )}
             {error ? (
                 <div className="mt-4 rounded-2xl bg-red-50 p-4 text-sm text-red-700">
                     <p>{error}</p>

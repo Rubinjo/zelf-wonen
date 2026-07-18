@@ -90,6 +90,11 @@ export default async function PublicListingPage({
                 orderBy: { sortOrder: "asc" },
             },
             floorPlans: { orderBy: { sortOrder: "asc" } },
+            bids: {
+                orderBy: { amountCents: "desc" },
+                take: 1,
+                select: { amountCents: true },
+            },
         },
     });
     if (!listing) notFound();
@@ -318,7 +323,35 @@ export default async function PublicListingPage({
                                 </p>
                             </div>
                             {listing.status === "LIVE" ? (
-                                <BidForm listingId={listing.id} />
+                                <BidForm
+                                    listingId={listing.id}
+                                    biddingMethod={listing.biddingMethod}
+                                    minimumBidCents={
+                                        listing.minimumBidCents?.toString() ??
+                                        null
+                                    }
+                                    bidIncrementCents={
+                                        listing.bidIncrementCents?.toString() ??
+                                        null
+                                    }
+                                    highestBidCents={
+                                        listing.biddingMethod === "OPEN"
+                                            ? (listing.bids[0]?.amountCents.toString() ??
+                                              null)
+                                            : null
+                                    }
+                                    allowBidConditions={
+                                        listing.allowBidConditions
+                                    }
+                                    opensAt={
+                                        listing.bidWindowOpensAt?.toISOString() ??
+                                        null
+                                    }
+                                    closesAt={
+                                        listing.bidWindowClosesAt?.toISOString() ??
+                                        null
+                                    }
+                                />
                             ) : (
                                 <div className="rounded-3xl bg-background p-6">
                                     <p className="font-semibold">

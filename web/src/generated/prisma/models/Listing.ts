@@ -30,6 +30,8 @@ export type ListingAvgAggregateOutputType = {
   askingPriceCents: number | null
   monthlyRentCents: number | null
   serviceCostsCents: number | null
+  minimumBidCents: number | null
+  bidIncrementCents: number | null
   version: number | null
 }
 
@@ -37,6 +39,8 @@ export type ListingSumAggregateOutputType = {
   askingPriceCents: bigint | null
   monthlyRentCents: bigint | null
   serviceCostsCents: bigint | null
+  minimumBidCents: bigint | null
+  bidIncrementCents: bigint | null
   version: number | null
 }
 
@@ -56,6 +60,10 @@ export type ListingMinAggregateOutputType = {
   serviceCostsCents: bigint | null
   availableFrom: Date | null
   viewingNotes: string | null
+  biddingMethod: $Enums.BiddingMethod | null
+  minimumBidCents: bigint | null
+  bidIncrementCents: bigint | null
+  allowBidConditions: boolean | null
   bidWindowOpensAt: Date | null
   bidWindowClosesAt: Date | null
   validatedAt: Date | null
@@ -83,6 +91,10 @@ export type ListingMaxAggregateOutputType = {
   serviceCostsCents: bigint | null
   availableFrom: Date | null
   viewingNotes: string | null
+  biddingMethod: $Enums.BiddingMethod | null
+  minimumBidCents: bigint | null
+  bidIncrementCents: bigint | null
+  allowBidConditions: boolean | null
   bidWindowOpensAt: Date | null
   bidWindowClosesAt: Date | null
   validatedAt: Date | null
@@ -111,6 +123,10 @@ export type ListingCountAggregateOutputType = {
   availableFrom: number
   viewingNotes: number
   attributes: number
+  biddingMethod: number
+  minimumBidCents: number
+  bidIncrementCents: number
+  allowBidConditions: number
   bidWindowOpensAt: number
   bidWindowClosesAt: number
   validatedAt: number
@@ -128,6 +144,8 @@ export type ListingAvgAggregateInputType = {
   askingPriceCents?: true
   monthlyRentCents?: true
   serviceCostsCents?: true
+  minimumBidCents?: true
+  bidIncrementCents?: true
   version?: true
 }
 
@@ -135,6 +153,8 @@ export type ListingSumAggregateInputType = {
   askingPriceCents?: true
   monthlyRentCents?: true
   serviceCostsCents?: true
+  minimumBidCents?: true
+  bidIncrementCents?: true
   version?: true
 }
 
@@ -154,6 +174,10 @@ export type ListingMinAggregateInputType = {
   serviceCostsCents?: true
   availableFrom?: true
   viewingNotes?: true
+  biddingMethod?: true
+  minimumBidCents?: true
+  bidIncrementCents?: true
+  allowBidConditions?: true
   bidWindowOpensAt?: true
   bidWindowClosesAt?: true
   validatedAt?: true
@@ -181,6 +205,10 @@ export type ListingMaxAggregateInputType = {
   serviceCostsCents?: true
   availableFrom?: true
   viewingNotes?: true
+  biddingMethod?: true
+  minimumBidCents?: true
+  bidIncrementCents?: true
+  allowBidConditions?: true
   bidWindowOpensAt?: true
   bidWindowClosesAt?: true
   validatedAt?: true
@@ -209,6 +237,10 @@ export type ListingCountAggregateInputType = {
   availableFrom?: true
   viewingNotes?: true
   attributes?: true
+  biddingMethod?: true
+  minimumBidCents?: true
+  bidIncrementCents?: true
+  allowBidConditions?: true
   bidWindowOpensAt?: true
   bidWindowClosesAt?: true
   validatedAt?: true
@@ -324,6 +356,10 @@ export type ListingGroupByOutputType = {
   availableFrom: Date | null
   viewingNotes: string | null
   attributes: runtime.JsonValue | null
+  biddingMethod: $Enums.BiddingMethod
+  minimumBidCents: bigint | null
+  bidIncrementCents: bigint | null
+  allowBidConditions: boolean
   bidWindowOpensAt: Date | null
   bidWindowClosesAt: Date | null
   validatedAt: Date | null
@@ -375,6 +411,10 @@ export type ListingWhereInput = {
   availableFrom?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
   viewingNotes?: Prisma.StringNullableFilter<"Listing"> | string | null
   attributes?: Prisma.JsonNullableFilter<"Listing">
+  biddingMethod?: Prisma.EnumBiddingMethodFilter<"Listing"> | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.BigIntNullableFilter<"Listing"> | bigint | number | null
+  bidIncrementCents?: Prisma.BigIntNullableFilter<"Listing"> | bigint | number | null
+  allowBidConditions?: Prisma.BoolFilter<"Listing"> | boolean
   bidWindowOpensAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
   bidWindowClosesAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
   validatedAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
@@ -413,6 +453,10 @@ export type ListingOrderByWithRelationInput = {
   availableFrom?: Prisma.SortOrderInput | Prisma.SortOrder
   viewingNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   attributes?: Prisma.SortOrderInput | Prisma.SortOrder
+  biddingMethod?: Prisma.SortOrder
+  minimumBidCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  bidIncrementCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  allowBidConditions?: Prisma.SortOrder
   bidWindowOpensAt?: Prisma.SortOrderInput | Prisma.SortOrder
   bidWindowClosesAt?: Prisma.SortOrderInput | Prisma.SortOrder
   validatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -454,6 +498,10 @@ export type ListingWhereUniqueInput = Prisma.AtLeast<{
   availableFrom?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
   viewingNotes?: Prisma.StringNullableFilter<"Listing"> | string | null
   attributes?: Prisma.JsonNullableFilter<"Listing">
+  biddingMethod?: Prisma.EnumBiddingMethodFilter<"Listing"> | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.BigIntNullableFilter<"Listing"> | bigint | number | null
+  bidIncrementCents?: Prisma.BigIntNullableFilter<"Listing"> | bigint | number | null
+  allowBidConditions?: Prisma.BoolFilter<"Listing"> | boolean
   bidWindowOpensAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
   bidWindowClosesAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
   validatedAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
@@ -492,6 +540,10 @@ export type ListingOrderByWithAggregationInput = {
   availableFrom?: Prisma.SortOrderInput | Prisma.SortOrder
   viewingNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   attributes?: Prisma.SortOrderInput | Prisma.SortOrder
+  biddingMethod?: Prisma.SortOrder
+  minimumBidCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  bidIncrementCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  allowBidConditions?: Prisma.SortOrder
   bidWindowOpensAt?: Prisma.SortOrderInput | Prisma.SortOrder
   bidWindowClosesAt?: Prisma.SortOrderInput | Prisma.SortOrder
   validatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -528,6 +580,10 @@ export type ListingScalarWhereWithAggregatesInput = {
   availableFrom?: Prisma.DateTimeNullableWithAggregatesFilter<"Listing"> | Date | string | null
   viewingNotes?: Prisma.StringNullableWithAggregatesFilter<"Listing"> | string | null
   attributes?: Prisma.JsonNullableWithAggregatesFilter<"Listing">
+  biddingMethod?: Prisma.EnumBiddingMethodWithAggregatesFilter<"Listing"> | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.BigIntNullableWithAggregatesFilter<"Listing"> | bigint | number | null
+  bidIncrementCents?: Prisma.BigIntNullableWithAggregatesFilter<"Listing"> | bigint | number | null
+  allowBidConditions?: Prisma.BoolWithAggregatesFilter<"Listing"> | boolean
   bidWindowOpensAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Listing"> | Date | string | null
   bidWindowClosesAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Listing"> | Date | string | null
   validatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Listing"> | Date | string | null
@@ -554,6 +610,10 @@ export type ListingCreateInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -592,6 +652,10 @@ export type ListingUncheckedCreateInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -626,6 +690,10 @@ export type ListingUpdateInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -664,6 +732,10 @@ export type ListingUncheckedUpdateInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -700,6 +772,10 @@ export type ListingCreateManyInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -726,6 +802,10 @@ export type ListingUpdateManyMutationInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -754,6 +834,10 @@ export type ListingUncheckedUpdateManyInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -792,6 +876,10 @@ export type ListingCountOrderByAggregateInput = {
   availableFrom?: Prisma.SortOrder
   viewingNotes?: Prisma.SortOrder
   attributes?: Prisma.SortOrder
+  biddingMethod?: Prisma.SortOrder
+  minimumBidCents?: Prisma.SortOrder
+  bidIncrementCents?: Prisma.SortOrder
+  allowBidConditions?: Prisma.SortOrder
   bidWindowOpensAt?: Prisma.SortOrder
   bidWindowClosesAt?: Prisma.SortOrder
   validatedAt?: Prisma.SortOrder
@@ -807,6 +895,8 @@ export type ListingAvgOrderByAggregateInput = {
   askingPriceCents?: Prisma.SortOrder
   monthlyRentCents?: Prisma.SortOrder
   serviceCostsCents?: Prisma.SortOrder
+  minimumBidCents?: Prisma.SortOrder
+  bidIncrementCents?: Prisma.SortOrder
   version?: Prisma.SortOrder
 }
 
@@ -826,6 +916,10 @@ export type ListingMaxOrderByAggregateInput = {
   serviceCostsCents?: Prisma.SortOrder
   availableFrom?: Prisma.SortOrder
   viewingNotes?: Prisma.SortOrder
+  biddingMethod?: Prisma.SortOrder
+  minimumBidCents?: Prisma.SortOrder
+  bidIncrementCents?: Prisma.SortOrder
+  allowBidConditions?: Prisma.SortOrder
   bidWindowOpensAt?: Prisma.SortOrder
   bidWindowClosesAt?: Prisma.SortOrder
   validatedAt?: Prisma.SortOrder
@@ -853,6 +947,10 @@ export type ListingMinOrderByAggregateInput = {
   serviceCostsCents?: Prisma.SortOrder
   availableFrom?: Prisma.SortOrder
   viewingNotes?: Prisma.SortOrder
+  biddingMethod?: Prisma.SortOrder
+  minimumBidCents?: Prisma.SortOrder
+  bidIncrementCents?: Prisma.SortOrder
+  allowBidConditions?: Prisma.SortOrder
   bidWindowOpensAt?: Prisma.SortOrder
   bidWindowClosesAt?: Prisma.SortOrder
   validatedAt?: Prisma.SortOrder
@@ -868,6 +966,8 @@ export type ListingSumOrderByAggregateInput = {
   askingPriceCents?: Prisma.SortOrder
   monthlyRentCents?: Prisma.SortOrder
   serviceCostsCents?: Prisma.SortOrder
+  minimumBidCents?: Prisma.SortOrder
+  bidIncrementCents?: Prisma.SortOrder
   version?: Prisma.SortOrder
 }
 
@@ -971,6 +1071,10 @@ export type EnumListingPurposeFieldUpdateOperationsInput = {
 
 export type EnumListingStatusFieldUpdateOperationsInput = {
   set?: $Enums.ListingStatus
+}
+
+export type EnumBiddingMethodFieldUpdateOperationsInput = {
+  set?: $Enums.BiddingMethod
 }
 
 export type ListingCreateNestedOneWithoutMediaInput = {
@@ -1104,6 +1208,10 @@ export type ListingCreateWithoutOwnerInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -1140,6 +1248,10 @@ export type ListingUncheckedCreateWithoutOwnerInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -1205,6 +1317,10 @@ export type ListingScalarWhereInput = {
   availableFrom?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
   viewingNotes?: Prisma.StringNullableFilter<"Listing"> | string | null
   attributes?: Prisma.JsonNullableFilter<"Listing">
+  biddingMethod?: Prisma.EnumBiddingMethodFilter<"Listing"> | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.BigIntNullableFilter<"Listing"> | bigint | number | null
+  bidIncrementCents?: Prisma.BigIntNullableFilter<"Listing"> | bigint | number | null
+  allowBidConditions?: Prisma.BoolFilter<"Listing"> | boolean
   bidWindowOpensAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
   bidWindowClosesAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
   validatedAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
@@ -1231,6 +1347,10 @@ export type ListingCreateWithoutPropertyInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -1267,6 +1387,10 @@ export type ListingUncheckedCreateWithoutPropertyInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -1327,6 +1451,10 @@ export type ListingCreateWithoutMediaInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -1364,6 +1492,10 @@ export type ListingUncheckedCreateWithoutMediaInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -1413,6 +1545,10 @@ export type ListingUpdateWithoutMediaInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1450,6 +1586,10 @@ export type ListingUncheckedUpdateWithoutMediaInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1483,6 +1623,10 @@ export type ListingCreateWithoutFloorPlansInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -1520,6 +1664,10 @@ export type ListingUncheckedCreateWithoutFloorPlansInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -1569,6 +1717,10 @@ export type ListingUpdateWithoutFloorPlansInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1606,6 +1758,10 @@ export type ListingUncheckedUpdateWithoutFloorPlansInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1639,6 +1795,10 @@ export type ListingCreateWithoutIdentityAttemptsInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -1676,6 +1836,10 @@ export type ListingUncheckedCreateWithoutIdentityAttemptsInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -1725,6 +1889,10 @@ export type ListingUpdateWithoutIdentityAttemptsInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1762,6 +1930,10 @@ export type ListingUncheckedUpdateWithoutIdentityAttemptsInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1795,6 +1967,10 @@ export type ListingCreateWithoutPublicationOrdersInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -1832,6 +2008,10 @@ export type ListingUncheckedCreateWithoutPublicationOrdersInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -1881,6 +2061,10 @@ export type ListingUpdateWithoutPublicationOrdersInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1918,6 +2102,10 @@ export type ListingUncheckedUpdateWithoutPublicationOrdersInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1951,6 +2139,10 @@ export type ListingCreateWithoutPublicationsInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -1988,6 +2180,10 @@ export type ListingUncheckedCreateWithoutPublicationsInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -2037,6 +2233,10 @@ export type ListingUpdateWithoutPublicationsInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2074,6 +2274,10 @@ export type ListingUncheckedUpdateWithoutPublicationsInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2107,6 +2311,10 @@ export type ListingCreateWithoutBidsInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -2144,6 +2352,10 @@ export type ListingUncheckedCreateWithoutBidsInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -2193,6 +2405,10 @@ export type ListingUpdateWithoutBidsInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2230,6 +2446,10 @@ export type ListingUncheckedUpdateWithoutBidsInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2263,6 +2483,10 @@ export type ListingCreateWithoutLogbookExportsInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -2300,6 +2524,10 @@ export type ListingUncheckedCreateWithoutLogbookExportsInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -2349,6 +2577,10 @@ export type ListingUpdateWithoutLogbookExportsInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2386,6 +2618,10 @@ export type ListingUncheckedUpdateWithoutLogbookExportsInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2419,6 +2655,10 @@ export type ListingCreateWithoutAuditEventsInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -2456,6 +2696,10 @@ export type ListingUncheckedCreateWithoutAuditEventsInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -2505,6 +2749,10 @@ export type ListingUpdateWithoutAuditEventsInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2542,6 +2790,10 @@ export type ListingUncheckedUpdateWithoutAuditEventsInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2576,6 +2828,10 @@ export type ListingCreateManyOwnerInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -2602,6 +2858,10 @@ export type ListingUpdateWithoutOwnerInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2638,6 +2898,10 @@ export type ListingUncheckedUpdateWithoutOwnerInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2673,6 +2937,10 @@ export type ListingUncheckedUpdateManyWithoutOwnerInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2700,6 +2968,10 @@ export type ListingCreateManyPropertyInput = {
   availableFrom?: Date | string | null
   viewingNotes?: string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
   bidWindowOpensAt?: Date | string | null
   bidWindowClosesAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -2726,6 +2998,10 @@ export type ListingUpdateWithoutPropertyInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2762,6 +3038,10 @@ export type ListingUncheckedUpdateWithoutPropertyInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2797,6 +3077,10 @@ export type ListingUncheckedUpdateManyWithoutPropertyInput = {
   availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
   bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2919,6 +3203,10 @@ export type ListingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   availableFrom?: boolean
   viewingNotes?: boolean
   attributes?: boolean
+  biddingMethod?: boolean
+  minimumBidCents?: boolean
+  bidIncrementCents?: boolean
+  allowBidConditions?: boolean
   bidWindowOpensAt?: boolean
   bidWindowClosesAt?: boolean
   validatedAt?: boolean
@@ -2958,6 +3246,10 @@ export type ListingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   availableFrom?: boolean
   viewingNotes?: boolean
   attributes?: boolean
+  biddingMethod?: boolean
+  minimumBidCents?: boolean
+  bidIncrementCents?: boolean
+  allowBidConditions?: boolean
   bidWindowOpensAt?: boolean
   bidWindowClosesAt?: boolean
   validatedAt?: boolean
@@ -2988,6 +3280,10 @@ export type ListingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   availableFrom?: boolean
   viewingNotes?: boolean
   attributes?: boolean
+  biddingMethod?: boolean
+  minimumBidCents?: boolean
+  bidIncrementCents?: boolean
+  allowBidConditions?: boolean
   bidWindowOpensAt?: boolean
   bidWindowClosesAt?: boolean
   validatedAt?: boolean
@@ -3018,6 +3314,10 @@ export type ListingSelectScalar = {
   availableFrom?: boolean
   viewingNotes?: boolean
   attributes?: boolean
+  biddingMethod?: boolean
+  minimumBidCents?: boolean
+  bidIncrementCents?: boolean
+  allowBidConditions?: boolean
   bidWindowOpensAt?: boolean
   bidWindowClosesAt?: boolean
   validatedAt?: boolean
@@ -3029,7 +3329,7 @@ export type ListingSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "propertyId" | "purpose" | "status" | "publicSlug" | "titleNl" | "titleEn" | "descriptionNl" | "descriptionEn" | "askingPriceCents" | "monthlyRentCents" | "serviceCostsCents" | "availableFrom" | "viewingNotes" | "attributes" | "bidWindowOpensAt" | "bidWindowClosesAt" | "validatedAt" | "publicationRequestedAt" | "liveAt" | "finalizedAt" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
+export type ListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "propertyId" | "purpose" | "status" | "publicSlug" | "titleNl" | "titleEn" | "descriptionNl" | "descriptionEn" | "askingPriceCents" | "monthlyRentCents" | "serviceCostsCents" | "availableFrom" | "viewingNotes" | "attributes" | "biddingMethod" | "minimumBidCents" | "bidIncrementCents" | "allowBidConditions" | "bidWindowOpensAt" | "bidWindowClosesAt" | "validatedAt" | "publicationRequestedAt" | "liveAt" | "finalizedAt" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
 export type ListingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
@@ -3083,6 +3383,10 @@ export type $ListingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     availableFrom: Date | null
     viewingNotes: string | null
     attributes: runtime.JsonValue | null
+    biddingMethod: $Enums.BiddingMethod
+    minimumBidCents: bigint | null
+    bidIncrementCents: bigint | null
+    allowBidConditions: boolean
     bidWindowOpensAt: Date | null
     bidWindowClosesAt: Date | null
     validatedAt: Date | null
@@ -3541,6 +3845,10 @@ export interface ListingFieldRefs {
   readonly availableFrom: Prisma.FieldRef<"Listing", 'DateTime'>
   readonly viewingNotes: Prisma.FieldRef<"Listing", 'String'>
   readonly attributes: Prisma.FieldRef<"Listing", 'Json'>
+  readonly biddingMethod: Prisma.FieldRef<"Listing", 'BiddingMethod'>
+  readonly minimumBidCents: Prisma.FieldRef<"Listing", 'BigInt'>
+  readonly bidIncrementCents: Prisma.FieldRef<"Listing", 'BigInt'>
+  readonly allowBidConditions: Prisma.FieldRef<"Listing", 'Boolean'>
   readonly bidWindowOpensAt: Prisma.FieldRef<"Listing", 'DateTime'>
   readonly bidWindowClosesAt: Prisma.FieldRef<"Listing", 'DateTime'>
   readonly validatedAt: Prisma.FieldRef<"Listing", 'DateTime'>

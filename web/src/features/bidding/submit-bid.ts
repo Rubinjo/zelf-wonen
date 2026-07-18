@@ -15,6 +15,10 @@ export class BidSubmissionError extends Error {
             | "LISTING_NOT_LIVE"
             | "OWN_LISTING"
             | "BID_WINDOW_CLOSED"
+            | "BID_TOO_LOW"
+            | "BID_INCREMENT_INVALID"
+            | "BID_ALREADY_SUBMITTED"
+            | "CONDITIONS_NOT_ALLOWED"
             | "IDEMPOTENCY_CONFLICT"
             | "CHAIN_INVALID",
         message: string,
@@ -26,6 +30,16 @@ export class BidSubmissionError extends Error {
 
 function normalizedDate(value: string | null | undefined) {
     return value ? new Date(value).toISOString() : null;
+}
+
+function hasConditions(bid: SubmitBidInput) {
+    return (
+        bid.resolutiveConditions.financing ||
+        bid.resolutiveConditions.buildingInspection ||
+        bid.resolutiveConditions.saleOfCurrentHome ||
+        bid.resolutiveConditions.additionalConditions.length > 0 ||
+        Boolean(bid.financingDeadline)
+    );
 }
 
 function assertIdempotentMatch(
@@ -82,6 +96,10 @@ export async function submitBid(input: {
             select: {
                 status: true,
                 ownerId: true,
+                biddingMethod: true,
+                minimumBidCents: true,
+                bidIncrementCents: true,
+                allowBidConditions: true,
                 bidWindowOpensAt: true,
                 bidWindowClosesAt: true,
             },
@@ -107,6 +125,53 @@ export async function submitBid(input: {
                 "BID_WINDOW_CLOSED",
                 "The bidding window is not open",
             );
+        }
+        if (!listing.allowBidConditions && hasConditions(input.bid)) {
+            throw new BidSubmissionError(
+                "CONDITIONS_NOT_ALLOWED",
+                "This listing only accepts bids without conditions",
+            );
+        }
+
+        const amountCents = BigInt(input.bid.amountCents);
+        if (
+            listing.minimumBidCents !== null &&
+            amountCents < listing.minimumBidCents
+        ) {
+            throw new BidSubmissionError(
+                "BID_TOO_LOW",
+                `The minimum bid is ${listing.minimumBidCents.toString()} cents`,
+            );
+        }
+        if (listing.biddingMethod === "SEALED") {
+            const previousBid = await tx.bid.findFirst({
+                where: {
+                    listingId: input.listingId,
+                    bidderUserId: input.bidderUserId,
+                },
+                select: { id: true },
+            });
+            if (previousBid) {
+                throw new BidSubmissionError(
+                    "BID_ALREADY_SUBMITTED",
+                    "You can submit only one bid for this sealed bidding round",
+                );
+            }
+        }
+        if (listing.biddingMethod === "OPEN") {
+            const highestBid = await tx.bid.aggregate({
+                where: { listingId: input.listingId },
+                _max: { amountCents: true },
+            });
+            if (highestBid._max.amountCents !== null) {
+                const increment = listing.bidIncrementCents ?? BigInt(1);
+                if (amountCents < highestBid._max.amountCents + increment) {
+                    throw new BidSubmissionError(
+                        "BID_INCREMENT_INVALID",
+                        `The next bid must be at least ${(highestBid._max.amountCents + increment).toString()} cents`,
+                    );
+                }
+            }
         }
 
         const concurrentExisting = await tx.bid.findUnique({

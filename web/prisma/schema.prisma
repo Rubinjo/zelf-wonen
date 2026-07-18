@@ -157,6 +157,12 @@ enum BidEventType {
   EXPIRED
 }
 
+enum BiddingMethod {
+  PRIVATE
+  SEALED
+  OPEN
+}
+
 enum EstimateTier {
   MULTIMODAL_ML
   BASIC_ML
@@ -331,6 +337,10 @@ model Listing {
   availableFrom          DateTime?
   viewingNotes           String?
   attributes             Json?
+  biddingMethod          BiddingMethod                 @default(PRIVATE)
+  minimumBidCents        BigInt?
+  bidIncrementCents      BigInt?
+  allowBidConditions     Boolean                       @default(true)
   bidWindowOpensAt       DateTime?
   bidWindowClosesAt      DateTime?
   validatedAt            DateTime?

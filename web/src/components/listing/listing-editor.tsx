@@ -58,6 +58,10 @@ export type ListingView = {
     monthlyRentCents: string | null;
     serviceCostsCents: string | null;
     viewingNotes: string | null;
+    biddingMethod: "PRIVATE" | "SEALED" | "OPEN";
+    minimumBidCents: string | null;
+    bidIncrementCents: string | null;
+    allowBidConditions: boolean;
     bidWindowOpensAt: string | null;
     bidWindowClosesAt: string | null;
     property: {
@@ -125,6 +129,10 @@ type EditorState = {
     askingPrice: string;
     monthlyRent: string;
     serviceCosts: string;
+    biddingMethod: "PRIVATE" | "SEALED" | "OPEN";
+    minimumBid: string;
+    bidIncrement: string;
+    allowBidConditions: boolean;
     viewingNotes: string;
     floorplannerEmbedUrl: string;
     bidWindowOpensAt: string;
@@ -154,7 +162,7 @@ const sections: Array<{ id: Section; label: string; icon: typeof Building2 }> =
     [
         { id: "details", label: "Gegevens & tekst", icon: Building2 },
         { id: "media", label: "Foto's & plattegrond", icon: FileImage },
-        { id: "estimate", label: "Waardeschatting", icon: BadgeEuro },
+        { id: "estimate", label: "Prijs & bieden", icon: BadgeEuro },
         { id: "publish", label: "Controleren & publiceren", icon: Send },
         { id: "bids", label: "Biedlogboek", icon: ShieldCheck },
     ];
@@ -191,6 +199,10 @@ export function ListingEditor({
         askingPrice: euros(listing.askingPriceCents),
         monthlyRent: euros(listing.monthlyRentCents),
         serviceCosts: euros(listing.serviceCostsCents),
+        biddingMethod: listing.biddingMethod,
+        minimumBid: euros(listing.minimumBidCents),
+        bidIncrement: euros(listing.bidIncrementCents),
+        allowBidConditions: listing.allowBidConditions,
         viewingNotes: listing.viewingNotes ?? "",
         floorplannerEmbedUrl: listing.floorPlans[0]?.embedUrl ?? "",
         bidWindowOpensAt: listing.bidWindowOpensAt?.slice(0, 16) ?? "",
@@ -249,6 +261,13 @@ export function ListingEditor({
                     askingPriceCents: toCents(editor.askingPrice),
                     monthlyRentCents: toCents(editor.monthlyRent),
                     serviceCostsCents: toCents(editor.serviceCosts),
+                    biddingMethod: editor.biddingMethod,
+                    minimumBidCents: toCents(editor.minimumBid),
+                    bidIncrementCents:
+                        editor.biddingMethod === "OPEN"
+                            ? toCents(editor.bidIncrement)
+                            : null,
+                    allowBidConditions: editor.allowBidConditions,
                     viewingNotes: editor.viewingNotes || null,
                     floorplannerEmbedUrl: editor.floorplannerEmbedUrl || null,
                     bidWindowOpensAt: editor.bidWindowOpensAt
@@ -507,7 +526,13 @@ export function ListingEditor({
                         />
                     ) : null}
                     {section === "estimate" ? (
-                        <EstimateSection estimate={estimate} />
+                        <PriceAndBiddingSection
+                            listing={listing}
+                            editor={editor}
+                            setEditor={setEditor}
+                            editable={editable}
+                            estimate={estimate}
+                        />
                     ) : null}
                     {section === "publish" ? (
                         <PublishSection
@@ -685,44 +710,6 @@ function DetailsSection({
                         onChange={set("parkingSpacePrice")}
                     />
                 ) : null}
-                <Input
-                    label={
-                        listing.purpose === "SALE"
-                            ? "Vraagprijs (€)"
-                            : "Huurprijs per maand (€)"
-                    }
-                    type="number"
-                    value={
-                        listing.purpose === "SALE"
-                            ? editor.askingPrice
-                            : editor.monthlyRent
-                    }
-                    onChange={set(
-                        listing.purpose === "SALE"
-                            ? "askingPrice"
-                            : "monthlyRent",
-                    )}
-                />
-                {listing.purpose === "RENT" ? (
-                    <Input
-                        label="Servicekosten per maand (€)"
-                        type="number"
-                        value={editor.serviceCosts}
-                        onChange={set("serviceCosts")}
-                    />
-                ) : null}
-                <Input
-                    label="Bieden opent"
-                    type="datetime-local"
-                    value={editor.bidWindowOpensAt}
-                    onChange={set("bidWindowOpensAt")}
-                />
-                <Input
-                    label="Bieden sluit"
-                    type="datetime-local"
-                    value={editor.bidWindowClosesAt}
-                    onChange={set("bidWindowClosesAt")}
-                />
             </fieldset>
             <EnergyLabelPanel
                 listing={listing}
@@ -995,13 +982,9 @@ function MediaSection({
                 );
                 const payload = await response.json();
                 if (!response.ok)
-                    throw new Error(
-                        payload.error?.message ?? "Upload mislukt",
-                    );
-                const {
-                    listingVersion: nextListingVersion,
-                    ...media
-                } = payload.data as UploadedMedia;
+                    throw new Error(payload.error?.message ?? "Upload mislukt");
+                const { listingVersion: nextListingVersion, ...media } =
+                    payload.data as UploadedMedia;
                 listingVersion = nextListingVersion;
                 uploaded.push(media);
             }
@@ -1039,9 +1022,7 @@ function MediaSection({
                 text="Voeg woningfoto's en plattegronden afzonderlijk toe. Per bestand geldt een maximum van 20 MB."
             />
             <section className="mt-8">
-                <h3 className="text-xl font-semibold">
-                    {"Woningfoto's"}
-                </h3>
+                <h3 className="text-xl font-semibold">{"Woningfoto's"}</h3>
                 <p className="mt-1 text-sm leading-6 text-muted">
                     {"Selecteer meerdere JPG-, PNG- of WebP-foto's tegelijk."}
                 </p>
@@ -1119,19 +1100,19 @@ function MediaSection({
                     label="Plattegrond"
                 />
                 <div className="mt-7 border-t border-line pt-6">
-                <Input
-                    label="Floorplanner embed-URL"
-                    type="url"
-                    disabled={!editable}
-                    value={editor.floorplannerEmbedUrl}
-                    onChange={(event) =>
-                        setEditor((current) => ({
-                            ...current,
-                            floorplannerEmbedUrl: event.target.value,
-                        }))
-                    }
-                    placeholder="https://floorplanner.com/..."
-                />
+                    <Input
+                        label="Floorplanner embed-URL"
+                        type="url"
+                        disabled={!editable}
+                        value={editor.floorplannerEmbedUrl}
+                        onChange={(event) =>
+                            setEditor((current) => ({
+                                ...current,
+                                floorplannerEmbedUrl: event.target.value,
+                            }))
+                        }
+                        placeholder="https://floorplanner.com/..."
+                    />
                     <p className="mt-2 text-xs leading-5 text-muted">
                         Gebruik de Viewer- of Spaceplanner-link van een openbaar
                         Level 3-project. De interactieve plattegrond wordt na
@@ -1207,9 +1188,35 @@ function MediaGrid({
     );
 }
 
-function EstimateSection({
+const biddingMethods = [
+    {
+        value: "PRIVATE",
+        title: "Onderhands bieden",
+        text: "Biedingen zijn alleen zichtbaar voor jou en mogen tijdens de looptijd worden aangevuld.",
+    },
+    {
+        value: "SEALED",
+        title: "Gesloten inschrijving",
+        text: "Iedere bieder brengt één definitief bod uit vóór de sluiting.",
+    },
+    {
+        value: "OPEN",
+        title: "Transparant opbieden",
+        text: "Het hoogste bod is zichtbaar en een nieuw bod volgt minimaal de ingestelde biedstap.",
+    },
+] as const;
+
+function PriceAndBiddingSection({
+    listing,
+    editor,
+    setEditor,
+    editable,
     estimate,
 }: {
+    listing: ListingView;
+    editor: EditorState;
+    setEditor: React.Dispatch<React.SetStateAction<EditorState>>;
+    editable: boolean;
     estimate: {
         mutate: () => void;
         isPending: boolean;
@@ -1225,25 +1232,174 @@ function EstimateSection({
     };
 }) {
     const value = estimate.data;
+    const set = (key: string) => (event: ChangeEvent<HTMLInputElement>) =>
+        setEditor((current) => ({
+            ...current,
+            [key]: event.target.value,
+        }));
     return (
         <div>
             <SectionHeading
-                icon={Sparkles}
-                title="Hybride waardeschatting"
-                text="Fotoanalyse en een deterministisch prijsmodel worden gecombineerd. Bij uitval schakelen we automatisch terug naar een lokale m²-berekening."
+                icon={BadgeEuro}
+                title="Prijs & bieden"
+                text="Bepaal de prijsstrategie en leg vast hoe, wanneer en onder welke voorwaarden geïnteresseerden kunnen bieden."
             />
-            <button
-                onClick={() => estimate.mutate()}
-                disabled={estimate.isPending}
-                className="mt-8 inline-flex h-12 items-center gap-2 rounded-full bg-brand px-6 font-semibold text-white disabled:opacity-60"
+            <fieldset
+                disabled={!editable}
+                className="mt-9 space-y-9 disabled:opacity-70"
             >
-                {estimate.isPending ? (
-                    <LoaderCircle className="animate-spin" size={18} />
-                ) : (
-                    <BadgeEuro size={18} />
-                )}{" "}
-                Bereken indicatie
-            </button>
+                <div>
+                    <h3 className="text-lg font-semibold">Prijsstelling</h3>
+                    <div className="mt-4 grid gap-5 sm:grid-cols-2">
+                        <Input
+                            label={
+                                listing.purpose === "SALE"
+                                    ? "Vraagprijs (€)"
+                                    : "Huurprijs per maand (€)"
+                            }
+                            type="number"
+                            min="1"
+                            step="1"
+                            value={
+                                listing.purpose === "SALE"
+                                    ? editor.askingPrice
+                                    : editor.monthlyRent
+                            }
+                            onChange={set(
+                                listing.purpose === "SALE"
+                                    ? "askingPrice"
+                                    : "monthlyRent",
+                            )}
+                        />
+                        {listing.purpose === "RENT" ? (
+                            <Input
+                                label="Servicekosten per maand (€)"
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={editor.serviceCosts}
+                                onChange={set("serviceCosts")}
+                            />
+                        ) : (
+                            <Input
+                                label="Minimaal bod (€)"
+                                type="number"
+                                min="1"
+                                step="1"
+                                value={editor.minimumBid}
+                                onChange={set("minimumBid")}
+                            />
+                        )}
+                    </div>
+                </div>
+
+                <div className="border-t border-line pt-8">
+                    <h3 className="text-lg font-semibold">Manier van bieden</h3>
+                    <div className="mt-4 grid gap-3 lg:grid-cols-3">
+                        {biddingMethods.map((method) => (
+                            <label
+                                key={method.value}
+                                className={`cursor-pointer border p-4 transition ${editor.biddingMethod === method.value ? "border-brand bg-brand/5" : "border-line hover:border-brand/40"}`}
+                            >
+                                <span className="flex items-center gap-3">
+                                    <input
+                                        type="radio"
+                                        name="biddingMethod"
+                                        value={method.value}
+                                        checked={
+                                            editor.biddingMethod ===
+                                            method.value
+                                        }
+                                        onChange={() =>
+                                            setEditor((current) => ({
+                                                ...current,
+                                                biddingMethod: method.value,
+                                            }))
+                                        }
+                                        className="size-4 accent-brand"
+                                    />
+                                    <span className="font-semibold">
+                                        {method.title}
+                                    </span>
+                                </span>
+                                <span className="mt-3 block text-xs leading-5 text-muted">
+                                    {method.text}
+                                </span>
+                            </label>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="grid gap-5 border-t border-line pt-8 sm:grid-cols-2">
+                    <Input
+                        label="Bieden mogelijk vanaf"
+                        type="datetime-local"
+                        value={editor.bidWindowOpensAt}
+                        onChange={set("bidWindowOpensAt")}
+                    />
+                    <Input
+                        label={
+                            editor.biddingMethod === "SEALED"
+                                ? "Inschrijving sluit"
+                                : "Bieden mogelijk tot"
+                        }
+                        type="datetime-local"
+                        value={editor.bidWindowClosesAt}
+                        onChange={set("bidWindowClosesAt")}
+                    />
+                    {editor.biddingMethod === "OPEN" ? (
+                        <Input
+                            label="Minimale biedstap (€)"
+                            type="number"
+                            min="1"
+                            step="1"
+                            value={editor.bidIncrement}
+                            onChange={set("bidIncrement")}
+                        />
+                    ) : null}
+                    <label className="flex items-center gap-3 self-end border border-line px-4 py-3 text-sm font-semibold">
+                        <input
+                            type="checkbox"
+                            checked={editor.allowBidConditions}
+                            onChange={(event) =>
+                                setEditor((current) => ({
+                                    ...current,
+                                    allowBidConditions: event.target.checked,
+                                }))
+                            }
+                            className="size-4 accent-brand"
+                        />
+                        Biedingen met voorwaarden toestaan
+                    </label>
+                </div>
+            </fieldset>
+
+            <div className="mt-10 border-t border-line pt-8">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <h3 className="flex items-center gap-2 text-lg font-semibold">
+                            <Sparkles size={18} className="text-brand" />
+                            Waardeschatting
+                        </h3>
+                        <p className="mt-1 max-w-xl text-sm leading-6 text-muted">
+                            Gebruik woningkenmerken en foto&apos;s voor een
+                            indicatieve marktwaarde en bandbreedte.
+                        </p>
+                    </div>
+                    <button
+                        onClick={() => estimate.mutate()}
+                        disabled={estimate.isPending}
+                        className="inline-flex h-12 items-center gap-2 rounded-full bg-brand px-6 font-semibold text-white disabled:opacity-60"
+                    >
+                        {estimate.isPending ? (
+                            <LoaderCircle className="animate-spin" size={18} />
+                        ) : (
+                            <BadgeEuro size={18} />
+                        )}{" "}
+                        Bereken indicatie
+                    </button>
+                </div>
+            </div>
             {estimate.error ? (
                 <p className="mt-5 rounded-2xl bg-red-50 p-4 text-sm text-red-700">
                     {estimate.error.message}

@@ -416,6 +416,13 @@ export type EnumListingStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumListingStatusFilter<$PrismaModel> | $Enums.ListingStatus
 }
 
+export type EnumBiddingMethodFilter<$PrismaModel = never> = {
+  equals?: $Enums.BiddingMethod | Prisma.EnumBiddingMethodFieldRefInput<$PrismaModel>
+  in?: $Enums.BiddingMethod[] | Prisma.ListEnumBiddingMethodFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BiddingMethod[] | Prisma.ListEnumBiddingMethodFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBiddingMethodFilter<$PrismaModel> | $Enums.BiddingMethod
+}
+
 export type EnumListingPurposeWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.ListingPurpose | Prisma.EnumListingPurposeFieldRefInput<$PrismaModel>
   in?: $Enums.ListingPurpose[] | Prisma.ListEnumListingPurposeFieldRefInput<$PrismaModel>
@@ -434,6 +441,16 @@ export type EnumListingStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumListingStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumListingStatusFilter<$PrismaModel>
+}
+
+export type EnumBiddingMethodWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BiddingMethod | Prisma.EnumBiddingMethodFieldRefInput<$PrismaModel>
+  in?: $Enums.BiddingMethod[] | Prisma.ListEnumBiddingMethodFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BiddingMethod[] | Prisma.ListEnumBiddingMethodFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBiddingMethodWithAggregatesFilter<$PrismaModel> | $Enums.BiddingMethod
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBiddingMethodFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBiddingMethodFilter<$PrismaModel>
 }
 
 export type EnumMediaKindFilter<$PrismaModel = never> = {
@@ -1148,6 +1165,13 @@ export type NestedEnumListingStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumListingStatusFilter<$PrismaModel> | $Enums.ListingStatus
 }
 
+export type NestedEnumBiddingMethodFilter<$PrismaModel = never> = {
+  equals?: $Enums.BiddingMethod | Prisma.EnumBiddingMethodFieldRefInput<$PrismaModel>
+  in?: $Enums.BiddingMethod[] | Prisma.ListEnumBiddingMethodFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BiddingMethod[] | Prisma.ListEnumBiddingMethodFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBiddingMethodFilter<$PrismaModel> | $Enums.BiddingMethod
+}
+
 export type NestedEnumListingPurposeWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.ListingPurpose | Prisma.EnumListingPurposeFieldRefInput<$PrismaModel>
   in?: $Enums.ListingPurpose[] | Prisma.ListEnumListingPurposeFieldRefInput<$PrismaModel>
@@ -1166,6 +1190,16 @@ export type NestedEnumListingStatusWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumListingStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumListingStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumBiddingMethodWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BiddingMethod | Prisma.EnumBiddingMethodFieldRefInput<$PrismaModel>
+  in?: $Enums.BiddingMethod[] | Prisma.ListEnumBiddingMethodFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BiddingMethod[] | Prisma.ListEnumBiddingMethodFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBiddingMethodWithAggregatesFilter<$PrismaModel> | $Enums.BiddingMethod
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBiddingMethodFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBiddingMethodFilter<$PrismaModel>
 }
 
 export type NestedEnumMediaKindFilter<$PrismaModel = never> = {

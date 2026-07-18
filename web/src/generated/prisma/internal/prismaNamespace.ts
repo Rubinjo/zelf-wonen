@@ -2087,6 +2087,10 @@ export const ListingScalarFieldEnum = {
   availableFrom: 'availableFrom',
   viewingNotes: 'viewingNotes',
   attributes: 'attributes',
+  biddingMethod: 'biddingMethod',
+  minimumBidCents: 'minimumBidCents',
+  bidIncrementCents: 'bidIncrementCents',
+  allowBidConditions: 'allowBidConditions',
   bidWindowOpensAt: 'bidWindowOpensAt',
   bidWindowClosesAt: 'bidWindowClosesAt',
   validatedAt: 'validatedAt',
@@ -2573,6 +2577,20 @@ export type EnumListingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'ListingStatus[]'
  */
 export type ListEnumListingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ListingStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'BiddingMethod'
+ */
+export type EnumBiddingMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BiddingMethod'>
+    
+
+
+/**
+ * Reference to a field of type 'BiddingMethod[]'
+ */
+export type ListEnumBiddingMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BiddingMethod[]'>
     
 
 

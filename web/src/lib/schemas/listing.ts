@@ -9,6 +9,12 @@ const centsSchema = z
         (value) => /^\d+$/.test(value) && BigInt(value) <= maxDatabaseBigInt,
         "Amount exceeds the supported maximum",
     );
+const positiveCentsSchema = centsSchema.refine(
+    (value) => BigInt(value) > 0,
+    "Amount must be greater than zero",
+);
+
+export const biddingMethodSchema = z.enum(["PRIVATE", "SEALED", "OPEN"]);
 
 export const propertyTypeSchema = z.enum([
     "HOUSE",
@@ -167,6 +173,10 @@ export const updateListingSchema = z
         availableFrom: z.string().datetime().nullable().optional(),
         viewingNotes: z.string().trim().max(2_000).nullable().optional(),
         attributes: listingAttributesSchema.nullable().optional(),
+        biddingMethod: biddingMethodSchema.optional(),
+        minimumBidCents: positiveCentsSchema.nullable().optional(),
+        bidIncrementCents: positiveCentsSchema.nullable().optional(),
+        allowBidConditions: z.boolean().optional(),
         bidWindowOpensAt: z.string().datetime().nullable().optional(),
         bidWindowClosesAt: z.string().datetime().nullable().optional(),
         floorplannerEmbedUrl: z.string().url().max(2_000).nullable().optional(),

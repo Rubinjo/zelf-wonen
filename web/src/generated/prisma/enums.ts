@@ -216,6 +216,15 @@ export const BidEventType = {
 export type BidEventType = (typeof BidEventType)[keyof typeof BidEventType]
 
 
+export const BiddingMethod = {
+  PRIVATE: 'PRIVATE',
+  SEALED: 'SEALED',
+  OPEN: 'OPEN'
+} as const
+
+export type BiddingMethod = (typeof BiddingMethod)[keyof typeof BiddingMethod]
+
+
 export const EstimateTier = {
   MULTIMODAL_ML: 'MULTIMODAL_ML',
   BASIC_ML: 'BASIC_ML',
