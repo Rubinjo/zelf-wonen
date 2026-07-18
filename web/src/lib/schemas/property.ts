@@ -17,6 +17,9 @@ export const propertyDataSchema = z.object({
     bagAddressId: z.string().nullable(),
     bagBuildingId: z.string().nullable(),
     cadastralParcelId: z.string().nullable(),
+    suggestedPropertyType: z
+        .enum(["HOUSE", "APARTMENT", "PARKING", "LAND", "COMMERCIAL", "OTHER"])
+        .nullable(),
     address: z.object({
         postcode: dutchPostcodeSchema,
         houseNumber: z.number().int().positive(),
@@ -30,6 +33,9 @@ export const propertyDataSchema = z.object({
         .object({ latitude: z.number(), longitude: z.number() })
         .nullable(),
     officialLandAreaSqm: z.number().nonnegative().nullable(),
+    livingAreaSqm: z.number().positive().nullable(),
+    roomCount: z.number().int().positive().nullable(),
+    bedroomCount: z.number().int().nonnegative().nullable(),
     constructionYear: z.number().int().min(1000).max(2200).nullable(),
     energy: z
         .object({
@@ -54,7 +60,7 @@ export const propertyDataSchema = z.object({
         .nullable(),
     sources: z.array(
         z.object({
-            provider: z.enum(["PDOK", "KADASTER", "RVO_EP_ONLINE"]),
+            provider: z.enum(["PDOK", "BAG", "KADASTER", "RVO_EP_ONLINE"]),
             retrievedAt: z.string().datetime(),
         }),
     ),

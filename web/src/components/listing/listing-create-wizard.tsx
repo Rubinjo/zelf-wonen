@@ -86,8 +86,10 @@ export function ListingCreateWizard() {
                 cadastralParcelId: propertyData?.cadastralParcelId ?? null,
                 latitude: propertyData?.coordinates?.latitude ?? null,
                 longitude: propertyData?.coordinates?.longitude ?? null,
-                officialLandAreaSqm: propertyData?.officialLandAreaSqm ?? null,
-                constructionYear: propertyData?.constructionYear ?? null,
+                officialLandAreaSqm:
+                    Number(form.get("officialLandAreaSqm")) || null,
+                constructionYear:
+                    Number(form.get("constructionYear")) || null,
                 livingAreaSqm: Number(form.get("livingAreaSqm")) || null,
                 roomCount: Number(form.get("roomCount")) || null,
                 bedroomCount: Number(form.get("bedroomCount")) || null,
@@ -292,7 +294,14 @@ export function ListingCreateWizard() {
                             </select>
                         </Field>
                         <Field label="Woningtype">
-                            <select name="propertyType" className="input">
+                            <select
+                                name="propertyType"
+                                defaultValue={
+                                    propertyData?.suggestedPropertyType ??
+                                    "HOUSE"
+                                }
+                                className="input"
+                            >
                                 <option value="HOUSE">Woonhuis</option>
                                 <option value="APARTMENT">Appartement</option>
                                 <option value="PARKING">Parkeerplaats</option>
@@ -308,6 +317,21 @@ export function ListingCreateWizard() {
                                 min="1"
                                 step="0.1"
                                 required
+                                defaultValue={
+                                    propertyData?.livingAreaSqm ?? ""
+                                }
+                                className="input"
+                            />
+                        </Field>
+                        <Field label="Perceeloppervlak (m²)">
+                            <input
+                                name="officialLandAreaSqm"
+                                type="number"
+                                min="0"
+                                step="0.1"
+                                defaultValue={
+                                    propertyData?.officialLandAreaSqm ?? ""
+                                }
                                 className="input"
                             />
                         </Field>
@@ -317,6 +341,7 @@ export function ListingCreateWizard() {
                                 type="number"
                                 min="1"
                                 required
+                                defaultValue={propertyData?.roomCount ?? ""}
                                 className="input"
                             />
                         </Field>
@@ -325,6 +350,19 @@ export function ListingCreateWizard() {
                                 name="bedroomCount"
                                 type="number"
                                 min="0"
+                                defaultValue={propertyData?.bedroomCount ?? ""}
+                                className="input"
+                            />
+                        </Field>
+                        <Field label="Bouwjaar">
+                            <input
+                                name="constructionYear"
+                                type="number"
+                                min="1000"
+                                max="2200"
+                                defaultValue={
+                                    propertyData?.constructionYear ?? ""
+                                }
                                 className="input"
                             />
                         </Field>

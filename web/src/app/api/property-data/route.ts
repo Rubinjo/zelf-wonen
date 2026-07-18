@@ -5,6 +5,8 @@ import {
     requireEmailVerifiedUser,
 } from "@/features/auth/guards";
 import { db } from "@/lib/db";
+import { BagWfsClient } from "@/lib/integrations/property-data/bag-wfs-client";
+import { KadasterWfsClient } from "@/lib/integrations/property-data/kadaster-wfs-client";
 import { PdokClient } from "@/lib/integrations/property-data/pdok-client";
 import {
     addressLookupSchema,
@@ -12,6 +14,8 @@ import {
 } from "@/lib/schemas/property";
 
 const pdok = new PdokClient();
+const bag = new BagWfsClient();
+const kadaster = new KadasterWfsClient();
 
 const energyLabelNames = {
     A_PLUS_PLUS_PLUS_PLUS_PLUS: "A+++++",
@@ -51,6 +55,23 @@ export async function GET(request: NextRequest) {
             );
         }
 
+        const [bagData, cadastralData] = await Promise.all([
+            pdokAddress.bagObjectId
+                ? bag.lookupObject(pdokAddress.bagObjectId).catch((error) => {
+                      console.error("BAG enrichment failed", error);
+                      return null;
+                  })
+                : null,
+            pdokAddress.cadastralParcelIds.length === 1
+                ? kadaster
+                      .lookupParcel(pdokAddress.cadastralParcelIds[0])
+                      .catch((error) => {
+                          console.error("Kadaster enrichment failed", error);
+                          return null;
+                      })
+                : null,
+        ]);
+
         // Kadaster/EP-Online sync workers normalize licensed/API data into these tables.
         const storedProperty = await db.property.findFirst({
             where: {
@@ -81,10 +102,20 @@ export async function GET(request: NextRequest) {
 
         const data = propertyDataSchema.parse({
             ...pdokAddress,
-            cadastralParcelId: storedProperty?.cadastralParcelId ?? null,
+            bagBuildingId: bagData?.bagBuildingId ?? null,
+            cadastralParcelId:
+                storedProperty?.cadastralParcelId ??
+                cadastralData?.cadastralParcelId ??
+                null,
+            suggestedPropertyType: bagData?.suggestedPropertyType ?? null,
             officialLandAreaSqm: storedProperty?.officialLandAreaSqm
                 ? Number(storedProperty.officialLandAreaSqm)
-                : null,
+                : (cadastralData?.officialLandAreaSqm ?? null),
+            livingAreaSqm: bagData?.livingAreaSqm ?? null,
+            roomCount: null,
+            bedroomCount: null,
+            constructionYear:
+                bagData?.constructionYear ?? pdokAddress.constructionYear,
             energy:
                 latestEnergy && labelClass
                     ? {
@@ -103,7 +134,15 @@ export async function GET(request: NextRequest) {
                     : null,
             sources: [
                 { provider: "PDOK", retrievedAt: new Date().toISOString() },
-                ...(storedProperty?.cadastralParcelId
+                ...(bagData
+                    ? [
+                          {
+                              provider: "BAG" as const,
+                              retrievedAt: new Date().toISOString(),
+                          },
+                      ]
+                    : []),
+                ...(storedProperty?.cadastralParcelId || cadastralData
                     ? [
                           {
                               provider: "KADASTER" as const,

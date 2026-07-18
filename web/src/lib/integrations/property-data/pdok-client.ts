@@ -15,6 +15,7 @@ type PdokDocument = {
     provincienaam?: string;
     centroide_ll?: string;
     bouwjaar?: string;
+    gekoppeld_perceel?: string[];
 };
 
 type PdokResponse = {
@@ -63,7 +64,8 @@ export class PdokClient {
 
         return {
             bagAddressId: document.nummeraanduiding_id ?? null,
-            bagBuildingId: document.adresseerbaarobject_id ?? null,
+            bagObjectId: document.adresseerbaarobject_id ?? null,
+            cadastralParcelIds: document.gekoppeld_perceel ?? [],
             address: {
                 postcode:
                     document.postcode?.replace(/\s/g, "") ?? input.postcode,
