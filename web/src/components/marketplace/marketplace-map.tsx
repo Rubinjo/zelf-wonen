@@ -59,16 +59,7 @@ function FitListings({
     const map = useMap();
 
     useEffect(() => {
-        if (activeBounds) {
-            map.fitBounds(
-                [
-                    [activeBounds.south, activeBounds.west],
-                    [activeBounds.north, activeBounds.east],
-                ],
-                { padding: [24, 24] },
-            );
-            return;
-        }
+        if (activeBounds) return;
         if (positions.length === 0) return;
         if (positions.length === 1) {
             map.setView(positions[0], 13);
@@ -205,6 +196,14 @@ export function MarketplaceMap({
         <MapContainer
             center={[52.1326, 5.2913] as LatLngExpression}
             zoom={7}
+            bounds={
+                activeBounds
+                    ? [
+                          [activeBounds.south, activeBounds.west],
+                          [activeBounds.north, activeBounds.east],
+                      ]
+                    : undefined
+            }
             scrollWheelZoom
             className="h-full min-h-96 w-full"
         >
