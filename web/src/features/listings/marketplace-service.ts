@@ -8,6 +8,13 @@ export type MarketplaceSearchParams = Record<
     string | string[] | undefined
 >;
 
+export type MarketplaceBounds = {
+    north: number;
+    east: number;
+    south: number;
+    west: number;
+};
+
 export type MarketplaceListing = {
     id: string;
     slug: string;
@@ -31,6 +38,7 @@ export type MarketplaceListing = {
     priceCents: string | null;
     serviceCostsCents: string | null;
     imageUrl: string | null;
+    imageUrls: string[];
     imageAlt: string;
     liveAt: string | null;
 };
@@ -48,6 +56,7 @@ export type MarketplaceFilters = {
     energyLabels: string[];
     amenities: string[];
     parkingOptions: string[];
+    bounds: MarketplaceBounds | null;
     sort: "newest" | "price_asc" | "price_desc" | "area_desc";
     page: number;
 };
@@ -108,6 +117,14 @@ function positiveNumber(value: string | undefined) {
     return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
 }
 
+function coordinate(value: string | undefined, min: number, max: number) {
+    if (!value) return null;
+    const parsed = Number(value);
+    return Number.isFinite(parsed) && parsed >= min && parsed <= max
+        ? parsed
+        : null;
+}
+
 function allowedValues(
     value: string | string[] | undefined,
     allowed: readonly string[],
@@ -119,6 +136,19 @@ export function parseMarketplaceFilters(
     searchParams: MarketplaceSearchParams,
 ): MarketplaceFilters {
     const sort = first(searchParams.sort);
+    const north = coordinate(first(searchParams.north), -90, 90);
+    const east = coordinate(first(searchParams.east), -180, 180);
+    const south = coordinate(first(searchParams.south), -90, 90);
+    const west = coordinate(first(searchParams.west), -180, 180);
+    const bounds =
+        north !== null &&
+        east !== null &&
+        south !== null &&
+        west !== null &&
+        south < north &&
+        west < east
+            ? { north, east, south, west }
+            : null;
     return {
         purpose: first(searchParams.purpose) === "RENT" ? "RENT" : "SALE",
         query: first(searchParams.q)?.trim().slice(0, 100) ?? "",
@@ -137,6 +167,7 @@ export function parseMarketplaceFilters(
         ),
         amenities: allowedValues(searchParams.amenity, amenities),
         parkingOptions: allowedValues(searchParams.parking, parkingOptions),
+        bounds,
         sort: ["price_asc", "price_desc", "area_desc"].includes(sort ?? "")
             ? (sort as MarketplaceFilters["sort"])
             : "newest",
@@ -178,6 +209,16 @@ export async function searchMarketplaceListings(
     }
     if (filters.constructionYearMin !== null) {
         propertyFilter.constructionYear = { gte: filters.constructionYearMin };
+    }
+    if (filters.bounds) {
+        propertyFilter.latitude = {
+            gte: filters.bounds.south,
+            lte: filters.bounds.north,
+        };
+        propertyFilter.longitude = {
+            gte: filters.bounds.west,
+            lte: filters.bounds.east,
+        };
     }
     if (filters.amenities.length > 0) {
         propertyFilter.amenities = {
@@ -283,7 +324,7 @@ export async function searchMarketplaceListings(
                 media: {
                     where: { kind: "PHOTO", status: "READY" },
                     orderBy: { sortOrder: "asc" },
-                    take: 1,
+                    take: 3,
                 },
             },
         }),
@@ -327,6 +368,7 @@ export async function searchMarketplaceListings(
             imageUrl: listing.media[0]
                 ? `/${listing.media[0].storageKey}`
                 : null,
+            imageUrls: listing.media.map((media) => `/${media.storageKey}`),
             imageAlt: listing.media[0]?.altTextNl || address,
             liveAt: listing.liveAt?.toISOString() ?? null,
         };

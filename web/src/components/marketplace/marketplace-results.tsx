@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { startTransition, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
     BedDouble,
     Building2,
@@ -13,8 +14,12 @@ import {
     List,
     Map,
     Maximize2,
+    PanelRightOpen,
 } from "lucide-react";
-import type { MarketplaceListing } from "@/features/listings/marketplace-service";
+import type {
+    MarketplaceBounds,
+    MarketplaceListing,
+} from "@/features/listings/marketplace-service";
 
 const MarketplaceMap = dynamic(
     () =>
@@ -101,10 +106,15 @@ function FavoriteButton({
 
 export function MarketplaceResults({
     listings,
+    activeBounds,
 }: {
     listings: MarketplaceListing[];
+    activeBounds: MarketplaceBounds | null;
 }) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [mobileView, setMobileView] = useState<"list" | "map">("list");
+    const [mapCollapsed, setMapCollapsed] = useState(false);
     const [selectedId, setSelectedId] = useState<string | null>(
         listings[0]?.id ?? null,
     );
@@ -133,6 +143,26 @@ export function MarketplaceResults({
         document
             .getElementById(`listing-${listingId}`)
             ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function searchMapBounds(bounds: MarketplaceBounds) {
+        const next = new URLSearchParams(searchParams.toString());
+        for (const [key, value] of Object.entries(bounds)) {
+            next.set(key, value.toFixed(6));
+        }
+        next.delete("page");
+        startTransition(() => router.push(`/zoeken?${next.toString()}`));
+    }
+
+    function clearMapBounds() {
+        const next = new URLSearchParams(searchParams.toString());
+        for (const key of ["north", "east", "south", "west"]) {
+            next.delete(key);
+        }
+        next.delete("page");
+        startTransition(() =>
+            router.push(`/zoeken${next.size ? `?${next.toString()}` : ""}`),
+        );
     }
 
     if (listings.length === 0) {
@@ -174,11 +204,29 @@ export function MarketplaceResults({
                     <Map size={17} /> Kaart
                 </button>
             </div>
-            <div className="lg:grid lg:grid-cols-[minmax(0,760px)_minmax(420px,1fr)]">
+            <div
+                className={`lg:grid ${mapCollapsed ? "lg:grid-cols-1" : "lg:grid-cols-[minmax(0,760px)_minmax(420px,1fr)]"}`}
+            >
                 <div
                     className={`${mobileView === "list" ? "block" : "hidden"} bg-background px-4 py-5 sm:px-6 lg:block lg:px-8 lg:py-8`}
                 >
-                    <div className="grid gap-5 sm:grid-cols-2">
+                    {mapCollapsed ? (
+                        <div className="mb-5 hidden items-center justify-between lg:flex">
+                            <span className="text-sm font-semibold text-muted">
+                                Kaart geminimaliseerd
+                            </span>
+                            <button
+                                type="button"
+                                onClick={() => setMapCollapsed(false)}
+                                className="inline-flex h-10 items-center gap-2 rounded-md border border-line bg-white px-4 text-sm font-semibold text-brand transition hover:border-brand"
+                            >
+                                <PanelRightOpen size={17} /> Kaart tonen
+                            </button>
+                        </div>
+                    ) : null}
+                    <div
+                        className={`grid gap-5 sm:grid-cols-2 ${mapCollapsed ? "lg:grid-cols-3 xl:grid-cols-4" : ""}`}
+                    >
                         {listings.map((listing) => (
                             <article
                                 id={`listing-${listing.id}`}
@@ -266,12 +314,16 @@ export function MarketplaceResults({
                     </div>
                 </div>
                 <div
-                    className={`${mobileView === "map" ? "block" : "hidden"} h-[calc(100vh-8.5rem)] overflow-hidden lg:sticky lg:top-34 lg:block`}
+                    className={`${mobileView === "map" ? "block" : "hidden"} h-[calc(100vh-8.5rem)] overflow-hidden ${mapCollapsed ? "lg:hidden" : "lg:sticky lg:top-34 lg:block"}`}
                 >
                     <MarketplaceMap
                         listings={listings}
                         selectedId={selectedId}
                         onSelect={selectFromMap}
+                        activeBounds={activeBounds}
+                        onSearchBounds={searchMapBounds}
+                        onClearBounds={clearMapBounds}
+                        onCollapse={() => setMapCollapsed(true)}
                     />
                 </div>
             </div>
