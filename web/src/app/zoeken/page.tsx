@@ -109,6 +109,11 @@ export default async function SearchPage({
     const selectedEnergyLabels = values(params.energyLabel);
     const selectedAmenities = values(params.amenity);
     const selectedParking = values(params.parking);
+    const buildingFilterCount =
+        Number(
+            result.filters.constructionYearMin !== null ||
+                result.filters.constructionYearMax !== null,
+        ) + Number(result.filters.monumentFilter !== "all");
     return (
         <div className="min-h-screen bg-background">
             <header className="border-b border-line bg-white">
@@ -419,9 +424,8 @@ export default async function SearchPage({
                     >
                         <summary className="marketplace-filter-trigger">
                             Gebouwd vanaf
-                            {params.constructionYearMin ||
-                            params.constructionYearMax
-                                ? " · 1"
+                            {buildingFilterCount
+                                ? ` · ${buildingFilterCount}`
                                 : ""}
                         </summary>
                         <div className="marketplace-filter-panel marketplace-filter-panel-right grid w-60 gap-3">
@@ -453,31 +457,30 @@ export default async function SearchPage({
                                     className="marketplace-filter-input mt-1.5"
                                 />
                             </label>
-                            <button className="h-10 rounded-md bg-brand text-sm font-semibold text-white">
-                                Toepassen
-                            </button>
-                        </div>
-                    </details>
-                    <details
-                        name="marketplace-filters"
-                        className="group relative shrink-0"
-                    >
-                        <summary className="marketplace-filter-trigger">
-                            Monument
-                            {result.filters.monumentOnly ? " · 1" : ""}
-                        </summary>
-                        <div className="marketplace-filter-panel marketplace-filter-panel-right w-64">
-                            <label className="flex cursor-pointer items-center gap-3 text-sm">
-                                <input
-                                    type="checkbox"
+                            <label className="text-xs font-semibold text-muted">
+                                Monumentstatus
+                                <select
                                     name="isMonument"
-                                    value="true"
-                                    defaultChecked={result.filters.monumentOnly}
-                                    className="size-4 accent-brand"
-                                />
-                                Alleen monumentale panden
+                                    defaultValue={
+                                        result.filters.monumentFilter === "only"
+                                            ? "true"
+                                            : result.filters.monumentFilter ===
+                                                "exclude"
+                                              ? "false"
+                                              : ""
+                                    }
+                                    className="marketplace-filter-input mt-1.5"
+                                >
+                                    <option value="">Alle panden</option>
+                                    <option value="true">
+                                        Alleen monumentale panden
+                                    </option>
+                                    <option value="false">
+                                        Monumentale panden uitsluiten
+                                    </option>
+                                </select>
                             </label>
-                            <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
+                            <button className="h-10 rounded-md bg-brand text-sm font-semibold text-white">
                                 Toepassen
                             </button>
                         </div>

@@ -55,7 +55,7 @@ export type MarketplaceFilters = {
     bedroomsMin: number | null;
     constructionYearMin: number | null;
     constructionYearMax: number | null;
-    monumentOnly: boolean;
+    monumentFilter: "all" | "only" | "exclude";
     energyLabels: string[];
     amenities: string[];
     parkingOptions: string[];
@@ -145,6 +145,7 @@ export function parseMarketplaceFilters(
     searchParams: MarketplaceSearchParams,
 ): MarketplaceFilters {
     const sort = first(searchParams.sort);
+    const monument = first(searchParams.isMonument);
     const north = coordinate(first(searchParams.north), -90, 90);
     const east = coordinate(first(searchParams.east), -180, 180);
     const south = coordinate(first(searchParams.south), -90, 90);
@@ -173,7 +174,12 @@ export function parseMarketplaceFilters(
         constructionYearMax: constructionYear(
             first(searchParams.constructionYearMax),
         ),
-        monumentOnly: first(searchParams.isMonument) === "true",
+        monumentFilter:
+            monument === "true"
+                ? "only"
+                : monument === "false"
+                  ? "exclude"
+                  : "all",
         energyLabels: allowedValues(searchParams.energyLabel, energyLabels),
         amenities: allowedValues(searchParams.amenity, amenities),
         parkingOptions: allowedValues(searchParams.parking, parkingOptions),
@@ -230,8 +236,8 @@ export async function searchMarketplaceListings(
                 : {}),
         };
     }
-    if (filters.monumentOnly) {
-        propertyFilter.isMonument = true;
+    if (filters.monumentFilter !== "all") {
+        propertyFilter.isMonument = filters.monumentFilter === "only";
     }
     if (filters.bounds) {
         propertyFilter.latitude = {
