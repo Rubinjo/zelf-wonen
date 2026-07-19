@@ -95,6 +95,7 @@ export const createListingSchema = z.object({
         .max(2200)
         .nullable()
         .optional(),
+    isMonument: z.boolean().default(false),
     livingAreaSqm: z.number().positive().max(10_000).nullable().optional(),
     roomCount: z.number().int().positive().max(100).nullable().optional(),
     bedroomCount: z.number().int().nonnegative().max(100).nullable().optional(),
@@ -163,6 +164,7 @@ export const updateListingSchema = z
             .max(2200)
             .nullable()
             .optional(),
+        isMonument: z.boolean().optional(),
         titleNl: z.string().trim().max(140).nullable().optional(),
         titleEn: z.string().trim().max(140).nullable().optional(),
         descriptionNl: z.string().trim().max(12_000).nullable().optional(),

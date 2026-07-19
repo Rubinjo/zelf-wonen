@@ -34,6 +34,7 @@ export type MarketplaceListing = {
     roomCount: number | null;
     bedroomCount: number | null;
     constructionYear: number | null;
+    isMonument: boolean;
     energyLabel: string | null;
     priceCents: string | null;
     serviceCostsCents: string | null;
@@ -53,6 +54,8 @@ export type MarketplaceFilters = {
     roomsMin: number | null;
     bedroomsMin: number | null;
     constructionYearMin: number | null;
+    constructionYearMax: number | null;
+    monumentOnly: boolean;
     energyLabels: string[];
     amenities: string[];
     parkingOptions: string[];
@@ -85,22 +88,20 @@ const parkingOptions = [
     "PUBLIC_GARAGE",
     "PRIVATE_GARAGE",
 ] as const;
-const energyLabelGroups: Record<string, string[]> = {
-    A: [
-        "A_PLUS_PLUS_PLUS_PLUS_PLUS",
-        "A_PLUS_PLUS_PLUS_PLUS",
-        "A_PLUS_PLUS_PLUS",
-        "A_PLUS_PLUS",
-        "A_PLUS",
-        "A",
-    ],
-    B: ["B"],
-    C: ["C"],
-    D: ["D"],
-    E: ["E"],
-    F: ["F"],
-    G: ["G"],
-};
+const energyLabels = [
+    "A_PLUS_PLUS_PLUS_PLUS_PLUS",
+    "A_PLUS_PLUS_PLUS_PLUS",
+    "A_PLUS_PLUS_PLUS",
+    "A_PLUS_PLUS",
+    "A_PLUS",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+] as const;
 
 function first(value: string | string[] | undefined) {
     return Array.isArray(value) ? value[0] : value;
@@ -115,6 +116,14 @@ function positiveNumber(value: string | undefined) {
     if (!value) return null;
     const parsed = Number(value);
     return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
+}
+
+function constructionYear(value: string | undefined) {
+    if (!value) return null;
+    const parsed = Number(value);
+    return Number.isInteger(parsed) && parsed >= 1000 && parsed <= 2200
+        ? parsed
+        : null;
 }
 
 function coordinate(value: string | undefined, min: number, max: number) {
@@ -158,13 +167,14 @@ export function parseMarketplaceFilters(
         livingAreaMin: positiveNumber(first(searchParams.livingAreaMin)),
         roomsMin: positiveNumber(first(searchParams.roomsMin)),
         bedroomsMin: positiveNumber(first(searchParams.bedroomsMin)),
-        constructionYearMin: positiveNumber(
+        constructionYearMin: constructionYear(
             first(searchParams.constructionYearMin),
         ),
-        energyLabels: allowedValues(
-            searchParams.energyLabel,
-            Object.keys(energyLabelGroups),
+        constructionYearMax: constructionYear(
+            first(searchParams.constructionYearMax),
         ),
+        monumentOnly: first(searchParams.isMonument) === "true",
+        energyLabels: allowedValues(searchParams.energyLabel, energyLabels),
         amenities: allowedValues(searchParams.amenity, amenities),
         parkingOptions: allowedValues(searchParams.parking, parkingOptions),
         bounds,
@@ -207,8 +217,21 @@ export async function searchMarketplaceListings(
     if (filters.bedroomsMin !== null) {
         propertyFilter.bedroomCount = { gte: filters.bedroomsMin };
     }
-    if (filters.constructionYearMin !== null) {
-        propertyFilter.constructionYear = { gte: filters.constructionYearMin };
+    if (
+        filters.constructionYearMin !== null ||
+        filters.constructionYearMax !== null
+    ) {
+        propertyFilter.constructionYear = {
+            ...(filters.constructionYearMin !== null
+                ? { gte: filters.constructionYearMin }
+                : {}),
+            ...(filters.constructionYearMax !== null
+                ? { lte: filters.constructionYearMax }
+                : {}),
+        };
+    }
+    if (filters.monumentOnly) {
+        propertyFilter.isMonument = true;
     }
     if (filters.bounds) {
         propertyFilter.latitude = {
@@ -236,9 +259,7 @@ export async function searchMarketplaceListings(
         propertyFilter.energyLabels = {
             some: {
                 labelClass: {
-                    in: filters.energyLabels.flatMap(
-                        (label) => energyLabelGroups[label],
-                    ) as Prisma.EnumEnergyLabelClassFilter["in"],
+                    in: filters.energyLabels as Prisma.EnumEnergyLabelClassFilter["in"],
                 },
             },
         };
@@ -359,6 +380,7 @@ export async function searchMarketplaceListings(
             roomCount: listing.property.roomCount,
             bedroomCount: listing.property.bedroomCount,
             constructionYear: listing.property.constructionYear,
+            isMonument: listing.property.isMonument,
             energyLabel: listing.property.energyLabels[0]?.labelClass ?? null,
             priceCents:
                 (

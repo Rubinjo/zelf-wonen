@@ -89,6 +89,7 @@ export type ListingView = {
         parkingOptions: ParkingOption[];
         parkingSpacePriceCents: string | null;
         constructionYear: number | null;
+        isMonument: boolean;
         energyLabels: Array<{
             labelClass: string;
             primaryFossilEnergyKwhSqmYear: number | null;
@@ -126,6 +127,7 @@ type EditorState = {
     parkingOptions: ParkingOption[];
     parkingSpacePrice: string;
     constructionYear: string;
+    isMonument: boolean;
     askingPrice: string;
     monthlyRent: string;
     serviceCosts: string;
@@ -196,6 +198,7 @@ export function ListingEditor({
         parkingOptions: listing.property.parkingOptions,
         parkingSpacePrice: euros(listing.property.parkingSpacePriceCents),
         constructionYear: listing.property.constructionYear?.toString() ?? "",
+        isMonument: listing.property.isMonument,
         askingPrice: euros(listing.askingPriceCents),
         monthlyRent: euros(listing.monthlyRentCents),
         serviceCosts: euros(listing.serviceCostsCents),
@@ -254,6 +257,7 @@ export function ListingEditor({
                     constructionYear: editor.constructionYear
                         ? Number(editor.constructionYear)
                         : null,
+                    isMonument: editor.isMonument,
                     titleNl: editor.titleNl || null,
                     titleEn: editor.titleEn || null,
                     descriptionNl: editor.descriptionNl || null,
@@ -668,6 +672,20 @@ function DetailsSection({
                     value={editor.constructionYear}
                     onChange={set("constructionYear")}
                 />
+                <label className="flex items-center gap-3 self-end rounded-md border border-line px-4 py-3 text-sm font-semibold">
+                    <input
+                        type="checkbox"
+                        checked={editor.isMonument}
+                        onChange={(event) =>
+                            setEditor((current) => ({
+                                ...current,
+                                isMonument: event.target.checked,
+                            }))
+                        }
+                        className="size-4 accent-brand"
+                    />
+                    Monumentaal pand
+                </label>
                 <Input
                     label="Aantal woonlagen"
                     type="number"

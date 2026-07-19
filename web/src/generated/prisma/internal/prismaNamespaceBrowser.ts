@@ -191,6 +191,7 @@ export const PropertyScalarFieldEnum = {
   parkingOptions: 'parkingOptions',
   parkingSpacePriceCents: 'parkingSpacePriceCents',
   constructionYear: 'constructionYear',
+  isMonument: 'isMonument',
   layout: 'layout',
   kadasterSourcePayload: 'kadasterSourcePayload',
   kadasterRetrievedAt: 'kadasterRetrievedAt',

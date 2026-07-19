@@ -167,6 +167,7 @@ export async function createOwnerListing(
                 longitude: input.longitude,
                 officialLandAreaSqm: input.officialLandAreaSqm,
                 constructionYear: input.constructionYear,
+                isMonument: input.isMonument,
                 livingAreaSqm: input.livingAreaSqm,
                 roomCount: input.roomCount,
                 bedroomCount: input.bedroomCount,
@@ -273,6 +274,7 @@ export async function updateOwnerListing(
                             ? null
                             : BigInt(input.parkingSpacePriceCents),
                 constructionYear: input.constructionYear,
+                isMonument: input.isMonument,
             },
         });
 

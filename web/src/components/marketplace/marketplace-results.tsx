@@ -11,6 +11,7 @@ import {
     DoorOpen,
     Heart,
     Images,
+    Landmark,
     List,
     Map,
     Maximize2,
@@ -240,6 +241,11 @@ export function MarketplaceResults({
                                         active={favorites.includes(listing.id)}
                                         onToggle={toggleFavorite}
                                     />
+                                    {listing.isMonument ? (
+                                        <span className="absolute left-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-sm bg-white/95 px-2.5 py-1 text-xs font-semibold text-brand shadow-sm">
+                                            <Landmark size={13} /> Monument
+                                        </span>
+                                    ) : null}
                                     <Link
                                         href={`/woning/${listing.slug}`}
                                         aria-label={`Bekijk ${listing.street} ${listing.houseNumber}`}

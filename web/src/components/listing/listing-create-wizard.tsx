@@ -148,6 +148,7 @@ export function ListingCreateWizard() {
                         Number(form.get("officialLandAreaSqm")) || null,
                     constructionYear:
                         Number(form.get("constructionYear")) || null,
+                    isMonument: form.get("isMonument") === "on",
                     livingAreaSqm: Number(form.get("livingAreaSqm")) || null,
                     roomCount: Number(form.get("roomCount")) || null,
                     bedroomCount: Number(form.get("bedroomCount")) || null,
@@ -472,6 +473,14 @@ export function ListingCreateWizard() {
                                 className="input"
                             />
                         </Field>
+                        <label className="flex items-center gap-3 self-end rounded-md border border-line px-4 py-3 text-sm font-semibold">
+                            <input
+                                type="checkbox"
+                                name="isMonument"
+                                className="size-4 accent-brand"
+                            />
+                            Monumentaal pand
+                        </label>
                         <Field label="Aantal woonlagen">
                             <input
                                 name="floorCount"

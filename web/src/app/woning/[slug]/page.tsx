@@ -6,6 +6,7 @@ import {
     Building2,
     Calendar,
     DoorOpen,
+    Landmark,
     Languages,
     MapPin,
     Ruler,
@@ -40,6 +41,7 @@ const copy = {
         built: "Bouwjaar",
         living: "Woonoppervlak",
         energy: "Energielabel",
+        monument: "Monumentaal pand",
         about: "Over deze woning",
         floorplan: "Interactieve plattegrond",
         bid: "Bieden met vertrouwen",
@@ -54,6 +56,7 @@ const copy = {
         built: "Built",
         living: "Living area",
         energy: "Energy label",
+        monument: "Listed monument",
         about: "About this property",
         floorplan: "Interactive floor plan",
         bid: "Bid with confidence",
@@ -192,6 +195,11 @@ export default async function PublicListingPage({
                                     ? t.forSale
                                     : t.forRent}
                             </p>
+                            {listing.property.isMonument ? (
+                                <p className="mt-3 inline-flex items-center gap-2 rounded-md bg-background px-3 py-1.5 text-sm font-semibold text-brand">
+                                    <Landmark size={16} /> {t.monument}
+                                </p>
+                            ) : null}
                             <h1 className="mt-3 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">
                                 {title ||
                                     `${listing.property.street} ${listing.property.houseNumber}`}

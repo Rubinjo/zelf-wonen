@@ -85,6 +85,7 @@ export type PropertyMinAggregateOutputType = {
   externalStorageAreaSqm: runtime.Decimal | null
   parkingSpacePriceCents: bigint | null
   constructionYear: number | null
+  isMonument: boolean | null
   kadasterRetrievedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -117,6 +118,7 @@ export type PropertyMaxAggregateOutputType = {
   externalStorageAreaSqm: runtime.Decimal | null
   parkingSpacePriceCents: bigint | null
   constructionYear: number | null
+  isMonument: boolean | null
   kadasterRetrievedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -151,6 +153,7 @@ export type PropertyCountAggregateOutputType = {
   parkingOptions: number
   parkingSpacePriceCents: number
   constructionYear: number
+  isMonument: number
   layout: number
   kadasterSourcePayload: number
   kadasterRetrievedAt: number
@@ -219,6 +222,7 @@ export type PropertyMinAggregateInputType = {
   externalStorageAreaSqm?: true
   parkingSpacePriceCents?: true
   constructionYear?: true
+  isMonument?: true
   kadasterRetrievedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -251,6 +255,7 @@ export type PropertyMaxAggregateInputType = {
   externalStorageAreaSqm?: true
   parkingSpacePriceCents?: true
   constructionYear?: true
+  isMonument?: true
   kadasterRetrievedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -285,6 +290,7 @@ export type PropertyCountAggregateInputType = {
   parkingOptions?: true
   parkingSpacePriceCents?: true
   constructionYear?: true
+  isMonument?: true
   layout?: true
   kadasterSourcePayload?: true
   kadasterRetrievedAt?: true
@@ -408,6 +414,7 @@ export type PropertyGroupByOutputType = {
   parkingOptions: $Enums.ParkingOption[]
   parkingSpacePriceCents: bigint | null
   constructionYear: number | null
+  isMonument: boolean
   layout: runtime.JsonValue | null
   kadasterSourcePayload: runtime.JsonValue | null
   kadasterRetrievedAt: Date | null
@@ -467,6 +474,7 @@ export type PropertyWhereInput = {
   parkingOptions?: Prisma.EnumParkingOptionNullableListFilter<"Property">
   parkingSpacePriceCents?: Prisma.BigIntNullableFilter<"Property"> | bigint | number | null
   constructionYear?: Prisma.IntNullableFilter<"Property"> | number | null
+  isMonument?: Prisma.BoolFilter<"Property"> | boolean
   layout?: Prisma.JsonNullableFilter<"Property">
   kadasterSourcePayload?: Prisma.JsonNullableFilter<"Property">
   kadasterRetrievedAt?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
@@ -506,6 +514,7 @@ export type PropertyOrderByWithRelationInput = {
   parkingOptions?: Prisma.SortOrder
   parkingSpacePriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
   constructionYear?: Prisma.SortOrderInput | Prisma.SortOrder
+  isMonument?: Prisma.SortOrder
   layout?: Prisma.SortOrderInput | Prisma.SortOrder
   kadasterSourcePayload?: Prisma.SortOrderInput | Prisma.SortOrder
   kadasterRetrievedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -548,6 +557,7 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   parkingOptions?: Prisma.EnumParkingOptionNullableListFilter<"Property">
   parkingSpacePriceCents?: Prisma.BigIntNullableFilter<"Property"> | bigint | number | null
   constructionYear?: Prisma.IntNullableFilter<"Property"> | number | null
+  isMonument?: Prisma.BoolFilter<"Property"> | boolean
   layout?: Prisma.JsonNullableFilter<"Property">
   kadasterSourcePayload?: Prisma.JsonNullableFilter<"Property">
   kadasterRetrievedAt?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
@@ -587,6 +597,7 @@ export type PropertyOrderByWithAggregationInput = {
   parkingOptions?: Prisma.SortOrder
   parkingSpacePriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
   constructionYear?: Prisma.SortOrderInput | Prisma.SortOrder
+  isMonument?: Prisma.SortOrder
   layout?: Prisma.SortOrderInput | Prisma.SortOrder
   kadasterSourcePayload?: Prisma.SortOrderInput | Prisma.SortOrder
   kadasterRetrievedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -631,6 +642,7 @@ export type PropertyScalarWhereWithAggregatesInput = {
   parkingOptions?: Prisma.EnumParkingOptionNullableListFilter<"Property">
   parkingSpacePriceCents?: Prisma.BigIntNullableWithAggregatesFilter<"Property"> | bigint | number | null
   constructionYear?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
+  isMonument?: Prisma.BoolWithAggregatesFilter<"Property"> | boolean
   layout?: Prisma.JsonNullableWithAggregatesFilter<"Property">
   kadasterSourcePayload?: Prisma.JsonNullableWithAggregatesFilter<"Property">
   kadasterRetrievedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Property"> | Date | string | null
@@ -666,6 +678,7 @@ export type PropertyCreateInput = {
   parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
+  isMonument?: boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -705,6 +718,7 @@ export type PropertyUncheckedCreateInput = {
   parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
+  isMonument?: boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -742,6 +756,7 @@ export type PropertyUpdateInput = {
   parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -781,6 +796,7 @@ export type PropertyUncheckedUpdateInput = {
   parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -819,6 +835,7 @@ export type PropertyCreateManyInput = {
   parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
+  isMonument?: boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -854,6 +871,7 @@ export type PropertyUpdateManyMutationInput = {
   parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -890,6 +908,7 @@ export type PropertyUncheckedUpdateManyInput = {
   parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -952,6 +971,7 @@ export type PropertyCountOrderByAggregateInput = {
   parkingOptions?: Prisma.SortOrder
   parkingSpacePriceCents?: Prisma.SortOrder
   constructionYear?: Prisma.SortOrder
+  isMonument?: Prisma.SortOrder
   layout?: Prisma.SortOrder
   kadasterSourcePayload?: Prisma.SortOrder
   kadasterRetrievedAt?: Prisma.SortOrder
@@ -1002,6 +1022,7 @@ export type PropertyMaxOrderByAggregateInput = {
   externalStorageAreaSqm?: Prisma.SortOrder
   parkingSpacePriceCents?: Prisma.SortOrder
   constructionYear?: Prisma.SortOrder
+  isMonument?: Prisma.SortOrder
   kadasterRetrievedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -1034,6 +1055,7 @@ export type PropertyMinOrderByAggregateInput = {
   externalStorageAreaSqm?: Prisma.SortOrder
   parkingSpacePriceCents?: Prisma.SortOrder
   constructionYear?: Prisma.SortOrder
+  isMonument?: Prisma.SortOrder
   kadasterRetrievedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -1208,6 +1230,7 @@ export type PropertyCreateWithoutOwnerInput = {
   parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
+  isMonument?: boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -1245,6 +1268,7 @@ export type PropertyUncheckedCreateWithoutOwnerInput = {
   parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
+  isMonument?: boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -1312,6 +1336,7 @@ export type PropertyScalarWhereInput = {
   parkingOptions?: Prisma.EnumParkingOptionNullableListFilter<"Property">
   parkingSpacePriceCents?: Prisma.BigIntNullableFilter<"Property"> | bigint | number | null
   constructionYear?: Prisma.IntNullableFilter<"Property"> | number | null
+  isMonument?: Prisma.BoolFilter<"Property"> | boolean
   layout?: Prisma.JsonNullableFilter<"Property">
   kadasterSourcePayload?: Prisma.JsonNullableFilter<"Property">
   kadasterRetrievedAt?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
@@ -1347,6 +1372,7 @@ export type PropertyCreateWithoutEnergyLabelsInput = {
   parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
+  isMonument?: boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -1385,6 +1411,7 @@ export type PropertyUncheckedCreateWithoutEnergyLabelsInput = {
   parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
+  isMonument?: boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -1437,6 +1464,7 @@ export type PropertyUpdateWithoutEnergyLabelsInput = {
   parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1475,6 +1503,7 @@ export type PropertyUncheckedUpdateWithoutEnergyLabelsInput = {
   parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1511,6 +1540,7 @@ export type PropertyCreateWithoutListingsInput = {
   parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
+  isMonument?: boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -1549,6 +1579,7 @@ export type PropertyUncheckedCreateWithoutListingsInput = {
   parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
+  isMonument?: boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -1601,6 +1632,7 @@ export type PropertyUpdateWithoutListingsInput = {
   parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1639,6 +1671,7 @@ export type PropertyUncheckedUpdateWithoutListingsInput = {
   parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1675,6 +1708,7 @@ export type PropertyCreateManyOwnerInput = {
   parkingOptions?: Prisma.PropertyCreateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
+  isMonument?: boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -1710,6 +1744,7 @@ export type PropertyUpdateWithoutOwnerInput = {
   parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1747,6 +1782,7 @@ export type PropertyUncheckedUpdateWithoutOwnerInput = {
   parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1784,6 +1820,7 @@ export type PropertyUncheckedUpdateManyWithoutOwnerInput = {
   parkingOptions?: Prisma.PropertyUpdateparkingOptionsInput | $Enums.ParkingOption[]
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1860,6 +1897,7 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   parkingOptions?: boolean
   parkingSpacePriceCents?: boolean
   constructionYear?: boolean
+  isMonument?: boolean
   layout?: boolean
   kadasterSourcePayload?: boolean
   kadasterRetrievedAt?: boolean
@@ -1900,6 +1938,7 @@ export type PropertySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   parkingOptions?: boolean
   parkingSpacePriceCents?: boolean
   constructionYear?: boolean
+  isMonument?: boolean
   layout?: boolean
   kadasterSourcePayload?: boolean
   kadasterRetrievedAt?: boolean
@@ -1937,6 +1976,7 @@ export type PropertySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   parkingOptions?: boolean
   parkingSpacePriceCents?: boolean
   constructionYear?: boolean
+  isMonument?: boolean
   layout?: boolean
   kadasterSourcePayload?: boolean
   kadasterRetrievedAt?: boolean
@@ -1974,6 +2014,7 @@ export type PropertySelectScalar = {
   parkingOptions?: boolean
   parkingSpacePriceCents?: boolean
   constructionYear?: boolean
+  isMonument?: boolean
   layout?: boolean
   kadasterSourcePayload?: boolean
   kadasterRetrievedAt?: boolean
@@ -1981,7 +2022,7 @@ export type PropertySelectScalar = {
   updatedAt?: boolean
 }
 
-export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "bagAddressId" | "bagBuildingId" | "cadastralParcelId" | "postcode" | "houseNumber" | "houseNumberAddition" | "street" | "city" | "municipality" | "province" | "latitude" | "longitude" | "propertyType" | "livingAreaSqm" | "officialLandAreaSqm" | "volumeCubicMeters" | "roomCount" | "bedroomCount" | "bathroomCount" | "floorCount" | "roofType" | "externalStorageAreaSqm" | "amenities" | "parkingOptions" | "parkingSpacePriceCents" | "constructionYear" | "layout" | "kadasterSourcePayload" | "kadasterRetrievedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
+export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "bagAddressId" | "bagBuildingId" | "cadastralParcelId" | "postcode" | "houseNumber" | "houseNumberAddition" | "street" | "city" | "municipality" | "province" | "latitude" | "longitude" | "propertyType" | "livingAreaSqm" | "officialLandAreaSqm" | "volumeCubicMeters" | "roomCount" | "bedroomCount" | "bathroomCount" | "floorCount" | "roofType" | "externalStorageAreaSqm" | "amenities" | "parkingOptions" | "parkingSpacePriceCents" | "constructionYear" | "isMonument" | "layout" | "kadasterSourcePayload" | "kadasterRetrievedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
 export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   energyLabels?: boolean | Prisma.Property$energyLabelsArgs<ExtArgs>
@@ -2031,6 +2072,7 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     parkingOptions: $Enums.ParkingOption[]
     parkingSpacePriceCents: bigint | null
     constructionYear: number | null
+    isMonument: boolean
     layout: runtime.JsonValue | null
     kadasterSourcePayload: runtime.JsonValue | null
     kadasterRetrievedAt: Date | null
@@ -2490,6 +2532,7 @@ export interface PropertyFieldRefs {
   readonly parkingOptions: Prisma.FieldRef<"Property", 'ParkingOption[]'>
   readonly parkingSpacePriceCents: Prisma.FieldRef<"Property", 'BigInt'>
   readonly constructionYear: Prisma.FieldRef<"Property", 'Int'>
+  readonly isMonument: Prisma.FieldRef<"Property", 'Boolean'>
   readonly layout: Prisma.FieldRef<"Property", 'Json'>
   readonly kadasterSourcePayload: Prisma.FieldRef<"Property", 'Json'>
   readonly kadasterRetrievedAt: Prisma.FieldRef<"Property", 'DateTime'>

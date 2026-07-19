@@ -3,7 +3,14 @@
 import { useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { DoorOpen, Images, Maximize2, PanelRightClose, X } from "lucide-react";
+import {
+    DoorOpen,
+    Images,
+    Landmark,
+    Maximize2,
+    PanelRightClose,
+    X,
+} from "lucide-react";
 import {
     divIcon,
     latLngBounds,
@@ -253,6 +260,11 @@ export function MarketplaceMap({
                             >
                                 {listing.street} {listing.houseNumber}
                             </Link>
+                            {listing.isMonument ? (
+                                <span className="mt-2 inline-flex items-center gap-1.5 rounded-sm bg-background px-2 py-1 text-xs font-semibold text-brand">
+                                    <Landmark size={13} /> Monument
+                                </span>
+                            ) : null}
                             <p className="mt-1 text-sm text-muted">
                                 {listing.postcode} {listing.city}
                             </p>

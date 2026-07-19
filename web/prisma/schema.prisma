@@ -287,6 +287,7 @@ model Property {
   parkingOptions         ParkingOption[]   @default([])
   parkingSpacePriceCents BigInt?
   constructionYear       Int?
+  isMonument             Boolean           @default(false)
   layout                 Json?
   kadasterSourcePayload  Json?
   kadasterRetrievedAt    DateTime?

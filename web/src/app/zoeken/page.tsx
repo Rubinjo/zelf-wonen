@@ -37,6 +37,20 @@ const parkingOptions = [
     ["PRIVATE_GARAGE", "Eigen garage"],
     ["PUBLIC_GARAGE", "Openbare garage"],
 ] as const;
+const energyLabelOptions = [
+    ["A_PLUS_PLUS_PLUS_PLUS_PLUS", "A+++++"],
+    ["A_PLUS_PLUS_PLUS_PLUS", "A++++"],
+    ["A_PLUS_PLUS_PLUS", "A+++"],
+    ["A_PLUS_PLUS", "A++"],
+    ["A_PLUS", "A+"],
+    ["A", "A"],
+    ["B", "B"],
+    ["C", "C"],
+    ["D", "D"],
+    ["E", "E"],
+    ["F", "F"],
+    ["G", "G"],
+] as const;
 
 function values(value: string | string[] | undefined) {
     return Array.isArray(value) ? value : value ? [value] : [];
@@ -349,15 +363,7 @@ export default async function SearchPage({
                         <div className="marketplace-filter-panel w-56">
                             <FilterChecks
                                 name="energyLabel"
-                                options={[
-                                    ["A", "A en beter"],
-                                    ["B", "B"],
-                                    ["C", "C"],
-                                    ["D", "D"],
-                                    ["E", "E"],
-                                    ["F", "F"],
-                                    ["G", "G"],
-                                ]}
+                                options={energyLabelOptions}
                                 selected={selectedEnergyLabels}
                             />
                             <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
@@ -413,8 +419,9 @@ export default async function SearchPage({
                     >
                         <summary className="marketplace-filter-trigger">
                             Gebouwd vanaf
-                            {params.constructionYearMin
-                                ? ` · ${params.constructionYearMin}`
+                            {params.constructionYearMin ||
+                            params.constructionYearMax
+                                ? " · 1"
                                 : ""}
                         </summary>
                         <div className="marketplace-filter-panel marketplace-filter-panel-right grid w-60 gap-3">
@@ -432,7 +439,47 @@ export default async function SearchPage({
                                     className="marketplace-filter-input mt-1.5"
                                 />
                             </label>
+                            <label className="text-xs font-semibold text-muted">
+                                Maximaal bouwjaar
+                                <input
+                                    type="number"
+                                    name="constructionYearMax"
+                                    min="1000"
+                                    max="2200"
+                                    defaultValue={
+                                        result.filters.constructionYearMax ?? ""
+                                    }
+                                    placeholder="Bijv. 2000"
+                                    className="marketplace-filter-input mt-1.5"
+                                />
+                            </label>
                             <button className="h-10 rounded-md bg-brand text-sm font-semibold text-white">
+                                Toepassen
+                            </button>
+                        </div>
+                    </details>
+                    <details
+                        name="marketplace-filters"
+                        className="group relative shrink-0"
+                    >
+                        <summary className="marketplace-filter-trigger">
+                            Monument
+                            {result.filters.monumentOnly ? " · 1" : ""}
+                        </summary>
+                        <div className="marketplace-filter-panel marketplace-filter-panel-right w-64">
+                            <label className="flex cursor-pointer items-center gap-3 text-sm">
+                                <input
+                                    type="checkbox"
+                                    name="isMonument"
+                                    value="true"
+                                    defaultChecked={
+                                        result.filters.monumentOnly
+                                    }
+                                    className="size-4 accent-brand"
+                                />
+                                Alleen monumentale panden
+                            </label>
+                            <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
                                 Toepassen
                             </button>
                         </div>
