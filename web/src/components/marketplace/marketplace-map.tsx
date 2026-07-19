@@ -101,14 +101,14 @@ function MapControls({
 
     return (
         <div className="pointer-events-none absolute inset-x-0 top-3 z-1000 flex items-start justify-center px-3">
-            <div className="pointer-events-auto flex items-center gap-2 rounded-md bg-white p-1.5 shadow-lg">
+            <div className="pointer-events-auto flex items-center gap-2">
                 <button
                     type="button"
                     onClick={searchCurrentArea}
-                    className="inline-flex h-9 items-center gap-2 rounded-sm bg-brand px-4 text-sm font-semibold text-white transition hover:bg-brand-dark"
+                    className="inline-flex h-10 items-center gap-2 rounded-md border border-white/80 bg-brand px-4 text-sm font-semibold text-white shadow-[0_3px_12px_rgba(16,40,32,0.28)] transition hover:bg-brand-dark"
                 >
                     <Maximize2 size={16} />
-                    Zoek in dit gebied
+                    Filter op dit gebied
                 </button>
                 {activeBounds ? (
                     <button
@@ -116,7 +116,7 @@ function MapControls({
                         onClick={onClearBounds}
                         aria-label="Wis kaartgebied"
                         title="Wis kaartgebied"
-                        className="grid size-9 place-items-center rounded-sm text-muted transition hover:bg-background hover:text-brand"
+                        className="grid size-10 place-items-center rounded-md border border-line bg-white text-muted shadow-md transition hover:border-brand hover:text-brand"
                     >
                         <X size={17} />
                     </button>

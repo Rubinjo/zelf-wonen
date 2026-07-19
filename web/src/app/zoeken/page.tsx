@@ -1,12 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-    Building2,
-    ChevronLeft,
-    ChevronRight,
-    Search,
-    SlidersHorizontal,
-} from "lucide-react";
+import { Building2, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { MarketplaceResults } from "@/components/marketplace/marketplace-results";
 import {
     searchMarketplaceListings,
@@ -101,10 +95,6 @@ export default async function SearchPage({
     const selectedEnergyLabels = values(params.energyLabel);
     const selectedAmenities = values(params.amenity);
     const selectedParking = values(params.parking);
-    const advancedFilterCount =
-        selectedAmenities.length +
-        selectedParking.length +
-        Number(Boolean(params.constructionYearMin));
     return (
         <div className="min-h-screen bg-background">
             <header className="border-b border-line bg-white">
@@ -380,120 +370,71 @@ export default async function SearchPage({
                         className="group relative shrink-0"
                     >
                         <summary className="marketplace-filter-trigger">
-                            <SlidersHorizontal size={16} /> Alle filters
-                            {advancedFilterCount
-                                ? ` · ${advancedFilterCount}`
+                            Voorzieningen
+                            {selectedAmenities.length
+                                ? ` · ${selectedAmenities.length}`
                                 : ""}
                         </summary>
-                        <div className="marketplace-filter-panel marketplace-filter-panel-right w-[min(88vw,380px)]">
-                            <div className="divide-y divide-line rounded-md border border-line">
-                                <details
-                                    name="advanced-filter-categories"
-                                    open={selectedAmenities.length > 0}
-                                    className="group/category p-4"
-                                >
-                                    <summary className="flex cursor-pointer list-none items-center justify-between font-semibold">
-                                        Voorzieningen
-                                        <span className="flex items-center gap-2">
-                                            {selectedAmenities.length ? (
-                                                <span className="text-sm text-brand">
-                                                    {selectedAmenities.length}
-                                                </span>
-                                            ) : null}
-                                            <ChevronRight
-                                                size={16}
-                                                className="transition group-open/category:rotate-90"
-                                            />
-                                        </span>
-                                    </summary>
-                                    <div className="pt-4">
-                                        <FilterChecks
-                                            name="amenity"
-                                            options={amenityOptions}
-                                            selected={selectedAmenities}
-                                        />
-                                    </div>
-                                </details>
-                                <details
-                                    name="advanced-filter-categories"
-                                    open={
-                                        selectedAmenities.length === 0 &&
-                                        selectedParking.length > 0
+                        <div className="marketplace-filter-panel w-60">
+                            <FilterChecks
+                                name="amenity"
+                                options={amenityOptions}
+                                selected={selectedAmenities}
+                            />
+                            <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
+                                Toepassen
+                            </button>
+                        </div>
+                    </details>
+                    <details
+                        name="marketplace-filters"
+                        className="group relative shrink-0"
+                    >
+                        <summary className="marketplace-filter-trigger">
+                            Parkeren
+                            {selectedParking.length
+                                ? ` · ${selectedParking.length}`
+                                : ""}
+                        </summary>
+                        <div className="marketplace-filter-panel marketplace-filter-panel-right w-64">
+                            <FilterChecks
+                                name="parking"
+                                options={parkingOptions}
+                                selected={selectedParking}
+                            />
+                            <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
+                                Toepassen
+                            </button>
+                        </div>
+                    </details>
+                    <details
+                        name="marketplace-filters"
+                        className="group relative shrink-0"
+                    >
+                        <summary className="marketplace-filter-trigger">
+                            Gebouwd vanaf
+                            {params.constructionYearMin
+                                ? ` · ${params.constructionYearMin}`
+                                : ""}
+                        </summary>
+                        <div className="marketplace-filter-panel marketplace-filter-panel-right grid w-60 gap-3">
+                            <label className="text-xs font-semibold text-muted">
+                                Minimaal bouwjaar
+                                <input
+                                    type="number"
+                                    name="constructionYearMin"
+                                    min="1000"
+                                    max="2100"
+                                    defaultValue={
+                                        result.filters.constructionYearMin ?? ""
                                     }
-                                    className="group/category p-4"
-                                >
-                                    <summary className="flex cursor-pointer list-none items-center justify-between font-semibold">
-                                        Parkeren
-                                        <span className="flex items-center gap-2">
-                                            {selectedParking.length ? (
-                                                <span className="text-sm text-brand">
-                                                    {selectedParking.length}
-                                                </span>
-                                            ) : null}
-                                            <ChevronRight
-                                                size={16}
-                                                className="transition group-open/category:rotate-90"
-                                            />
-                                        </span>
-                                    </summary>
-                                    <div className="pt-4">
-                                        <FilterChecks
-                                            name="parking"
-                                            options={parkingOptions}
-                                            selected={selectedParking}
-                                        />
-                                    </div>
-                                </details>
-                                <details
-                                    name="advanced-filter-categories"
-                                    open={
-                                        selectedAmenities.length === 0 &&
-                                        selectedParking.length === 0
-                                    }
-                                    className="group/category p-4"
-                                >
-                                    <summary className="flex cursor-pointer list-none items-center justify-between font-semibold">
-                                        Gebouwd vanaf
-                                        <span className="flex items-center gap-2">
-                                            {params.constructionYearMin ? (
-                                                <span className="text-sm text-brand">
-                                                    {params.constructionYearMin}
-                                                </span>
-                                            ) : null}
-                                            <ChevronRight
-                                                size={16}
-                                                className="transition group-open/category:rotate-90"
-                                            />
-                                        </span>
-                                    </summary>
-                                    <label className="block pt-4 text-xs font-semibold text-muted">
-                                        Minimaal bouwjaar
-                                        <input
-                                            type="number"
-                                            name="constructionYearMin"
-                                            min="1000"
-                                            max="2100"
-                                            defaultValue={
-                                                result.filters
-                                                    .constructionYearMin ?? ""
-                                            }
-                                            placeholder="Bijv. 2000"
-                                            className="marketplace-filter-input mt-1.5"
-                                        />
-                                    </label>
-                                </details>
-                            </div>
-                            <div className="mt-4 flex gap-2">
-                                <Link
-                                    href="/zoeken"
-                                    className="grid h-10 flex-1 place-items-center rounded-md border border-line text-sm font-semibold text-brand"
-                                >
-                                    Wissen
-                                </Link>
-                                <button className="h-10 flex-1 rounded-md bg-brand text-sm font-semibold text-white">
-                                    Toepassen
-                                </button>
-                            </div>
+                                    placeholder="Bijv. 2000"
+                                    className="marketplace-filter-input mt-1.5"
+                                />
+                            </label>
+                            <button className="h-10 rounded-md bg-brand text-sm font-semibold text-white">
+                                Toepassen
+                            </button>
                         </div>
                     </details>
                 </div>
