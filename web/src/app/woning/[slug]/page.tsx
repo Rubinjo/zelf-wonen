@@ -135,13 +135,23 @@ export default async function PublicListingPage({
                             Zelf<span className="text-brand">Wonen</span>
                         </span>
                     </Link>
-                    <Link
-                        href={`?lang=${language === "nl" ? "en" : "nl"}`}
-                        className="inline-flex items-center gap-2 rounded-full border border-line px-4 py-2 text-sm font-semibold"
-                    >
-                        <Languages size={16} />{" "}
-                        {language === "nl" ? "English" : "Nederlands"}
-                    </Link>
+                    <div className="flex items-center gap-2">
+                        <Link
+                            href="/zoeken"
+                            className="hidden rounded-full px-4 py-2 text-sm font-semibold text-brand sm:inline-flex"
+                        >
+                            {language === "nl"
+                                ? "Woning zoeken"
+                                : "Find a home"}
+                        </Link>
+                        <Link
+                            href={`?lang=${language === "nl" ? "en" : "nl"}`}
+                            className="inline-flex items-center gap-2 rounded-full border border-line px-4 py-2 text-sm font-semibold"
+                        >
+                            <Languages size={16} />{" "}
+                            {language === "nl" ? "English" : "Nederlands"}
+                        </Link>
+                    </div>
                 </div>
             </header>
             <main>

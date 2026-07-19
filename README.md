@@ -5,6 +5,7 @@ Self-service Dutch real-estate platform for owners who want to sell or rent with
 ## What is scaffolded
 
 - Bilingual Dutch/English marketing shell
+- Public sale/rental marketplace at `/zoeken` with shareable filters, sorting, pagination, local favorites, and a synchronized OpenStreetMap view
 - Better Auth with mandatory email verification
 - Server-side verified-email authorization guard
 - Prisma/PostgreSQL draft for users, sessions, properties, labels, listings, media, iDIN attempts, packages, publications, bids, immutable events, exports, estimate cache, and audit events
@@ -26,6 +27,8 @@ Requirements: Node.js 20.9+, npm, and Docker Desktop with Linux containers. Pyth
 5. Start the application with `npm run dev`.
 
 PostgreSQL and the estimator are defined in `compose.yaml`. Use `npm run services:start` to build and start both. PostgreSQL publishes port 5432 and persists data in the `houser_postgres_data` Docker volume; the estimator publishes port 8000. Local verification links are printed in the Next.js terminal when no delivery webhook is configured.
+
+The marketplace only exposes listings with status `LIVE` and a public slug. Map markers require latitude and longitude on the related property, and map tiles are loaded in the browser from OpenStreetMap, so the deployed client needs outbound internet access to `tile.openstreetmap.org`.
 
 Do not run a production deployment with the example Better Auth secret, IP salt, media URL, or simulated provider endpoints.
 

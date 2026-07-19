@@ -493,6 +493,14 @@ export default async function Home({
                         </span>
                     </Link>
                     <nav className="hidden items-center gap-8 text-sm font-medium text-muted md:flex">
+                        <Link
+                            href="/zoeken"
+                            className="font-semibold text-brand transition hover:text-brand-dark"
+                        >
+                            {language === "nl"
+                                ? "Woning zoeken"
+                                : "Find a home"}
+                        </Link>
                         <a
                             href="#werkwijze"
                             className="transition hover:text-brand"
