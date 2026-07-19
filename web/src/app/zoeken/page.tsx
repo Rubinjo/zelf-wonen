@@ -472,9 +472,7 @@ export default async function SearchPage({
                                     type="checkbox"
                                     name="isMonument"
                                     value="true"
-                                    defaultChecked={
-                                        result.filters.monumentOnly
-                                    }
+                                    defaultChecked={result.filters.monumentOnly}
                                     className="size-4 accent-brand"
                                 />
                                 Alleen monumentale panden
