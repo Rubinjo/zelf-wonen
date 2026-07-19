@@ -18,7 +18,7 @@ export async function POST(
             .uuid()
             .parse((await context.params).listingId);
         const data = await validateOwnerListing(session.user.id, listingId);
-        return NextResponse.json({ data }, { status: data.ready ? 200 : 422 });
+        return NextResponse.json({ data });
     } catch (error) {
         if (error instanceof ListingMutationError) {
             return NextResponse.json(

@@ -496,7 +496,16 @@ export function ListingEditor({
                             <button
                                 key={item.id}
                                 type="button"
-                                onClick={() => setSection(item.id)}
+                                onClick={() => {
+                                    setSection(item.id);
+                                    if (
+                                        item.id === "publish" &&
+                                        listing.status === "DRAFT" &&
+                                        !validate.isPending
+                                    ) {
+                                        validate.mutate();
+                                    }
+                                }}
                                 className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold transition ${section === item.id ? "bg-brand text-white" : "hover:bg-background"}`}
                             >
                                 <Icon size={18} /> {item.label}
@@ -1493,17 +1502,10 @@ function PublishSection({
                     done={ready}
                     icon={Check}
                     title="Advertentie compleet"
-                    text="Verplichte velden en minimaal één foto"
-                    action={
-                        !ready ? (
-                            <button
-                                onClick={() => validate.mutate()}
-                                disabled={validate.isPending}
-                                className="action-button"
-                            >
-                                Controleren
-                            </button>
-                        ) : null
+                    text={
+                        validate.isPending
+                            ? "Advertentie wordt gecontroleerd..."
+                            : "Verplichte velden en minimaal één foto"
                     }
                 />
                 <GateRow
@@ -1534,10 +1536,10 @@ function PublishSection({
                     }
                 />
             </div>
-            {validate.data && !validate.data.ready ? (
+            {!validate.isPending && validate.data && !validate.data.ready ? (
                 <div className="mt-5 rounded-2xl bg-amber-50 p-5">
                     <p className="font-semibold text-amber-900">
-                        Nog aan te vullen
+                        Vul minimaal het volgende aan
                     </p>
                     <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-amber-900">
                         {validate.data.issues.map((issue) => (

@@ -398,49 +398,49 @@ export function collectReadinessIssues(listing: {
         issues.push({
             field: "titleNl",
             code: "REQUIRED",
-            message: "Add a Dutch title",
+            message: "Voeg een Nederlandse titel toe",
         });
     if (!listing.descriptionNl?.trim())
         issues.push({
             field: "descriptionNl",
             code: "REQUIRED",
-            message: "Add a Dutch description",
+            message: "Voeg een Nederlandse beschrijving toe",
         });
     if (!listing.property.livingAreaSqm)
         issues.push({
             field: "livingAreaSqm",
             code: "REQUIRED",
-            message: "Add the living area",
+            message: "Vul de woonoppervlakte in",
         });
     if (!listing.property.roomCount)
         issues.push({
             field: "roomCount",
             code: "REQUIRED",
-            message: "Add the room count",
+            message: "Vul het aantal kamers in",
         });
     if (listing.purpose === "SALE" && !listing.askingPriceCents)
         issues.push({
             field: "askingPriceCents",
             code: "REQUIRED",
-            message: "Add an asking price",
+            message: "Vul een vraagprijs in",
         });
     if (listing.purpose === "RENT" && !listing.monthlyRentCents)
         issues.push({
             field: "monthlyRentCents",
             code: "REQUIRED",
-            message: "Add a monthly rent",
+            message: "Vul een maandelijkse huurprijs in",
         });
     if (listing.biddingMethod === "SEALED" && !listing.bidWindowClosesAt)
         issues.push({
             field: "bidWindowClosesAt",
             code: "REQUIRED",
-            message: "Add a closing time for the sealed bidding round",
+            message: "Vul een sluitingstijd voor de gesloten biedingsronde in",
         });
     if (listing.biddingMethod === "OPEN" && !listing.bidIncrementCents)
         issues.push({
             field: "bidIncrementCents",
             code: "REQUIRED",
-            message: "Add a minimum increment for open bidding",
+            message: "Vul een minimale biedstap voor open bieden in",
         });
     if (
         !listing.media.some(
@@ -450,7 +450,7 @@ export function collectReadinessIssues(listing: {
         issues.push({
             field: "media",
             code: "PHOTO_REQUIRED",
-            message: "Upload at least one photo",
+            message: "Upload minimaal één foto",
         });
     }
     if (
@@ -461,7 +461,7 @@ export function collectReadinessIssues(listing: {
         issues.push({
             field: "bidWindowClosesAt",
             code: "INVALID_RANGE",
-            message: "The bid window closes before it opens",
+            message: "Laat de biedingsronde sluiten nadat deze is geopend",
         });
     }
     return issues;
