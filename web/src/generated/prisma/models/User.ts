@@ -224,6 +224,7 @@ export type UserWhereInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogListRelationFilter
   publicationOrders?: Prisma.PublicationOrderListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
+  viewingBookings?: Prisma.ViewingBookingListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -246,6 +247,7 @@ export type UserOrderByWithRelationInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogOrderByRelationAggregateInput
   publicationOrders?: Prisma.PublicationOrderOrderByRelationAggregateInput
   auditEvents?: Prisma.AuditEventOrderByRelationAggregateInput
+  viewingBookings?: Prisma.ViewingBookingOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -271,6 +273,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   verificationAuditLogs?: Prisma.VerificationAuditLogListRelationFilter
   publicationOrders?: Prisma.PublicationOrderListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
+  viewingBookings?: Prisma.ViewingBookingListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -323,6 +326,7 @@ export type UserCreateInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -345,6 +349,7 @@ export type UserUncheckedCreateInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -367,6 +372,7 @@ export type UserUpdateInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -389,6 +395,7 @@ export type UserUncheckedUpdateInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -563,6 +570,20 @@ export type UserUpdateOneRequiredWithoutListingsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutListingsInput, Prisma.UserUpdateWithoutListingsInput>, Prisma.UserUncheckedUpdateWithoutListingsInput>
 }
 
+export type UserCreateNestedOneWithoutViewingBookingsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutViewingBookingsInput, Prisma.UserUncheckedCreateWithoutViewingBookingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutViewingBookingsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutViewingBookingsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutViewingBookingsInput, Prisma.UserUncheckedCreateWithoutViewingBookingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutViewingBookingsInput
+  upsert?: Prisma.UserUpsertWithoutViewingBookingsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutViewingBookingsInput, Prisma.UserUpdateWithoutViewingBookingsInput>, Prisma.UserUncheckedUpdateWithoutViewingBookingsInput>
+}
+
 export type UserCreateNestedOneWithoutIdentityAttemptsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutIdentityAttemptsInput, Prisma.UserUncheckedCreateWithoutIdentityAttemptsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutIdentityAttemptsInput
@@ -656,6 +677,7 @@ export type UserCreateWithoutTwoFactorsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTwoFactorsInput = {
@@ -677,6 +699,7 @@ export type UserUncheckedCreateWithoutTwoFactorsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTwoFactorsInput = {
@@ -714,6 +737,7 @@ export type UserUpdateWithoutTwoFactorsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTwoFactorsInput = {
@@ -735,6 +759,7 @@ export type UserUncheckedUpdateWithoutTwoFactorsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -756,6 +781,7 @@ export type UserCreateWithoutSessionsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -777,6 +803,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -814,6 +841,7 @@ export type UserUpdateWithoutSessionsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -835,6 +863,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -856,6 +885,7 @@ export type UserCreateWithoutAccountsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -877,6 +907,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -914,6 +945,7 @@ export type UserUpdateWithoutAccountsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -935,6 +967,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPropertiesInput = {
@@ -956,6 +989,7 @@ export type UserCreateWithoutPropertiesInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPropertiesInput = {
@@ -977,6 +1011,7 @@ export type UserUncheckedCreateWithoutPropertiesInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPropertiesInput = {
@@ -1014,6 +1049,7 @@ export type UserUpdateWithoutPropertiesInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPropertiesInput = {
@@ -1035,6 +1071,7 @@ export type UserUncheckedUpdateWithoutPropertiesInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutListingsInput = {
@@ -1056,6 +1093,7 @@ export type UserCreateWithoutListingsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutListingsInput = {
@@ -1077,6 +1115,7 @@ export type UserUncheckedCreateWithoutListingsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutListingsInput = {
@@ -1114,6 +1153,7 @@ export type UserUpdateWithoutListingsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutListingsInput = {
@@ -1130,6 +1170,111 @@ export type UserUncheckedUpdateWithoutListingsInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
   properties?: Prisma.PropertyUncheckedUpdateManyWithoutOwnerNestedInput
+  bids?: Prisma.BidUncheckedUpdateManyWithoutBidderUserNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutUserNestedInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedUpdateManyWithoutUserNestedInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutViewingBookingsInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  twoFactorEnabled?: boolean
+  image?: string | null
+  locale?: $Enums.Locale
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutOwnerInput
+  listings?: Prisma.ListingCreateNestedManyWithoutOwnerInput
+  bids?: Prisma.BidCreateNestedManyWithoutBidderUserInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutUserInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogCreateNestedManyWithoutUserInput
+  publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+}
+
+export type UserUncheckedCreateWithoutViewingBookingsInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  twoFactorEnabled?: boolean
+  image?: string | null
+  locale?: $Enums.Locale
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutOwnerInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutOwnerInput
+  bids?: Prisma.BidUncheckedCreateNestedManyWithoutBidderUserInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutUserInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedCreateNestedManyWithoutUserInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+}
+
+export type UserCreateOrConnectWithoutViewingBookingsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutViewingBookingsInput, Prisma.UserUncheckedCreateWithoutViewingBookingsInput>
+}
+
+export type UserUpsertWithoutViewingBookingsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutViewingBookingsInput, Prisma.UserUncheckedUpdateWithoutViewingBookingsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutViewingBookingsInput, Prisma.UserUncheckedCreateWithoutViewingBookingsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutViewingBookingsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutViewingBookingsInput, Prisma.UserUncheckedUpdateWithoutViewingBookingsInput>
+}
+
+export type UserUpdateWithoutViewingBookingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.EnumLocaleFieldUpdateOperationsInput | $Enums.Locale
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutOwnerNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutOwnerNestedInput
+  bids?: Prisma.BidUpdateManyWithoutBidderUserNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutUserNestedInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUpdateManyWithoutUserNestedInput
+  publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutViewingBookingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.EnumLocaleFieldUpdateOperationsInput | $Enums.Locale
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutOwnerNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutOwnerNestedInput
   bids?: Prisma.BidUncheckedUpdateManyWithoutBidderUserNestedInput
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutUserNestedInput
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -1156,6 +1301,7 @@ export type UserCreateWithoutIdentityAttemptsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutIdentityAttemptsInput = {
@@ -1177,6 +1323,7 @@ export type UserUncheckedCreateWithoutIdentityAttemptsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutIdentityAttemptsInput = {
@@ -1214,6 +1361,7 @@ export type UserUpdateWithoutIdentityAttemptsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutIdentityAttemptsInput = {
@@ -1235,6 +1383,7 @@ export type UserUncheckedUpdateWithoutIdentityAttemptsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutVerificationAuditLogsInput = {
@@ -1256,6 +1405,7 @@ export type UserCreateWithoutVerificationAuditLogsInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutVerificationAuditLogsInput = {
@@ -1277,6 +1427,7 @@ export type UserUncheckedCreateWithoutVerificationAuditLogsInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutVerificationAuditLogsInput = {
@@ -1314,6 +1465,7 @@ export type UserUpdateWithoutVerificationAuditLogsInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVerificationAuditLogsInput = {
@@ -1335,6 +1487,7 @@ export type UserUncheckedUpdateWithoutVerificationAuditLogsInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPublicationOrdersInput = {
@@ -1356,6 +1509,7 @@ export type UserCreateWithoutPublicationOrdersInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutUserInput
   verificationAuditLogs?: Prisma.VerificationAuditLogCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPublicationOrdersInput = {
@@ -1377,6 +1531,7 @@ export type UserUncheckedCreateWithoutPublicationOrdersInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutUserInput
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPublicationOrdersInput = {
@@ -1414,6 +1569,7 @@ export type UserUpdateWithoutPublicationOrdersInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutUserNestedInput
   verificationAuditLogs?: Prisma.VerificationAuditLogUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPublicationOrdersInput = {
@@ -1435,6 +1591,7 @@ export type UserUncheckedUpdateWithoutPublicationOrdersInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutUserNestedInput
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutBidsInput = {
@@ -1456,6 +1613,7 @@ export type UserCreateWithoutBidsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutBidsInput = {
@@ -1477,6 +1635,7 @@ export type UserUncheckedCreateWithoutBidsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutUserInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutBidsInput = {
@@ -1514,6 +1673,7 @@ export type UserUpdateWithoutBidsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBidsInput = {
@@ -1535,6 +1695,7 @@ export type UserUncheckedUpdateWithoutBidsInput = {
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutUserNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAuditEventsInput = {
@@ -1556,6 +1717,7 @@ export type UserCreateWithoutAuditEventsInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutUserInput
   verificationAuditLogs?: Prisma.VerificationAuditLogCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutUserInput
+  viewingBookings?: Prisma.ViewingBookingCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAuditEventsInput = {
@@ -1577,6 +1739,7 @@ export type UserUncheckedCreateWithoutAuditEventsInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutUserInput
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedCreateNestedManyWithoutUserInput
   publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutUserInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAuditEventsInput = {
@@ -1614,6 +1777,7 @@ export type UserUpdateWithoutAuditEventsInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutUserNestedInput
   verificationAuditLogs?: Prisma.VerificationAuditLogUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutUserNestedInput
+  viewingBookings?: Prisma.ViewingBookingUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditEventsInput = {
@@ -1635,6 +1799,7 @@ export type UserUncheckedUpdateWithoutAuditEventsInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutUserNestedInput
   verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedUpdateManyWithoutUserNestedInput
   publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutUserNestedInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1653,6 +1818,7 @@ export type UserCountOutputType = {
   verificationAuditLogs: number
   publicationOrders: number
   auditEvents: number
+  viewingBookings: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1666,6 +1832,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   verificationAuditLogs?: boolean | UserCountOutputTypeCountVerificationAuditLogsArgs
   publicationOrders?: boolean | UserCountOutputTypeCountPublicationOrdersArgs
   auditEvents?: boolean | UserCountOutputTypeCountAuditEventsArgs
+  viewingBookings?: boolean | UserCountOutputTypeCountViewingBookingsArgs
 }
 
 /**
@@ -1748,6 +1915,13 @@ export type UserCountOutputTypeCountAuditEventsArgs<ExtArgs extends runtime.Type
   where?: Prisma.AuditEventWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountViewingBookingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ViewingBookingWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1769,6 +1943,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   verificationAuditLogs?: boolean | Prisma.User$verificationAuditLogsArgs<ExtArgs>
   publicationOrders?: boolean | Prisma.User$publicationOrdersArgs<ExtArgs>
   auditEvents?: boolean | Prisma.User$auditEventsArgs<ExtArgs>
+  viewingBookings?: boolean | Prisma.User$viewingBookingsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1820,6 +1995,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   verificationAuditLogs?: boolean | Prisma.User$verificationAuditLogsArgs<ExtArgs>
   publicationOrders?: boolean | Prisma.User$publicationOrdersArgs<ExtArgs>
   auditEvents?: boolean | Prisma.User$auditEventsArgs<ExtArgs>
+  viewingBookings?: boolean | Prisma.User$viewingBookingsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1838,6 +2014,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     verificationAuditLogs: Prisma.$VerificationAuditLogPayload<ExtArgs>[]
     publicationOrders: Prisma.$PublicationOrderPayload<ExtArgs>[]
     auditEvents: Prisma.$AuditEventPayload<ExtArgs>[]
+    viewingBookings: Prisma.$ViewingBookingPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2253,6 +2430,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   verificationAuditLogs<T extends Prisma.User$verificationAuditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$verificationAuditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationAuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   publicationOrders<T extends Prisma.User$publicationOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$publicationOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PublicationOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditEvents<T extends Prisma.User$auditEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  viewingBookings<T extends Prisma.User$viewingBookingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$viewingBookingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ViewingBookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2921,6 +3099,30 @@ export type User$auditEventsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.AuditEventScalarFieldEnum | Prisma.AuditEventScalarFieldEnum[]
+}
+
+/**
+ * User.viewingBookings
+ */
+export type User$viewingBookingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ViewingBooking
+   */
+  select?: Prisma.ViewingBookingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ViewingBooking
+   */
+  omit?: Prisma.ViewingBookingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ViewingBookingInclude<ExtArgs> | null
+  where?: Prisma.ViewingBookingWhereInput
+  orderBy?: Prisma.ViewingBookingOrderByWithRelationInput | Prisma.ViewingBookingOrderByWithRelationInput[]
+  cursor?: Prisma.ViewingBookingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ViewingBookingScalarFieldEnum | Prisma.ViewingBookingScalarFieldEnum[]
 }
 
 /**

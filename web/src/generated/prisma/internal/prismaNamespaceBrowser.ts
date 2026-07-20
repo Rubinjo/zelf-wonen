@@ -59,6 +59,8 @@ export const ModelName = {
   Property: 'Property',
   EnergyLabel: 'EnergyLabel',
   Listing: 'Listing',
+  ViewingSlot: 'ViewingSlot',
+  ViewingBooking: 'ViewingBooking',
   ListingMedia: 'ListingMedia',
   FloorPlan: 'FloorPlan',
   IdentityVerificationAttempt: 'IdentityVerificationAttempt',
@@ -251,6 +253,30 @@ export const ListingScalarFieldEnum = {
 } as const
 
 export type ListingScalarFieldEnum = (typeof ListingScalarFieldEnum)[keyof typeof ListingScalarFieldEnum]
+
+
+export const ViewingSlotScalarFieldEnum = {
+  id: 'id',
+  listingId: 'listingId',
+  type: 'type',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  capacity: 'capacity',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ViewingSlotScalarFieldEnum = (typeof ViewingSlotScalarFieldEnum)[keyof typeof ViewingSlotScalarFieldEnum]
+
+
+export const ViewingBookingScalarFieldEnum = {
+  id: 'id',
+  slotId: 'slotId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type ViewingBookingScalarFieldEnum = (typeof ViewingBookingScalarFieldEnum)[keyof typeof ViewingBookingScalarFieldEnum]
 
 
 export const ListingMediaScalarFieldEnum = {

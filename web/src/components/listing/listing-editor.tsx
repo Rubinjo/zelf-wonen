@@ -7,6 +7,7 @@ import {
     BadgeEuro,
     Bot,
     Building2,
+    CalendarDays,
     Check,
     ChevronRight,
     CircleAlert,
@@ -31,6 +32,7 @@ import {
     type PropertyAmenity,
     type RoofType,
 } from "@/lib/property-options";
+import { ViewingPlanner } from "@/components/listing/viewing-planner";
 
 type MediaItem = {
     id: string;
@@ -108,7 +110,13 @@ export type ListingView = {
     _count: { bids: number };
 };
 
-type Section = "details" | "media" | "estimate" | "publish" | "bids";
+type Section =
+    | "details"
+    | "media"
+    | "estimate"
+    | "viewings"
+    | "publish"
+    | "bids";
 type ApiError = { error?: { message?: string } };
 type EditorState = {
     titleNl: string;
@@ -165,6 +173,7 @@ const sections: Array<{ id: Section; label: string; icon: typeof Building2 }> =
         { id: "details", label: "Gegevens & tekst", icon: Building2 },
         { id: "media", label: "Foto's & plattegrond", icon: FileImage },
         { id: "estimate", label: "Prijs & bieden", icon: BadgeEuro },
+        { id: "viewings", label: "Bezichtigingen", icon: CalendarDays },
         { id: "publish", label: "Controleren & publiceren", icon: Send },
         { id: "bids", label: "Biedlogboek", icon: ShieldCheck },
     ];
@@ -546,6 +555,9 @@ export function ListingEditor({
                             editable={editable}
                             estimate={estimate}
                         />
+                    ) : null}
+                    {section === "viewings" ? (
+                        <ViewingPlanner listingId={listing.id} />
                     ) : null}
                     {section === "publish" ? (
                         <PublishSection

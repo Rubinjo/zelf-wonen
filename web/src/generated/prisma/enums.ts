@@ -232,3 +232,11 @@ export const EstimateTier = {
 } as const
 
 export type EstimateTier = (typeof EstimateTier)[keyof typeof EstimateTier]
+
+
+export const ViewingType = {
+  APPOINTMENT: 'APPOINTMENT',
+  OPEN_HOUSE: 'OPEN_HOUSE'
+} as const
+
+export type ViewingType = (typeof ViewingType)[keyof typeof ViewingType]

@@ -169,6 +169,11 @@ enum EstimateTier {
   POSTCODE_SQM
 }
 
+enum ViewingType {
+  APPOINTMENT
+  OPEN_HOUSE
+}
+
 // Better Auth core model. Never store BSN or raw iDIN assertions on this record.
 model User {
   id               String   @id @default(uuid()) @db.Uuid
@@ -191,6 +196,7 @@ model User {
   verificationAuditLogs VerificationAuditLog[]
   publicationOrders     PublicationOrder[]
   auditEvents           AuditEvent[]
+  viewingBookings       ViewingBooking[]
 
   @@map("users")
 }
@@ -361,10 +367,40 @@ model Listing {
   identityAttempts       IdentityVerificationAttempt[]
   logbookExports         BidLogbookExport[]
   auditEvents            AuditEvent[]
+  viewingSlots           ViewingSlot[]
 
   @@index([ownerId, status])
   @@index([propertyId])
   @@map("listings")
+}
+
+model ViewingSlot {
+  id           String           @id @default(uuid()) @db.Uuid
+  listingId    String           @db.Uuid
+  type         ViewingType      @default(APPOINTMENT)
+  startsAt     DateTime
+  endsAt       DateTime
+  capacity     Int              @default(1)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  listing      Listing          @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  bookings     ViewingBooking[]
+
+  @@index([listingId, startsAt])
+  @@map("viewing_slots")
+}
+
+model ViewingBooking {
+  id          String      @id @default(uuid()) @db.Uuid
+  slotId      String      @db.Uuid
+  userId      String      @db.Uuid
+  createdAt   DateTime    @default(now())
+  slot        ViewingSlot @relation(fields: [slotId], references: [id], onDelete: Restrict)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@unique([slotId, userId])
+  @@index([userId, createdAt])
+  @@map("viewing_bookings")
 }
 
 model ListingMedia {

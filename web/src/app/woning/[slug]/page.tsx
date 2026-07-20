@@ -14,6 +14,7 @@ import {
     Zap,
 } from "lucide-react";
 import { BidForm } from "@/components/bidding/bid-form";
+import { ViewingBooking } from "@/components/viewings/viewing-booking";
 import { db } from "@/lib/db";
 
 const energyNames: Record<string, string> = {
@@ -93,6 +94,11 @@ export default async function PublicListingPage({
                 orderBy: { sortOrder: "asc" },
             },
             floorPlans: { orderBy: { sortOrder: "asc" } },
+            viewingSlots: {
+                where: { startsAt: { gt: new Date() } },
+                include: { _count: { select: { bookings: true } } },
+                orderBy: { startsAt: "asc" },
+            },
             bids: {
                 orderBy: { amountCents: "desc" },
                 take: 1,
@@ -122,6 +128,16 @@ export default async function PublicListingPage({
         listing.floorPlans.find((item) => item.mode === "FLOORPLANNER_EMBED")
             ?.embedUrl ?? null,
     );
+    const viewingSlots = listing.viewingSlots
+        .filter((slot) => slot._count.bookings < slot.capacity)
+        .map((slot) => ({
+            id: slot.id,
+            type: slot.type,
+            startsAt: slot.startsAt.toISOString(),
+            endsAt: slot.endsAt.toISOString(),
+            capacity: slot.capacity,
+            bookedCount: slot._count.bookings,
+        }));
 
     return (
         <div className="min-h-screen bg-white">
@@ -331,6 +347,15 @@ export default async function PublicListingPage({
                             ) : null}
                         </article>
                         <aside className="h-fit lg:sticky lg:top-6">
+                            {listing.status === "LIVE" &&
+                            viewingSlots.length > 0 ? (
+                                <div className="mb-4">
+                                    <ViewingBooking
+                                        slots={viewingSlots}
+                                        language={language}
+                                    />
+                                </div>
+                            ) : null}
                             <div className="mb-4 rounded-3xl bg-accent p-6 text-brand-dark">
                                 <ShieldCheck size={24} />
                                 <h2 className="mt-4 text-xl font-semibold">

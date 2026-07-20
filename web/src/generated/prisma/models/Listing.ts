@@ -434,6 +434,7 @@ export type ListingWhereInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptListRelationFilter
   logbookExports?: Prisma.BidLogbookExportListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
+  viewingSlots?: Prisma.ViewingSlotListRelationFilter
 }
 
 export type ListingOrderByWithRelationInput = {
@@ -476,6 +477,7 @@ export type ListingOrderByWithRelationInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptOrderByRelationAggregateInput
   logbookExports?: Prisma.BidLogbookExportOrderByRelationAggregateInput
   auditEvents?: Prisma.AuditEventOrderByRelationAggregateInput
+  viewingSlots?: Prisma.ViewingSlotOrderByRelationAggregateInput
 }
 
 export type ListingWhereUniqueInput = Prisma.AtLeast<{
@@ -521,6 +523,7 @@ export type ListingWhereUniqueInput = Prisma.AtLeast<{
   identityAttempts?: Prisma.IdentityVerificationAttemptListRelationFilter
   logbookExports?: Prisma.BidLogbookExportListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
+  viewingSlots?: Prisma.ViewingSlotListRelationFilter
 }, "id" | "publicSlug">
 
 export type ListingOrderByWithAggregationInput = {
@@ -633,6 +636,7 @@ export type ListingCreateInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateInput = {
@@ -673,6 +677,7 @@ export type ListingUncheckedCreateInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportUncheckedCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingUpdateInput = {
@@ -713,6 +718,7 @@ export type ListingUpdateInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateInput = {
@@ -753,6 +759,7 @@ export type ListingUncheckedUpdateInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUncheckedUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateManyInput = {
@@ -1077,6 +1084,20 @@ export type EnumBiddingMethodFieldUpdateOperationsInput = {
   set?: $Enums.BiddingMethod
 }
 
+export type ListingCreateNestedOneWithoutViewingSlotsInput = {
+  create?: Prisma.XOR<Prisma.ListingCreateWithoutViewingSlotsInput, Prisma.ListingUncheckedCreateWithoutViewingSlotsInput>
+  connectOrCreate?: Prisma.ListingCreateOrConnectWithoutViewingSlotsInput
+  connect?: Prisma.ListingWhereUniqueInput
+}
+
+export type ListingUpdateOneRequiredWithoutViewingSlotsNestedInput = {
+  create?: Prisma.XOR<Prisma.ListingCreateWithoutViewingSlotsInput, Prisma.ListingUncheckedCreateWithoutViewingSlotsInput>
+  connectOrCreate?: Prisma.ListingCreateOrConnectWithoutViewingSlotsInput
+  upsert?: Prisma.ListingUpsertWithoutViewingSlotsInput
+  connect?: Prisma.ListingWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ListingUpdateToOneWithWhereWithoutViewingSlotsInput, Prisma.ListingUpdateWithoutViewingSlotsInput>, Prisma.ListingUncheckedUpdateWithoutViewingSlotsInput>
+}
+
 export type ListingCreateNestedOneWithoutMediaInput = {
   create?: Prisma.XOR<Prisma.ListingCreateWithoutMediaInput, Prisma.ListingUncheckedCreateWithoutMediaInput>
   connectOrCreate?: Prisma.ListingCreateOrConnectWithoutMediaInput
@@ -1230,6 +1251,7 @@ export type ListingCreateWithoutOwnerInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutOwnerInput = {
@@ -1269,6 +1291,7 @@ export type ListingUncheckedCreateWithoutOwnerInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportUncheckedCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutOwnerInput = {
@@ -1369,6 +1392,7 @@ export type ListingCreateWithoutPropertyInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutPropertyInput = {
@@ -1408,6 +1432,7 @@ export type ListingUncheckedCreateWithoutPropertyInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportUncheckedCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutPropertyInput = {
@@ -1434,6 +1459,182 @@ export type ListingUpdateWithWhereUniqueWithoutPropertyInput = {
 export type ListingUpdateManyWithWhereWithoutPropertyInput = {
   where: Prisma.ListingScalarWhereInput
   data: Prisma.XOR<Prisma.ListingUpdateManyMutationInput, Prisma.ListingUncheckedUpdateManyWithoutPropertyInput>
+}
+
+export type ListingCreateWithoutViewingSlotsInput = {
+  id?: string
+  purpose: $Enums.ListingPurpose
+  status?: $Enums.ListingStatus
+  publicSlug?: string | null
+  titleNl?: string | null
+  titleEn?: string | null
+  descriptionNl?: string | null
+  descriptionEn?: string | null
+  askingPriceCents?: bigint | number | null
+  monthlyRentCents?: bigint | number | null
+  serviceCostsCents?: bigint | number | null
+  availableFrom?: Date | string | null
+  viewingNotes?: string | null
+  attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
+  bidWindowOpensAt?: Date | string | null
+  bidWindowClosesAt?: Date | string | null
+  validatedAt?: Date | string | null
+  publicationRequestedAt?: Date | string | null
+  liveAt?: Date | string | null
+  finalizedAt?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutListingsInput
+  property: Prisma.PropertyCreateNestedOneWithoutListingsInput
+  media?: Prisma.ListingMediaCreateNestedManyWithoutListingInput
+  floorPlans?: Prisma.FloorPlanCreateNestedManyWithoutListingInput
+  bids?: Prisma.BidCreateNestedManyWithoutListingInput
+  publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutListingInput
+  publications?: Prisma.ListingPublicationCreateNestedManyWithoutListingInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutListingInput
+  logbookExports?: Prisma.BidLogbookExportCreateNestedManyWithoutListingInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutListingInput
+}
+
+export type ListingUncheckedCreateWithoutViewingSlotsInput = {
+  id?: string
+  ownerId: string
+  propertyId: string
+  purpose: $Enums.ListingPurpose
+  status?: $Enums.ListingStatus
+  publicSlug?: string | null
+  titleNl?: string | null
+  titleEn?: string | null
+  descriptionNl?: string | null
+  descriptionEn?: string | null
+  askingPriceCents?: bigint | number | null
+  monthlyRentCents?: bigint | number | null
+  serviceCostsCents?: bigint | number | null
+  availableFrom?: Date | string | null
+  viewingNotes?: string | null
+  attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
+  bidWindowOpensAt?: Date | string | null
+  bidWindowClosesAt?: Date | string | null
+  validatedAt?: Date | string | null
+  publicationRequestedAt?: Date | string | null
+  liveAt?: Date | string | null
+  finalizedAt?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  media?: Prisma.ListingMediaUncheckedCreateNestedManyWithoutListingInput
+  floorPlans?: Prisma.FloorPlanUncheckedCreateNestedManyWithoutListingInput
+  bids?: Prisma.BidUncheckedCreateNestedManyWithoutListingInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutListingInput
+  publications?: Prisma.ListingPublicationUncheckedCreateNestedManyWithoutListingInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutListingInput
+  logbookExports?: Prisma.BidLogbookExportUncheckedCreateNestedManyWithoutListingInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutListingInput
+}
+
+export type ListingCreateOrConnectWithoutViewingSlotsInput = {
+  where: Prisma.ListingWhereUniqueInput
+  create: Prisma.XOR<Prisma.ListingCreateWithoutViewingSlotsInput, Prisma.ListingUncheckedCreateWithoutViewingSlotsInput>
+}
+
+export type ListingUpsertWithoutViewingSlotsInput = {
+  update: Prisma.XOR<Prisma.ListingUpdateWithoutViewingSlotsInput, Prisma.ListingUncheckedUpdateWithoutViewingSlotsInput>
+  create: Prisma.XOR<Prisma.ListingCreateWithoutViewingSlotsInput, Prisma.ListingUncheckedCreateWithoutViewingSlotsInput>
+  where?: Prisma.ListingWhereInput
+}
+
+export type ListingUpdateToOneWithWhereWithoutViewingSlotsInput = {
+  where?: Prisma.ListingWhereInput
+  data: Prisma.XOR<Prisma.ListingUpdateWithoutViewingSlotsInput, Prisma.ListingUncheckedUpdateWithoutViewingSlotsInput>
+}
+
+export type ListingUpdateWithoutViewingSlotsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  purpose?: Prisma.EnumListingPurposeFieldUpdateOperationsInput | $Enums.ListingPurpose
+  status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
+  publicSlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleNl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionNl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  askingPriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  monthlyRentCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  serviceCostsCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publicationRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  liveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutListingsNestedInput
+  property?: Prisma.PropertyUpdateOneRequiredWithoutListingsNestedInput
+  media?: Prisma.ListingMediaUpdateManyWithoutListingNestedInput
+  floorPlans?: Prisma.FloorPlanUpdateManyWithoutListingNestedInput
+  bids?: Prisma.BidUpdateManyWithoutListingNestedInput
+  publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutListingNestedInput
+  publications?: Prisma.ListingPublicationUpdateManyWithoutListingNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutListingNestedInput
+  logbookExports?: Prisma.BidLogbookExportUpdateManyWithoutListingNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutListingNestedInput
+}
+
+export type ListingUncheckedUpdateWithoutViewingSlotsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  purpose?: Prisma.EnumListingPurposeFieldUpdateOperationsInput | $Enums.ListingPurpose
+  status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
+  publicSlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleNl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionNl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  askingPriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  monthlyRentCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  serviceCostsCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publicationRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  liveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  media?: Prisma.ListingMediaUncheckedUpdateManyWithoutListingNestedInput
+  floorPlans?: Prisma.FloorPlanUncheckedUpdateManyWithoutListingNestedInput
+  bids?: Prisma.BidUncheckedUpdateManyWithoutListingNestedInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutListingNestedInput
+  publications?: Prisma.ListingPublicationUncheckedUpdateManyWithoutListingNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutListingNestedInput
+  logbookExports?: Prisma.BidLogbookExportUncheckedUpdateManyWithoutListingNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutMediaInput = {
@@ -1473,6 +1674,7 @@ export type ListingCreateWithoutMediaInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutMediaInput = {
@@ -1512,6 +1714,7 @@ export type ListingUncheckedCreateWithoutMediaInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportUncheckedCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutMediaInput = {
@@ -1567,6 +1770,7 @@ export type ListingUpdateWithoutMediaInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutMediaInput = {
@@ -1606,6 +1810,7 @@ export type ListingUncheckedUpdateWithoutMediaInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUncheckedUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutFloorPlansInput = {
@@ -1645,6 +1850,7 @@ export type ListingCreateWithoutFloorPlansInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutFloorPlansInput = {
@@ -1684,6 +1890,7 @@ export type ListingUncheckedCreateWithoutFloorPlansInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportUncheckedCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutFloorPlansInput = {
@@ -1739,6 +1946,7 @@ export type ListingUpdateWithoutFloorPlansInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutFloorPlansInput = {
@@ -1778,6 +1986,7 @@ export type ListingUncheckedUpdateWithoutFloorPlansInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUncheckedUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutIdentityAttemptsInput = {
@@ -1817,6 +2026,7 @@ export type ListingCreateWithoutIdentityAttemptsInput = {
   publications?: Prisma.ListingPublicationCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutIdentityAttemptsInput = {
@@ -1856,6 +2066,7 @@ export type ListingUncheckedCreateWithoutIdentityAttemptsInput = {
   publications?: Prisma.ListingPublicationUncheckedCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportUncheckedCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutIdentityAttemptsInput = {
@@ -1911,6 +2122,7 @@ export type ListingUpdateWithoutIdentityAttemptsInput = {
   publications?: Prisma.ListingPublicationUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutIdentityAttemptsInput = {
@@ -1950,6 +2162,7 @@ export type ListingUncheckedUpdateWithoutIdentityAttemptsInput = {
   publications?: Prisma.ListingPublicationUncheckedUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUncheckedUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutPublicationOrdersInput = {
@@ -1989,6 +2202,7 @@ export type ListingCreateWithoutPublicationOrdersInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutPublicationOrdersInput = {
@@ -2028,6 +2242,7 @@ export type ListingUncheckedCreateWithoutPublicationOrdersInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportUncheckedCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutPublicationOrdersInput = {
@@ -2083,6 +2298,7 @@ export type ListingUpdateWithoutPublicationOrdersInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutPublicationOrdersInput = {
@@ -2122,6 +2338,7 @@ export type ListingUncheckedUpdateWithoutPublicationOrdersInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUncheckedUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutPublicationsInput = {
@@ -2161,6 +2378,7 @@ export type ListingCreateWithoutPublicationsInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutPublicationsInput = {
@@ -2200,6 +2418,7 @@ export type ListingUncheckedCreateWithoutPublicationsInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportUncheckedCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutPublicationsInput = {
@@ -2255,6 +2474,7 @@ export type ListingUpdateWithoutPublicationsInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutPublicationsInput = {
@@ -2294,6 +2514,7 @@ export type ListingUncheckedUpdateWithoutPublicationsInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUncheckedUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutBidsInput = {
@@ -2333,6 +2554,7 @@ export type ListingCreateWithoutBidsInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutBidsInput = {
@@ -2372,6 +2594,7 @@ export type ListingUncheckedCreateWithoutBidsInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportUncheckedCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutBidsInput = {
@@ -2427,6 +2650,7 @@ export type ListingUpdateWithoutBidsInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutBidsInput = {
@@ -2466,6 +2690,7 @@ export type ListingUncheckedUpdateWithoutBidsInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUncheckedUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutLogbookExportsInput = {
@@ -2505,6 +2730,7 @@ export type ListingCreateWithoutLogbookExportsInput = {
   publications?: Prisma.ListingPublicationCreateNestedManyWithoutListingInput
   identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutLogbookExportsInput = {
@@ -2544,6 +2770,7 @@ export type ListingUncheckedCreateWithoutLogbookExportsInput = {
   publications?: Prisma.ListingPublicationUncheckedCreateNestedManyWithoutListingInput
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutListingInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutLogbookExportsInput = {
@@ -2599,6 +2826,7 @@ export type ListingUpdateWithoutLogbookExportsInput = {
   publications?: Prisma.ListingPublicationUpdateManyWithoutListingNestedInput
   identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutLogbookExportsInput = {
@@ -2638,6 +2866,7 @@ export type ListingUncheckedUpdateWithoutLogbookExportsInput = {
   publications?: Prisma.ListingPublicationUncheckedUpdateManyWithoutListingNestedInput
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutAuditEventsInput = {
@@ -2677,6 +2906,7 @@ export type ListingCreateWithoutAuditEventsInput = {
   publications?: Prisma.ListingPublicationCreateNestedManyWithoutListingInput
   identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutAuditEventsInput = {
@@ -2716,6 +2946,7 @@ export type ListingUncheckedCreateWithoutAuditEventsInput = {
   publications?: Prisma.ListingPublicationUncheckedCreateNestedManyWithoutListingInput
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutListingInput
   logbookExports?: Prisma.BidLogbookExportUncheckedCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutAuditEventsInput = {
@@ -2771,6 +3002,7 @@ export type ListingUpdateWithoutAuditEventsInput = {
   publications?: Prisma.ListingPublicationUpdateManyWithoutListingNestedInput
   identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutAuditEventsInput = {
@@ -2810,6 +3042,7 @@ export type ListingUncheckedUpdateWithoutAuditEventsInput = {
   publications?: Prisma.ListingPublicationUncheckedUpdateManyWithoutListingNestedInput
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUncheckedUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateManyOwnerInput = {
@@ -2880,6 +3113,7 @@ export type ListingUpdateWithoutOwnerInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutOwnerInput = {
@@ -2919,6 +3153,7 @@ export type ListingUncheckedUpdateWithoutOwnerInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUncheckedUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateManyWithoutOwnerInput = {
@@ -3020,6 +3255,7 @@ export type ListingUpdateWithoutPropertyInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutPropertyInput = {
@@ -3059,6 +3295,7 @@ export type ListingUncheckedUpdateWithoutPropertyInput = {
   identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutListingNestedInput
   logbookExports?: Prisma.BidLogbookExportUncheckedUpdateManyWithoutListingNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateManyWithoutPropertyInput = {
@@ -3106,6 +3343,7 @@ export type ListingCountOutputType = {
   identityAttempts: number
   logbookExports: number
   auditEvents: number
+  viewingSlots: number
 }
 
 export type ListingCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3117,6 +3355,7 @@ export type ListingCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   identityAttempts?: boolean | ListingCountOutputTypeCountIdentityAttemptsArgs
   logbookExports?: boolean | ListingCountOutputTypeCountLogbookExportsArgs
   auditEvents?: boolean | ListingCountOutputTypeCountAuditEventsArgs
+  viewingSlots?: boolean | ListingCountOutputTypeCountViewingSlotsArgs
 }
 
 /**
@@ -3185,6 +3424,13 @@ export type ListingCountOutputTypeCountAuditEventsArgs<ExtArgs extends runtime.T
   where?: Prisma.AuditEventWhereInput
 }
 
+/**
+ * ListingCountOutputType without action
+ */
+export type ListingCountOutputTypeCountViewingSlotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ViewingSlotWhereInput
+}
+
 
 export type ListingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3226,6 +3472,7 @@ export type ListingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   identityAttempts?: boolean | Prisma.Listing$identityAttemptsArgs<ExtArgs>
   logbookExports?: boolean | Prisma.Listing$logbookExportsArgs<ExtArgs>
   auditEvents?: boolean | Prisma.Listing$auditEventsArgs<ExtArgs>
+  viewingSlots?: boolean | Prisma.Listing$viewingSlotsArgs<ExtArgs>
   _count?: boolean | Prisma.ListingCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["listing"]>
 
@@ -3341,6 +3588,7 @@ export type ListingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   identityAttempts?: boolean | Prisma.Listing$identityAttemptsArgs<ExtArgs>
   logbookExports?: boolean | Prisma.Listing$logbookExportsArgs<ExtArgs>
   auditEvents?: boolean | Prisma.Listing$auditEventsArgs<ExtArgs>
+  viewingSlots?: boolean | Prisma.Listing$viewingSlotsArgs<ExtArgs>
   _count?: boolean | Prisma.ListingCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ListingIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3365,6 +3613,7 @@ export type $ListingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     identityAttempts: Prisma.$IdentityVerificationAttemptPayload<ExtArgs>[]
     logbookExports: Prisma.$BidLogbookExportPayload<ExtArgs>[]
     auditEvents: Prisma.$AuditEventPayload<ExtArgs>[]
+    viewingSlots: Prisma.$ViewingSlotPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3800,6 +4049,7 @@ export interface Prisma__ListingClient<T, Null = never, ExtArgs extends runtime.
   identityAttempts<T extends Prisma.Listing$identityAttemptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Listing$identityAttemptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IdentityVerificationAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   logbookExports<T extends Prisma.Listing$logbookExportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Listing$logbookExportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BidLogbookExportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditEvents<T extends Prisma.Listing$auditEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Listing$auditEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  viewingSlots<T extends Prisma.Listing$viewingSlotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Listing$viewingSlotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ViewingSlotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4448,6 +4698,30 @@ export type Listing$auditEventsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.AuditEventScalarFieldEnum | Prisma.AuditEventScalarFieldEnum[]
+}
+
+/**
+ * Listing.viewingSlots
+ */
+export type Listing$viewingSlotsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ViewingSlot
+   */
+  select?: Prisma.ViewingSlotSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ViewingSlot
+   */
+  omit?: Prisma.ViewingSlotOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ViewingSlotInclude<ExtArgs> | null
+  where?: Prisma.ViewingSlotWhereInput
+  orderBy?: Prisma.ViewingSlotOrderByWithRelationInput | Prisma.ViewingSlotOrderByWithRelationInput[]
+  cursor?: Prisma.ViewingSlotWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ViewingSlotScalarFieldEnum | Prisma.ViewingSlotScalarFieldEnum[]
 }
 
 /**
