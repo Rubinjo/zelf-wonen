@@ -69,6 +69,15 @@ export const movableItemSchema = z.object({
     notes: z.string().trim().max(240).default(""),
 });
 
+export const questionnaireAnswerSchema = z.object({
+    questionId: z
+        .string()
+        .regex(/^[a-z0-9-]+$/)
+        .max(80),
+    answer: z.enum(["YES", "NO", "UNKNOWN", "NOT_APPLICABLE"]),
+    details: z.string().trim().max(1_000).default(""),
+});
+
 export const listingAttributesSchema = z.object({
     condition: z.enum(["POOR", "FAIR", "GOOD", "EXCELLENT"]).optional(),
     outdoorSpace: z.boolean().optional(),
@@ -79,6 +88,16 @@ export const listingAttributesSchema = z.object({
     rentalDurationMonths: z.number().int().min(1).max(120).optional(),
     highlights: z.array(z.string().trim().min(1).max(180)).max(20).default([]),
     movableItems: z.array(movableItemSchema).max(150).default([]),
+    questionnaireAnswers: z
+        .array(questionnaireAnswerSchema)
+        .max(50)
+        .refine(
+            (answers) =>
+                new Set(answers.map((answer) => answer.questionId)).size ===
+                answers.length,
+            "Questionnaire answers must have unique question IDs",
+        )
+        .default([]),
 });
 
 export const createListingSchema = z.object({

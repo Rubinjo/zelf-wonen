@@ -11,6 +11,7 @@ import {
     Check,
     ChevronRight,
     CircleAlert,
+    ClipboardList,
     ExternalLink,
     FileImage,
     FileText,
@@ -35,6 +36,11 @@ import {
     type RoofType,
 } from "@/lib/property-options";
 import { ViewingPlanner } from "@/components/listing/viewing-planner";
+import {
+    getQuestionnaireSections,
+    type QuestionnaireAnswer,
+    type QuestionnaireAnswerValue,
+} from "@/features/listings/property-questionnaire";
 
 type MediaItem = {
     id: string;
@@ -87,6 +93,7 @@ export type ListingView = {
         rentalDurationMonths?: number;
         highlights?: string[];
         movableItems?: MovableItem[];
+        questionnaireAnswers?: QuestionnaireAnswer[];
     } | null;
     property: {
         postcode: string;
@@ -136,6 +143,7 @@ type Section =
     | "details"
     | "media"
     | "movableItems"
+    | "questionnaire"
     | "estimate"
     | "viewings"
     | "publish"
@@ -171,6 +179,7 @@ type EditorState = {
     bidWindowOpensAt: string;
     bidWindowClosesAt: string;
     movableItems: MovableItem[];
+    questionnaireAnswers: QuestionnaireAnswer[];
 };
 
 async function requestData<T>(url: string, init?: RequestInit): Promise<T> {
@@ -197,6 +206,7 @@ const sections: Array<{ id: Section; label: string; icon: typeof Building2 }> =
         { id: "details", label: "Gegevens & tekst", icon: Building2 },
         { id: "media", label: "Foto's & plattegrond", icon: FileImage },
         { id: "movableItems", label: "Lijst van zaken", icon: FileText },
+        { id: "questionnaire", label: "Vragenlijst", icon: ClipboardList },
         { id: "estimate", label: "Prijs & bieden", icon: BadgeEuro },
         { id: "viewings", label: "Bezichtigingen", icon: CalendarDays },
         { id: "publish", label: "Controleren & publiceren", icon: Send },
@@ -245,6 +255,7 @@ export function ListingEditor({
         bidWindowOpensAt: listing.bidWindowOpensAt?.slice(0, 16) ?? "",
         bidWindowClosesAt: listing.bidWindowClosesAt?.slice(0, 16) ?? "",
         movableItems: listing.attributes?.movableItems ?? [],
+        questionnaireAnswers: listing.attributes?.questionnaireAnswers ?? [],
     });
 
     const editable = ["DRAFT", "READY_FOR_VERIFICATION"].includes(
@@ -320,6 +331,7 @@ export function ListingEditor({
                         movableItems: editor.movableItems.filter((item) =>
                             item.name.trim(),
                         ),
+                        questionnaireAnswers: editor.questionnaireAnswers,
                     },
                 }),
             }),
@@ -588,6 +600,19 @@ export function ListingEditor({
                                 setEditor((current) => ({
                                     ...current,
                                     movableItems,
+                                }))
+                            }
+                            editable={editable}
+                        />
+                    ) : null}
+                    {section === "questionnaire" ? (
+                        <QuestionnaireSection
+                            propertyType={listing.property.propertyType}
+                            answers={editor.questionnaireAnswers}
+                            setAnswers={(questionnaireAnswers) =>
+                                setEditor((current) => ({
+                                    ...current,
+                                    questionnaireAnswers,
                                 }))
                             }
                             editable={editable}
@@ -1035,6 +1060,219 @@ function EnergyLabelPanel({
                 </p>
             ) : null}
         </section>
+    );
+}
+
+const questionnaireAnswerOptions: Array<{
+    value: QuestionnaireAnswerValue;
+    label: string;
+}> = [
+    { value: "YES", label: "Ja" },
+    { value: "NO", label: "Nee" },
+    { value: "UNKNOWN", label: "Niet bekend" },
+    { value: "NOT_APPLICABLE", label: "N.v.t." },
+];
+
+function QuestionnaireSection({
+    propertyType,
+    answers,
+    setAnswers,
+    editable,
+}: {
+    propertyType: ListingView["property"]["propertyType"];
+    answers: QuestionnaireAnswer[];
+    setAnswers: (answers: QuestionnaireAnswer[]) => void;
+    editable: boolean;
+}) {
+    const questionnaireSections = getQuestionnaireSections(propertyType);
+    const questionCount = questionnaireSections.reduce(
+        (total, questionnaireSection) =>
+            total + questionnaireSection.questions.length,
+        0,
+    );
+    const applicableQuestionIds = new Set(
+        questionnaireSections.flatMap((questionnaireSection) =>
+            questionnaireSection.questions.map((question) => question.id),
+        ),
+    );
+    const answeredCount = answers.filter((answer) =>
+        applicableQuestionIds.has(answer.questionId),
+    ).length;
+    const completionPercentage = Math.round(
+        (answeredCount / questionCount) * 100,
+    );
+    const updateAnswer = (
+        questionId: string,
+        answer: QuestionnaireAnswerValue,
+    ) => {
+        const existing = answers.find(
+            (current) => current.questionId === questionId,
+        );
+        setAnswers(
+            existing
+                ? answers.map((current) =>
+                      current.questionId === questionId
+                          ? { ...current, answer }
+                          : current,
+                  )
+                : [...answers, { questionId, answer, details: "" }],
+        );
+    };
+    const updateDetails = (questionId: string, details: string) =>
+        setAnswers(
+            answers.map((answer) =>
+                answer.questionId === questionId
+                    ? { ...answer, details }
+                    : answer,
+            ),
+        );
+
+    return (
+        <div>
+            <SectionHeading
+                icon={ClipboardList}
+                title="Vragenlijst over de woning"
+                text="Deel wat u weet over de juridische en technische staat van de woning. De antwoorden zijn informatief en helpen kopers om zich goed voor te bereiden. Licht bijzonderheden zo concreet mogelijk toe."
+            />
+            <div className="mt-7 border-y border-line py-4">
+                <div className="flex items-center justify-between gap-4 text-sm">
+                    <span className="font-semibold">Voortgang</span>
+                    <span className="text-muted">
+                        {answeredCount} van {questionCount} beantwoord
+                    </span>
+                </div>
+                <div className="mt-3 h-2 overflow-hidden rounded-full bg-background">
+                    <div
+                        className="h-full rounded-full bg-brand transition-[width]"
+                        style={{ width: `${completionPercentage}%` }}
+                    />
+                </div>
+            </div>
+
+            <div className="mt-6 divide-y divide-line border-y border-line">
+                {questionnaireSections.map(
+                    (questionnaireSection, sectionIndex) => {
+                        const sectionAnswerCount =
+                            questionnaireSection.questions.filter((question) =>
+                                answers.some(
+                                    (answer) =>
+                                        answer.questionId === question.id,
+                                ),
+                            ).length;
+                        return (
+                            <details
+                                key={questionnaireSection.id}
+                                className="group"
+                                open={sectionIndex === 0 ? true : undefined}
+                            >
+                                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5">
+                                    <div>
+                                        <h3 className="font-semibold">
+                                            {questionnaireSection.title}
+                                        </h3>
+                                        <p className="mt-1 text-sm leading-6 text-muted">
+                                            {questionnaireSection.description}
+                                        </p>
+                                    </div>
+                                    <span className="shrink-0 text-sm font-semibold text-muted">
+                                        {sectionAnswerCount}/
+                                        {questionnaireSection.questions.length}
+                                    </span>
+                                </summary>
+                                <fieldset
+                                    disabled={!editable}
+                                    className="border-t border-line disabled:opacity-70"
+                                >
+                                    {questionnaireSection.questions.map(
+                                        (question, questionIndex) => {
+                                            const currentAnswer = answers.find(
+                                                (answer) =>
+                                                    answer.questionId ===
+                                                    question.id,
+                                            );
+                                            return (
+                                                <div
+                                                    key={question.id}
+                                                    className={`py-6 ${questionIndex ? "border-t border-line" : ""}`}
+                                                >
+                                                    <p className="max-w-3xl font-semibold leading-6">
+                                                        {question.text}
+                                                    </p>
+                                                    {question.hint ? (
+                                                        <p className="mt-1 max-w-3xl text-sm leading-6 text-muted">
+                                                            {question.hint}
+                                                        </p>
+                                                    ) : null}
+                                                    <div className="mt-4 flex flex-wrap gap-2">
+                                                        {questionnaireAnswerOptions.map(
+                                                            (option) => (
+                                                                <button
+                                                                    key={
+                                                                        option.value
+                                                                    }
+                                                                    type="button"
+                                                                    aria-pressed={
+                                                                        currentAnswer?.answer ===
+                                                                        option.value
+                                                                    }
+                                                                    onClick={() =>
+                                                                        updateAnswer(
+                                                                            question.id,
+                                                                            option.value,
+                                                                        )
+                                                                    }
+                                                                    className={`min-h-10 border px-4 text-sm font-semibold ${currentAnswer?.answer === option.value ? "border-brand bg-brand text-white" : "border-line bg-white text-brand-dark"}`}
+                                                                >
+                                                                    {
+                                                                        option.label
+                                                                    }
+                                                                </button>
+                                                            ),
+                                                        )}
+                                                    </div>
+                                                    {currentAnswer ? (
+                                                        <label className="mt-4 block max-w-3xl text-sm font-semibold">
+                                                            Toelichting
+                                                            (optioneel)
+                                                            <textarea
+                                                                value={
+                                                                    currentAnswer.details
+                                                                }
+                                                                maxLength={
+                                                                    1_000
+                                                                }
+                                                                rows={3}
+                                                                onChange={(
+                                                                    event,
+                                                                ) =>
+                                                                    updateDetails(
+                                                                        question.id,
+                                                                        event
+                                                                            .target
+                                                                            .value,
+                                                                    )
+                                                                }
+                                                                placeholder="Beschrijf wat er speelt, waar dit zich bevindt en wat er eventueel al aan is gedaan."
+                                                                className="input mt-2 py-3"
+                                                            />
+                                                        </label>
+                                                    ) : null}
+                                                </div>
+                                            );
+                                        },
+                                    )}
+                                </fieldset>
+                            </details>
+                        );
+                    },
+                )}
+            </div>
+            <p className="mt-5 text-sm leading-6 text-muted">
+                Sla het concept op om uw antwoorden te bewaren. Twijfelt u over
+                een antwoord, kies dan &quot;Niet bekend&quot; en voeg waar
+                nodig een toelichting toe.
+            </p>
+        </div>
     );
 }
 
