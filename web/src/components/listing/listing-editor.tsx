@@ -1058,6 +1058,10 @@ const movableItemSuggestions = [
     "Tuinmeubilair",
     "Zonwering",
     "Laadpaal",
+    "Rookmelder(s)",
+    "Thermostaat",
+    "Toiletrolhouder",
+    "Toiletborstel(houder)",
 ];
 
 function MovableItemsSection({
