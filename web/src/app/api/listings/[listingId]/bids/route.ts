@@ -4,6 +4,7 @@ import {
     AuthenticationError,
     requireEmailVerifiedUser,
 } from "@/features/auth/guards";
+import { mayDiscloseBidsToSeller } from "@/features/bidding/bid-confidentiality";
 import { BidSubmissionError, submitBid } from "@/features/bidding/submit-bid";
 import { submitBidSchema } from "@/lib/schemas/bid";
 import { db } from "@/lib/db";
@@ -18,7 +19,11 @@ export async function GET(
         z.string().uuid().parse(listingId);
         const listing = await db.listing.findFirst({
             where: { id: listingId, ownerId: session.user.id },
-            select: { id: true },
+            select: {
+                id: true,
+                biddingMethod: true,
+                bidWindowClosesAt: true,
+            },
         });
         if (!listing) {
             return NextResponse.json(
@@ -29,6 +34,18 @@ export async function GET(
                     },
                 },
                 { status: 404 },
+            );
+        }
+        if (!mayDiscloseBidsToSeller(listing)) {
+            return NextResponse.json(
+                {
+                    error: {
+                        code: "BIDS_CONFIDENTIAL",
+                        message:
+                            "Bids remain confidential until the bidding window closes",
+                    },
+                },
+                { status: 403 },
             );
         }
         const bids = await db.bid.findMany({

@@ -27,7 +27,6 @@ type DashboardListing = {
         city: string;
     };
     media: DashboardMedia[];
-    _count?: { bids: number };
 };
 
 export default async function DashboardPage() {
@@ -141,8 +140,7 @@ export default async function DashboardPage() {
                                                 size={15}
                                                 className="text-brand"
                                             />{" "}
-                                            {listing._count?.bids ?? 0}{" "}
-                                            biedingen
+                                            Biedingen
                                         </span>
                                     </div>
                                 </div>

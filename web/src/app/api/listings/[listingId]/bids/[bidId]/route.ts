@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { requireEmailVerifiedUser } from "@/features/auth/guards";
+import { mayDiscloseBidsToSeller } from "@/features/bidding/bid-confidentiality";
 import {
     computeBidEventEntryHash,
     verifyAndOrderBidChain,
@@ -19,14 +20,17 @@ class BidDecisionError extends Error {
         readonly code:
             | "LISTING_NOT_DECIDABLE"
             | "BID_ALREADY_ACCEPTED"
+            | "BIDS_CONFIDENTIAL"
             | "CHAIN_INVALID",
     ) {
         super(
             code === "BID_ALREADY_ACCEPTED"
                 ? "Another bid has already been accepted"
-                : code === "CHAIN_INVALID"
-                  ? "The bid event chain failed its integrity check"
-                  : "This listing no longer accepts bid decisions",
+                : code === "BIDS_CONFIDENTIAL"
+                  ? "Bids cannot be decided before the bidding window closes"
+                  : code === "CHAIN_INVALID"
+                    ? "The bid event chain failed its integrity check"
+                    : "This listing no longer accepts bid decisions",
         );
         this.name = "BidDecisionError";
     }
@@ -46,11 +50,18 @@ export async function PATCH(
             await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${listingId}))`;
             const listing = await tx.listing.findFirst({
                 where: { id: listingId, ownerId: session.user.id },
-                select: { status: true },
+                select: {
+                    status: true,
+                    biddingMethod: true,
+                    bidWindowClosesAt: true,
+                },
             });
             if (!listing) return null;
             if (!["LIVE", "UNDER_OFFER"].includes(listing.status)) {
                 throw new BidDecisionError("LISTING_NOT_DECIDABLE");
+            }
+            if (!mayDiscloseBidsToSeller(listing)) {
+                throw new BidDecisionError("BIDS_CONFIDENTIAL");
             }
             const bid = await tx.bid.findFirst({
                 where: {

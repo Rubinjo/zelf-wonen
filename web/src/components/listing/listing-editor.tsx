@@ -136,7 +136,6 @@ export type ListingView = {
         status: string;
         externalReference: string | null;
     }>;
-    _count: { bids: number };
 };
 
 type Section =
@@ -490,7 +489,12 @@ export function ListingEditor({
         queryKey: ["listing-bids", listing.id],
         queryFn: () =>
             requestData<Array<BidView>>(`/api/listings/${listing.id}/bids`),
-        enabled: section === "bids" && listing.status !== "DRAFT",
+        enabled:
+            section === "bids" &&
+            listing.status !== "DRAFT" &&
+            (listing.biddingMethod === "OPEN" ||
+                (listing.bidWindowClosesAt !== null &&
+                    new Date(listing.bidWindowClosesAt) <= new Date())),
     });
 
     const address = `${listing.property.street} ${listing.property.houseNumber}${listing.property.houseNumberAddition ?? ""}`;
@@ -1828,7 +1832,7 @@ const biddingMethods = [
     {
         value: "PRIVATE",
         title: "Onderhands bieden",
-        text: "Biedingen zijn alleen zichtbaar voor jou en mogen tijdens de looptijd worden aangevuld.",
+        text: "Biedingen blijven voor jou en andere bieders verborgen tot de ingestelde sluitingstijd.",
     },
     {
         value: "SEALED",
@@ -2284,6 +2288,10 @@ function BidsSection({
     loading: boolean;
     onDecision: () => void;
 }) {
+    const confidential =
+        listing.biddingMethod !== "OPEN" &&
+        (listing.bidWindowClosesAt === null ||
+            new Date(listing.bidWindowClosesAt) > new Date());
     const decision = useMutation({
         mutationFn: ({
             bidId,
@@ -2304,9 +2312,21 @@ function BidsSection({
             <SectionHeading
                 icon={ShieldCheck}
                 title="Onveranderbaar biedlogboek"
-                text="Alle biedingen staan chronologisch met bedrag, tijdstip en ontbindende voorwaarden. Identiteiten zijn gepseudonimiseerd."
+                text={
+                    confidential
+                        ? "Tijdens deze biedingsronde zijn bedragen, voorwaarden en bieders ook voor jou verborgen. Na de sluiting kun je de biedingen vergelijken."
+                        : "Alle biedingen staan chronologisch met bedrag, tijdstip en ontbindende voorwaarden. Identiteiten zijn gepseudonimiseerd."
+                }
             />
-            {loading ? (
+            {confidential ? (
+                <p className="mt-8 border border-line bg-background p-6 text-muted">
+                    Biedingen worden beschikbaar na de sluiting
+                    {listing.bidWindowClosesAt
+                        ? ` op ${new Date(listing.bidWindowClosesAt).toLocaleString("nl-NL")}`
+                        : " van de biedingsronde"}
+                    .
+                </p>
+            ) : loading ? (
                 <LoaderCircle className="mt-8 animate-spin text-brand" />
             ) : bids.length === 0 ? (
                 <p className="mt-8 rounded-2xl bg-background p-6 text-muted">

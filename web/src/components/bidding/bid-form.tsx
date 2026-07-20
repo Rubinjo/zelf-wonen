@@ -18,11 +18,11 @@ type BidFormProps = {
 const methodCopy = {
     PRIVATE: {
         title: "Breng een bod uit",
-        text: "Je bod en voorwaarden zijn alleen zichtbaar voor de verkoper.",
+        text: "Je bod en voorwaarden blijven voor andere bieders en de verkoper verborgen tot de biedingsronde sluit.",
     },
     SEALED: {
         title: "Dien je eindbod in",
-        text: "Je kunt binnen deze gesloten inschrijving één definitief bod uitbrengen.",
+        text: "Je definitieve bod blijft voor andere bieders en de verkoper verborgen tot de inschrijving sluit.",
     },
     OPEN: {
         title: "Bied mee",

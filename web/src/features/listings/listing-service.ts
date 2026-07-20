@@ -53,7 +53,6 @@ const listingInclude = {
     },
     publicationOrders: { orderBy: { createdAt: "desc" as const } },
     publications: { orderBy: { createdAt: "desc" as const } },
-    _count: { select: { bids: true } },
 };
 
 function serializeListing(listing: Record<string, unknown>) {
@@ -432,11 +431,11 @@ export function collectReadinessIssues(listing: {
             code: "REQUIRED",
             message: "Vul een maandelijkse huurprijs in",
         });
-    if (listing.biddingMethod === "SEALED" && !listing.bidWindowClosesAt)
+    if (listing.biddingMethod !== "OPEN" && !listing.bidWindowClosesAt)
         issues.push({
             field: "bidWindowClosesAt",
             code: "REQUIRED",
-            message: "Vul een sluitingstijd voor de gesloten biedingsronde in",
+            message: "Vul een sluitingstijd voor de biedingsronde in",
         });
     if (listing.biddingMethod === "OPEN" && !listing.bidIncrementCents)
         issues.push({
