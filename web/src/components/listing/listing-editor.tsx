@@ -18,6 +18,7 @@ import {
     FileUp,
     Fingerprint,
     ImagePlus,
+    Info,
     LoaderCircle,
     Plus,
     Save,
@@ -2288,6 +2289,7 @@ function BidsSection({
     loading: boolean;
     onDecision: () => void;
 }) {
+    const [showNtaInfo, setShowNtaInfo] = useState(false);
     const confidential =
         listing.biddingMethod !== "OPEN" &&
         (listing.bidWindowClosesAt === null ||
@@ -2319,13 +2321,41 @@ function BidsSection({
                 }
             />
             {confidential ? (
-                <p className="mt-8 border border-line bg-background p-6 text-muted">
-                    Biedingen worden beschikbaar na de sluiting
-                    {listing.bidWindowClosesAt
-                        ? ` op ${new Date(listing.bidWindowClosesAt).toLocaleString("nl-NL")}`
-                        : " van de biedingsronde"}
-                    .
-                </p>
+                <div className="mt-8 border border-line bg-background p-6 text-muted">
+                    <div className="flex items-start gap-2">
+                        <p>
+                            Biedingen worden beschikbaar na de sluiting
+                            {listing.bidWindowClosesAt
+                                ? ` op ${new Date(listing.bidWindowClosesAt).toLocaleString("nl-NL")}`
+                                : " van de biedingsronde"}
+                            .
+                        </p>
+                        <button
+                            type="button"
+                            aria-label="Meer informatie over NTA 8061 en eerlijk bieden"
+                            aria-expanded={showNtaInfo}
+                            aria-controls="nta-8061-bidding-info"
+                            onClick={() =>
+                                setShowNtaInfo((current) => !current)
+                            }
+                            className="grid size-7 shrink-0 place-items-center text-brand"
+                            title="NTA 8061 en eerlijk bieden"
+                        >
+                            <Info size={17} />
+                        </button>
+                    </div>
+                    {showNtaInfo ? (
+                        <p
+                            id="nta-8061-bidding-info"
+                            className="mt-3 border-t border-line pt-3 text-sm leading-6"
+                        >
+                            Deze werkwijze volgt NTA 8061: biedingen die voor
+                            kandidaat-kopers verborgen zijn, blijven tot de
+                            sluiting ook verborgen voor de verkoper. Zo krijgt
+                            iedere bieder een eerlijke kans.
+                        </p>
+                    ) : null}
+                </div>
             ) : loading ? (
                 <LoaderCircle className="mt-8 animate-spin text-brand" />
             ) : bids.length === 0 ? (
