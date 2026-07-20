@@ -161,7 +161,7 @@ const copy = {
             "Boek eerst een bezichtiging. Nadat de verkoper heeft bevestigd dat deze heeft plaatsgevonden, kun je tijdens de biedperiode een bod uitbrengen.",
         ownListing: "Dit is jouw advertentie",
         ownListingText:
-            "Je kunt dezelfde account gebruiken om elders te zoeken en bieden. Beheer bezichtigingen en biedingen voor deze woning via je dashboard.",
+            "Je kunt hetzelfde account gebruiken om andere woningen te zoeken en erop te bieden. Beheer bezichtigingen en biedingen voor deze woning via je dashboard.",
         dashboardLink: "Naar dashboard",
     },
     en: {
