@@ -466,6 +466,12 @@ export default async function PublicListingPage({
                                     </div>
                                 </div>
                             ) : null}
+                            <h2 className="mt-10 text-2xl font-semibold">
+                                {t.about}
+                            </h2>
+                            <div className="mt-4 whitespace-pre-line text-base leading-8 text-foreground/80">
+                                {description}
+                            </div>
                             <section className="mt-10">
                                 <h2 className="text-2xl font-semibold">
                                     {t.details}
@@ -601,12 +607,6 @@ export default async function PublicListingPage({
                                     />
                                 </div>
                             </section>
-                            <h2 className="mt-10 text-2xl font-semibold">
-                                {t.about}
-                            </h2>
-                            <div className="mt-4 whitespace-pre-line text-base leading-8 text-foreground/80">
-                                {description}
-                            </div>
                             {listing.viewingNotes ? (
                                 <section className="mt-10 rounded-2xl bg-background p-6">
                                     <h2 className="font-semibold">
