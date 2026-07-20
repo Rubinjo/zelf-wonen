@@ -197,6 +197,30 @@ details[open] > .marketplace-filter-trigger {
   transform: scale(1.08);
 }
 
+.property-location-marker-shell {
+  border: 0;
+  background: transparent;
+}
+
+.property-location-marker {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 3px solid white;
+  border-radius: 50% 50% 50% 0;
+  background: var(--brand);
+  box-shadow: 0 5px 16px rgba(16, 40, 32, 0.3);
+  transform: rotate(-45deg);
+}
+
+.property-location-marker span {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: white;
+}
+
 .leaflet-container {
   background: #e9eee9;
   font-family: var(--font-geist-sans), sans-serif;

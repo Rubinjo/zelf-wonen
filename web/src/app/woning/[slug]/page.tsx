@@ -21,6 +21,7 @@ import {
     Zap,
 } from "lucide-react";
 import { BidForm } from "@/components/bidding/bid-form";
+import { PropertyLocation } from "@/components/listing/property-location";
 import { ViewingBooking } from "@/components/viewings/viewing-booking";
 import { db } from "@/lib/db";
 import {
@@ -802,6 +803,20 @@ export default async function PublicListingPage({
                             )}
                         </aside>
                     </div>
+                    <PropertyLocation
+                        latitude={
+                            listing.property.latitude !== null
+                                ? Number(listing.property.latitude)
+                                : null
+                        }
+                        longitude={
+                            listing.property.longitude !== null
+                                ? Number(listing.property.longitude)
+                                : null
+                        }
+                        address={fullAddress}
+                        language={language}
+                    />
                 </div>
             </main>
         </div>
