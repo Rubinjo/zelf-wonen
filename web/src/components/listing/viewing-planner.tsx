@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+    Check,
     CalendarDays,
     CalendarClock,
     Clock3,
@@ -11,6 +12,7 @@ import {
     Pencil,
     Trash2,
     Users,
+    UserX,
     X,
 } from "lucide-react";
 
@@ -23,6 +25,8 @@ type ViewingSlot = {
     capacity: number;
     bookings: Array<{
         id: string;
+        attendanceStatus: "SCHEDULED" | "CONFIRMED" | "NO_SHOW";
+        ownerReviewedAt: string | null;
         user: { id: string; name: string; email: string };
     }>;
 };
@@ -166,6 +170,25 @@ export function ViewingPlanner({
                 );
             }
         },
+        onSuccess: () => queryClient.invalidateQueries({ queryKey }),
+    });
+
+    const reviewAttendance = useMutation({
+        mutationFn: ({
+            bookingId,
+            attendanceStatus,
+        }: {
+            bookingId: string;
+            attendanceStatus: "CONFIRMED" | "NO_SHOW";
+        }) =>
+            requestData(
+                `/api/listings/${listingId}/viewing-bookings/${bookingId}/attendance`,
+                {
+                    method: "PATCH",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({ attendanceStatus }),
+                },
+            ),
         onSuccess: () => queryClient.invalidateQueries({ queryKey }),
     });
 
@@ -466,7 +489,10 @@ export function ViewingPlanner({
                                     {booked ? (
                                         <div className="mt-4 grid gap-2 bg-background p-4 text-sm sm:grid-cols-2">
                                             {slot.bookings.map((booking) => (
-                                                <div key={booking.id}>
+                                                <div
+                                                    key={booking.id}
+                                                    className="border border-line bg-white p-3"
+                                                >
                                                     <p className="font-semibold">
                                                         {booking.user.name}
                                                     </p>
@@ -476,6 +502,77 @@ export function ViewingPlanner({
                                                     >
                                                         {booking.user.email}
                                                     </a>
+                                                    {booking.attendanceStatus ===
+                                                    "SCHEDULED" ? (
+                                                        new Date(slot.endsAt) <=
+                                                        new Date() ? (
+                                                            <div className="mt-3 flex flex-wrap gap-2">
+                                                                <button
+                                                                    type="button"
+                                                                    disabled={
+                                                                        reviewAttendance.isPending
+                                                                    }
+                                                                    onClick={() =>
+                                                                        reviewAttendance.mutate(
+                                                                            {
+                                                                                bookingId:
+                                                                                    booking.id,
+                                                                                attendanceStatus:
+                                                                                    "CONFIRMED",
+                                                                            },
+                                                                        )
+                                                                    }
+                                                                    className="inline-flex h-9 items-center gap-2 bg-brand px-3 text-xs font-semibold text-white disabled:opacity-50"
+                                                                >
+                                                                    <Check
+                                                                        size={
+                                                                            14
+                                                                        }
+                                                                    />
+                                                                    Bevestig
+                                                                    aanwezigheid
+                                                                </button>
+                                                                <button
+                                                                    type="button"
+                                                                    disabled={
+                                                                        reviewAttendance.isPending
+                                                                    }
+                                                                    onClick={() =>
+                                                                        reviewAttendance.mutate(
+                                                                            {
+                                                                                bookingId:
+                                                                                    booking.id,
+                                                                                attendanceStatus:
+                                                                                    "NO_SHOW",
+                                                                            },
+                                                                        )
+                                                                    }
+                                                                    className="inline-flex h-9 items-center gap-2 border border-line px-3 text-xs font-semibold disabled:opacity-50"
+                                                                >
+                                                                    <UserX
+                                                                        size={
+                                                                            14
+                                                                        }
+                                                                    />
+                                                                    Niet
+                                                                    verschenen
+                                                                </button>
+                                                            </div>
+                                                        ) : (
+                                                            <p className="mt-2 text-xs text-muted">
+                                                                Aanwezigheid kan
+                                                                na afloop worden
+                                                                bevestigd.
+                                                            </p>
+                                                        )
+                                                    ) : (
+                                                        <p className="mt-2 text-xs font-semibold text-brand">
+                                                            {booking.attendanceStatus ===
+                                                            "CONFIRMED"
+                                                                ? "Aanwezigheid bevestigd"
+                                                                : "Niet verschenen"}
+                                                        </p>
+                                                    )}
                                                 </div>
                                             ))}
                                         </div>
@@ -492,6 +589,11 @@ export function ViewingPlanner({
                 {remove.error ? (
                     <p className="mt-4 bg-red-50 p-4 text-sm text-red-700">
                         {remove.error.message}
+                    </p>
+                ) : null}
+                {reviewAttendance.error ? (
+                    <p className="mt-4 bg-red-50 p-4 text-sm text-red-700">
+                        {reviewAttendance.error.message}
                     </p>
                 ) : null}
             </div>

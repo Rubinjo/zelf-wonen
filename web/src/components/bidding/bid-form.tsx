@@ -105,7 +105,7 @@ export function BidForm({
         setBusy(false);
         if (!response.ok) {
             setError(
-                response.status === 401
+                response.status === 401 || response.status === 403
                     ? "Log eerst in met een geverifieerd account om een bod uit te brengen."
                     : (payload.error?.message ??
                           "Het bod kon niet worden vastgelegd"),

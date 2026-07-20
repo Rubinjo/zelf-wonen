@@ -274,6 +274,8 @@ export const ViewingBookingScalarFieldEnum = {
   id: 'id',
   slotId: 'slotId',
   userId: 'userId',
+  attendanceStatus: 'attendanceStatus',
+  ownerReviewedAt: 'ownerReviewedAt',
   createdAt: 'createdAt'
 } as const
 

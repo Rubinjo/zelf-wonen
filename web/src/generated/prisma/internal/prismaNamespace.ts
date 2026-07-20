@@ -440,17 +440,17 @@ export const ModelName = {
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 
-export interface TypeMapCb<GlobalOmitOptions = {}> extends runtime.Types.Utils
-    .Fn<
-    { extArgs: runtime.Types.Extensions.InternalArgs },
-    runtime.Types.Utils.Record<string, any>
-> {
+export interface TypeMapCb<GlobalOmitOptions = {}>
+    extends runtime.Types.Utils.Fn<
+        { extArgs: runtime.Types.Extensions.InternalArgs },
+        runtime.Types.Utils.Record<string, any>
+    > {
     returns: TypeMap<this["params"]["extArgs"], GlobalOmitOptions>;
 }
 
 export type TypeMap<
-    ExtArgs extends runtime.Types.Extensions.InternalArgs =
-        runtime.Types.Extensions.DefaultArgs,
+    ExtArgs extends
+        runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
     GlobalOmitOptions = {},
 > = {
     globalOmitOptions: {
@@ -2377,6 +2377,8 @@ export const ViewingBookingScalarFieldEnum = {
     id: "id",
     slotId: "slotId",
     userId: "userId",
+    attendanceStatus: "attendanceStatus",
+    ownerReviewedAt: "ownerReviewedAt",
     createdAt: "createdAt",
 } as const;
 
@@ -2901,6 +2903,18 @@ export type ListEnumViewingTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
     $PrismaModel,
     "ViewingType[]"
 >;
+
+/**
+ * Reference to a field of type 'ViewingAttendanceStatus'
+ */
+export type EnumViewingAttendanceStatusFieldRefInput<$PrismaModel> =
+    FieldRefInputType<$PrismaModel, "ViewingAttendanceStatus">;
+
+/**
+ * Reference to a field of type 'ViewingAttendanceStatus[]'
+ */
+export type ListEnumViewingAttendanceStatusFieldRefInput<$PrismaModel> =
+    FieldRefInputType<$PrismaModel, "ViewingAttendanceStatus[]">;
 
 /**
  * Reference to a field of type 'MediaKind'

@@ -28,6 +28,8 @@ export type ViewingBookingMinAggregateOutputType = {
   id: string | null
   slotId: string | null
   userId: string | null
+  attendanceStatus: $Enums.ViewingAttendanceStatus | null
+  ownerReviewedAt: Date | null
   createdAt: Date | null
 }
 
@@ -35,6 +37,8 @@ export type ViewingBookingMaxAggregateOutputType = {
   id: string | null
   slotId: string | null
   userId: string | null
+  attendanceStatus: $Enums.ViewingAttendanceStatus | null
+  ownerReviewedAt: Date | null
   createdAt: Date | null
 }
 
@@ -42,6 +46,8 @@ export type ViewingBookingCountAggregateOutputType = {
   id: number
   slotId: number
   userId: number
+  attendanceStatus: number
+  ownerReviewedAt: number
   createdAt: number
   _all: number
 }
@@ -51,6 +57,8 @@ export type ViewingBookingMinAggregateInputType = {
   id?: true
   slotId?: true
   userId?: true
+  attendanceStatus?: true
+  ownerReviewedAt?: true
   createdAt?: true
 }
 
@@ -58,6 +66,8 @@ export type ViewingBookingMaxAggregateInputType = {
   id?: true
   slotId?: true
   userId?: true
+  attendanceStatus?: true
+  ownerReviewedAt?: true
   createdAt?: true
 }
 
@@ -65,6 +75,8 @@ export type ViewingBookingCountAggregateInputType = {
   id?: true
   slotId?: true
   userId?: true
+  attendanceStatus?: true
+  ownerReviewedAt?: true
   createdAt?: true
   _all?: true
 }
@@ -145,6 +157,8 @@ export type ViewingBookingGroupByOutputType = {
   id: string
   slotId: string
   userId: string
+  attendanceStatus: $Enums.ViewingAttendanceStatus
+  ownerReviewedAt: Date | null
   createdAt: Date
   _count: ViewingBookingCountAggregateOutputType | null
   _min: ViewingBookingMinAggregateOutputType | null
@@ -173,6 +187,8 @@ export type ViewingBookingWhereInput = {
   id?: Prisma.UuidFilter<"ViewingBooking"> | string
   slotId?: Prisma.UuidFilter<"ViewingBooking"> | string
   userId?: Prisma.UuidFilter<"ViewingBooking"> | string
+  attendanceStatus?: Prisma.EnumViewingAttendanceStatusFilter<"ViewingBooking"> | $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Prisma.DateTimeNullableFilter<"ViewingBooking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ViewingBooking"> | Date | string
   slot?: Prisma.XOR<Prisma.ViewingSlotScalarRelationFilter, Prisma.ViewingSlotWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -182,6 +198,8 @@ export type ViewingBookingOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   slotId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  attendanceStatus?: Prisma.SortOrder
+  ownerReviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   slot?: Prisma.ViewingSlotOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
@@ -195,6 +213,8 @@ export type ViewingBookingWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ViewingBookingWhereInput | Prisma.ViewingBookingWhereInput[]
   slotId?: Prisma.UuidFilter<"ViewingBooking"> | string
   userId?: Prisma.UuidFilter<"ViewingBooking"> | string
+  attendanceStatus?: Prisma.EnumViewingAttendanceStatusFilter<"ViewingBooking"> | $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Prisma.DateTimeNullableFilter<"ViewingBooking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ViewingBooking"> | Date | string
   slot?: Prisma.XOR<Prisma.ViewingSlotScalarRelationFilter, Prisma.ViewingSlotWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -204,6 +224,8 @@ export type ViewingBookingOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   slotId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  attendanceStatus?: Prisma.SortOrder
+  ownerReviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ViewingBookingCountOrderByAggregateInput
   _max?: Prisma.ViewingBookingMaxOrderByAggregateInput
@@ -217,11 +239,15 @@ export type ViewingBookingScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"ViewingBooking"> | string
   slotId?: Prisma.UuidWithAggregatesFilter<"ViewingBooking"> | string
   userId?: Prisma.UuidWithAggregatesFilter<"ViewingBooking"> | string
+  attendanceStatus?: Prisma.EnumViewingAttendanceStatusWithAggregatesFilter<"ViewingBooking"> | $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ViewingBooking"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ViewingBooking"> | Date | string
 }
 
 export type ViewingBookingCreateInput = {
   id?: string
+  attendanceStatus?: $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Date | string | null
   createdAt?: Date | string
   slot: Prisma.ViewingSlotCreateNestedOneWithoutBookingsInput
   user: Prisma.UserCreateNestedOneWithoutViewingBookingsInput
@@ -231,11 +257,15 @@ export type ViewingBookingUncheckedCreateInput = {
   id?: string
   slotId: string
   userId: string
+  attendanceStatus?: $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Date | string | null
   createdAt?: Date | string
 }
 
 export type ViewingBookingUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  attendanceStatus?: Prisma.EnumViewingAttendanceStatusFieldUpdateOperationsInput | $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   slot?: Prisma.ViewingSlotUpdateOneRequiredWithoutBookingsNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutViewingBookingsNestedInput
@@ -245,6 +275,8 @@ export type ViewingBookingUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slotId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  attendanceStatus?: Prisma.EnumViewingAttendanceStatusFieldUpdateOperationsInput | $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -252,11 +284,15 @@ export type ViewingBookingCreateManyInput = {
   id?: string
   slotId: string
   userId: string
+  attendanceStatus?: $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Date | string | null
   createdAt?: Date | string
 }
 
 export type ViewingBookingUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  attendanceStatus?: Prisma.EnumViewingAttendanceStatusFieldUpdateOperationsInput | $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -264,6 +300,8 @@ export type ViewingBookingUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slotId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  attendanceStatus?: Prisma.EnumViewingAttendanceStatusFieldUpdateOperationsInput | $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -286,6 +324,8 @@ export type ViewingBookingCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   slotId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  attendanceStatus?: Prisma.SortOrder
+  ownerReviewedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -293,6 +333,8 @@ export type ViewingBookingMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   slotId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  attendanceStatus?: Prisma.SortOrder
+  ownerReviewedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -300,6 +342,8 @@ export type ViewingBookingMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   slotId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  attendanceStatus?: Prisma.SortOrder
+  ownerReviewedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -387,8 +431,14 @@ export type ViewingBookingUncheckedUpdateManyWithoutSlotNestedInput = {
   deleteMany?: Prisma.ViewingBookingScalarWhereInput | Prisma.ViewingBookingScalarWhereInput[]
 }
 
+export type EnumViewingAttendanceStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ViewingAttendanceStatus
+}
+
 export type ViewingBookingCreateWithoutUserInput = {
   id?: string
+  attendanceStatus?: $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Date | string | null
   createdAt?: Date | string
   slot: Prisma.ViewingSlotCreateNestedOneWithoutBookingsInput
 }
@@ -396,6 +446,8 @@ export type ViewingBookingCreateWithoutUserInput = {
 export type ViewingBookingUncheckedCreateWithoutUserInput = {
   id?: string
   slotId: string
+  attendanceStatus?: $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -432,11 +484,15 @@ export type ViewingBookingScalarWhereInput = {
   id?: Prisma.UuidFilter<"ViewingBooking"> | string
   slotId?: Prisma.UuidFilter<"ViewingBooking"> | string
   userId?: Prisma.UuidFilter<"ViewingBooking"> | string
+  attendanceStatus?: Prisma.EnumViewingAttendanceStatusFilter<"ViewingBooking"> | $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Prisma.DateTimeNullableFilter<"ViewingBooking"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"ViewingBooking"> | Date | string
 }
 
 export type ViewingBookingCreateWithoutSlotInput = {
   id?: string
+  attendanceStatus?: $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Date | string | null
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutViewingBookingsInput
 }
@@ -444,6 +500,8 @@ export type ViewingBookingCreateWithoutSlotInput = {
 export type ViewingBookingUncheckedCreateWithoutSlotInput = {
   id?: string
   userId: string
+  attendanceStatus?: $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -476,11 +534,15 @@ export type ViewingBookingUpdateManyWithWhereWithoutSlotInput = {
 export type ViewingBookingCreateManyUserInput = {
   id?: string
   slotId: string
+  attendanceStatus?: $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Date | string | null
   createdAt?: Date | string
 }
 
 export type ViewingBookingUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  attendanceStatus?: Prisma.EnumViewingAttendanceStatusFieldUpdateOperationsInput | $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   slot?: Prisma.ViewingSlotUpdateOneRequiredWithoutBookingsNestedInput
 }
@@ -488,23 +550,31 @@ export type ViewingBookingUpdateWithoutUserInput = {
 export type ViewingBookingUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slotId?: Prisma.StringFieldUpdateOperationsInput | string
+  attendanceStatus?: Prisma.EnumViewingAttendanceStatusFieldUpdateOperationsInput | $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ViewingBookingUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slotId?: Prisma.StringFieldUpdateOperationsInput | string
+  attendanceStatus?: Prisma.EnumViewingAttendanceStatusFieldUpdateOperationsInput | $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ViewingBookingCreateManySlotInput = {
   id?: string
   userId: string
+  attendanceStatus?: $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Date | string | null
   createdAt?: Date | string
 }
 
 export type ViewingBookingUpdateWithoutSlotInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  attendanceStatus?: Prisma.EnumViewingAttendanceStatusFieldUpdateOperationsInput | $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutViewingBookingsNestedInput
 }
@@ -512,12 +582,16 @@ export type ViewingBookingUpdateWithoutSlotInput = {
 export type ViewingBookingUncheckedUpdateWithoutSlotInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  attendanceStatus?: Prisma.EnumViewingAttendanceStatusFieldUpdateOperationsInput | $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ViewingBookingUncheckedUpdateManyWithoutSlotInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  attendanceStatus?: Prisma.EnumViewingAttendanceStatusFieldUpdateOperationsInput | $Enums.ViewingAttendanceStatus
+  ownerReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -527,6 +601,8 @@ export type ViewingBookingSelect<ExtArgs extends runtime.Types.Extensions.Intern
   id?: boolean
   slotId?: boolean
   userId?: boolean
+  attendanceStatus?: boolean
+  ownerReviewedAt?: boolean
   createdAt?: boolean
   slot?: boolean | Prisma.ViewingSlotDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -536,6 +612,8 @@ export type ViewingBookingSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   id?: boolean
   slotId?: boolean
   userId?: boolean
+  attendanceStatus?: boolean
+  ownerReviewedAt?: boolean
   createdAt?: boolean
   slot?: boolean | Prisma.ViewingSlotDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -545,6 +623,8 @@ export type ViewingBookingSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   id?: boolean
   slotId?: boolean
   userId?: boolean
+  attendanceStatus?: boolean
+  ownerReviewedAt?: boolean
   createdAt?: boolean
   slot?: boolean | Prisma.ViewingSlotDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -554,10 +634,12 @@ export type ViewingBookingSelectScalar = {
   id?: boolean
   slotId?: boolean
   userId?: boolean
+  attendanceStatus?: boolean
+  ownerReviewedAt?: boolean
   createdAt?: boolean
 }
 
-export type ViewingBookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slotId" | "userId" | "createdAt", ExtArgs["result"]["viewingBooking"]>
+export type ViewingBookingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slotId" | "userId" | "attendanceStatus" | "ownerReviewedAt" | "createdAt", ExtArgs["result"]["viewingBooking"]>
 export type ViewingBookingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   slot?: boolean | Prisma.ViewingSlotDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -581,6 +663,8 @@ export type $ViewingBookingPayload<ExtArgs extends runtime.Types.Extensions.Inte
     id: string
     slotId: string
     userId: string
+    attendanceStatus: $Enums.ViewingAttendanceStatus
+    ownerReviewedAt: Date | null
     createdAt: Date
   }, ExtArgs["result"]["viewingBooking"]>
   composites: {}
@@ -1010,6 +1094,8 @@ export interface ViewingBookingFieldRefs {
   readonly id: Prisma.FieldRef<"ViewingBooking", 'String'>
   readonly slotId: Prisma.FieldRef<"ViewingBooking", 'String'>
   readonly userId: Prisma.FieldRef<"ViewingBooking", 'String'>
+  readonly attendanceStatus: Prisma.FieldRef<"ViewingBooking", 'ViewingAttendanceStatus'>
+  readonly ownerReviewedAt: Prisma.FieldRef<"ViewingBooking", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"ViewingBooking", 'DateTime'>
 }
 

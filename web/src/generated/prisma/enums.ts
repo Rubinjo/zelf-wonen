@@ -240,3 +240,12 @@ export const ViewingType = {
 } as const
 
 export type ViewingType = (typeof ViewingType)[keyof typeof ViewingType]
+
+
+export const ViewingAttendanceStatus = {
+  SCHEDULED: 'SCHEDULED',
+  CONFIRMED: 'CONFIRMED',
+  NO_SHOW: 'NO_SHOW'
+} as const
+
+export type ViewingAttendanceStatus = (typeof ViewingAttendanceStatus)[keyof typeof ViewingAttendanceStatus]

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import {
     BedDouble,
@@ -18,11 +19,13 @@ import {
     MapPin,
     Ruler,
     ShieldCheck,
+    UserRoundCheck,
     Zap,
 } from "lucide-react";
 import { BidForm } from "@/components/bidding/bid-form";
 import { PropertyLocation } from "@/components/listing/property-location";
 import { ViewingBooking } from "@/components/viewings/viewing-booking";
+import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import {
     parkingOptions,
@@ -146,6 +149,20 @@ const copy = {
         biddingClosedText: "De biedperiode eindigde op",
         biddingStarts: "Start biedperiode",
         biddingEnds: "Einde biedperiode",
+        accountRequired: "Account vereist",
+        accountRequiredText:
+            "Maak een account aan of log in om een bezichtiging te boeken of contact op te nemen met de verkoper. Je e-mailadres moet geverifieerd zijn.",
+        verifyEmail: "Verifieer je e-mailadres",
+        verifyEmailText:
+            "Verifieer eerst je e-mailadres om een bezichtiging te boeken of contact op te nemen met de verkoper.",
+        accountLink: "Account aanmaken of inloggen",
+        viewingRequired: "Bezichtiging vereist voor bieden",
+        viewingRequiredText:
+            "Boek eerst een bezichtiging. Nadat de verkoper heeft bevestigd dat deze heeft plaatsgevonden, kun je tijdens de biedperiode een bod uitbrengen.",
+        ownListing: "Dit is jouw advertentie",
+        ownListingText:
+            "Je kunt dezelfde account gebruiken om elders te zoeken en bieden. Beheer bezichtigingen en biedingen voor deze woning via je dashboard.",
+        dashboardLink: "Naar dashboard",
     },
     en: {
         forSale: "For sale",
@@ -195,6 +212,20 @@ const copy = {
         biddingClosedText: "The bidding period ended on",
         biddingStarts: "Bidding starts",
         biddingEnds: "Bidding ends",
+        accountRequired: "Account required",
+        accountRequiredText:
+            "Create an account or sign in to book a viewing or contact the seller. Your email address must be verified.",
+        verifyEmail: "Verify your email address",
+        verifyEmailText:
+            "Verify your email address before booking a viewing or contacting the seller.",
+        accountLink: "Create account or sign in",
+        viewingRequired: "Viewing required before bidding",
+        viewingRequiredText:
+            "Book a viewing first. Once the seller confirms it took place, you can bid during the bidding period.",
+        ownListing: "This is your listing",
+        ownListingText:
+            "You can use this same account to search and bid elsewhere. Manage viewings and bids for this home from your dashboard.",
+        dashboardLink: "Go to dashboard",
     },
 };
 
@@ -314,6 +345,19 @@ export default async function PublicListingPage({
             capacity: slot.capacity,
             bookedCount: slot._count.bookings,
         }));
+    const session = await auth.api.getSession({ headers: await headers() });
+    const isOwner = session?.user.id === listing.ownerId;
+    const canInteract = Boolean(session?.user.emailVerified) && !isOwner;
+    const confirmedViewing = canInteract
+        ? await db.viewingBooking.findFirst({
+              where: {
+                  userId: session!.user.id,
+                  attendanceStatus: "CONFIRMED",
+                  slot: { listingId: listing.id },
+              },
+              select: { id: true },
+          })
+        : null;
 
     return (
         <div className="min-h-screen bg-white">
@@ -734,7 +778,30 @@ export default async function PublicListingPage({
                             ) : null}
                         </article>
                         <aside className="h-fit lg:sticky lg:top-6">
-                            {listing.status === "LIVE" &&
+                            {!session ? (
+                                <InteractionNotice
+                                    title={t.accountRequired}
+                                    text={t.accountRequiredText}
+                                    linkLabel={t.accountLink}
+                                    href="/"
+                                />
+                            ) : !session.user.emailVerified ? (
+                                <InteractionNotice
+                                    title={t.verifyEmail}
+                                    text={t.verifyEmailText}
+                                    linkLabel={t.accountLink}
+                                    href="/"
+                                />
+                            ) : isOwner ? (
+                                <InteractionNotice
+                                    title={t.ownListing}
+                                    text={t.ownListingText}
+                                    linkLabel={t.dashboardLink}
+                                    href="/dashboard"
+                                />
+                            ) : null}
+                            {canInteract &&
+                            listing.status === "LIVE" &&
                             viewingSlots.length > 0 ? (
                                 <div className="mb-4">
                                     <ViewingBooking
@@ -753,35 +820,42 @@ export default async function PublicListingPage({
                                 </p>
                             </div>
                             {biddingState === "open" ? (
-                                <BidForm
-                                    listingId={listing.id}
-                                    biddingMethod={listing.biddingMethod}
-                                    minimumBidCents={
-                                        listing.minimumBidCents?.toString() ??
-                                        null
-                                    }
-                                    bidIncrementCents={
-                                        listing.bidIncrementCents?.toString() ??
-                                        null
-                                    }
-                                    highestBidCents={
-                                        listing.biddingMethod === "OPEN"
-                                            ? (listing.bids[0]?.amountCents.toString() ??
-                                              null)
-                                            : null
-                                    }
-                                    allowBidConditions={
-                                        listing.allowBidConditions
-                                    }
-                                    opensAt={
-                                        listing.bidWindowOpensAt?.toISOString() ??
-                                        null
-                                    }
-                                    closesAt={
-                                        listing.bidWindowClosesAt?.toISOString() ??
-                                        null
-                                    }
-                                />
+                                confirmedViewing ? (
+                                    <BidForm
+                                        listingId={listing.id}
+                                        biddingMethod={listing.biddingMethod}
+                                        minimumBidCents={
+                                            listing.minimumBidCents?.toString() ??
+                                            null
+                                        }
+                                        bidIncrementCents={
+                                            listing.bidIncrementCents?.toString() ??
+                                            null
+                                        }
+                                        highestBidCents={
+                                            listing.biddingMethod === "OPEN"
+                                                ? (listing.bids[0]?.amountCents.toString() ??
+                                                  null)
+                                                : null
+                                        }
+                                        allowBidConditions={
+                                            listing.allowBidConditions
+                                        }
+                                        opensAt={
+                                            listing.bidWindowOpensAt?.toISOString() ??
+                                            null
+                                        }
+                                        closesAt={
+                                            listing.bidWindowClosesAt?.toISOString() ??
+                                            null
+                                        }
+                                    />
+                                ) : canInteract ? (
+                                    <InteractionNotice
+                                        title={t.viewingRequired}
+                                        text={t.viewingRequiredText}
+                                    />
+                                ) : null
                             ) : biddingState === "upcoming" ||
                               biddingState === "closed" ? (
                                 <BidWindowStatus
@@ -819,6 +893,34 @@ export default async function PublicListingPage({
                     />
                 </div>
             </main>
+        </div>
+    );
+}
+
+function InteractionNotice({
+    title,
+    text,
+    linkLabel,
+    href,
+}: {
+    title: string;
+    text: string;
+    linkLabel?: string;
+    href?: string;
+}) {
+    return (
+        <div className="mb-4 border border-line bg-background p-6">
+            <UserRoundCheck size={24} className="text-brand" />
+            <h2 className="mt-4 text-lg font-semibold">{title}</h2>
+            <p className="mt-2 text-sm leading-6 text-muted">{text}</p>
+            {href && linkLabel ? (
+                <Link
+                    href={href}
+                    className="mt-4 inline-flex h-10 items-center bg-brand px-4 text-sm font-semibold text-white"
+                >
+                    {linkLabel}
+                </Link>
+            ) : null}
         </div>
     );
 }

@@ -14,6 +14,7 @@ export class BidSubmissionError extends Error {
         readonly code:
             | "LISTING_NOT_LIVE"
             | "OWN_LISTING"
+            | "VIEWING_NOT_CONFIRMED"
             | "BID_WINDOW_CLOSED"
             | "BID_TOO_LOW"
             | "BID_INCREMENT_INVALID"
@@ -114,6 +115,20 @@ export async function submitBid(input: {
             throw new BidSubmissionError(
                 "OWN_LISTING",
                 "Owners cannot bid on their own listing",
+            );
+        }
+        const confirmedViewing = await tx.viewingBooking.findFirst({
+            where: {
+                userId: input.bidderUserId,
+                attendanceStatus: "CONFIRMED",
+                slot: { listingId: input.listingId },
+            },
+            select: { id: true },
+        });
+        if (!confirmedViewing) {
+            throw new BidSubmissionError(
+                "VIEWING_NOT_CONFIRMED",
+                "The owner must confirm that your viewing took place before you can bid",
             );
         }
         const now = new Date();

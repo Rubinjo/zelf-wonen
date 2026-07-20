@@ -11,6 +11,8 @@ export class ViewingError extends Error {
             | "SLOT_IN_PAST"
             | "SLOT_OVERLAP"
             | "ALREADY_BOOKED"
+            | "BOOKING_NOT_FOUND"
+            | "VIEWING_NOT_FINISHED"
             | "OWN_LISTING",
         message: string,
     ) {
@@ -246,6 +248,45 @@ export async function bookViewingSlot(userId: string, slotId: string) {
         return transaction.viewingBooking.create({
             data: { slotId, userId },
             select: { id: true, createdAt: true },
+        });
+    });
+}
+
+export async function reviewViewingAttendance(
+    ownerId: string,
+    listingId: string,
+    bookingId: string,
+    attendanceStatus: "CONFIRMED" | "NO_SHOW",
+) {
+    return db.$transaction(async (transaction) => {
+        const booking = await transaction.viewingBooking.findFirst({
+            where: {
+                id: bookingId,
+                slot: { listingId, listing: { ownerId } },
+            },
+            include: {
+                slot: { select: { endsAt: true } },
+                user: { select: { id: true, name: true, email: true } },
+            },
+        });
+        if (!booking) {
+            throw new ViewingError(
+                "BOOKING_NOT_FOUND",
+                "Boeking niet gevonden",
+            );
+        }
+        if (booking.slot.endsAt > new Date()) {
+            throw new ViewingError(
+                "VIEWING_NOT_FINISHED",
+                "Bevestig de aanwezigheid nadat de bezichtiging is afgelopen",
+            );
+        }
+        return transaction.viewingBooking.update({
+            where: { id: bookingId },
+            data: { attendanceStatus, ownerReviewedAt: new Date() },
+            include: {
+                user: { select: { id: true, name: true, email: true } },
+            },
         });
     });
 }

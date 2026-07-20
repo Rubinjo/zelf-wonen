@@ -86,7 +86,7 @@ export function ViewingBooking({
         setBusy(false);
         if (!response.ok) {
             setError(
-                response.status === 401
+                response.status === 401 || response.status === 403
                     ? t.signIn
                     : (payload.error?.message ?? "De boeking is mislukt"),
             );

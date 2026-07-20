@@ -174,6 +174,12 @@ enum ViewingType {
   OPEN_HOUSE
 }
 
+enum ViewingAttendanceStatus {
+  SCHEDULED
+  CONFIRMED
+  NO_SHOW
+}
+
 // Better Auth core model. Never store BSN or raw iDIN assertions on this record.
 model User {
   id               String   @id @default(uuid()) @db.Uuid
@@ -392,15 +398,18 @@ model ViewingSlot {
 }
 
 model ViewingBooking {
-  id          String      @id @default(uuid()) @db.Uuid
-  slotId      String      @db.Uuid
-  userId      String      @db.Uuid
-  createdAt   DateTime    @default(now())
-  slot        ViewingSlot @relation(fields: [slotId], references: [id], onDelete: Restrict)
-  user        User        @relation(fields: [userId], references: [id], onDelete: Restrict)
+  id               String                  @id @default(uuid()) @db.Uuid
+  slotId           String                  @db.Uuid
+  userId           String                  @db.Uuid
+  attendanceStatus ViewingAttendanceStatus @default(SCHEDULED)
+  ownerReviewedAt  DateTime?
+  createdAt        DateTime                @default(now())
+  slot             ViewingSlot             @relation(fields: [slotId], references: [id], onDelete: Restrict)
+  user             User                    @relation(fields: [userId], references: [id], onDelete: Restrict)
 
   @@unique([slotId, userId])
   @@index([userId, createdAt])
+  @@index([userId, attendanceStatus])
   @@map("viewing_bookings")
 }
 
