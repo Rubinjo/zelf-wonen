@@ -4,7 +4,9 @@ import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     CalendarDays,
+    CalendarClock,
     Clock3,
+    Info,
     LoaderCircle,
     Pencil,
     Trash2,
@@ -17,6 +19,7 @@ type ViewingSlot = {
     type: "APPOINTMENT" | "OPEN_HOUSE";
     startsAt: string;
     endsAt: string;
+    publishedAt: string;
     capacity: number;
     bookings: Array<{
         id: string;
@@ -28,13 +31,49 @@ type SlotDraft = {
     type: ViewingSlot["type"];
     startsAt: string;
     endsAt: string;
+    publicationMode: "DIRECT" | "SCHEDULED";
+    publishedAt: string;
     capacity: string;
+};
+
+type PropertyType =
+    | "HOUSE"
+    | "APARTMENT"
+    | "PARKING"
+    | "LAND"
+    | "COMMERCIAL"
+    | "OTHER";
+
+const durationAdvice: Record<
+    PropertyType,
+    { label: string; appointmentMinutes: number; openHouseMinutes: number }
+> = {
+    HOUSE: { label: "huis", appointmentMinutes: 45, openHouseMinutes: 120 },
+    APARTMENT: {
+        label: "appartement",
+        appointmentMinutes: 30,
+        openHouseMinutes: 90,
+    },
+    PARKING: {
+        label: "parkeerplaats",
+        appointmentMinutes: 15,
+        openHouseMinutes: 60,
+    },
+    LAND: { label: "perceel", appointmentMinutes: 30, openHouseMinutes: 90 },
+    COMMERCIAL: {
+        label: "bedrijfspand",
+        appointmentMinutes: 60,
+        openHouseMinutes: 150,
+    },
+    OTHER: { label: "object", appointmentMinutes: 30, openHouseMinutes: 90 },
 };
 
 const emptyDraft: SlotDraft = {
     type: "APPOINTMENT",
     startsAt: "",
     endsAt: "",
+    publicationMode: "DIRECT",
+    publishedAt: "",
     capacity: "10",
 };
 
@@ -61,11 +100,21 @@ const dateFormatter = new Intl.DateTimeFormat("nl-NL", {
     minute: "2-digit",
 });
 
-export function ViewingPlanner({ listingId }: { listingId: string }) {
+export function ViewingPlanner({
+    listingId,
+    propertyType,
+    listingStatus,
+}: {
+    listingId: string;
+    propertyType: PropertyType;
+    listingStatus: string;
+}) {
     const queryClient = useQueryClient();
     const [draft, setDraft] = useState<SlotDraft>(emptyDraft);
     const [editingId, setEditingId] = useState<string | null>(null);
+    const [showAdvice, setShowAdvice] = useState(false);
     const queryKey = ["listing-viewings", listingId];
+    const advice = durationAdvice[propertyType];
 
     const slots = useQuery({
         queryKey,
@@ -79,6 +128,10 @@ export function ViewingPlanner({ listingId }: { listingId: string }) {
                 type: draft.type,
                 startsAt: new Date(draft.startsAt).toISOString(),
                 endsAt: new Date(draft.endsAt).toISOString(),
+                publishedAt:
+                    draft.publicationMode === "DIRECT"
+                        ? new Date().toISOString()
+                        : new Date(draft.publishedAt).toISOString(),
                 capacity:
                     draft.type === "APPOINTMENT" ? 1 : Number(draft.capacity),
             });
@@ -127,6 +180,11 @@ export function ViewingPlanner({ listingId }: { listingId: string }) {
             type: slot.type,
             startsAt: toLocalInput(slot.startsAt),
             endsAt: toLocalInput(slot.endsAt),
+            publicationMode:
+                new Date(slot.publishedAt) > new Date()
+                    ? "SCHEDULED"
+                    : "DIRECT",
+            publishedAt: toLocalInput(slot.publishedAt),
             capacity: String(slot.capacity),
         });
     }
@@ -138,13 +196,38 @@ export function ViewingPlanner({ listingId }: { listingId: string }) {
                     <CalendarDays size={21} />
                 </span>
                 <div>
-                    <h2 className="text-2xl font-semibold">Bezichtigingen</h2>
+                    <div className="flex items-center gap-2">
+                        <h2 className="text-2xl font-semibold">
+                            Bezichtigingen
+                        </h2>
+                        <button
+                            type="button"
+                            aria-label="Toon advies over de duur van een bezichtiging"
+                            aria-expanded={showAdvice}
+                            onClick={() => setShowAdvice((current) => !current)}
+                            className="grid size-8 place-items-center text-brand"
+                            title="Advies over de duur"
+                        >
+                            <Info size={18} />
+                        </button>
+                    </div>
                     <p className="mt-1 text-sm leading-6 text-muted">
                         Plan losse afspraken of een open huis. Tijdstippen met
                         boekingen blijven ongewijzigd.
                     </p>
                 </div>
             </div>
+
+            {showAdvice ? (
+                <div className="mt-5 border-l-4 border-brand bg-background p-4 text-sm leading-6">
+                    Voor een {advice.label} adviseren we ongeveer{" "}
+                    <strong>{advice.appointmentMinutes} minuten</strong> per
+                    losse bezichtiging. Reserveer voor een open huis ongeveer{" "}
+                    <strong>{advice.openHouseMinutes} minuten</strong>. Voeg
+                    extra tijd toe voor vragen, uitloop en wisseling van
+                    bezoekers.
+                </div>
+            ) : null}
 
             <form onSubmit={submit} className="mt-8 border-t border-line pt-7">
                 <div className="grid gap-5 sm:grid-cols-2">
@@ -216,6 +299,51 @@ export function ViewingPlanner({ listingId }: { listingId: string }) {
                             className="input mt-2"
                         />
                     </label>
+                    <fieldset className="sm:col-span-2">
+                        <legend className="text-sm font-semibold">
+                            Publiceren
+                        </legend>
+                        <div className="mt-2 grid grid-cols-2 border border-line p-1">
+                            {[
+                                ["DIRECT", "Direct zichtbaar"],
+                                ["SCHEDULED", "Inplannen"],
+                            ].map(([value, label]) => (
+                                <button
+                                    key={value}
+                                    type="button"
+                                    onClick={() =>
+                                        setDraft((current) => ({
+                                            ...current,
+                                            publicationMode:
+                                                value as SlotDraft["publicationMode"],
+                                        }))
+                                    }
+                                    className={`min-h-10 px-3 text-sm font-semibold ${draft.publicationMode === value ? "bg-brand text-white" : "text-muted"}`}
+                                >
+                                    {label}
+                                </button>
+                            ))}
+                        </div>
+                    </fieldset>
+                    {draft.publicationMode === "SCHEDULED" ? (
+                        <label className="text-sm font-semibold sm:col-span-2">
+                            Zichtbaar vanaf
+                            <input
+                                required
+                                type="datetime-local"
+                                min={toLocalInput(new Date().toISOString())}
+                                max={draft.startsAt || undefined}
+                                value={draft.publishedAt}
+                                onChange={(event) =>
+                                    setDraft((current) => ({
+                                        ...current,
+                                        publishedAt: event.target.value,
+                                    }))
+                                }
+                                className="input mt-2"
+                            />
+                        </label>
+                    ) : null}
                 </div>
                 {save.error ? (
                     <p className="mt-4 bg-red-50 p-4 text-sm text-red-700">
@@ -291,6 +419,15 @@ export function ViewingPlanner({ listingId }: { listingId: string }) {
                                                 />
                                                 {slot.bookings.length} van{" "}
                                                 {slot.capacity} geboekt
+                                            </p>
+                                            <p className="mt-2 flex items-center gap-2 text-sm text-muted">
+                                                <CalendarClock size={15} />
+                                                {new Date(slot.publishedAt) <=
+                                                new Date()
+                                                    ? listingStatus === "LIVE"
+                                                        ? "Zichtbaar voor woningzoekers"
+                                                        : "Wordt zichtbaar zodra de advertentie live staat"
+                                                    : `Zichtbaar vanaf ${dateFormatter.format(new Date(slot.publishedAt))}${listingStatus === "LIVE" ? "" : ", zodra de advertentie live staat"}`}
                                             </p>
                                         </div>
                                         <div className="flex gap-2">

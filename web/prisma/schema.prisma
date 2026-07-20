@@ -380,13 +380,14 @@ model ViewingSlot {
   type         ViewingType      @default(APPOINTMENT)
   startsAt     DateTime
   endsAt       DateTime
+  publishedAt  DateTime         @default(now())
   capacity     Int              @default(1)
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
   listing      Listing          @relation(fields: [listingId], references: [id], onDelete: Cascade)
   bookings     ViewingBooking[]
 
-  @@index([listingId, startsAt])
+  @@index([listingId, publishedAt, startsAt])
   @@map("viewing_slots")
 }
 

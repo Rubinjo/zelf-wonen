@@ -557,7 +557,11 @@ export function ListingEditor({
                         />
                     ) : null}
                     {section === "viewings" ? (
-                        <ViewingPlanner listingId={listing.id} />
+                        <ViewingPlanner
+                            listingId={listing.id}
+                            propertyType={listing.property.propertyType}
+                            listingStatus={listing.status}
+                        />
                     ) : null}
                     {section === "publish" ? (
                         <PublishSection

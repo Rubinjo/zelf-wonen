@@ -2364,6 +2364,7 @@ export const ViewingSlotScalarFieldEnum = {
     type: "type",
     startsAt: "startsAt",
     endsAt: "endsAt",
+    publishedAt: "publishedAt",
     capacity: "capacity",
     createdAt: "createdAt",
     updatedAt: "updatedAt",

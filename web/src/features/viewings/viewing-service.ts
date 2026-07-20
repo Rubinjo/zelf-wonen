@@ -123,6 +123,7 @@ export async function createOwnerViewingSlot(
                 type: input.type,
                 startsAt: new Date(input.startsAt),
                 endsAt: new Date(input.endsAt),
+                publishedAt: new Date(input.publishedAt),
                 capacity: input.capacity,
             },
             include: ownerSlotInclude(),
@@ -164,6 +165,7 @@ export async function updateOwnerViewingSlot(
                 type: input.type,
                 startsAt: new Date(input.startsAt),
                 endsAt: new Date(input.endsAt),
+                publishedAt: new Date(input.publishedAt),
                 capacity: input.capacity,
             },
             include: ownerSlotInclude(),
@@ -199,8 +201,13 @@ export async function deleteOwnerViewingSlot(
 export async function bookViewingSlot(userId: string, slotId: string) {
     return db.$transaction(async (transaction) => {
         await transaction.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${slotId}))`;
+        const now = new Date();
         const slot = await transaction.viewingSlot.findFirst({
-            where: { id: slotId, listing: { status: "LIVE" } },
+            where: {
+                id: slotId,
+                publishedAt: { lte: now },
+                listing: { status: "LIVE" },
+            },
             include: {
                 listing: { select: { ownerId: true } },
                 _count: { select: { bookings: true } },
@@ -214,7 +221,7 @@ export async function bookViewingSlot(userId: string, slotId: string) {
                 "Je kunt je eigen woning niet bezichtigen",
             );
         }
-        if (slot.startsAt <= new Date()) {
+        if (slot.startsAt <= now) {
             throw new ViewingError(
                 "SLOT_IN_PAST",
                 "Dit tijdstip is niet meer beschikbaar",

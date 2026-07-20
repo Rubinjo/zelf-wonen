@@ -95,7 +95,10 @@ export default async function PublicListingPage({
             },
             floorPlans: { orderBy: { sortOrder: "asc" } },
             viewingSlots: {
-                where: { startsAt: { gt: new Date() } },
+                where: {
+                    startsAt: { gt: new Date() },
+                    publishedAt: { lte: new Date() },
+                },
                 include: { _count: { select: { bookings: true } } },
                 orderBy: { startsAt: "asc" },
             },

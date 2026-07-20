@@ -4,10 +4,15 @@ const viewingPeriodSchema = z
     .object({
         startsAt: z.iso.datetime(),
         endsAt: z.iso.datetime(),
+        publishedAt: z.iso.datetime(),
     })
     .refine((value) => new Date(value.endsAt) > new Date(value.startsAt), {
         message: "De eindtijd moet na de starttijd liggen",
         path: ["endsAt"],
+    })
+    .refine((value) => new Date(value.publishedAt) < new Date(value.startsAt), {
+        message: "Publiceer het tijdstip voordat de bezichtiging begint",
+        path: ["publishedAt"],
     });
 
 export const createViewingSlotSchema = viewingPeriodSchema.and(
