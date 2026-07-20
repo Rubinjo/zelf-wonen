@@ -180,6 +180,71 @@ enum ViewingAttendanceStatus {
   NO_SHOW
 }
 
+enum TransactionStatus {
+  ACTIVE
+  CONTRACT_PENDING
+  CONDITIONS_PENDING
+  READY_FOR_TRANSFER
+  COMPLETED
+  CANCELLED
+}
+
+enum TransactionMilestoneType {
+  PURCHASE_AGREEMENT
+  COOLING_OFF_PERIOD
+  FINANCING
+  BUILDING_INSPECTION
+  SECURITY_DEPOSIT
+  NOTARY_SELECTION
+  DEED_OF_TRANSFER
+  FINAL_INSPECTION
+  KEY_HANDOVER
+}
+
+enum TransactionMilestoneStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  WAIVED
+  OVERDUE
+}
+
+enum TransactionMessageKind {
+  TEXT
+  SYSTEM
+}
+
+enum TransactionDocumentCategory {
+  CHAT_ATTACHMENT
+  PURCHASE_AGREEMENT
+  PROPERTY_PASSPORT
+  FINANCING
+  BUILDING_INSPECTION
+  NOTARY
+  FINAL_INSPECTION
+  OTHER
+}
+
+enum TransactionDocumentStatus {
+  AVAILABLE
+  SUPERSEDED
+  DELETED
+}
+
+enum TransactionEventType {
+  ROOM_CREATED
+  MESSAGE_SENT
+  DOCUMENT_UPLOADED
+  DOCUMENT_DOWNLOADED
+  MILESTONE_UPDATED
+  CONTRACT_CONFIRMED
+  NOTARY_UPDATED
+  HANDOVER_UPDATED
+  PASSPORT_VERSION_CREATED
+  TRANSACTION_COMPLETED
+  TRANSACTION_CANCELLED
+}
+
 // Better Auth core model. Never store BSN or raw iDIN assertions on this record.
 model User {
   id               String   @id @default(uuid()) @db.Uuid
@@ -203,6 +268,12 @@ model User {
   publicationOrders     PublicationOrder[]
   auditEvents           AuditEvent[]
   viewingBookings       ViewingBooking[]
+  sellingTransactions   PropertyTransaction[] @relation("TransactionSeller")
+  buyingTransactions    PropertyTransaction[] @relation("TransactionBuyer")
+  transactionMessages   TransactionMessage[]
+  transactionDocuments  TransactionDocument[]
+  transactionEvents     TransactionEvent[]
+  passportVersions      PropertyPassportVersion[]
 
   @@map("users")
 }
@@ -374,6 +445,8 @@ model Listing {
   logbookExports         BidLogbookExport[]
   auditEvents            AuditEvent[]
   viewingSlots           ViewingSlot[]
+  transactions           PropertyTransaction[]
+  passportVersions       PropertyPassportVersion[]
 
   @@index([ownerId, status])
   @@index([propertyId])
@@ -561,6 +634,7 @@ model Bid {
   listing               Listing    @relation(fields: [listingId], references: [id], onDelete: Restrict)
   bidderUser            User?      @relation(fields: [bidderUserId], references: [id], onDelete: SetNull)
   events                BidEvent[]
+  transaction           PropertyTransaction?
 
   @@index([listingId, submittedAt])
   @@index([bidderUserId])
@@ -595,6 +669,139 @@ model BidLogbookExport {
 
   @@index([listingId, generatedAt])
   @@map("bid_logbook_exports")
+}
+
+model PropertyTransaction {
+  id                        String            @id @default(uuid()) @db.Uuid
+  listingId                 String            @db.Uuid
+  acceptedBidId             String            @unique @db.Uuid
+  sellerUserId              String            @db.Uuid
+  buyerUserId               String            @db.Uuid
+  status                    TransactionStatus @default(ACTIVE)
+  purchasePriceCents        BigInt
+  currency                  String            @default("EUR") @db.Char(3)
+  targetTransferDate        DateTime?
+  contractTerms             Json?
+  buyerContractConfirmedAt  DateTime?
+  sellerContractConfirmedAt DateTime?
+  coolingOffEndsAt          DateTime?
+  notaryDetails             Json?
+  handoverDetails           Json?
+  completedAt               DateTime?
+  cancelledAt               DateTime?
+  cancellationReason        String?
+  version                   Int               @default(1)
+  createdAt                 DateTime          @default(now())
+  updatedAt                 DateTime          @updatedAt
+  listing                   Listing           @relation(fields: [listingId], references: [id], onDelete: Restrict)
+  acceptedBid               Bid               @relation(fields: [acceptedBidId], references: [id], onDelete: Restrict)
+  seller                    User              @relation("TransactionSeller", fields: [sellerUserId], references: [id], onDelete: Restrict)
+  buyer                     User              @relation("TransactionBuyer", fields: [buyerUserId], references: [id], onDelete: Restrict)
+  milestones                TransactionMilestone[]
+  messages                  TransactionMessage[]
+  documents                 TransactionDocument[]
+  events                    TransactionEvent[]
+
+  @@index([sellerUserId, status, updatedAt])
+  @@index([buyerUserId, status, updatedAt])
+  @@index([listingId, status])
+  @@map("property_transactions")
+}
+
+model TransactionMilestone {
+  id            String                       @id @default(uuid()) @db.Uuid
+  transactionId String                       @db.Uuid
+  type          TransactionMilestoneType
+  status        TransactionMilestoneStatus   @default(NOT_STARTED)
+  title         String
+  dueAt         DateTime?
+  completedAt   DateTime?
+  details       Json?
+  sortOrder     Int                          @default(0)
+  createdAt     DateTime                     @default(now())
+  updatedAt     DateTime                     @updatedAt
+  transaction   PropertyTransaction          @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@unique([transactionId, type])
+  @@index([transactionId, sortOrder])
+  @@index([dueAt, status])
+  @@map("transaction_milestones")
+}
+
+model TransactionMessage {
+  id            String                 @id @default(uuid()) @db.Uuid
+  transactionId String                 @db.Uuid
+  authorUserId  String                 @db.Uuid
+  kind          TransactionMessageKind @default(TEXT)
+  body          String
+  createdAt     DateTime               @default(now())
+  editedAt      DateTime?
+  transaction   PropertyTransaction    @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  author        User                   @relation(fields: [authorUserId], references: [id], onDelete: Restrict)
+  documents     TransactionDocument[]
+
+  @@index([transactionId, createdAt])
+  @@index([authorUserId, createdAt])
+  @@map("transaction_messages")
+}
+
+model TransactionDocument {
+  id            String                      @id @default(uuid()) @db.Uuid
+  transactionId String                      @db.Uuid
+  messageId     String?                     @db.Uuid
+  uploadedById  String                      @db.Uuid
+  category      TransactionDocumentCategory @default(OTHER)
+  status        TransactionDocumentStatus   @default(AVAILABLE)
+  storageKey    String                      @unique
+  mimeType      String
+  sha256        String                      @db.Char(64)
+  fileName      String
+  sizeBytes     BigInt
+  version       Int                         @default(1)
+  createdAt     DateTime                    @default(now())
+  transaction   PropertyTransaction         @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  message       TransactionMessage?         @relation(fields: [messageId], references: [id], onDelete: SetNull)
+  uploadedBy    User                        @relation(fields: [uploadedById], references: [id], onDelete: Restrict)
+
+  @@index([transactionId, category, createdAt])
+  @@index([messageId])
+  @@map("transaction_documents")
+}
+
+model PropertyPassportVersion {
+  id                   String   @id @default(uuid()) @db.Uuid
+  listingId            String   @db.Uuid
+  version              Int
+  listingVersionSource Int
+  snapshot             Json
+  completenessScore    Int
+  previousHash         String?  @db.Char(64)
+  entryHash            String   @unique @db.Char(64)
+  createdByUserId      String   @db.Uuid
+  createdAt            DateTime @default(now())
+  listing              Listing  @relation(fields: [listingId], references: [id], onDelete: Restrict)
+  createdBy            User     @relation(fields: [createdByUserId], references: [id], onDelete: Restrict)
+
+  @@unique([listingId, version])
+  @@index([listingId, createdAt])
+  @@map("property_passport_versions")
+}
+
+model TransactionEvent {
+  id            String               @id @default(uuid()) @db.Uuid
+  transactionId String               @db.Uuid
+  actorUserId   String?              @db.Uuid
+  type          TransactionEventType
+  payload       Json?
+  occurredAt    DateTime             @default(now())
+  previousHash  String?              @db.Char(64)
+  entryHash     String               @unique @db.Char(64)
+  transaction   PropertyTransaction  @relation(fields: [transactionId], references: [id], onDelete: Restrict)
+  actor         User?                @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([transactionId, occurredAt])
+  @@index([actorUserId, occurredAt])
+  @@map("transaction_events")
 }
 
 model EstimateCache {

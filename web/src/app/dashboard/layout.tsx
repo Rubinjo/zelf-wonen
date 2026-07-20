@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { Building2, Home, Plus, Settings, ShieldCheck } from "lucide-react";
+import {
+    Building2,
+    Handshake,
+    Home,
+    Plus,
+    Settings,
+    ShieldCheck,
+} from "lucide-react";
 import { redirect } from "next/navigation";
 import { PlatformSignOut } from "@/components/platform/platform-sign-out";
 import { requireEmailVerifiedUser } from "@/features/auth/guards";
@@ -48,6 +55,12 @@ export default async function DashboardLayout({
                             <Plus size={16} /> Nieuwe woning
                         </Link>
                         <Link
+                            href="/dashboard/transacties"
+                            className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold hover:bg-white"
+                        >
+                            <Handshake size={16} /> Transacties
+                        </Link>
+                        <Link
                             href="/dashboard/account"
                             className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold hover:bg-white"
                         >
@@ -84,6 +97,12 @@ export default async function DashboardLayout({
                     className="grid min-w-20 place-items-center gap-1 p-2 text-xs font-semibold"
                 >
                     <Settings size={18} /> Account
+                </Link>
+                <Link
+                    href="/dashboard/transacties"
+                    className="grid min-w-20 place-items-center gap-1 p-2 text-xs font-semibold"
+                >
+                    <Handshake size={18} /> Transacties
                 </Link>
             </nav>
         </div>

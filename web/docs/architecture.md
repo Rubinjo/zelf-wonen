@@ -156,6 +156,24 @@ Hash chains make alteration evident; they do not by themselves prevent a privile
 
 The exact legal status and required contents of a bidding logbook can depend on seller type, trade-association rules, contract terms, and evolving Dutch law. Dutch counsel and a privacy officer must approve the workflow, anonymization, recipient definition, retention, and PDF wording before launch.
 
+## Transaction room and property passport
+
+Accepting a bid atomically changes the listing to `UNDER_OFFER`, creates a two-party transaction room, seeds the sale/rental milestones, and records the first property-passport version. Only the accepted bidder and listing owner may access that room.
+
+The room covers:
+
+- buyer/seller chat with private PDF/image attachments;
+- structured agreement terms and separate confirmations by both parties;
+- financing, inspection, deposit, notary, transfer, final-inspection and key-handover milestones;
+- notary contact/reference data, meter readings, keys and handover notes;
+- generated agreement and property-passport PDFs in the private document vault;
+- cancellation back to `LIVE`, or controlled completion to `SOLD` / `RENTED`;
+- append-only, hash-chained transaction events and passport versions.
+
+Property-passport snapshots include listing/property data, source records, media hashes and the listing version. Each passport version stores the preceding hash and its own canonical SHA-256 hash. The PDF includes the version hash and a separate snapshot hash so recipients can identify the exact dossier version.
+
+Development stores transaction documents outside `public/` under `.data/transaction-documents`; downloads require a verified session and room membership. Production must replace local storage with EU-region private object storage, malware scanning, MIME/content verification, encryption, retention policy and immutable versioning/object lock. Platform confirmation records intent and agreed terms, but is not a qualified electronic signature. Connect an eIDAS-capable signing provider and complete Dutch legal review before representing generated agreements as signed purchase or rental contracts.
+
 ## Security and operations baseline
 
 - Validate all request/response contracts with Zod; use Pydantic against the same OpenAPI contract in Python.

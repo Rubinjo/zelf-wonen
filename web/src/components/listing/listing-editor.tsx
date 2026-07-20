@@ -2289,6 +2289,7 @@ function BidsSection({
     loading: boolean;
     onDecision: () => void;
 }) {
+    const router = useRouter();
     const [showNtaInfo, setShowNtaInfo] = useState(false);
     const confidential =
         listing.biddingMethod !== "OPEN" &&
@@ -2302,12 +2303,20 @@ function BidsSection({
             bidId: string;
             value: "ACCEPTED" | "REJECTED";
         }) =>
-            requestData(`/api/listings/${listing.id}/bids/${bidId}`, {
-                method: "PATCH",
-                headers: { "content-type": "application/json" },
-                body: JSON.stringify({ decision: value }),
-            }),
-        onSuccess: onDecision,
+            requestData<{ transactionId?: string }>(
+                `/api/listings/${listing.id}/bids/${bidId}`,
+                {
+                    method: "PATCH",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({ decision: value }),
+                },
+            ),
+        onSuccess: (result) => {
+            onDecision();
+            if (result.transactionId) {
+                router.push(`/dashboard/transacties/${result.transactionId}`);
+            }
+        },
     });
     return (
         <div>

@@ -33,6 +33,16 @@ CREATE TRIGGER logbook_exports_are_append_only
 BEFORE UPDATE OR DELETE ON bid_logbook_exports
 FOR EACH ROW EXECUTE FUNCTION reject_immutable_mutation();
 
+DROP TRIGGER IF EXISTS transaction_events_are_append_only ON transaction_events;
+CREATE TRIGGER transaction_events_are_append_only
+BEFORE UPDATE OR DELETE ON transaction_events
+FOR EACH ROW EXECUTE FUNCTION reject_immutable_mutation();
+
+DROP TRIGGER IF EXISTS passport_versions_are_append_only ON property_passport_versions;
+CREATE TRIGGER passport_versions_are_append_only
+BEFORE UPDATE OR DELETE ON property_passport_versions
+FOR EACH ROW EXECUTE FUNCTION reject_immutable_mutation();
+
 -- A bid insertion transaction must acquire pg_advisory_xact_lock(hashtext(listing_id::text)),
 -- read the latest entry_hash, and insert previous_hash + the canonical payload hash.
 -- Store generated PDFs in object storage with retention/object-lock enabled.

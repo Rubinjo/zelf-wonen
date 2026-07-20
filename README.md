@@ -15,6 +15,8 @@ Self-service Dutch real-estate platform for owners who want to sell or rent with
 - iDIN provider port plus strict publication gate
 - Funda-style publisher adapter with Bronze/Silver/Gold packages
 - Immutable, hash-chained bid submission and PostgreSQL trigger draft
+- Buyer/seller transaction room with chat, private document exchange, deadlines, agreement confirmations, notary and handover workflow
+- Versioned, hash-chained property passport with completeness score and verifiable PDF export
 
 ## Local setup
 
