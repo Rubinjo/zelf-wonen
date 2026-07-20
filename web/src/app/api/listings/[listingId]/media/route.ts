@@ -69,6 +69,10 @@ export async function POST(
         const form = await request.formData();
         const file = form.get("file");
         const requestedKind = form.get("kind");
+        const documentLabel =
+            form.get("documentRole") === "MOVABLE_ITEMS"
+                ? "Lijst van zaken"
+                : null;
         if (!(file instanceof File)) {
             return NextResponse.json(
                 {
@@ -198,6 +202,7 @@ export async function POST(
                         sizeBytes: BigInt(file.size),
                         processedAt: new Date(),
                         sortOrder,
+                        altTextNl: documentLabel,
                     },
                 });
                 const updatedListing = await tx.listing.update({
@@ -214,7 +219,10 @@ export async function POST(
                         version: { increment: 1 },
                     },
                 });
-                return { media: created, listingVersion: updatedListing.version };
+                return {
+                    media: created,
+                    listingVersion: updatedListing.version,
+                };
             })
             .catch(async (error) => {
                 await unlink(target).catch(() => undefined);

@@ -13,10 +13,12 @@ import {
     CircleAlert,
     ExternalLink,
     FileImage,
+    FileText,
     FileUp,
     Fingerprint,
     ImagePlus,
     LoaderCircle,
+    Plus,
     Save,
     Send,
     ShieldCheck,
@@ -42,9 +44,18 @@ type MediaItem = {
     mimeType: string;
     sha256: string;
     fileName: string;
+    altTextNl: string | null;
 };
 
 type UploadedMedia = MediaItem & { listingVersion: number };
+
+type MovableItemCategory = "STAYS" | "GOES" | "FOR_TAKEOVER";
+type MovableItem = {
+    id: string;
+    name: string;
+    category: MovableItemCategory;
+    notes: string;
+};
 
 export type ListingView = {
     id: string;
@@ -66,6 +77,17 @@ export type ListingView = {
     allowBidConditions: boolean;
     bidWindowOpensAt: string | null;
     bidWindowClosesAt: string | null;
+    attributes: {
+        condition?: "POOR" | "FAIR" | "GOOD" | "EXCELLENT";
+        outdoorSpace?: boolean;
+        parking?: boolean;
+        furnished?: boolean;
+        petsAllowed?: boolean;
+        depositCents?: string;
+        rentalDurationMonths?: number;
+        highlights?: string[];
+        movableItems?: MovableItem[];
+    } | null;
     property: {
         postcode: string;
         houseNumber: number;
@@ -113,6 +135,7 @@ export type ListingView = {
 type Section =
     | "details"
     | "media"
+    | "movableItems"
     | "estimate"
     | "viewings"
     | "publish"
@@ -147,6 +170,7 @@ type EditorState = {
     floorplannerEmbedUrl: string;
     bidWindowOpensAt: string;
     bidWindowClosesAt: string;
+    movableItems: MovableItem[];
 };
 
 async function requestData<T>(url: string, init?: RequestInit): Promise<T> {
@@ -172,6 +196,7 @@ const sections: Array<{ id: Section; label: string; icon: typeof Building2 }> =
     [
         { id: "details", label: "Gegevens & tekst", icon: Building2 },
         { id: "media", label: "Foto's & plattegrond", icon: FileImage },
+        { id: "movableItems", label: "Lijst van zaken", icon: FileText },
         { id: "estimate", label: "Prijs & bieden", icon: BadgeEuro },
         { id: "viewings", label: "Bezichtigingen", icon: CalendarDays },
         { id: "publish", label: "Controleren & publiceren", icon: Send },
@@ -219,6 +244,7 @@ export function ListingEditor({
         floorplannerEmbedUrl: listing.floorPlans[0]?.embedUrl ?? "",
         bidWindowOpensAt: listing.bidWindowOpensAt?.slice(0, 16) ?? "",
         bidWindowClosesAt: listing.bidWindowClosesAt?.slice(0, 16) ?? "",
+        movableItems: listing.attributes?.movableItems ?? [],
     });
 
     const editable = ["DRAFT", "READY_FOR_VERIFICATION"].includes(
@@ -289,6 +315,12 @@ export function ListingEditor({
                     bidWindowClosesAt: editor.bidWindowClosesAt
                         ? new Date(editor.bidWindowClosesAt).toISOString()
                         : null,
+                    attributes: {
+                        ...listing.attributes,
+                        movableItems: editor.movableItems.filter((item) =>
+                            item.name.trim(),
+                        ),
+                    },
                 }),
             }),
         onSuccess(data) {
@@ -545,6 +577,20 @@ export function ListingEditor({
                             editable={editable}
                             editor={editor}
                             setEditor={setEditor}
+                        />
+                    ) : null}
+                    {section === "movableItems" ? (
+                        <MovableItemsSection
+                            listing={listing}
+                            setListing={setListing}
+                            items={editor.movableItems}
+                            setItems={(movableItems) =>
+                                setEditor((current) => ({
+                                    ...current,
+                                    movableItems,
+                                }))
+                            }
+                            editable={editable}
                         />
                     ) : null}
                     {section === "estimate" ? (
@@ -879,7 +925,10 @@ function EnergyLabelPanel({
     editable: boolean;
 }) {
     const energy = listing.property.energyLabels[0];
-    const documents = listing.media.filter((item) => item.kind === "DOCUMENT");
+    const documents = listing.media.filter(
+        (item) =>
+            item.kind === "DOCUMENT" && item.altTextNl !== "Lijst van zaken",
+    );
     const upload = useMutation({
         mutationFn: async (file: File) => {
             const form = new FormData();
@@ -986,6 +1035,308 @@ function EnergyLabelPanel({
                 </p>
             ) : null}
         </section>
+    );
+}
+
+const movableItemCategories: Array<{
+    value: MovableItemCategory;
+    label: string;
+}> = [
+    { value: "STAYS", label: "Blijft achter" },
+    { value: "GOES", label: "Gaat mee" },
+    { value: "FOR_TAKEOVER", label: "Ter overname" },
+];
+
+const movableItemSuggestions = [
+    "Gordijnen en rails",
+    "Verlichting",
+    "Vloerafwerking",
+    "Inbouwapparatuur",
+    "Losse keukenapparatuur",
+    "Kasten",
+    "Wasmachine en droger",
+    "Tuinmeubilair",
+    "Zonwering",
+    "Laadpaal",
+];
+
+function MovableItemsSection({
+    listing,
+    setListing,
+    items,
+    setItems,
+    editable,
+}: {
+    listing: ListingView;
+    setListing: React.Dispatch<React.SetStateAction<ListingView>>;
+    items: MovableItem[];
+    setItems: (items: MovableItem[]) => void;
+    editable: boolean;
+}) {
+    const uploadedDocuments = listing.media.filter(
+        (item) =>
+            item.kind === "DOCUMENT" && item.altTextNl === "Lijst van zaken",
+    );
+    const [mode, setMode] = useState<"create" | "upload">(
+        uploadedDocuments.length && !items.length ? "upload" : "create",
+    );
+    const upload = useMutation({
+        mutationFn: async (file: File) => {
+            const form = new FormData();
+            form.set("file", file);
+            form.set("kind", "DOCUMENT");
+            form.set("documentRole", "MOVABLE_ITEMS");
+            const response = await fetch(`/api/listings/${listing.id}/media`, {
+                method: "POST",
+                body: form,
+            });
+            const payload = await response.json();
+            if (!response.ok)
+                throw new Error(payload.error?.message ?? "Upload mislukt");
+            return payload.data as UploadedMedia;
+        },
+        onSuccess(uploaded) {
+            const { listingVersion, ...media } = uploaded;
+            setListing((current) => ({
+                ...current,
+                version: listingVersion,
+                media: [...current.media, media],
+            }));
+        },
+    });
+    const remove = useMutation({
+        mutationFn: async (mediaId: string) => {
+            const response = await fetch(
+                `/api/listings/${listing.id}/media/${mediaId}`,
+                { method: "DELETE" },
+            );
+            if (!response.ok) throw new Error("Verwijderen mislukt");
+            return mediaId;
+        },
+        onSuccess(mediaId) {
+            setListing((current) => ({
+                ...current,
+                version: current.version + 1,
+                media: current.media.filter((item) => item.id !== mediaId),
+            }));
+        },
+    });
+    const addItem = (name = "") =>
+        setItems([
+            ...items,
+            {
+                id: crypto.randomUUID(),
+                name,
+                category: "STAYS",
+                notes: "",
+            },
+        ]);
+    const updateItem = (id: string, patch: Partial<MovableItem>) =>
+        setItems(
+            items.map((item) =>
+                item.id === id ? { ...item, ...patch } : item,
+            ),
+        );
+
+    return (
+        <div>
+            <SectionHeading
+                icon={FileText}
+                title="Lijst van zaken"
+                text="Leg vast welke roerende zaken achterblijven, meegaan of ter overname worden aangeboden. Kopers kunnen de lijst als PDF downloaden."
+            />
+            <div className="mt-7 inline-flex border border-line p-1">
+                <button
+                    type="button"
+                    onClick={() => setMode("create")}
+                    className={`px-4 py-2 text-sm font-semibold ${mode === "create" ? "bg-brand text-white" : "text-muted"}`}
+                >
+                    Zelf maken
+                </button>
+                <button
+                    type="button"
+                    onClick={() => setMode("upload")}
+                    className={`px-4 py-2 text-sm font-semibold ${mode === "upload" ? "bg-brand text-white" : "text-muted"}`}
+                >
+                    PDF uploaden
+                </button>
+            </div>
+
+            {mode === "create" ? (
+                <div className="mt-7">
+                    <div className="border border-line bg-background p-5">
+                        <h3 className="font-semibold">Veelvoorkomende zaken</h3>
+                        <p className="mt-1 text-sm text-muted">
+                            Voeg relevante voorbeelden toe en pas ze daarna aan.
+                        </p>
+                        <div className="mt-4 flex flex-wrap gap-2">
+                            {movableItemSuggestions.map((suggestion) => (
+                                <button
+                                    key={suggestion}
+                                    type="button"
+                                    disabled={
+                                        !editable ||
+                                        items.some(
+                                            (item) => item.name === suggestion,
+                                        )
+                                    }
+                                    onClick={() => addItem(suggestion)}
+                                    className="inline-flex items-center gap-1.5 border border-line bg-white px-3 py-2 text-sm font-semibold disabled:opacity-40"
+                                >
+                                    <Plus size={15} /> {suggestion}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="mt-5 space-y-3">
+                        {items.map((item) => (
+                            <div
+                                key={item.id}
+                                className="grid gap-3 border border-line p-4 md:grid-cols-[1.2fr_0.8fr_1fr_auto] md:items-end"
+                            >
+                                <Input
+                                    label="Zaak"
+                                    value={item.name}
+                                    disabled={!editable}
+                                    maxLength={120}
+                                    onChange={(event) =>
+                                        updateItem(item.id, {
+                                            name: event.target.value,
+                                        })
+                                    }
+                                />
+                                <label className="block text-sm font-semibold">
+                                    Categorie
+                                    <select
+                                        value={item.category}
+                                        disabled={!editable}
+                                        onChange={(event) =>
+                                            updateItem(item.id, {
+                                                category: event.target
+                                                    .value as MovableItemCategory,
+                                            })
+                                        }
+                                        className="input mt-2"
+                                    >
+                                        {movableItemCategories.map(
+                                            (category) => (
+                                                <option
+                                                    key={category.value}
+                                                    value={category.value}
+                                                >
+                                                    {category.label}
+                                                </option>
+                                            ),
+                                        )}
+                                    </select>
+                                </label>
+                                <Input
+                                    label="Toelichting (optioneel)"
+                                    value={item.notes}
+                                    disabled={!editable}
+                                    maxLength={240}
+                                    onChange={(event) =>
+                                        updateItem(item.id, {
+                                            notes: event.target.value,
+                                        })
+                                    }
+                                />
+                                <button
+                                    type="button"
+                                    title="Zaak verwijderen"
+                                    disabled={!editable}
+                                    onClick={() =>
+                                        setItems(
+                                            items.filter(
+                                                (current) =>
+                                                    current.id !== item.id,
+                                            ),
+                                        )
+                                    }
+                                    className="grid size-11 place-items-center border border-line text-red-700 disabled:opacity-40"
+                                >
+                                    <Trash2 size={17} />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                    <button
+                        type="button"
+                        disabled={!editable || items.length >= 150}
+                        onClick={() => addItem()}
+                        className="mt-4 inline-flex items-center gap-2 rounded-full border border-line px-4 py-2.5 text-sm font-semibold disabled:opacity-40"
+                    >
+                        <Plus size={16} /> Eigen zaak toevoegen
+                    </button>
+                    {items.length ? (
+                        <p className="mt-4 text-sm text-muted">
+                            Sla het concept op om de downloadbare PDF bij te
+                            werken.
+                        </p>
+                    ) : null}
+                </div>
+            ) : (
+                <div className="mt-7">
+                    <p className="text-sm leading-6 text-muted">
+                        Upload een bestaande roerende-zakenlijst als PDF van
+                        maximaal 20 MB.
+                    </p>
+                    <label className="mt-4 inline-flex h-11 cursor-pointer items-center gap-2 rounded-full bg-brand px-5 text-sm font-semibold text-white">
+                        {upload.isPending ? (
+                            <LoaderCircle className="animate-spin" size={16} />
+                        ) : (
+                            <FileUp size={16} />
+                        )}
+                        PDF kiezen
+                        <input
+                            type="file"
+                            accept="application/pdf"
+                            className="sr-only"
+                            disabled={!editable || upload.isPending}
+                            onChange={(event) => {
+                                const file = event.target.files?.[0];
+                                if (file) upload.mutate(file);
+                                event.target.value = "";
+                            }}
+                        />
+                    </label>
+                    <div className="mt-5 space-y-2">
+                        {uploadedDocuments.map((document) => (
+                            <div
+                                key={document.id}
+                                className="flex items-center justify-between gap-3 border border-line px-4 py-3"
+                            >
+                                <a
+                                    href={`/${document.storageKey}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex min-w-0 items-center gap-3 text-sm font-semibold text-brand"
+                                >
+                                    <FileText size={17} />
+                                    <span className="truncate">
+                                        {document.fileName}
+                                    </span>
+                                </a>
+                                <button
+                                    type="button"
+                                    title="PDF verwijderen"
+                                    disabled={!editable || remove.isPending}
+                                    onClick={() => remove.mutate(document.id)}
+                                    className="grid size-9 shrink-0 place-items-center text-red-700 disabled:opacity-40"
+                                >
+                                    <Trash2 size={16} />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                    {upload.error || remove.error ? (
+                        <p className="mt-3 text-sm text-red-700">
+                            {(upload.error ?? remove.error)?.message}
+                        </p>
+                    ) : null}
+                </div>
+            )}
+        </div>
     );
 }
 

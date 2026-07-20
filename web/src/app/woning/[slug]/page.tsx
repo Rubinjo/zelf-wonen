@@ -8,7 +8,9 @@ import {
     Check,
     CircleParking,
     Clock3,
+    Download,
     DoorOpen,
+    FileText,
     Home,
     Landmark,
     Layers3,
@@ -26,6 +28,7 @@ import {
     propertyAmenityOptions,
     roofTypeOptions,
 } from "@/lib/property-options";
+import { listingAttributesSchema } from "@/lib/schemas/listing";
 
 const energyNames: Record<string, string> = {
     A_PLUS_PLUS_PLUS_PLUS_PLUS: "A+++++",
@@ -127,6 +130,11 @@ const copy = {
         energyRegistered: "Geregistreerd op",
         energyValidUntil: "Geldig tot",
         viewingNotes: "Informatie over bezichtigingen",
+        movableItems: "Lijst van zaken",
+        movableItemsText:
+            "Bekijk welke roerende zaken achterblijven, meegaan of ter overname worden aangeboden.",
+        generatedList: "Download lijst van zaken (PDF)",
+        uploadedList: "Download roerende-zakenlijst",
         floorplan: "Interactieve plattegrond",
         bid: "Bieden met vertrouwen",
         bidText:
@@ -171,6 +179,11 @@ const copy = {
         energyRegistered: "Registered on",
         energyValidUntil: "Valid until",
         viewingNotes: "Viewing information",
+        movableItems: "Movable items list",
+        movableItemsText:
+            "See which movable items remain, are removed, or are offered for takeover.",
+        generatedList: "Download movable items list (PDF)",
+        uploadedList: "Download uploaded movable items list",
         floorplan: "Interactive floor plan",
         bid: "Bid with confidence",
         bidText:
@@ -232,6 +245,16 @@ export default async function PublicListingPage({
     const floorPlanFiles = listing.media.filter(
         (item) => item.kind === "FLOOR_PLAN_STATIC",
     );
+    const movableItemsDocuments = listing.media.filter(
+        (item) =>
+            item.kind === "DOCUMENT" && item.altTextNl === "Lijst van zaken",
+    );
+    const parsedAttributes = listingAttributesSchema.safeParse(
+        listing.attributes ?? {},
+    );
+    const movableItems = parsedAttributes.success
+        ? parsedAttributes.data.movableItems
+        : [];
     const price =
         listing.purpose === "SALE"
             ? listing.askingPriceCents
@@ -615,6 +638,52 @@ export default async function PublicListingPage({
                                     <p className="mt-3 whitespace-pre-line text-sm leading-7 text-foreground/75">
                                         {listing.viewingNotes}
                                     </p>
+                                </section>
+                            ) : null}
+                            {movableItems.length > 0 ||
+                            movableItemsDocuments.length > 0 ? (
+                                <section className="mt-10 border-t border-line pt-8">
+                                    <div className="flex items-start gap-3">
+                                        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent text-brand-dark">
+                                            <FileText size={19} />
+                                        </span>
+                                        <div>
+                                            <h2 className="text-2xl font-semibold">
+                                                {t.movableItems}
+                                            </h2>
+                                            <p className="mt-2 text-sm leading-6 text-muted">
+                                                {t.movableItemsText}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="mt-5 flex flex-wrap gap-3">
+                                        {movableItems.length > 0 ? (
+                                            <a
+                                                href={`/api/listings/${listing.id}/movable-items-pdf`}
+                                                className="inline-flex h-11 items-center gap-2 rounded-full bg-brand px-5 text-sm font-semibold text-white"
+                                            >
+                                                <Download size={17} />
+                                                {t.generatedList}
+                                            </a>
+                                        ) : null}
+                                        {movableItemsDocuments.map(
+                                            (document, index) => (
+                                                <a
+                                                    key={document.id}
+                                                    href={`/${document.storageKey}`}
+                                                    download
+                                                    className="inline-flex h-11 items-center gap-2 rounded-full border border-line px-5 text-sm font-semibold text-brand"
+                                                >
+                                                    <Download size={17} />
+                                                    {t.uploadedList}
+                                                    {movableItemsDocuments.length >
+                                                    1
+                                                        ? ` ${index + 1}`
+                                                        : ""}
+                                                </a>
+                                            ),
+                                        )}
+                                    </div>
                                 </section>
                             ) : null}
                             {floorPlanFiles.length > 0 ? (

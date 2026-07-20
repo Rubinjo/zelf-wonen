@@ -56,6 +56,19 @@ export const parkingOptionSchema = z.enum([
     "SPACE_FOR_SALE",
 ]);
 
+export const movableItemCategorySchema = z.enum([
+    "STAYS",
+    "GOES",
+    "FOR_TAKEOVER",
+]);
+
+export const movableItemSchema = z.object({
+    id: z.string().uuid(),
+    name: z.string().trim().min(1).max(120),
+    category: movableItemCategorySchema,
+    notes: z.string().trim().max(240).default(""),
+});
+
 export const listingAttributesSchema = z.object({
     condition: z.enum(["POOR", "FAIR", "GOOD", "EXCELLENT"]).optional(),
     outdoorSpace: z.boolean().optional(),
@@ -65,6 +78,7 @@ export const listingAttributesSchema = z.object({
     depositCents: centsSchema.optional(),
     rentalDurationMonths: z.number().int().min(1).max(120).optional(),
     highlights: z.array(z.string().trim().min(1).max(180)).max(20).default([]),
+    movableItems: z.array(movableItemSchema).max(150).default([]),
 });
 
 export const createListingSchema = z.object({
