@@ -1,11 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Building2, ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { headers } from "next/headers";
+import {
+    Building2,
+    ChevronLeft,
+    ChevronRight,
+    Heart,
+    House,
+    LayoutDashboard,
+    Search,
+} from "lucide-react";
+import { AuthActions } from "@/components/auth/auth-actions";
 import { MarketplaceResults } from "@/components/marketplace/marketplace-results";
 import {
     searchMarketplaceListings,
     type MarketplaceSearchParams,
 } from "@/features/listings/marketplace-service";
+import { auth } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -104,7 +115,10 @@ export default async function SearchPage({
     searchParams: Promise<MarketplaceSearchParams>;
 }) {
     const params = await searchParams;
-    const result = await searchMarketplaceListings(params);
+    const [result, session] = await Promise.all([
+        searchMarketplaceListings(params),
+        auth.api.getSession({ headers: await headers() }),
+    ]);
     const selectedPropertyTypes = values(params.propertyType);
     const selectedEnergyLabels = values(params.energyLabel);
     const selectedAmenities = values(params.amenity);
@@ -130,19 +144,51 @@ export default async function SearchPage({
                             Zelf<span className="text-brand">Wonen</span>
                         </span>
                     </Link>
-                    <nav className="flex items-center gap-2 sm:gap-5">
+                    <nav className="flex items-center gap-1.5 sm:gap-2">
                         <Link
                             href="/zoeken"
-                            className="hidden text-sm font-semibold text-brand sm:block"
+                            className="hidden px-3 py-2 text-sm font-semibold text-brand lg:block"
                         >
                             Woning zoeken
                         </Link>
-                        <Link
-                            href="/#start"
-                            className="rounded-full border border-brand px-4 py-2 text-sm font-semibold text-brand transition hover:bg-brand hover:text-white"
-                        >
-                            Woning aanbieden
-                        </Link>
+                        {session ? (
+                            <>
+                                <Link
+                                    href="/dashboard/zoeker?tab=favorites"
+                                    className="hidden h-10 items-center gap-2 rounded-full px-3 text-sm font-semibold transition hover:bg-background md:inline-flex"
+                                >
+                                    <Heart size={16} /> Favorieten
+                                </Link>
+                                <Link
+                                    href="/dashboard"
+                                    className="inline-flex size-10 items-center justify-center rounded-full border border-line text-brand transition hover:border-brand/30 hover:bg-background sm:size-auto sm:px-4"
+                                    aria-label="Mijn woningen beheren"
+                                    title="Mijn woningen beheren"
+                                >
+                                    <House size={17} />
+                                    <span className="hidden text-sm font-semibold sm:inline">
+                                        Mijn woningen
+                                    </span>
+                                </Link>
+                            </>
+                        ) : (
+                            <Link
+                                href="/#start"
+                                className="inline-flex size-10 items-center justify-center rounded-full border border-brand text-brand transition hover:bg-brand hover:text-white sm:size-auto sm:px-4 sm:py-2"
+                                aria-label="Woning aanbieden"
+                                title="Woning aanbieden"
+                            >
+                                <House size={17} className="sm:hidden" />
+                                <span className="hidden text-sm font-semibold sm:inline">
+                                    Woning aanbieden
+                                </span>
+                            </Link>
+                        )}
+                        <AuthActions
+                            language="nl"
+                            dashboardHref="/dashboard/zoeker"
+                            dashboardLabel="Mijn dashboard"
+                        />
                     </nav>
                 </div>
             </header>
@@ -197,6 +243,32 @@ export default async function SearchPage({
                             <Search size={18} /> Zoeken
                         </button>
                     </form>
+                    {session ? (
+                        <div className="mt-5 flex flex-col gap-3 border-t border-white/20 pt-5 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="flex items-start gap-3">
+                                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-accent text-brand-dark">
+                                    <LayoutDashboard size={19} />
+                                </span>
+                                <div>
+                                    <p className="font-semibold">
+                                        Welkom terug,{" "}
+                                        {session.user.name.split(" ")[0]}
+                                    </p>
+                                    <p className="mt-0.5 text-sm text-white/75">
+                                        Je favorieten, zoekopdrachten,
+                                        bezichtigingen en biedingen staan bij
+                                        Mijn zoektocht.
+                                    </p>
+                                </div>
+                            </div>
+                            <Link
+                                href="/dashboard/zoeker"
+                                className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-md bg-white px-4 text-sm font-semibold text-brand-dark transition hover:bg-accent"
+                            >
+                                <Heart size={16} /> Open Mijn zoektocht
+                            </Link>
+                        </div>
+                    ) : null}
                 </div>
             </section>
 

@@ -90,9 +90,13 @@ function getErrorMessage(error: unknown, fallback: string) {
 export function AuthActions({
     language,
     placement = "header",
+    dashboardHref = "/dashboard",
+    dashboardLabel = "Dashboard",
 }: {
     language: Language;
     placement?: "header" | "cta";
+    dashboardHref?: string;
+    dashboardLabel?: string;
 }) {
     const t = copy[language];
     const router = useRouter();
@@ -219,10 +223,10 @@ export function AuthActions({
                     </p>
                 </div>
                 <Link
-                    href="/dashboard"
+                    href={dashboardHref}
                     className="hidden h-10 items-center rounded-full bg-brand px-4 text-sm font-semibold text-white transition hover:bg-brand-dark sm:inline-flex"
                 >
-                    Dashboard
+                    {dashboardLabel}
                 </Link>
                 <span
                     className="grid size-10 place-items-center rounded-full bg-brand text-sm font-bold text-white"
