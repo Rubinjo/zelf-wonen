@@ -161,12 +161,12 @@ export default async function SearchPage({
                                 </Link>
                                 <Link
                                     href="/dashboard"
-                                    className="inline-flex size-10 items-center justify-center rounded-full border border-line text-brand transition hover:border-brand/30 hover:bg-background sm:size-auto sm:px-4"
+                                    className="inline-flex size-10 items-center justify-center rounded-full text-sm font-semibold transition hover:bg-background sm:size-auto sm:gap-2 sm:px-3"
                                     aria-label="Mijn woningen beheren"
                                     title="Mijn woningen beheren"
                                 >
-                                    <House size={17} />
-                                    <span className="hidden text-sm font-semibold sm:inline">
+                                    <House size={16} />
+                                    <span className="hidden sm:inline">
                                         Mijn woningen
                                     </span>
                                 </Link>
