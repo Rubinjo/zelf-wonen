@@ -231,6 +231,11 @@ export type UserWhereInput = {
   transactionDocuments?: Prisma.TransactionDocumentListRelationFilter
   transactionEvents?: Prisma.TransactionEventListRelationFilter
   passportVersions?: Prisma.PropertyPassportVersionListRelationFilter
+  favoriteListings?: Prisma.FavoriteListingListRelationFilter
+  savedSearches?: Prisma.SavedSearchListRelationFilter
+  notificationPreference?: Prisma.XOR<Prisma.NotificationPreferenceNullableScalarRelationFilter, Prisma.NotificationPreferenceWhereInput> | null
+  seekerNotifications?: Prisma.SeekerNotificationListRelationFilter
+  shortlistShares?: Prisma.ShortlistShareListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -260,6 +265,11 @@ export type UserOrderByWithRelationInput = {
   transactionDocuments?: Prisma.TransactionDocumentOrderByRelationAggregateInput
   transactionEvents?: Prisma.TransactionEventOrderByRelationAggregateInput
   passportVersions?: Prisma.PropertyPassportVersionOrderByRelationAggregateInput
+  favoriteListings?: Prisma.FavoriteListingOrderByRelationAggregateInput
+  savedSearches?: Prisma.SavedSearchOrderByRelationAggregateInput
+  notificationPreference?: Prisma.NotificationPreferenceOrderByWithRelationInput
+  seekerNotifications?: Prisma.SeekerNotificationOrderByRelationAggregateInput
+  shortlistShares?: Prisma.ShortlistShareOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -292,6 +302,11 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   transactionDocuments?: Prisma.TransactionDocumentListRelationFilter
   transactionEvents?: Prisma.TransactionEventListRelationFilter
   passportVersions?: Prisma.PropertyPassportVersionListRelationFilter
+  favoriteListings?: Prisma.FavoriteListingListRelationFilter
+  savedSearches?: Prisma.SavedSearchListRelationFilter
+  notificationPreference?: Prisma.XOR<Prisma.NotificationPreferenceNullableScalarRelationFilter, Prisma.NotificationPreferenceWhereInput> | null
+  seekerNotifications?: Prisma.SeekerNotificationListRelationFilter
+  shortlistShares?: Prisma.ShortlistShareListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -351,6 +366,11 @@ export type UserCreateInput = {
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -380,6 +400,11 @@ export type UserUncheckedCreateInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUpdateInput = {
@@ -409,6 +434,11 @@ export type UserUpdateInput = {
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -438,6 +468,11 @@ export type UserUncheckedUpdateInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -770,6 +805,76 @@ export type UserUpdateOneWithoutTransactionEventsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTransactionEventsInput, Prisma.UserUpdateWithoutTransactionEventsInput>, Prisma.UserUncheckedUpdateWithoutTransactionEventsInput>
 }
 
+export type UserCreateNestedOneWithoutFavoriteListingsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFavoriteListingsInput, Prisma.UserUncheckedCreateWithoutFavoriteListingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFavoriteListingsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutFavoriteListingsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFavoriteListingsInput, Prisma.UserUncheckedCreateWithoutFavoriteListingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFavoriteListingsInput
+  upsert?: Prisma.UserUpsertWithoutFavoriteListingsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFavoriteListingsInput, Prisma.UserUpdateWithoutFavoriteListingsInput>, Prisma.UserUncheckedUpdateWithoutFavoriteListingsInput>
+}
+
+export type UserCreateNestedOneWithoutSavedSearchesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSavedSearchesInput, Prisma.UserUncheckedCreateWithoutSavedSearchesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSavedSearchesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSavedSearchesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSavedSearchesInput, Prisma.UserUncheckedCreateWithoutSavedSearchesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSavedSearchesInput
+  upsert?: Prisma.UserUpsertWithoutSavedSearchesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSavedSearchesInput, Prisma.UserUpdateWithoutSavedSearchesInput>, Prisma.UserUncheckedUpdateWithoutSavedSearchesInput>
+}
+
+export type UserCreateNestedOneWithoutNotificationPreferenceInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationPreferenceInput, Prisma.UserUncheckedCreateWithoutNotificationPreferenceInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationPreferenceInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutNotificationPreferenceNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationPreferenceInput, Prisma.UserUncheckedCreateWithoutNotificationPreferenceInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationPreferenceInput
+  upsert?: Prisma.UserUpsertWithoutNotificationPreferenceInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationPreferenceInput, Prisma.UserUpdateWithoutNotificationPreferenceInput>, Prisma.UserUncheckedUpdateWithoutNotificationPreferenceInput>
+}
+
+export type UserCreateNestedOneWithoutSeekerNotificationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSeekerNotificationsInput, Prisma.UserUncheckedCreateWithoutSeekerNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSeekerNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSeekerNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSeekerNotificationsInput, Prisma.UserUncheckedCreateWithoutSeekerNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSeekerNotificationsInput
+  upsert?: Prisma.UserUpsertWithoutSeekerNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSeekerNotificationsInput, Prisma.UserUpdateWithoutSeekerNotificationsInput>, Prisma.UserUncheckedUpdateWithoutSeekerNotificationsInput>
+}
+
+export type UserCreateNestedOneWithoutShortlistSharesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutShortlistSharesInput, Prisma.UserUncheckedCreateWithoutShortlistSharesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutShortlistSharesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutShortlistSharesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutShortlistSharesInput, Prisma.UserUncheckedCreateWithoutShortlistSharesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutShortlistSharesInput
+  upsert?: Prisma.UserUpsertWithoutShortlistSharesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutShortlistSharesInput, Prisma.UserUpdateWithoutShortlistSharesInput>, Prisma.UserUncheckedUpdateWithoutShortlistSharesInput>
+}
+
 export type UserCreateNestedOneWithoutAuditEventsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutAuditEventsInput, Prisma.UserUncheckedCreateWithoutAuditEventsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuditEventsInput
@@ -812,6 +917,11 @@ export type UserCreateWithoutTwoFactorsInput = {
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutTwoFactorsInput = {
@@ -840,6 +950,11 @@ export type UserUncheckedCreateWithoutTwoFactorsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutTwoFactorsInput = {
@@ -884,6 +999,11 @@ export type UserUpdateWithoutTwoFactorsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTwoFactorsInput = {
@@ -912,6 +1032,11 @@ export type UserUncheckedUpdateWithoutTwoFactorsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -940,6 +1065,11 @@ export type UserCreateWithoutSessionsInput = {
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -968,6 +1098,11 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -1012,6 +1147,11 @@ export type UserUpdateWithoutSessionsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -1040,6 +1180,11 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -1068,6 +1213,11 @@ export type UserCreateWithoutAccountsInput = {
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -1096,6 +1246,11 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -1140,6 +1295,11 @@ export type UserUpdateWithoutAccountsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -1168,6 +1328,11 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutPropertiesInput = {
@@ -1196,6 +1361,11 @@ export type UserCreateWithoutPropertiesInput = {
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutPropertiesInput = {
@@ -1224,6 +1394,11 @@ export type UserUncheckedCreateWithoutPropertiesInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutPropertiesInput = {
@@ -1268,6 +1443,11 @@ export type UserUpdateWithoutPropertiesInput = {
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPropertiesInput = {
@@ -1296,6 +1476,11 @@ export type UserUncheckedUpdateWithoutPropertiesInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutListingsInput = {
@@ -1324,6 +1509,11 @@ export type UserCreateWithoutListingsInput = {
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutListingsInput = {
@@ -1352,6 +1542,11 @@ export type UserUncheckedCreateWithoutListingsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutListingsInput = {
@@ -1396,6 +1591,11 @@ export type UserUpdateWithoutListingsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutListingsInput = {
@@ -1424,6 +1624,11 @@ export type UserUncheckedUpdateWithoutListingsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutViewingBookingsInput = {
@@ -1452,6 +1657,11 @@ export type UserCreateWithoutViewingBookingsInput = {
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutViewingBookingsInput = {
@@ -1480,6 +1690,11 @@ export type UserUncheckedCreateWithoutViewingBookingsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutViewingBookingsInput = {
@@ -1524,6 +1739,11 @@ export type UserUpdateWithoutViewingBookingsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutViewingBookingsInput = {
@@ -1552,6 +1772,11 @@ export type UserUncheckedUpdateWithoutViewingBookingsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutIdentityAttemptsInput = {
@@ -1580,6 +1805,11 @@ export type UserCreateWithoutIdentityAttemptsInput = {
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutIdentityAttemptsInput = {
@@ -1608,6 +1838,11 @@ export type UserUncheckedCreateWithoutIdentityAttemptsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutIdentityAttemptsInput = {
@@ -1652,6 +1887,11 @@ export type UserUpdateWithoutIdentityAttemptsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutIdentityAttemptsInput = {
@@ -1680,6 +1920,11 @@ export type UserUncheckedUpdateWithoutIdentityAttemptsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutVerificationAuditLogsInput = {
@@ -1708,6 +1953,11 @@ export type UserCreateWithoutVerificationAuditLogsInput = {
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutVerificationAuditLogsInput = {
@@ -1736,6 +1986,11 @@ export type UserUncheckedCreateWithoutVerificationAuditLogsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutVerificationAuditLogsInput = {
@@ -1780,6 +2035,11 @@ export type UserUpdateWithoutVerificationAuditLogsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVerificationAuditLogsInput = {
@@ -1808,6 +2068,11 @@ export type UserUncheckedUpdateWithoutVerificationAuditLogsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutPublicationOrdersInput = {
@@ -1836,6 +2101,11 @@ export type UserCreateWithoutPublicationOrdersInput = {
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutPublicationOrdersInput = {
@@ -1864,6 +2134,11 @@ export type UserUncheckedCreateWithoutPublicationOrdersInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutPublicationOrdersInput = {
@@ -1908,6 +2183,11 @@ export type UserUpdateWithoutPublicationOrdersInput = {
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPublicationOrdersInput = {
@@ -1936,6 +2216,11 @@ export type UserUncheckedUpdateWithoutPublicationOrdersInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutBidsInput = {
@@ -1964,6 +2249,11 @@ export type UserCreateWithoutBidsInput = {
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutBidsInput = {
@@ -1992,6 +2282,11 @@ export type UserUncheckedCreateWithoutBidsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutBidsInput = {
@@ -2036,6 +2331,11 @@ export type UserUpdateWithoutBidsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBidsInput = {
@@ -2064,6 +2364,11 @@ export type UserUncheckedUpdateWithoutBidsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutSellingTransactionsInput = {
@@ -2092,6 +2397,11 @@ export type UserCreateWithoutSellingTransactionsInput = {
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutSellingTransactionsInput = {
@@ -2120,6 +2430,11 @@ export type UserUncheckedCreateWithoutSellingTransactionsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutSellingTransactionsInput = {
@@ -2153,6 +2468,11 @@ export type UserCreateWithoutBuyingTransactionsInput = {
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutBuyingTransactionsInput = {
@@ -2181,6 +2501,11 @@ export type UserUncheckedCreateWithoutBuyingTransactionsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutBuyingTransactionsInput = {
@@ -2225,6 +2550,11 @@ export type UserUpdateWithoutSellingTransactionsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSellingTransactionsInput = {
@@ -2253,6 +2583,11 @@ export type UserUncheckedUpdateWithoutSellingTransactionsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUpsertWithoutBuyingTransactionsInput = {
@@ -2292,6 +2627,11 @@ export type UserUpdateWithoutBuyingTransactionsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBuyingTransactionsInput = {
@@ -2320,6 +2660,11 @@ export type UserUncheckedUpdateWithoutBuyingTransactionsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutTransactionMessagesInput = {
@@ -2348,6 +2693,11 @@ export type UserCreateWithoutTransactionMessagesInput = {
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutTransactionMessagesInput = {
@@ -2376,6 +2726,11 @@ export type UserUncheckedCreateWithoutTransactionMessagesInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutTransactionMessagesInput = {
@@ -2420,6 +2775,11 @@ export type UserUpdateWithoutTransactionMessagesInput = {
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTransactionMessagesInput = {
@@ -2448,6 +2808,11 @@ export type UserUncheckedUpdateWithoutTransactionMessagesInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutTransactionDocumentsInput = {
@@ -2476,6 +2841,11 @@ export type UserCreateWithoutTransactionDocumentsInput = {
   transactionMessages?: Prisma.TransactionMessageCreateNestedManyWithoutAuthorInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutTransactionDocumentsInput = {
@@ -2504,6 +2874,11 @@ export type UserUncheckedCreateWithoutTransactionDocumentsInput = {
   transactionMessages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutAuthorInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutTransactionDocumentsInput = {
@@ -2548,6 +2923,11 @@ export type UserUpdateWithoutTransactionDocumentsInput = {
   transactionMessages?: Prisma.TransactionMessageUpdateManyWithoutAuthorNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTransactionDocumentsInput = {
@@ -2576,6 +2956,11 @@ export type UserUncheckedUpdateWithoutTransactionDocumentsInput = {
   transactionMessages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutAuthorNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutPassportVersionsInput = {
@@ -2604,6 +2989,11 @@ export type UserCreateWithoutPassportVersionsInput = {
   transactionMessages?: Prisma.TransactionMessageCreateNestedManyWithoutAuthorInput
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutPassportVersionsInput = {
@@ -2632,6 +3022,11 @@ export type UserUncheckedCreateWithoutPassportVersionsInput = {
   transactionMessages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutAuthorInput
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutPassportVersionsInput = {
@@ -2676,6 +3071,11 @@ export type UserUpdateWithoutPassportVersionsInput = {
   transactionMessages?: Prisma.TransactionMessageUpdateManyWithoutAuthorNestedInput
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPassportVersionsInput = {
@@ -2704,6 +3104,11 @@ export type UserUncheckedUpdateWithoutPassportVersionsInput = {
   transactionMessages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutAuthorNestedInput
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserCreateWithoutTransactionEventsInput = {
@@ -2732,6 +3137,11 @@ export type UserCreateWithoutTransactionEventsInput = {
   transactionMessages?: Prisma.TransactionMessageCreateNestedManyWithoutAuthorInput
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutTransactionEventsInput = {
@@ -2760,6 +3170,11 @@ export type UserUncheckedCreateWithoutTransactionEventsInput = {
   transactionMessages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutAuthorInput
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutTransactionEventsInput = {
@@ -2804,6 +3219,11 @@ export type UserUpdateWithoutTransactionEventsInput = {
   transactionMessages?: Prisma.TransactionMessageUpdateManyWithoutAuthorNestedInput
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTransactionEventsInput = {
@@ -2832,6 +3252,751 @@ export type UserUncheckedUpdateWithoutTransactionEventsInput = {
   transactionMessages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutAuthorNestedInput
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserCreateWithoutFavoriteListingsInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  twoFactorEnabled?: boolean
+  image?: string | null
+  locale?: $Enums.Locale
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutOwnerInput
+  listings?: Prisma.ListingCreateNestedManyWithoutOwnerInput
+  bids?: Prisma.BidCreateNestedManyWithoutBidderUserInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutUserInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogCreateNestedManyWithoutUserInput
+  publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingCreateNestedManyWithoutUserInput
+  sellingTransactions?: Prisma.PropertyTransactionCreateNestedManyWithoutSellerInput
+  buyingTransactions?: Prisma.PropertyTransactionCreateNestedManyWithoutBuyerInput
+  transactionMessages?: Prisma.TransactionMessageCreateNestedManyWithoutAuthorInput
+  transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
+  transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
+  passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
+}
+
+export type UserUncheckedCreateWithoutFavoriteListingsInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  twoFactorEnabled?: boolean
+  image?: string | null
+  locale?: $Enums.Locale
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutOwnerInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutOwnerInput
+  bids?: Prisma.BidUncheckedCreateNestedManyWithoutBidderUserInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutUserInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedCreateNestedManyWithoutUserInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedCreateNestedManyWithoutUserInput
+  sellingTransactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutSellerInput
+  buyingTransactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutBuyerInput
+  transactionMessages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutAuthorInput
+  transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
+  passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
+}
+
+export type UserCreateOrConnectWithoutFavoriteListingsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutFavoriteListingsInput, Prisma.UserUncheckedCreateWithoutFavoriteListingsInput>
+}
+
+export type UserUpsertWithoutFavoriteListingsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutFavoriteListingsInput, Prisma.UserUncheckedUpdateWithoutFavoriteListingsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutFavoriteListingsInput, Prisma.UserUncheckedCreateWithoutFavoriteListingsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutFavoriteListingsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutFavoriteListingsInput, Prisma.UserUncheckedUpdateWithoutFavoriteListingsInput>
+}
+
+export type UserUpdateWithoutFavoriteListingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.EnumLocaleFieldUpdateOperationsInput | $Enums.Locale
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutOwnerNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutOwnerNestedInput
+  bids?: Prisma.BidUpdateManyWithoutBidderUserNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutUserNestedInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUpdateManyWithoutUserNestedInput
+  publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUpdateManyWithoutUserNestedInput
+  sellingTransactions?: Prisma.PropertyTransactionUpdateManyWithoutSellerNestedInput
+  buyingTransactions?: Prisma.PropertyTransactionUpdateManyWithoutBuyerNestedInput
+  transactionMessages?: Prisma.TransactionMessageUpdateManyWithoutAuthorNestedInput
+  transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
+  transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
+  passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutFavoriteListingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.EnumLocaleFieldUpdateOperationsInput | $Enums.Locale
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutOwnerNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutOwnerNestedInput
+  bids?: Prisma.BidUncheckedUpdateManyWithoutBidderUserNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutUserNestedInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedUpdateManyWithoutUserNestedInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedUpdateManyWithoutUserNestedInput
+  sellingTransactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutSellerNestedInput
+  buyingTransactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutBuyerNestedInput
+  transactionMessages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
+  passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserCreateWithoutSavedSearchesInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  twoFactorEnabled?: boolean
+  image?: string | null
+  locale?: $Enums.Locale
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutOwnerInput
+  listings?: Prisma.ListingCreateNestedManyWithoutOwnerInput
+  bids?: Prisma.BidCreateNestedManyWithoutBidderUserInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutUserInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogCreateNestedManyWithoutUserInput
+  publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingCreateNestedManyWithoutUserInput
+  sellingTransactions?: Prisma.PropertyTransactionCreateNestedManyWithoutSellerInput
+  buyingTransactions?: Prisma.PropertyTransactionCreateNestedManyWithoutBuyerInput
+  transactionMessages?: Prisma.TransactionMessageCreateNestedManyWithoutAuthorInput
+  transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
+  transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
+  passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
+}
+
+export type UserUncheckedCreateWithoutSavedSearchesInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  twoFactorEnabled?: boolean
+  image?: string | null
+  locale?: $Enums.Locale
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutOwnerInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutOwnerInput
+  bids?: Prisma.BidUncheckedCreateNestedManyWithoutBidderUserInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutUserInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedCreateNestedManyWithoutUserInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedCreateNestedManyWithoutUserInput
+  sellingTransactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutSellerInput
+  buyingTransactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutBuyerInput
+  transactionMessages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutAuthorInput
+  transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
+  passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
+}
+
+export type UserCreateOrConnectWithoutSavedSearchesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSavedSearchesInput, Prisma.UserUncheckedCreateWithoutSavedSearchesInput>
+}
+
+export type UserUpsertWithoutSavedSearchesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSavedSearchesInput, Prisma.UserUncheckedUpdateWithoutSavedSearchesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSavedSearchesInput, Prisma.UserUncheckedCreateWithoutSavedSearchesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSavedSearchesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSavedSearchesInput, Prisma.UserUncheckedUpdateWithoutSavedSearchesInput>
+}
+
+export type UserUpdateWithoutSavedSearchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.EnumLocaleFieldUpdateOperationsInput | $Enums.Locale
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutOwnerNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutOwnerNestedInput
+  bids?: Prisma.BidUpdateManyWithoutBidderUserNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutUserNestedInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUpdateManyWithoutUserNestedInput
+  publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUpdateManyWithoutUserNestedInput
+  sellingTransactions?: Prisma.PropertyTransactionUpdateManyWithoutSellerNestedInput
+  buyingTransactions?: Prisma.PropertyTransactionUpdateManyWithoutBuyerNestedInput
+  transactionMessages?: Prisma.TransactionMessageUpdateManyWithoutAuthorNestedInput
+  transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
+  transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
+  passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSavedSearchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.EnumLocaleFieldUpdateOperationsInput | $Enums.Locale
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutOwnerNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutOwnerNestedInput
+  bids?: Prisma.BidUncheckedUpdateManyWithoutBidderUserNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutUserNestedInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedUpdateManyWithoutUserNestedInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedUpdateManyWithoutUserNestedInput
+  sellingTransactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutSellerNestedInput
+  buyingTransactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutBuyerNestedInput
+  transactionMessages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
+  passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserCreateWithoutNotificationPreferenceInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  twoFactorEnabled?: boolean
+  image?: string | null
+  locale?: $Enums.Locale
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutOwnerInput
+  listings?: Prisma.ListingCreateNestedManyWithoutOwnerInput
+  bids?: Prisma.BidCreateNestedManyWithoutBidderUserInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutUserInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogCreateNestedManyWithoutUserInput
+  publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingCreateNestedManyWithoutUserInput
+  sellingTransactions?: Prisma.PropertyTransactionCreateNestedManyWithoutSellerInput
+  buyingTransactions?: Prisma.PropertyTransactionCreateNestedManyWithoutBuyerInput
+  transactionMessages?: Prisma.TransactionMessageCreateNestedManyWithoutAuthorInput
+  transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
+  transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
+  passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
+}
+
+export type UserUncheckedCreateWithoutNotificationPreferenceInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  twoFactorEnabled?: boolean
+  image?: string | null
+  locale?: $Enums.Locale
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutOwnerInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutOwnerInput
+  bids?: Prisma.BidUncheckedCreateNestedManyWithoutBidderUserInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutUserInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedCreateNestedManyWithoutUserInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedCreateNestedManyWithoutUserInput
+  sellingTransactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutSellerInput
+  buyingTransactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutBuyerInput
+  transactionMessages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutAuthorInput
+  transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
+  passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
+}
+
+export type UserCreateOrConnectWithoutNotificationPreferenceInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationPreferenceInput, Prisma.UserUncheckedCreateWithoutNotificationPreferenceInput>
+}
+
+export type UserUpsertWithoutNotificationPreferenceInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutNotificationPreferenceInput, Prisma.UserUncheckedUpdateWithoutNotificationPreferenceInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationPreferenceInput, Prisma.UserUncheckedCreateWithoutNotificationPreferenceInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutNotificationPreferenceInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutNotificationPreferenceInput, Prisma.UserUncheckedUpdateWithoutNotificationPreferenceInput>
+}
+
+export type UserUpdateWithoutNotificationPreferenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.EnumLocaleFieldUpdateOperationsInput | $Enums.Locale
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutOwnerNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutOwnerNestedInput
+  bids?: Prisma.BidUpdateManyWithoutBidderUserNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutUserNestedInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUpdateManyWithoutUserNestedInput
+  publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUpdateManyWithoutUserNestedInput
+  sellingTransactions?: Prisma.PropertyTransactionUpdateManyWithoutSellerNestedInput
+  buyingTransactions?: Prisma.PropertyTransactionUpdateManyWithoutBuyerNestedInput
+  transactionMessages?: Prisma.TransactionMessageUpdateManyWithoutAuthorNestedInput
+  transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
+  transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
+  passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutNotificationPreferenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.EnumLocaleFieldUpdateOperationsInput | $Enums.Locale
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutOwnerNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutOwnerNestedInput
+  bids?: Prisma.BidUncheckedUpdateManyWithoutBidderUserNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutUserNestedInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedUpdateManyWithoutUserNestedInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedUpdateManyWithoutUserNestedInput
+  sellingTransactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutSellerNestedInput
+  buyingTransactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutBuyerNestedInput
+  transactionMessages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
+  passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserCreateWithoutSeekerNotificationsInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  twoFactorEnabled?: boolean
+  image?: string | null
+  locale?: $Enums.Locale
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutOwnerInput
+  listings?: Prisma.ListingCreateNestedManyWithoutOwnerInput
+  bids?: Prisma.BidCreateNestedManyWithoutBidderUserInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutUserInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogCreateNestedManyWithoutUserInput
+  publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingCreateNestedManyWithoutUserInput
+  sellingTransactions?: Prisma.PropertyTransactionCreateNestedManyWithoutSellerInput
+  buyingTransactions?: Prisma.PropertyTransactionCreateNestedManyWithoutBuyerInput
+  transactionMessages?: Prisma.TransactionMessageCreateNestedManyWithoutAuthorInput
+  transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
+  transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
+  passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
+}
+
+export type UserUncheckedCreateWithoutSeekerNotificationsInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  twoFactorEnabled?: boolean
+  image?: string | null
+  locale?: $Enums.Locale
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutOwnerInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutOwnerInput
+  bids?: Prisma.BidUncheckedCreateNestedManyWithoutBidderUserInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutUserInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedCreateNestedManyWithoutUserInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedCreateNestedManyWithoutUserInput
+  sellingTransactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutSellerInput
+  buyingTransactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutBuyerInput
+  transactionMessages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutAuthorInput
+  transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
+  passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
+}
+
+export type UserCreateOrConnectWithoutSeekerNotificationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSeekerNotificationsInput, Prisma.UserUncheckedCreateWithoutSeekerNotificationsInput>
+}
+
+export type UserUpsertWithoutSeekerNotificationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSeekerNotificationsInput, Prisma.UserUncheckedUpdateWithoutSeekerNotificationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSeekerNotificationsInput, Prisma.UserUncheckedCreateWithoutSeekerNotificationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSeekerNotificationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSeekerNotificationsInput, Prisma.UserUncheckedUpdateWithoutSeekerNotificationsInput>
+}
+
+export type UserUpdateWithoutSeekerNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.EnumLocaleFieldUpdateOperationsInput | $Enums.Locale
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutOwnerNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutOwnerNestedInput
+  bids?: Prisma.BidUpdateManyWithoutBidderUserNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutUserNestedInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUpdateManyWithoutUserNestedInput
+  publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUpdateManyWithoutUserNestedInput
+  sellingTransactions?: Prisma.PropertyTransactionUpdateManyWithoutSellerNestedInput
+  buyingTransactions?: Prisma.PropertyTransactionUpdateManyWithoutBuyerNestedInput
+  transactionMessages?: Prisma.TransactionMessageUpdateManyWithoutAuthorNestedInput
+  transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
+  transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
+  passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSeekerNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.EnumLocaleFieldUpdateOperationsInput | $Enums.Locale
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutOwnerNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutOwnerNestedInput
+  bids?: Prisma.BidUncheckedUpdateManyWithoutBidderUserNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutUserNestedInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedUpdateManyWithoutUserNestedInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedUpdateManyWithoutUserNestedInput
+  sellingTransactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutSellerNestedInput
+  buyingTransactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutBuyerNestedInput
+  transactionMessages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
+  passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
+}
+
+export type UserCreateWithoutShortlistSharesInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  twoFactorEnabled?: boolean
+  image?: string | null
+  locale?: $Enums.Locale
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
+  properties?: Prisma.PropertyCreateNestedManyWithoutOwnerInput
+  listings?: Prisma.ListingCreateNestedManyWithoutOwnerInput
+  bids?: Prisma.BidCreateNestedManyWithoutBidderUserInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutUserInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogCreateNestedManyWithoutUserInput
+  publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingCreateNestedManyWithoutUserInput
+  sellingTransactions?: Prisma.PropertyTransactionCreateNestedManyWithoutSellerInput
+  buyingTransactions?: Prisma.PropertyTransactionCreateNestedManyWithoutBuyerInput
+  transactionMessages?: Prisma.TransactionMessageCreateNestedManyWithoutAuthorInput
+  transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
+  transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
+  passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutShortlistSharesInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  twoFactorEnabled?: boolean
+  image?: string | null
+  locale?: $Enums.Locale
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
+  properties?: Prisma.PropertyUncheckedCreateNestedManyWithoutOwnerInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutOwnerInput
+  bids?: Prisma.BidUncheckedCreateNestedManyWithoutBidderUserInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutUserInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedCreateNestedManyWithoutUserInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedCreateNestedManyWithoutUserInput
+  sellingTransactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutSellerInput
+  buyingTransactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutBuyerInput
+  transactionMessages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutAuthorInput
+  transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
+  transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
+  passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutShortlistSharesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutShortlistSharesInput, Prisma.UserUncheckedCreateWithoutShortlistSharesInput>
+}
+
+export type UserUpsertWithoutShortlistSharesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutShortlistSharesInput, Prisma.UserUncheckedUpdateWithoutShortlistSharesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutShortlistSharesInput, Prisma.UserUncheckedCreateWithoutShortlistSharesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutShortlistSharesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutShortlistSharesInput, Prisma.UserUncheckedUpdateWithoutShortlistSharesInput>
+}
+
+export type UserUpdateWithoutShortlistSharesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.EnumLocaleFieldUpdateOperationsInput | $Enums.Locale
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
+  properties?: Prisma.PropertyUpdateManyWithoutOwnerNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutOwnerNestedInput
+  bids?: Prisma.BidUpdateManyWithoutBidderUserNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutUserNestedInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUpdateManyWithoutUserNestedInput
+  publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUpdateManyWithoutUserNestedInput
+  sellingTransactions?: Prisma.PropertyTransactionUpdateManyWithoutSellerNestedInput
+  buyingTransactions?: Prisma.PropertyTransactionUpdateManyWithoutBuyerNestedInput
+  transactionMessages?: Prisma.TransactionMessageUpdateManyWithoutAuthorNestedInput
+  transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
+  transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
+  passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutShortlistSharesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.EnumLocaleFieldUpdateOperationsInput | $Enums.Locale
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
+  properties?: Prisma.PropertyUncheckedUpdateManyWithoutOwnerNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutOwnerNestedInput
+  bids?: Prisma.BidUncheckedUpdateManyWithoutBidderUserNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutUserNestedInput
+  verificationAuditLogs?: Prisma.VerificationAuditLogUncheckedUpdateManyWithoutUserNestedInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  viewingBookings?: Prisma.ViewingBookingUncheckedUpdateManyWithoutUserNestedInput
+  sellingTransactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutSellerNestedInput
+  buyingTransactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutBuyerNestedInput
+  transactionMessages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutAuthorNestedInput
+  transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+  transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
+  passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAuditEventsInput = {
@@ -2860,6 +4025,11 @@ export type UserCreateWithoutAuditEventsInput = {
   transactionDocuments?: Prisma.TransactionDocumentCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareCreateNestedManyWithoutOwnerInput
 }
 
 export type UserUncheckedCreateWithoutAuditEventsInput = {
@@ -2888,6 +4058,11 @@ export type UserUncheckedCreateWithoutAuditEventsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutUploadedByInput
   transactionEvents?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutActorInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutCreatedByInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutUserInput
+  savedSearches?: Prisma.SavedSearchUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedCreateNestedManyWithoutUserInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedCreateNestedManyWithoutOwnerInput
 }
 
 export type UserCreateOrConnectWithoutAuditEventsInput = {
@@ -2932,6 +4107,11 @@ export type UserUpdateWithoutAuditEventsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUpdateManyWithoutOwnerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditEventsInput = {
@@ -2960,6 +4140,11 @@ export type UserUncheckedUpdateWithoutAuditEventsInput = {
   transactionDocuments?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutUploadedByNestedInput
   transactionEvents?: Prisma.TransactionEventUncheckedUpdateManyWithoutActorNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+  favoriteListings?: Prisma.FavoriteListingUncheckedUpdateManyWithoutUserNestedInput
+  savedSearches?: Prisma.SavedSearchUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  seekerNotifications?: Prisma.SeekerNotificationUncheckedUpdateManyWithoutUserNestedInput
+  shortlistShares?: Prisma.ShortlistShareUncheckedUpdateManyWithoutOwnerNestedInput
 }
 
 
@@ -2985,6 +4170,10 @@ export type UserCountOutputType = {
   transactionDocuments: number
   transactionEvents: number
   passportVersions: number
+  favoriteListings: number
+  savedSearches: number
+  seekerNotifications: number
+  shortlistShares: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3005,6 +4194,10 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   transactionDocuments?: boolean | UserCountOutputTypeCountTransactionDocumentsArgs
   transactionEvents?: boolean | UserCountOutputTypeCountTransactionEventsArgs
   passportVersions?: boolean | UserCountOutputTypeCountPassportVersionsArgs
+  favoriteListings?: boolean | UserCountOutputTypeCountFavoriteListingsArgs
+  savedSearches?: boolean | UserCountOutputTypeCountSavedSearchesArgs
+  seekerNotifications?: boolean | UserCountOutputTypeCountSeekerNotificationsArgs
+  shortlistShares?: boolean | UserCountOutputTypeCountShortlistSharesArgs
 }
 
 /**
@@ -3136,6 +4329,34 @@ export type UserCountOutputTypeCountPassportVersionsArgs<ExtArgs extends runtime
   where?: Prisma.PropertyPassportVersionWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountFavoriteListingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FavoriteListingWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSavedSearchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SavedSearchWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSeekerNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SeekerNotificationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountShortlistSharesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ShortlistShareWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3164,6 +4385,11 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   transactionDocuments?: boolean | Prisma.User$transactionDocumentsArgs<ExtArgs>
   transactionEvents?: boolean | Prisma.User$transactionEventsArgs<ExtArgs>
   passportVersions?: boolean | Prisma.User$passportVersionsArgs<ExtArgs>
+  favoriteListings?: boolean | Prisma.User$favoriteListingsArgs<ExtArgs>
+  savedSearches?: boolean | Prisma.User$savedSearchesArgs<ExtArgs>
+  notificationPreference?: boolean | Prisma.User$notificationPreferenceArgs<ExtArgs>
+  seekerNotifications?: boolean | Prisma.User$seekerNotificationsArgs<ExtArgs>
+  shortlistShares?: boolean | Prisma.User$shortlistSharesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -3222,6 +4448,11 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   transactionDocuments?: boolean | Prisma.User$transactionDocumentsArgs<ExtArgs>
   transactionEvents?: boolean | Prisma.User$transactionEventsArgs<ExtArgs>
   passportVersions?: boolean | Prisma.User$passportVersionsArgs<ExtArgs>
+  favoriteListings?: boolean | Prisma.User$favoriteListingsArgs<ExtArgs>
+  savedSearches?: boolean | Prisma.User$savedSearchesArgs<ExtArgs>
+  notificationPreference?: boolean | Prisma.User$notificationPreferenceArgs<ExtArgs>
+  seekerNotifications?: boolean | Prisma.User$seekerNotificationsArgs<ExtArgs>
+  shortlistShares?: boolean | Prisma.User$shortlistSharesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -3247,6 +4478,11 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     transactionDocuments: Prisma.$TransactionDocumentPayload<ExtArgs>[]
     transactionEvents: Prisma.$TransactionEventPayload<ExtArgs>[]
     passportVersions: Prisma.$PropertyPassportVersionPayload<ExtArgs>[]
+    favoriteListings: Prisma.$FavoriteListingPayload<ExtArgs>[]
+    savedSearches: Prisma.$SavedSearchPayload<ExtArgs>[]
+    notificationPreference: Prisma.$NotificationPreferencePayload<ExtArgs> | null
+    seekerNotifications: Prisma.$SeekerNotificationPayload<ExtArgs>[]
+    shortlistShares: Prisma.$ShortlistSharePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3669,6 +4905,11 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   transactionDocuments<T extends Prisma.User$transactionDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$transactionDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransactionDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   transactionEvents<T extends Prisma.User$transactionEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$transactionEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransactionEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   passportVersions<T extends Prisma.User$passportVersionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$passportVersionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PropertyPassportVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  favoriteListings<T extends Prisma.User$favoriteListingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$favoriteListingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FavoriteListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  savedSearches<T extends Prisma.User$savedSearchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$savedSearchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SavedSearchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notificationPreference<T extends Prisma.User$notificationPreferenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationPreferenceArgs<ExtArgs>>): Prisma.Prisma__NotificationPreferenceClient<runtime.Types.Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  seekerNotifications<T extends Prisma.User$seekerNotificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$seekerNotificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SeekerNotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  shortlistShares<T extends Prisma.User$shortlistSharesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$shortlistSharesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShortlistSharePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4505,6 +5746,121 @@ export type User$passportVersionsArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.PropertyPassportVersionScalarFieldEnum | Prisma.PropertyPassportVersionScalarFieldEnum[]
+}
+
+/**
+ * User.favoriteListings
+ */
+export type User$favoriteListingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FavoriteListing
+   */
+  select?: Prisma.FavoriteListingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FavoriteListing
+   */
+  omit?: Prisma.FavoriteListingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FavoriteListingInclude<ExtArgs> | null
+  where?: Prisma.FavoriteListingWhereInput
+  orderBy?: Prisma.FavoriteListingOrderByWithRelationInput | Prisma.FavoriteListingOrderByWithRelationInput[]
+  cursor?: Prisma.FavoriteListingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FavoriteListingScalarFieldEnum | Prisma.FavoriteListingScalarFieldEnum[]
+}
+
+/**
+ * User.savedSearches
+ */
+export type User$savedSearchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SavedSearch
+   */
+  select?: Prisma.SavedSearchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SavedSearch
+   */
+  omit?: Prisma.SavedSearchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SavedSearchInclude<ExtArgs> | null
+  where?: Prisma.SavedSearchWhereInput
+  orderBy?: Prisma.SavedSearchOrderByWithRelationInput | Prisma.SavedSearchOrderByWithRelationInput[]
+  cursor?: Prisma.SavedSearchWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SavedSearchScalarFieldEnum | Prisma.SavedSearchScalarFieldEnum[]
+}
+
+/**
+ * User.notificationPreference
+ */
+export type User$notificationPreferenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the NotificationPreference
+   */
+  select?: Prisma.NotificationPreferenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the NotificationPreference
+   */
+  omit?: Prisma.NotificationPreferenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationPreferenceInclude<ExtArgs> | null
+  where?: Prisma.NotificationPreferenceWhereInput
+}
+
+/**
+ * User.seekerNotifications
+ */
+export type User$seekerNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SeekerNotification
+   */
+  select?: Prisma.SeekerNotificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SeekerNotification
+   */
+  omit?: Prisma.SeekerNotificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SeekerNotificationInclude<ExtArgs> | null
+  where?: Prisma.SeekerNotificationWhereInput
+  orderBy?: Prisma.SeekerNotificationOrderByWithRelationInput | Prisma.SeekerNotificationOrderByWithRelationInput[]
+  cursor?: Prisma.SeekerNotificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SeekerNotificationScalarFieldEnum | Prisma.SeekerNotificationScalarFieldEnum[]
+}
+
+/**
+ * User.shortlistShares
+ */
+export type User$shortlistSharesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ShortlistShare
+   */
+  select?: Prisma.ShortlistShareSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ShortlistShare
+   */
+  omit?: Prisma.ShortlistShareOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ShortlistShareInclude<ExtArgs> | null
+  where?: Prisma.ShortlistShareWhereInput
+  orderBy?: Prisma.ShortlistShareOrderByWithRelationInput | Prisma.ShortlistShareOrderByWithRelationInput[]
+  cursor?: Prisma.ShortlistShareWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ShortlistShareScalarFieldEnum | Prisma.ShortlistShareScalarFieldEnum[]
 }
 
 /**

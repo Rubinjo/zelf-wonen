@@ -437,6 +437,8 @@ export type ListingWhereInput = {
   viewingSlots?: Prisma.ViewingSlotListRelationFilter
   transactions?: Prisma.PropertyTransactionListRelationFilter
   passportVersions?: Prisma.PropertyPassportVersionListRelationFilter
+  favoritedBy?: Prisma.FavoriteListingListRelationFilter
+  shortlistItems?: Prisma.ShortlistItemListRelationFilter
 }
 
 export type ListingOrderByWithRelationInput = {
@@ -482,6 +484,8 @@ export type ListingOrderByWithRelationInput = {
   viewingSlots?: Prisma.ViewingSlotOrderByRelationAggregateInput
   transactions?: Prisma.PropertyTransactionOrderByRelationAggregateInput
   passportVersions?: Prisma.PropertyPassportVersionOrderByRelationAggregateInput
+  favoritedBy?: Prisma.FavoriteListingOrderByRelationAggregateInput
+  shortlistItems?: Prisma.ShortlistItemOrderByRelationAggregateInput
 }
 
 export type ListingWhereUniqueInput = Prisma.AtLeast<{
@@ -530,6 +534,8 @@ export type ListingWhereUniqueInput = Prisma.AtLeast<{
   viewingSlots?: Prisma.ViewingSlotListRelationFilter
   transactions?: Prisma.PropertyTransactionListRelationFilter
   passportVersions?: Prisma.PropertyPassportVersionListRelationFilter
+  favoritedBy?: Prisma.FavoriteListingListRelationFilter
+  shortlistItems?: Prisma.ShortlistItemListRelationFilter
 }, "id" | "publicSlug">
 
 export type ListingOrderByWithAggregationInput = {
@@ -645,6 +651,8 @@ export type ListingCreateInput = {
   viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateInput = {
@@ -688,6 +696,8 @@ export type ListingUncheckedCreateInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingUpdateInput = {
@@ -731,6 +741,8 @@ export type ListingUpdateInput = {
   viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateInput = {
@@ -774,6 +786,8 @@ export type ListingUncheckedUpdateInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateManyInput = {
@@ -1240,6 +1254,34 @@ export type ListingUpdateOneRequiredWithoutPassportVersionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ListingUpdateToOneWithWhereWithoutPassportVersionsInput, Prisma.ListingUpdateWithoutPassportVersionsInput>, Prisma.ListingUncheckedUpdateWithoutPassportVersionsInput>
 }
 
+export type ListingCreateNestedOneWithoutFavoritedByInput = {
+  create?: Prisma.XOR<Prisma.ListingCreateWithoutFavoritedByInput, Prisma.ListingUncheckedCreateWithoutFavoritedByInput>
+  connectOrCreate?: Prisma.ListingCreateOrConnectWithoutFavoritedByInput
+  connect?: Prisma.ListingWhereUniqueInput
+}
+
+export type ListingUpdateOneRequiredWithoutFavoritedByNestedInput = {
+  create?: Prisma.XOR<Prisma.ListingCreateWithoutFavoritedByInput, Prisma.ListingUncheckedCreateWithoutFavoritedByInput>
+  connectOrCreate?: Prisma.ListingCreateOrConnectWithoutFavoritedByInput
+  upsert?: Prisma.ListingUpsertWithoutFavoritedByInput
+  connect?: Prisma.ListingWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ListingUpdateToOneWithWhereWithoutFavoritedByInput, Prisma.ListingUpdateWithoutFavoritedByInput>, Prisma.ListingUncheckedUpdateWithoutFavoritedByInput>
+}
+
+export type ListingCreateNestedOneWithoutShortlistItemsInput = {
+  create?: Prisma.XOR<Prisma.ListingCreateWithoutShortlistItemsInput, Prisma.ListingUncheckedCreateWithoutShortlistItemsInput>
+  connectOrCreate?: Prisma.ListingCreateOrConnectWithoutShortlistItemsInput
+  connect?: Prisma.ListingWhereUniqueInput
+}
+
+export type ListingUpdateOneRequiredWithoutShortlistItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.ListingCreateWithoutShortlistItemsInput, Prisma.ListingUncheckedCreateWithoutShortlistItemsInput>
+  connectOrCreate?: Prisma.ListingCreateOrConnectWithoutShortlistItemsInput
+  upsert?: Prisma.ListingUpsertWithoutShortlistItemsInput
+  connect?: Prisma.ListingWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ListingUpdateToOneWithWhereWithoutShortlistItemsInput, Prisma.ListingUpdateWithoutShortlistItemsInput>, Prisma.ListingUncheckedUpdateWithoutShortlistItemsInput>
+}
+
 export type ListingCreateNestedOneWithoutAuditEventsInput = {
   create?: Prisma.XOR<Prisma.ListingCreateWithoutAuditEventsInput, Prisma.ListingUncheckedCreateWithoutAuditEventsInput>
   connectOrCreate?: Prisma.ListingCreateOrConnectWithoutAuditEventsInput
@@ -1296,6 +1338,8 @@ export type ListingCreateWithoutOwnerInput = {
   viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutOwnerInput = {
@@ -1338,6 +1382,8 @@ export type ListingUncheckedCreateWithoutOwnerInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutOwnerInput = {
@@ -1441,6 +1487,8 @@ export type ListingCreateWithoutPropertyInput = {
   viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutPropertyInput = {
@@ -1483,6 +1531,8 @@ export type ListingUncheckedCreateWithoutPropertyInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutPropertyInput = {
@@ -1551,6 +1601,8 @@ export type ListingCreateWithoutViewingSlotsInput = {
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutViewingSlotsInput = {
@@ -1593,6 +1645,8 @@ export type ListingUncheckedCreateWithoutViewingSlotsInput = {
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutViewingSlotsInput = {
@@ -1651,6 +1705,8 @@ export type ListingUpdateWithoutViewingSlotsInput = {
   auditEvents?: Prisma.AuditEventUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutViewingSlotsInput = {
@@ -1693,6 +1749,8 @@ export type ListingUncheckedUpdateWithoutViewingSlotsInput = {
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutMediaInput = {
@@ -1735,6 +1793,8 @@ export type ListingCreateWithoutMediaInput = {
   viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutMediaInput = {
@@ -1777,6 +1837,8 @@ export type ListingUncheckedCreateWithoutMediaInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutMediaInput = {
@@ -1835,6 +1897,8 @@ export type ListingUpdateWithoutMediaInput = {
   viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutMediaInput = {
@@ -1877,6 +1941,8 @@ export type ListingUncheckedUpdateWithoutMediaInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutFloorPlansInput = {
@@ -1919,6 +1985,8 @@ export type ListingCreateWithoutFloorPlansInput = {
   viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutFloorPlansInput = {
@@ -1961,6 +2029,8 @@ export type ListingUncheckedCreateWithoutFloorPlansInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutFloorPlansInput = {
@@ -2019,6 +2089,8 @@ export type ListingUpdateWithoutFloorPlansInput = {
   viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutFloorPlansInput = {
@@ -2061,6 +2133,8 @@ export type ListingUncheckedUpdateWithoutFloorPlansInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutIdentityAttemptsInput = {
@@ -2103,6 +2177,8 @@ export type ListingCreateWithoutIdentityAttemptsInput = {
   viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutIdentityAttemptsInput = {
@@ -2145,6 +2221,8 @@ export type ListingUncheckedCreateWithoutIdentityAttemptsInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutIdentityAttemptsInput = {
@@ -2203,6 +2281,8 @@ export type ListingUpdateWithoutIdentityAttemptsInput = {
   viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutIdentityAttemptsInput = {
@@ -2245,6 +2325,8 @@ export type ListingUncheckedUpdateWithoutIdentityAttemptsInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutPublicationOrdersInput = {
@@ -2287,6 +2369,8 @@ export type ListingCreateWithoutPublicationOrdersInput = {
   viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutPublicationOrdersInput = {
@@ -2329,6 +2413,8 @@ export type ListingUncheckedCreateWithoutPublicationOrdersInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutPublicationOrdersInput = {
@@ -2387,6 +2473,8 @@ export type ListingUpdateWithoutPublicationOrdersInput = {
   viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutPublicationOrdersInput = {
@@ -2429,6 +2517,8 @@ export type ListingUncheckedUpdateWithoutPublicationOrdersInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutPublicationsInput = {
@@ -2471,6 +2561,8 @@ export type ListingCreateWithoutPublicationsInput = {
   viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutPublicationsInput = {
@@ -2513,6 +2605,8 @@ export type ListingUncheckedCreateWithoutPublicationsInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutPublicationsInput = {
@@ -2571,6 +2665,8 @@ export type ListingUpdateWithoutPublicationsInput = {
   viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutPublicationsInput = {
@@ -2613,6 +2709,8 @@ export type ListingUncheckedUpdateWithoutPublicationsInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutBidsInput = {
@@ -2655,6 +2753,8 @@ export type ListingCreateWithoutBidsInput = {
   viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutBidsInput = {
@@ -2697,6 +2797,8 @@ export type ListingUncheckedCreateWithoutBidsInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutBidsInput = {
@@ -2755,6 +2857,8 @@ export type ListingUpdateWithoutBidsInput = {
   viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutBidsInput = {
@@ -2797,6 +2901,8 @@ export type ListingUncheckedUpdateWithoutBidsInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutLogbookExportsInput = {
@@ -2839,6 +2945,8 @@ export type ListingCreateWithoutLogbookExportsInput = {
   viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutLogbookExportsInput = {
@@ -2881,6 +2989,8 @@ export type ListingUncheckedCreateWithoutLogbookExportsInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutLogbookExportsInput = {
@@ -2939,6 +3049,8 @@ export type ListingUpdateWithoutLogbookExportsInput = {
   viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutLogbookExportsInput = {
@@ -2981,6 +3093,8 @@ export type ListingUncheckedUpdateWithoutLogbookExportsInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutTransactionsInput = {
@@ -3023,6 +3137,8 @@ export type ListingCreateWithoutTransactionsInput = {
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutListingInput
   viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutTransactionsInput = {
@@ -3065,6 +3181,8 @@ export type ListingUncheckedCreateWithoutTransactionsInput = {
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutListingInput
   viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutTransactionsInput = {
@@ -3123,6 +3241,8 @@ export type ListingUpdateWithoutTransactionsInput = {
   auditEvents?: Prisma.AuditEventUpdateManyWithoutListingNestedInput
   viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutTransactionsInput = {
@@ -3165,6 +3285,8 @@ export type ListingUncheckedUpdateWithoutTransactionsInput = {
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutListingNestedInput
   viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutPassportVersionsInput = {
@@ -3207,6 +3329,8 @@ export type ListingCreateWithoutPassportVersionsInput = {
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutListingInput
   viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutPassportVersionsInput = {
@@ -3249,6 +3373,8 @@ export type ListingUncheckedCreateWithoutPassportVersionsInput = {
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutListingInput
   viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutPassportVersionsInput = {
@@ -3307,6 +3433,8 @@ export type ListingUpdateWithoutPassportVersionsInput = {
   auditEvents?: Prisma.AuditEventUpdateManyWithoutListingNestedInput
   viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutPassportVersionsInput = {
@@ -3349,6 +3477,392 @@ export type ListingUncheckedUpdateWithoutPassportVersionsInput = {
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutListingNestedInput
   viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedUpdateManyWithoutListingNestedInput
+}
+
+export type ListingCreateWithoutFavoritedByInput = {
+  id?: string
+  purpose: $Enums.ListingPurpose
+  status?: $Enums.ListingStatus
+  publicSlug?: string | null
+  titleNl?: string | null
+  titleEn?: string | null
+  descriptionNl?: string | null
+  descriptionEn?: string | null
+  askingPriceCents?: bigint | number | null
+  monthlyRentCents?: bigint | number | null
+  serviceCostsCents?: bigint | number | null
+  availableFrom?: Date | string | null
+  viewingNotes?: string | null
+  attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
+  bidWindowOpensAt?: Date | string | null
+  bidWindowClosesAt?: Date | string | null
+  validatedAt?: Date | string | null
+  publicationRequestedAt?: Date | string | null
+  liveAt?: Date | string | null
+  finalizedAt?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutListingsInput
+  property: Prisma.PropertyCreateNestedOneWithoutListingsInput
+  media?: Prisma.ListingMediaCreateNestedManyWithoutListingInput
+  floorPlans?: Prisma.FloorPlanCreateNestedManyWithoutListingInput
+  bids?: Prisma.BidCreateNestedManyWithoutListingInput
+  publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutListingInput
+  publications?: Prisma.ListingPublicationCreateNestedManyWithoutListingInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutListingInput
+  logbookExports?: Prisma.BidLogbookExportCreateNestedManyWithoutListingInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
+  transactions?: Prisma.PropertyTransactionCreateNestedManyWithoutListingInput
+  passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemCreateNestedManyWithoutListingInput
+}
+
+export type ListingUncheckedCreateWithoutFavoritedByInput = {
+  id?: string
+  ownerId: string
+  propertyId: string
+  purpose: $Enums.ListingPurpose
+  status?: $Enums.ListingStatus
+  publicSlug?: string | null
+  titleNl?: string | null
+  titleEn?: string | null
+  descriptionNl?: string | null
+  descriptionEn?: string | null
+  askingPriceCents?: bigint | number | null
+  monthlyRentCents?: bigint | number | null
+  serviceCostsCents?: bigint | number | null
+  availableFrom?: Date | string | null
+  viewingNotes?: string | null
+  attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
+  bidWindowOpensAt?: Date | string | null
+  bidWindowClosesAt?: Date | string | null
+  validatedAt?: Date | string | null
+  publicationRequestedAt?: Date | string | null
+  liveAt?: Date | string | null
+  finalizedAt?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  media?: Prisma.ListingMediaUncheckedCreateNestedManyWithoutListingInput
+  floorPlans?: Prisma.FloorPlanUncheckedCreateNestedManyWithoutListingInput
+  bids?: Prisma.BidUncheckedCreateNestedManyWithoutListingInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutListingInput
+  publications?: Prisma.ListingPublicationUncheckedCreateNestedManyWithoutListingInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutListingInput
+  logbookExports?: Prisma.BidLogbookExportUncheckedCreateNestedManyWithoutListingInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
+  transactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutListingInput
+  passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedCreateNestedManyWithoutListingInput
+}
+
+export type ListingCreateOrConnectWithoutFavoritedByInput = {
+  where: Prisma.ListingWhereUniqueInput
+  create: Prisma.XOR<Prisma.ListingCreateWithoutFavoritedByInput, Prisma.ListingUncheckedCreateWithoutFavoritedByInput>
+}
+
+export type ListingUpsertWithoutFavoritedByInput = {
+  update: Prisma.XOR<Prisma.ListingUpdateWithoutFavoritedByInput, Prisma.ListingUncheckedUpdateWithoutFavoritedByInput>
+  create: Prisma.XOR<Prisma.ListingCreateWithoutFavoritedByInput, Prisma.ListingUncheckedCreateWithoutFavoritedByInput>
+  where?: Prisma.ListingWhereInput
+}
+
+export type ListingUpdateToOneWithWhereWithoutFavoritedByInput = {
+  where?: Prisma.ListingWhereInput
+  data: Prisma.XOR<Prisma.ListingUpdateWithoutFavoritedByInput, Prisma.ListingUncheckedUpdateWithoutFavoritedByInput>
+}
+
+export type ListingUpdateWithoutFavoritedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  purpose?: Prisma.EnumListingPurposeFieldUpdateOperationsInput | $Enums.ListingPurpose
+  status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
+  publicSlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleNl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionNl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  askingPriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  monthlyRentCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  serviceCostsCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publicationRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  liveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutListingsNestedInput
+  property?: Prisma.PropertyUpdateOneRequiredWithoutListingsNestedInput
+  media?: Prisma.ListingMediaUpdateManyWithoutListingNestedInput
+  floorPlans?: Prisma.FloorPlanUpdateManyWithoutListingNestedInput
+  bids?: Prisma.BidUpdateManyWithoutListingNestedInput
+  publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutListingNestedInput
+  publications?: Prisma.ListingPublicationUpdateManyWithoutListingNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutListingNestedInput
+  logbookExports?: Prisma.BidLogbookExportUpdateManyWithoutListingNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
+  transactions?: Prisma.PropertyTransactionUpdateManyWithoutListingNestedInput
+  passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUpdateManyWithoutListingNestedInput
+}
+
+export type ListingUncheckedUpdateWithoutFavoritedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  purpose?: Prisma.EnumListingPurposeFieldUpdateOperationsInput | $Enums.ListingPurpose
+  status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
+  publicSlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleNl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionNl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  askingPriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  monthlyRentCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  serviceCostsCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publicationRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  liveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  media?: Prisma.ListingMediaUncheckedUpdateManyWithoutListingNestedInput
+  floorPlans?: Prisma.FloorPlanUncheckedUpdateManyWithoutListingNestedInput
+  bids?: Prisma.BidUncheckedUpdateManyWithoutListingNestedInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutListingNestedInput
+  publications?: Prisma.ListingPublicationUncheckedUpdateManyWithoutListingNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutListingNestedInput
+  logbookExports?: Prisma.BidLogbookExportUncheckedUpdateManyWithoutListingNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
+  transactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutListingNestedInput
+  passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedUpdateManyWithoutListingNestedInput
+}
+
+export type ListingCreateWithoutShortlistItemsInput = {
+  id?: string
+  purpose: $Enums.ListingPurpose
+  status?: $Enums.ListingStatus
+  publicSlug?: string | null
+  titleNl?: string | null
+  titleEn?: string | null
+  descriptionNl?: string | null
+  descriptionEn?: string | null
+  askingPriceCents?: bigint | number | null
+  monthlyRentCents?: bigint | number | null
+  serviceCostsCents?: bigint | number | null
+  availableFrom?: Date | string | null
+  viewingNotes?: string | null
+  attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
+  bidWindowOpensAt?: Date | string | null
+  bidWindowClosesAt?: Date | string | null
+  validatedAt?: Date | string | null
+  publicationRequestedAt?: Date | string | null
+  liveAt?: Date | string | null
+  finalizedAt?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutListingsInput
+  property: Prisma.PropertyCreateNestedOneWithoutListingsInput
+  media?: Prisma.ListingMediaCreateNestedManyWithoutListingInput
+  floorPlans?: Prisma.FloorPlanCreateNestedManyWithoutListingInput
+  bids?: Prisma.BidCreateNestedManyWithoutListingInput
+  publicationOrders?: Prisma.PublicationOrderCreateNestedManyWithoutListingInput
+  publications?: Prisma.ListingPublicationCreateNestedManyWithoutListingInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutListingInput
+  logbookExports?: Prisma.BidLogbookExportCreateNestedManyWithoutListingInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
+  transactions?: Prisma.PropertyTransactionCreateNestedManyWithoutListingInput
+  passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingCreateNestedManyWithoutListingInput
+}
+
+export type ListingUncheckedCreateWithoutShortlistItemsInput = {
+  id?: string
+  ownerId: string
+  propertyId: string
+  purpose: $Enums.ListingPurpose
+  status?: $Enums.ListingStatus
+  publicSlug?: string | null
+  titleNl?: string | null
+  titleEn?: string | null
+  descriptionNl?: string | null
+  descriptionEn?: string | null
+  askingPriceCents?: bigint | number | null
+  monthlyRentCents?: bigint | number | null
+  serviceCostsCents?: bigint | number | null
+  availableFrom?: Date | string | null
+  viewingNotes?: string | null
+  attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: $Enums.BiddingMethod
+  minimumBidCents?: bigint | number | null
+  bidIncrementCents?: bigint | number | null
+  allowBidConditions?: boolean
+  bidWindowOpensAt?: Date | string | null
+  bidWindowClosesAt?: Date | string | null
+  validatedAt?: Date | string | null
+  publicationRequestedAt?: Date | string | null
+  liveAt?: Date | string | null
+  finalizedAt?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  media?: Prisma.ListingMediaUncheckedCreateNestedManyWithoutListingInput
+  floorPlans?: Prisma.FloorPlanUncheckedCreateNestedManyWithoutListingInput
+  bids?: Prisma.BidUncheckedCreateNestedManyWithoutListingInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedCreateNestedManyWithoutListingInput
+  publications?: Prisma.ListingPublicationUncheckedCreateNestedManyWithoutListingInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutListingInput
+  logbookExports?: Prisma.BidLogbookExportUncheckedCreateNestedManyWithoutListingInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutListingInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
+  transactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutListingInput
+  passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutListingInput
+}
+
+export type ListingCreateOrConnectWithoutShortlistItemsInput = {
+  where: Prisma.ListingWhereUniqueInput
+  create: Prisma.XOR<Prisma.ListingCreateWithoutShortlistItemsInput, Prisma.ListingUncheckedCreateWithoutShortlistItemsInput>
+}
+
+export type ListingUpsertWithoutShortlistItemsInput = {
+  update: Prisma.XOR<Prisma.ListingUpdateWithoutShortlistItemsInput, Prisma.ListingUncheckedUpdateWithoutShortlistItemsInput>
+  create: Prisma.XOR<Prisma.ListingCreateWithoutShortlistItemsInput, Prisma.ListingUncheckedCreateWithoutShortlistItemsInput>
+  where?: Prisma.ListingWhereInput
+}
+
+export type ListingUpdateToOneWithWhereWithoutShortlistItemsInput = {
+  where?: Prisma.ListingWhereInput
+  data: Prisma.XOR<Prisma.ListingUpdateWithoutShortlistItemsInput, Prisma.ListingUncheckedUpdateWithoutShortlistItemsInput>
+}
+
+export type ListingUpdateWithoutShortlistItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  purpose?: Prisma.EnumListingPurposeFieldUpdateOperationsInput | $Enums.ListingPurpose
+  status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
+  publicSlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleNl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionNl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  askingPriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  monthlyRentCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  serviceCostsCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publicationRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  liveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutListingsNestedInput
+  property?: Prisma.PropertyUpdateOneRequiredWithoutListingsNestedInput
+  media?: Prisma.ListingMediaUpdateManyWithoutListingNestedInput
+  floorPlans?: Prisma.FloorPlanUpdateManyWithoutListingNestedInput
+  bids?: Prisma.BidUpdateManyWithoutListingNestedInput
+  publicationOrders?: Prisma.PublicationOrderUpdateManyWithoutListingNestedInput
+  publications?: Prisma.ListingPublicationUpdateManyWithoutListingNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutListingNestedInput
+  logbookExports?: Prisma.BidLogbookExportUpdateManyWithoutListingNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
+  transactions?: Prisma.PropertyTransactionUpdateManyWithoutListingNestedInput
+  passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUpdateManyWithoutListingNestedInput
+}
+
+export type ListingUncheckedUpdateWithoutShortlistItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  purpose?: Prisma.EnumListingPurposeFieldUpdateOperationsInput | $Enums.ListingPurpose
+  status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
+  publicSlug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleNl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionNl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  askingPriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  monthlyRentCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  serviceCostsCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  viewingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attributes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  biddingMethod?: Prisma.EnumBiddingMethodFieldUpdateOperationsInput | $Enums.BiddingMethod
+  minimumBidCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  bidIncrementCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  allowBidConditions?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bidWindowOpensAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  bidWindowClosesAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publicationRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  liveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  finalizedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  media?: Prisma.ListingMediaUncheckedUpdateManyWithoutListingNestedInput
+  floorPlans?: Prisma.FloorPlanUncheckedUpdateManyWithoutListingNestedInput
+  bids?: Prisma.BidUncheckedUpdateManyWithoutListingNestedInput
+  publicationOrders?: Prisma.PublicationOrderUncheckedUpdateManyWithoutListingNestedInput
+  publications?: Prisma.ListingPublicationUncheckedUpdateManyWithoutListingNestedInput
+  identityAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutListingNestedInput
+  logbookExports?: Prisma.BidLogbookExportUncheckedUpdateManyWithoutListingNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutListingNestedInput
+  viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
+  transactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutListingNestedInput
+  passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateWithoutAuditEventsInput = {
@@ -3391,6 +3905,8 @@ export type ListingCreateWithoutAuditEventsInput = {
   viewingSlots?: Prisma.ViewingSlotCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemCreateNestedManyWithoutListingInput
 }
 
 export type ListingUncheckedCreateWithoutAuditEventsInput = {
@@ -3433,6 +3949,8 @@ export type ListingUncheckedCreateWithoutAuditEventsInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedCreateNestedManyWithoutListingInput
   transactions?: Prisma.PropertyTransactionUncheckedCreateNestedManyWithoutListingInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedCreateNestedManyWithoutListingInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedCreateNestedManyWithoutListingInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedCreateNestedManyWithoutListingInput
 }
 
 export type ListingCreateOrConnectWithoutAuditEventsInput = {
@@ -3491,6 +4009,8 @@ export type ListingUpdateWithoutAuditEventsInput = {
   viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutAuditEventsInput = {
@@ -3533,6 +4053,8 @@ export type ListingUncheckedUpdateWithoutAuditEventsInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingCreateManyOwnerInput = {
@@ -3606,6 +4128,8 @@ export type ListingUpdateWithoutOwnerInput = {
   viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutOwnerInput = {
@@ -3648,6 +4172,8 @@ export type ListingUncheckedUpdateWithoutOwnerInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateManyWithoutOwnerInput = {
@@ -3752,6 +4278,8 @@ export type ListingUpdateWithoutPropertyInput = {
   viewingSlots?: Prisma.ViewingSlotUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateWithoutPropertyInput = {
@@ -3794,6 +4322,8 @@ export type ListingUncheckedUpdateWithoutPropertyInput = {
   viewingSlots?: Prisma.ViewingSlotUncheckedUpdateManyWithoutListingNestedInput
   transactions?: Prisma.PropertyTransactionUncheckedUpdateManyWithoutListingNestedInput
   passportVersions?: Prisma.PropertyPassportVersionUncheckedUpdateManyWithoutListingNestedInput
+  favoritedBy?: Prisma.FavoriteListingUncheckedUpdateManyWithoutListingNestedInput
+  shortlistItems?: Prisma.ShortlistItemUncheckedUpdateManyWithoutListingNestedInput
 }
 
 export type ListingUncheckedUpdateManyWithoutPropertyInput = {
@@ -3844,6 +4374,8 @@ export type ListingCountOutputType = {
   viewingSlots: number
   transactions: number
   passportVersions: number
+  favoritedBy: number
+  shortlistItems: number
 }
 
 export type ListingCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3858,6 +4390,8 @@ export type ListingCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   viewingSlots?: boolean | ListingCountOutputTypeCountViewingSlotsArgs
   transactions?: boolean | ListingCountOutputTypeCountTransactionsArgs
   passportVersions?: boolean | ListingCountOutputTypeCountPassportVersionsArgs
+  favoritedBy?: boolean | ListingCountOutputTypeCountFavoritedByArgs
+  shortlistItems?: boolean | ListingCountOutputTypeCountShortlistItemsArgs
 }
 
 /**
@@ -3947,6 +4481,20 @@ export type ListingCountOutputTypeCountPassportVersionsArgs<ExtArgs extends runt
   where?: Prisma.PropertyPassportVersionWhereInput
 }
 
+/**
+ * ListingCountOutputType without action
+ */
+export type ListingCountOutputTypeCountFavoritedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FavoriteListingWhereInput
+}
+
+/**
+ * ListingCountOutputType without action
+ */
+export type ListingCountOutputTypeCountShortlistItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ShortlistItemWhereInput
+}
+
 
 export type ListingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3991,6 +4539,8 @@ export type ListingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   viewingSlots?: boolean | Prisma.Listing$viewingSlotsArgs<ExtArgs>
   transactions?: boolean | Prisma.Listing$transactionsArgs<ExtArgs>
   passportVersions?: boolean | Prisma.Listing$passportVersionsArgs<ExtArgs>
+  favoritedBy?: boolean | Prisma.Listing$favoritedByArgs<ExtArgs>
+  shortlistItems?: boolean | Prisma.Listing$shortlistItemsArgs<ExtArgs>
   _count?: boolean | Prisma.ListingCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["listing"]>
 
@@ -4109,6 +4659,8 @@ export type ListingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   viewingSlots?: boolean | Prisma.Listing$viewingSlotsArgs<ExtArgs>
   transactions?: boolean | Prisma.Listing$transactionsArgs<ExtArgs>
   passportVersions?: boolean | Prisma.Listing$passportVersionsArgs<ExtArgs>
+  favoritedBy?: boolean | Prisma.Listing$favoritedByArgs<ExtArgs>
+  shortlistItems?: boolean | Prisma.Listing$shortlistItemsArgs<ExtArgs>
   _count?: boolean | Prisma.ListingCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ListingIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4136,6 +4688,8 @@ export type $ListingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     viewingSlots: Prisma.$ViewingSlotPayload<ExtArgs>[]
     transactions: Prisma.$PropertyTransactionPayload<ExtArgs>[]
     passportVersions: Prisma.$PropertyPassportVersionPayload<ExtArgs>[]
+    favoritedBy: Prisma.$FavoriteListingPayload<ExtArgs>[]
+    shortlistItems: Prisma.$ShortlistItemPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4574,6 +5128,8 @@ export interface Prisma__ListingClient<T, Null = never, ExtArgs extends runtime.
   viewingSlots<T extends Prisma.Listing$viewingSlotsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Listing$viewingSlotsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ViewingSlotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   transactions<T extends Prisma.Listing$transactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Listing$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PropertyTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   passportVersions<T extends Prisma.Listing$passportVersionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Listing$passportVersionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PropertyPassportVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  favoritedBy<T extends Prisma.Listing$favoritedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Listing$favoritedByArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FavoriteListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  shortlistItems<T extends Prisma.Listing$shortlistItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Listing$shortlistItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShortlistItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5294,6 +5850,54 @@ export type Listing$passportVersionsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.PropertyPassportVersionScalarFieldEnum | Prisma.PropertyPassportVersionScalarFieldEnum[]
+}
+
+/**
+ * Listing.favoritedBy
+ */
+export type Listing$favoritedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FavoriteListing
+   */
+  select?: Prisma.FavoriteListingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FavoriteListing
+   */
+  omit?: Prisma.FavoriteListingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FavoriteListingInclude<ExtArgs> | null
+  where?: Prisma.FavoriteListingWhereInput
+  orderBy?: Prisma.FavoriteListingOrderByWithRelationInput | Prisma.FavoriteListingOrderByWithRelationInput[]
+  cursor?: Prisma.FavoriteListingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FavoriteListingScalarFieldEnum | Prisma.FavoriteListingScalarFieldEnum[]
+}
+
+/**
+ * Listing.shortlistItems
+ */
+export type Listing$shortlistItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ShortlistItem
+   */
+  select?: Prisma.ShortlistItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ShortlistItem
+   */
+  omit?: Prisma.ShortlistItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ShortlistItemInclude<ExtArgs> | null
+  where?: Prisma.ShortlistItemWhereInput
+  orderBy?: Prisma.ShortlistItemOrderByWithRelationInput | Prisma.ShortlistItemOrderByWithRelationInput[]
+  cursor?: Prisma.ShortlistItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ShortlistItemScalarFieldEnum | Prisma.ShortlistItemScalarFieldEnum[]
 }
 
 /**

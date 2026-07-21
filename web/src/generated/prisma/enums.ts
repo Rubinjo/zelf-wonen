@@ -335,3 +335,16 @@ export const TransactionEventType = {
 } as const
 
 export type TransactionEventType = (typeof TransactionEventType)[keyof typeof TransactionEventType]
+
+
+export const SeekerNotificationType = {
+  NEW_LISTING: 'NEW_LISTING',
+  PRICE_CHANGED: 'PRICE_CHANGED',
+  LISTING_STATUS_CHANGED: 'LISTING_STATUS_CHANGED',
+  VIEWING_UPDATED: 'VIEWING_UPDATED',
+  BID_UPDATED: 'BID_UPDATED',
+  TRANSACTION_UPDATED: 'TRANSACTION_UPDATED',
+  DEADLINE_APPROACHING: 'DEADLINE_APPROACHING'
+} as const
+
+export type SeekerNotificationType = (typeof SeekerNotificationType)[keyof typeof SeekerNotificationType]

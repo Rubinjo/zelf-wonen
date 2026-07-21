@@ -76,6 +76,12 @@ export const ModelName = {
   TransactionDocument: 'TransactionDocument',
   PropertyPassportVersion: 'PropertyPassportVersion',
   TransactionEvent: 'TransactionEvent',
+  FavoriteListing: 'FavoriteListing',
+  SavedSearch: 'SavedSearch',
+  NotificationPreference: 'NotificationPreference',
+  SeekerNotification: 'SeekerNotification',
+  ShortlistShare: 'ShortlistShare',
+  ShortlistItem: 'ShortlistItem',
   EstimateCache: 'EstimateCache',
   PostcodePriceStat: 'PostcodePriceStat',
   AuditEvent: 'AuditEvent'
@@ -556,6 +562,92 @@ export const TransactionEventScalarFieldEnum = {
 } as const
 
 export type TransactionEventScalarFieldEnum = (typeof TransactionEventScalarFieldEnum)[keyof typeof TransactionEventScalarFieldEnum]
+
+
+export const FavoriteListingScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  listingId: 'listingId',
+  note: 'note',
+  priceSnapshotCents: 'priceSnapshotCents',
+  statusSnapshot: 'statusSnapshot',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FavoriteListingScalarFieldEnum = (typeof FavoriteListingScalarFieldEnum)[keyof typeof FavoriteListingScalarFieldEnum]
+
+
+export const SavedSearchScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  queryString: 'queryString',
+  notificationsEnabled: 'notificationsEnabled',
+  lastCheckedAt: 'lastCheckedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SavedSearchScalarFieldEnum = (typeof SavedSearchScalarFieldEnum)[keyof typeof SavedSearchScalarFieldEnum]
+
+
+export const NotificationPreferenceScalarFieldEnum = {
+  userId: 'userId',
+  newListing: 'newListing',
+  priceChange: 'priceChange',
+  statusChange: 'statusChange',
+  viewing: 'viewing',
+  bid: 'bid',
+  transaction: 'transaction',
+  deadline: 'deadline',
+  inAppEnabled: 'inAppEnabled',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NotificationPreferenceScalarFieldEnum = (typeof NotificationPreferenceScalarFieldEnum)[keyof typeof NotificationPreferenceScalarFieldEnum]
+
+
+export const SeekerNotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  eventKey: 'eventKey',
+  title: 'title',
+  body: 'body',
+  href: 'href',
+  payload: 'payload',
+  readAt: 'readAt',
+  createdAt: 'createdAt'
+} as const
+
+export type SeekerNotificationScalarFieldEnum = (typeof SeekerNotificationScalarFieldEnum)[keyof typeof SeekerNotificationScalarFieldEnum]
+
+
+export const ShortlistShareScalarFieldEnum = {
+  id: 'id',
+  ownerId: 'ownerId',
+  label: 'label',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ShortlistShareScalarFieldEnum = (typeof ShortlistShareScalarFieldEnum)[keyof typeof ShortlistShareScalarFieldEnum]
+
+
+export const ShortlistItemScalarFieldEnum = {
+  id: 'id',
+  shareId: 'shareId',
+  listingId: 'listingId',
+  note: 'note',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt'
+} as const
+
+export type ShortlistItemScalarFieldEnum = (typeof ShortlistItemScalarFieldEnum)[keyof typeof ShortlistItemScalarFieldEnum]
 
 
 export const EstimateCacheScalarFieldEnum = {

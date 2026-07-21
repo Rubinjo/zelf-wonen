@@ -1,6 +1,7 @@
 "use client";
 
 import { startTransition, useState, useSyncExternalStore } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,6 +17,9 @@ import {
     Map,
     Maximize2,
     PanelRightOpen,
+    BellPlus,
+    Check,
+    LoaderCircle,
 } from "lucide-react";
 import type {
     MarketplaceBounds,
@@ -113,6 +117,7 @@ export function MarketplaceResults({
     activeBounds: MarketplaceBounds | null;
 }) {
     const router = useRouter();
+    const queryClient = useQueryClient();
     const searchParams = useSearchParams();
     const [mobileView, setMobileView] = useState<"list" | "map">("list");
     const [mapCollapsed, setMapCollapsed] = useState(false);
@@ -130,13 +135,87 @@ export function MarketplaceResults({
     } catch {
         favorites = [];
     }
+    const accountFavorites = useQuery({
+        queryKey: ["seeker-favorites"],
+        queryFn: async (): Promise<string[] | null> => {
+            const localIds = JSON.parse(
+                localStorage.getItem(favoritesKey) ?? "[]",
+            ) as string[];
+            const response = await fetch("/api/seeker/favorites");
+            if (response.status === 401 || response.status === 403) return null;
+            if (!response.ok) throw new Error("Favorieten laden is mislukt");
+            if (localIds.length) {
+                await fetch("/api/seeker/favorites", {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({ listingIds: localIds }),
+                });
+            }
+            const refreshed = localIds.length
+                ? await fetch("/api/seeker/favorites")
+                : response;
+            const payload = await refreshed.json();
+            const serverIds = (
+                payload.data as Array<{ listingId: string }>
+            ).map((item) => item.listingId);
+            const latestLocalIds = JSON.parse(
+                localStorage.getItem(favoritesKey) ?? "[]",
+            ) as string[];
+            const ids = [...new Set([...serverIds, ...latestLocalIds])];
+            localStorage.setItem(favoritesKey, JSON.stringify(ids));
+            window.dispatchEvent(new Event(favoritesEvent));
+            return ids;
+        },
+        staleTime: 30_000,
+        retry: false,
+    });
+    const activeFavorites = accountFavorites.data ?? favorites;
+    const favoriteMutation = useMutation({
+        mutationFn: async ({
+            listingId,
+            active,
+        }: {
+            listingId: string;
+            active: boolean;
+        }) => {
+            const response = await fetch(
+                `/api/seeker/favorites${active ? `/${listingId}` : ""}`,
+                active
+                    ? { method: "DELETE" }
+                    : {
+                          method: "POST",
+                          headers: { "content-type": "application/json" },
+                          body: JSON.stringify({ listingId }),
+                      },
+            );
+            if (!response.ok) throw new Error("Favoriet bijwerken is mislukt");
+        },
+        onMutate: async ({ listingId, active }) => {
+            await queryClient.cancelQueries({ queryKey: ["seeker-favorites"] });
+            queryClient.setQueryData<string[]>(
+                ["seeker-favorites"],
+                (current = []) =>
+                    active
+                        ? current.filter((id) => id !== listingId)
+                        : [...current, listingId],
+            );
+        },
+        onSettled: () =>
+            queryClient.invalidateQueries({ queryKey: ["seeker-favorites"] }),
+    });
 
     function toggleFavorite(listingId: string) {
-        const next = favorites.includes(listingId)
-            ? favorites.filter((id) => id !== listingId)
-            : [...favorites, listingId];
+        const active = activeFavorites.includes(listingId);
+        const next = active
+            ? activeFavorites.filter((id) => id !== listingId)
+            : [...activeFavorites, listingId];
         localStorage.setItem(favoritesKey, JSON.stringify(next));
         window.dispatchEvent(new Event(favoritesEvent));
+        if (
+            accountFavorites.data !== null &&
+            accountFavorites.data !== undefined
+        )
+            favoriteMutation.mutate({ listingId, active });
     }
 
     function selectFromMap(listingId: string) {
@@ -189,6 +268,13 @@ export function MarketplaceResults({
 
     return (
         <>
+            <SaveSearchButton
+                queryString={searchParams.toString()}
+                authenticated={
+                    accountFavorites.data !== null &&
+                    accountFavorites.data !== undefined
+                }
+            />
             <div className="fixed bottom-5 left-1/2 z-1000 flex -translate-x-1/2 rounded-full bg-brand p-1.5 text-white shadow-xl lg:hidden">
                 <button
                     type="button"
@@ -238,7 +324,9 @@ export function MarketplaceResults({
                                 <div className="relative aspect-4/3 overflow-hidden bg-[#dde9e1]">
                                     <FavoriteButton
                                         listingId={listing.id}
-                                        active={favorites.includes(listing.id)}
+                                        active={activeFavorites.includes(
+                                            listing.id,
+                                        )}
                                         onToggle={toggleFavorite}
                                     />
                                     {listing.isMonument ? (
@@ -334,5 +422,99 @@ export function MarketplaceResults({
                 </div>
             </div>
         </>
+    );
+}
+
+function SaveSearchButton({
+    queryString,
+    authenticated,
+}: {
+    queryString: string;
+    authenticated: boolean;
+}) {
+    const [open, setOpen] = useState(false);
+    const [name, setName] = useState("");
+    const mutation = useMutation({
+        mutationFn: async () => {
+            const response = await fetch("/api/seeker/saved-searches", {
+                method: "POST",
+                headers: { "content-type": "application/json" },
+                body: JSON.stringify({
+                    name,
+                    queryString,
+                    notificationsEnabled: true,
+                }),
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok)
+                throw new Error(
+                    payload.error?.message ?? "Zoekopdracht opslaan is mislukt",
+                );
+        },
+    });
+    if (!authenticated) return null;
+    return (
+        <div className="border-b border-line bg-white px-4 py-3 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-[1600px]">
+                {mutation.isSuccess ? (
+                    <p className="inline-flex items-center gap-2 text-sm font-semibold text-brand">
+                        <Check size={17} /> Zoekopdracht bewaard
+                    </p>
+                ) : !open ? (
+                    <button
+                        type="button"
+                        onClick={() => setOpen(true)}
+                        className="inline-flex h-10 items-center gap-2 text-sm font-semibold text-brand"
+                    >
+                        <BellPlus size={17} /> Bewaar deze zoekopdracht
+                    </button>
+                ) : (
+                    <form
+                        onSubmit={(event) => {
+                            event.preventDefault();
+                            mutation.mutate();
+                        }}
+                        className="flex flex-col gap-2 sm:flex-row"
+                    >
+                        <input
+                            value={name}
+                            onChange={(event) => setName(event.target.value)}
+                            minLength={2}
+                            maxLength={80}
+                            required
+                            autoFocus
+                            placeholder="Bijv. Appartement in Utrecht"
+                            className="input"
+                        />
+                        <button
+                            disabled={mutation.isPending}
+                            className="inline-flex h-12 shrink-0 items-center justify-center gap-2 bg-brand px-5 text-sm font-semibold text-white"
+                        >
+                            {mutation.isPending ? (
+                                <LoaderCircle
+                                    className="animate-spin"
+                                    size={16}
+                                />
+                            ) : (
+                                <BellPlus size={16} />
+                            )}{" "}
+                            Bewaren
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setOpen(false)}
+                            className="h-12 px-3 text-sm font-semibold text-muted"
+                        >
+                            Annuleren
+                        </button>
+                    </form>
+                )}
+                {mutation.error && (
+                    <p className="mt-2 text-sm text-red-700">
+                        {mutation.error.message}
+                    </p>
+                )}
+            </div>
+        </div>
     );
 }

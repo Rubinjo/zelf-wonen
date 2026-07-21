@@ -245,6 +245,16 @@ enum TransactionEventType {
   TRANSACTION_CANCELLED
 }
 
+enum SeekerNotificationType {
+  NEW_LISTING
+  PRICE_CHANGED
+  LISTING_STATUS_CHANGED
+  VIEWING_UPDATED
+  BID_UPDATED
+  TRANSACTION_UPDATED
+  DEADLINE_APPROACHING
+}
+
 // Better Auth core model. Never store BSN or raw iDIN assertions on this record.
 model User {
   id               String   @id @default(uuid()) @db.Uuid
@@ -274,6 +284,11 @@ model User {
   transactionDocuments  TransactionDocument[]
   transactionEvents     TransactionEvent[]
   passportVersions      PropertyPassportVersion[]
+  favoriteListings      FavoriteListing[]
+  savedSearches         SavedSearch[]
+  notificationPreference NotificationPreference?
+  seekerNotifications   SeekerNotification[]
+  shortlistShares       ShortlistShare[]
 
   @@map("users")
 }
@@ -447,6 +462,8 @@ model Listing {
   viewingSlots           ViewingSlot[]
   transactions           PropertyTransaction[]
   passportVersions       PropertyPassportVersion[]
+  favoritedBy            FavoriteListing[]
+  shortlistItems         ShortlistItem[]
 
   @@index([ownerId, status])
   @@index([propertyId])
@@ -802,6 +819,107 @@ model TransactionEvent {
   @@index([transactionId, occurredAt])
   @@index([actorUserId, occurredAt])
   @@map("transaction_events")
+}
+
+model FavoriteListing {
+  id                 String        @id @default(uuid()) @db.Uuid
+  userId             String        @db.Uuid
+  listingId          String        @db.Uuid
+  note               String?
+  priceSnapshotCents BigInt?
+  statusSnapshot     ListingStatus
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing            Listing       @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, listingId])
+  @@index([userId, updatedAt])
+  @@index([listingId])
+  @@map("favorite_listings")
+}
+
+model SavedSearch {
+  id                   String   @id @default(uuid()) @db.Uuid
+  userId               String   @db.Uuid
+  name                 String
+  queryString          String
+  notificationsEnabled Boolean  @default(true)
+  lastCheckedAt        DateTime @default(now())
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, updatedAt])
+  @@unique([userId, queryString])
+  @@map("saved_searches")
+}
+
+model NotificationPreference {
+  userId              String   @id @db.Uuid
+  newListing          Boolean  @default(true)
+  priceChange         Boolean  @default(true)
+  statusChange        Boolean  @default(true)
+  viewing             Boolean  @default(true)
+  bid                 Boolean  @default(true)
+  transaction         Boolean  @default(true)
+  deadline            Boolean  @default(true)
+  inAppEnabled        Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification_preferences")
+}
+
+model SeekerNotification {
+  id        String                 @id @default(uuid()) @db.Uuid
+  userId    String                 @db.Uuid
+  type      SeekerNotificationType
+  eventKey  String
+  title     String
+  body      String
+  href      String?
+  payload   Json?
+  readAt    DateTime?
+  createdAt DateTime               @default(now())
+  user      User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventKey])
+  @@index([userId, readAt, createdAt])
+  @@map("seeker_notifications")
+}
+
+model ShortlistShare {
+  id        String          @id @default(uuid()) @db.Uuid
+  ownerId   String          @db.Uuid
+  label     String?
+  tokenHash String          @unique @db.Char(64)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime        @default(now())
+  owner     User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  items     ShortlistItem[]
+
+  @@index([ownerId, createdAt])
+  @@index([expiresAt, revokedAt])
+  @@map("shortlist_shares")
+}
+
+model ShortlistItem {
+  id        String         @id @default(uuid()) @db.Uuid
+  shareId   String         @db.Uuid
+  listingId String         @db.Uuid
+  note      String?
+  sortOrder Int            @default(0)
+  createdAt DateTime       @default(now())
+  share     ShortlistShare @relation(fields: [shareId], references: [id], onDelete: Cascade)
+  listing   Listing        @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([shareId, listingId])
+  @@index([shareId, sortOrder])
+  @@index([listingId])
+  @@map("shortlist_items")
 }
 
 model EstimateCache {

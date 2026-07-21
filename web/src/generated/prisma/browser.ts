@@ -143,6 +143,36 @@ export type PropertyPassportVersion = Prisma.PropertyPassportVersionModel
  */
 export type TransactionEvent = Prisma.TransactionEventModel
 /**
+ * Model FavoriteListing
+ * 
+ */
+export type FavoriteListing = Prisma.FavoriteListingModel
+/**
+ * Model SavedSearch
+ * 
+ */
+export type SavedSearch = Prisma.SavedSearchModel
+/**
+ * Model NotificationPreference
+ * 
+ */
+export type NotificationPreference = Prisma.NotificationPreferenceModel
+/**
+ * Model SeekerNotification
+ * 
+ */
+export type SeekerNotification = Prisma.SeekerNotificationModel
+/**
+ * Model ShortlistShare
+ * 
+ */
+export type ShortlistShare = Prisma.ShortlistShareModel
+/**
+ * Model ShortlistItem
+ * 
+ */
+export type ShortlistItem = Prisma.ShortlistItemModel
+/**
  * Model EstimateCache
  * 
  */

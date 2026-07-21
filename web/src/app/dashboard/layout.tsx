@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
     Building2,
     Handshake,
+    Heart,
     Home,
     Plus,
     Settings,
@@ -49,6 +50,12 @@ export default async function DashboardLayout({
                             <Home size={16} /> Woningen
                         </Link>
                         <Link
+                            href="/dashboard/zoeker"
+                            className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold hover:bg-white"
+                        >
+                            <Heart size={16} /> Mijn zoektocht
+                        </Link>
+                        <Link
                             href="/dashboard/listings/new"
                             className="inline-flex items-center gap-2 rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark"
                         >
@@ -87,16 +94,16 @@ export default async function DashboardLayout({
                     <Home size={18} /> Woningen
                 </Link>
                 <Link
+                    href="/dashboard/zoeker"
+                    className="grid min-w-20 place-items-center gap-1 p-2 text-xs font-semibold"
+                >
+                    <Heart size={18} /> Zoeken
+                </Link>
+                <Link
                     href="/dashboard/listings/new"
                     className="grid min-w-20 place-items-center gap-1 rounded-xl bg-brand p-2 text-xs font-semibold text-white"
                 >
                     <Plus size={18} /> Nieuw
-                </Link>
-                <Link
-                    href="/dashboard/account"
-                    className="grid min-w-20 place-items-center gap-1 p-2 text-xs font-semibold"
-                >
-                    <Settings size={18} /> Account
                 </Link>
                 <Link
                     href="/dashboard/transacties"

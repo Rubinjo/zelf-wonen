@@ -174,6 +174,14 @@ Property-passport snapshots include listing/property data, source records, media
 
 Development stores transaction documents outside `public/` under `.data/transaction-documents`; downloads require a verified session and room membership. Production must replace local storage with EU-region private object storage, malware scanning, MIME/content verification, encryption, retention policy and immutable versioning/object lock. Platform confirmation records intent and agreed terms, but is not a qualified electronic signature. Connect an eIDAS-capable signing provider and complete Dutch legal review before representing generated agreements as signed purchase or rental contracts.
 
+## Personal seeker dashboard
+
+The verified-user dashboard at `/dashboard/zoeker` combines favorites, saved searches, viewings, bids, transactions and an in-app notification inbox. Marketplace favorites remain usable anonymously in local storage; after sign-in, the client imports and merges them into account-scoped `FavoriteListing` records without discarding newer local choices.
+
+Saved searches store only canonical, validated marketplace query parameters and are unique per user and normalized query. Notification generation is deliberately separate from dashboard reads: the client invokes an authenticated sync endpoint once per browser session, while the dashboard GET remains a predictable read. The sync creates idempotent events for new search matches, favorite price/status changes, viewings, bids, transaction changes and upcoming deadlines. A production scheduler may invoke the same service for timely notifications when users are offline.
+
+Shortlists use random bearer tokens whose SHA-256 hashes are stored in PostgreSQL. Shared pages expose listing summaries but no owner identity. Links expire, can be revoked, and include private favorite notes only after the owner explicitly opts in for that individual share. The comparison feature is intentionally outside this dashboard scope.
+
 ## Security and operations baseline
 
 - Validate all request/response contracts with Zod; use Pydantic against the same OpenAPI contract in Python.

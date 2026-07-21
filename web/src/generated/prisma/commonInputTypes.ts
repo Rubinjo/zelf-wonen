@@ -915,6 +915,23 @@ export type EnumTransactionEventTypeWithAggregatesFilter<$PrismaModel = never> =
   _max?: Prisma.NestedEnumTransactionEventTypeFilter<$PrismaModel>
 }
 
+export type EnumSeekerNotificationTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.SeekerNotificationType | Prisma.EnumSeekerNotificationTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.SeekerNotificationType[] | Prisma.ListEnumSeekerNotificationTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SeekerNotificationType[] | Prisma.ListEnumSeekerNotificationTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSeekerNotificationTypeFilter<$PrismaModel> | $Enums.SeekerNotificationType
+}
+
+export type EnumSeekerNotificationTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SeekerNotificationType | Prisma.EnumSeekerNotificationTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.SeekerNotificationType[] | Prisma.ListEnumSeekerNotificationTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SeekerNotificationType[] | Prisma.ListEnumSeekerNotificationTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSeekerNotificationTypeWithAggregatesFilter<$PrismaModel> | $Enums.SeekerNotificationType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSeekerNotificationTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSeekerNotificationTypeFilter<$PrismaModel>
+}
+
 export type EnumEstimateTierFilter<$PrismaModel = never> = {
   equals?: $Enums.EstimateTier | Prisma.EnumEstimateTierFieldRefInput<$PrismaModel>
   in?: $Enums.EstimateTier[] | Prisma.ListEnumEstimateTierFieldRefInput<$PrismaModel>
@@ -1786,6 +1803,23 @@ export type NestedEnumTransactionEventTypeWithAggregatesFilter<$PrismaModel = ne
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTransactionEventTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTransactionEventTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumSeekerNotificationTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.SeekerNotificationType | Prisma.EnumSeekerNotificationTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.SeekerNotificationType[] | Prisma.ListEnumSeekerNotificationTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SeekerNotificationType[] | Prisma.ListEnumSeekerNotificationTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSeekerNotificationTypeFilter<$PrismaModel> | $Enums.SeekerNotificationType
+}
+
+export type NestedEnumSeekerNotificationTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SeekerNotificationType | Prisma.EnumSeekerNotificationTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.SeekerNotificationType[] | Prisma.ListEnumSeekerNotificationTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SeekerNotificationType[] | Prisma.ListEnumSeekerNotificationTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSeekerNotificationTypeWithAggregatesFilter<$PrismaModel> | $Enums.SeekerNotificationType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSeekerNotificationTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSeekerNotificationTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumEstimateTierFilter<$PrismaModel = never> = {
