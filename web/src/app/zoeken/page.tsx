@@ -130,7 +130,7 @@ export default async function SearchPage({
         ) + Number(result.filters.monumentFilter !== "all");
     return (
         <div className="min-h-screen bg-background">
-            <header className="border-b border-line bg-white">
+            <header className="border-b border-line bg-background/92 backdrop-blur-xl">
                 <div className="mx-auto flex h-18 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:px-8">
                     <Link
                         href="/"
@@ -155,13 +155,13 @@ export default async function SearchPage({
                             <>
                                 <Link
                                     href="/dashboard/zoeker?tab=favorites"
-                                    className="hidden h-10 items-center gap-2 rounded-full px-3 text-sm font-semibold transition hover:bg-background md:inline-flex"
+                                    className="hidden h-10 items-center gap-2 rounded-full px-3 text-sm font-semibold transition hover:bg-white md:inline-flex"
                                 >
                                     <Heart size={16} /> Favorieten
                                 </Link>
                                 <Link
                                     href="/dashboard"
-                                    className="inline-flex size-10 items-center justify-center rounded-full text-sm font-semibold transition hover:bg-background sm:size-auto sm:gap-2 sm:px-3"
+                                    className="inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold transition hover:bg-white sm:w-auto sm:gap-2 sm:px-3"
                                     aria-label="Mijn woningen beheren"
                                     title="Mijn woningen beheren"
                                 >
