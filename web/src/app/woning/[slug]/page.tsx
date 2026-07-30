@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import {
     BedDouble,
+    BusFront,
     Building2,
     Calendar,
     Check,
@@ -12,6 +13,7 @@ import {
     Download,
     DoorOpen,
     FileText,
+    GraduationCap,
     Home,
     Landmark,
     Layers3,
@@ -19,7 +21,10 @@ import {
     MapPin,
     Ruler,
     ShieldCheck,
+    ShoppingBasket,
+    TrainFront,
     UserRoundCheck,
+    UsersRound,
     Zap,
 } from "lucide-react";
 import { BidForm } from "@/components/bidding/bid-form";
@@ -163,6 +168,33 @@ const copy = {
         ownListingText:
             "Je kunt hetzelfde account gebruiken om andere woningen te zoeken en erop te bieden. Beheer bezichtigingen en biedingen voor deze woning via je dashboard.",
         dashboardLink: "Naar dashboard",
+        neighborhood: "Buurtinformatie",
+        neighborhoodIntro:
+            "Openbare gebiedscijfers bij deze woning. Cijfers kunnen door afronding of privacyregels ontbreken.",
+        residents: "Inwoners",
+        ageStructure: "Leeftijdsopbouw",
+        corporationHousing: "In bezit van woningcorporaties",
+        corporationHousingNote:
+            "Aandeel van de woningvoorraad. Dit is niet hetzelfde als het aandeel sociale huurwoningen.",
+        registeredCrime: "Geregistreerde misdrijven",
+        crimeScope: "per 1.000 inwoners, op gemeenteniveau",
+        nearbyFacilities: "Voorzieningen in de buurt",
+        supermarket: "Grote supermarkt",
+        primarySchool: "Basisschool",
+        daycare: "Kinderdagverblijf",
+        generalPractice: "Huisartsenpraktijk",
+        busStop: "Bushalte",
+        tramStop: "Tramhalte",
+        metroStation: "Metrostation",
+        trainStation: "Treinstation",
+        averageRoadDistance: "gemiddelde afstand over de weg in de buurt",
+        straightLineDistance: "hemelsbreed vanaf de woning",
+        withinOneKm: "binnen 1 km",
+        withinThreeKm: "binnen 3 km",
+        sources: "Bronnen en peildata",
+        cbsSource: "CBS Kerncijfers wijken en buurten",
+        crimeSource: "CBS Geregistreerde criminaliteit",
+        osmSource: "OpenStreetMap-bijdragers",
     },
     en: {
         forSale: "For sale",
@@ -226,6 +258,33 @@ const copy = {
         ownListingText:
             "You can use this same account to search and bid elsewhere. Manage viewings and bids for this home from your dashboard.",
         dashboardLink: "Go to dashboard",
+        neighborhood: "Neighborhood information",
+        neighborhoodIntro:
+            "Public area statistics for this property. Values may be unavailable due to rounding or privacy rules.",
+        residents: "Residents",
+        ageStructure: "Age structure",
+        corporationHousing: "Owned by housing corporations",
+        corporationHousingNote:
+            "Share of the housing stock. This is not the same as the share of social-rent homes.",
+        registeredCrime: "Registered crimes",
+        crimeScope: "per 1,000 residents, at municipality level",
+        nearbyFacilities: "Nearby facilities",
+        supermarket: "Large supermarket",
+        primarySchool: "Primary school",
+        daycare: "Daycare",
+        generalPractice: "General practice",
+        busStop: "Bus stop",
+        tramStop: "Tram stop",
+        metroStation: "Metro station",
+        trainStation: "Train station",
+        averageRoadDistance: "average road distance in the neighborhood",
+        straightLineDistance: "straight-line distance from the property",
+        withinOneKm: "within 1 km",
+        withinThreeKm: "within 3 km",
+        sources: "Sources and reference dates",
+        cbsSource: "Statistics Netherlands neighborhood figures",
+        crimeSource: "Statistics Netherlands registered crime",
+        osmSource: "OpenStreetMap contributors",
     },
 };
 
@@ -246,6 +305,7 @@ export default async function PublicListingPage({
         include: {
             property: {
                 include: {
+                    neighborhoodProfile: true,
                     energyLabels: {
                         orderBy: { registeredAt: "desc" },
                         take: 1,
@@ -675,6 +735,18 @@ export default async function PublicListingPage({
                                     />
                                 </div>
                             </section>
+                            {listing.property.neighborhoodProfile ? (
+                                <NeighborhoodDetails
+                                    profile={
+                                        listing.property.neighborhoodProfile
+                                    }
+                                    municipality={
+                                        listing.property.municipality ??
+                                        listing.property.city
+                                    }
+                                    language={language}
+                                />
+                            ) : null}
                             {listing.viewingNotes ? (
                                 <section className="mt-10 rounded-2xl bg-background p-6">
                                     <h2 className="font-semibold">
@@ -993,6 +1065,309 @@ function DetailTags({
             </div>
         </div>
     );
+}
+
+type NumericValue = { toString(): string } | null;
+
+type NeighborhoodProfileView = {
+    neighborhoodName: string;
+    districtName: string | null;
+    statisticsYear: number;
+    population: number | null;
+    age0To14Percent: NumericValue;
+    age15To24Percent: NumericValue;
+    age25To44Percent: NumericValue;
+    age45To64Percent: NumericValue;
+    age65PlusPercent: NumericValue;
+    housingCorporationPercent: NumericValue;
+    registeredCrimesPer1000: NumericValue;
+    crimeStatisticsYear: number | null;
+    supermarketDistanceKm: NumericValue;
+    primarySchoolDistanceKm: NumericValue;
+    daycareDistanceKm: NumericValue;
+    generalPracticeDistanceKm: NumericValue;
+    primarySchoolsWithin3Km: NumericValue;
+    supermarketsWithin1Km: number | null;
+    schoolsWithin1Km: number | null;
+    busStopDistanceMeters: number | null;
+    tramStopDistanceMeters: number | null;
+    metroStationDistanceMeters: number | null;
+    trainStationDistanceMeters: number | null;
+    cbsSourceUrl: string;
+    crimeSourceUrl: string | null;
+    osmSourceUrl: string | null;
+    osmRetrievedAt: Date | null;
+};
+
+function NeighborhoodDetails({
+    profile,
+    municipality,
+    language,
+}: {
+    profile: NeighborhoodProfileView;
+    municipality: string;
+    language: "nl" | "en";
+}) {
+    const t = copy[language];
+    const locale = language === "nl" ? "nl-NL" : "en-NL";
+    const ages = [
+        ["0-14", profile.age0To14Percent],
+        ["15-24", profile.age15To24Percent],
+        ["25-44", profile.age25To44Percent],
+        ["45-64", profile.age45To64Percent],
+        ["65+", profile.age65PlusPercent],
+    ] as const;
+    const facilities = [
+        {
+            icon: ShoppingBasket,
+            label: t.supermarket,
+            distance: formatKilometers(profile.supermarketDistanceKm, locale),
+            detail:
+                profile.supermarketsWithin1Km === null
+                    ? null
+                    : `${profile.supermarketsWithin1Km} ${t.withinOneKm}`,
+            method: t.averageRoadDistance,
+        },
+        {
+            icon: GraduationCap,
+            label: t.primarySchool,
+            distance: formatKilometers(profile.primarySchoolDistanceKm, locale),
+            detail:
+                profile.primarySchoolsWithin3Km === null
+                    ? profile.schoolsWithin1Km === null
+                        ? null
+                        : `${profile.schoolsWithin1Km} ${t.withinOneKm}`
+                    : `${formatNumber(profile.primarySchoolsWithin3Km, locale)} ${t.withinThreeKm}`,
+            method: t.averageRoadDistance,
+        },
+        {
+            icon: UsersRound,
+            label: t.daycare,
+            distance: formatKilometers(profile.daycareDistanceKm, locale),
+            detail: null,
+            method: t.averageRoadDistance,
+        },
+        {
+            icon: Home,
+            label: t.generalPractice,
+            distance: formatKilometers(
+                profile.generalPracticeDistanceKm,
+                locale,
+            ),
+            detail: null,
+            method: t.averageRoadDistance,
+        },
+        {
+            icon: BusFront,
+            label: t.busStop,
+            distance: formatMeters(profile.busStopDistanceMeters, locale),
+            detail: null,
+            method: t.straightLineDistance,
+        },
+        {
+            icon: TrainFront,
+            label: t.tramStop,
+            distance: formatMeters(profile.tramStopDistanceMeters, locale),
+            detail: null,
+            method: t.straightLineDistance,
+        },
+        {
+            icon: TrainFront,
+            label: t.metroStation,
+            distance: formatMeters(profile.metroStationDistanceMeters, locale),
+            detail: null,
+            method: t.straightLineDistance,
+        },
+        {
+            icon: TrainFront,
+            label: t.trainStation,
+            distance: formatMeters(profile.trainStationDistanceMeters, locale),
+            detail: null,
+            method: t.straightLineDistance,
+        },
+    ].filter((facility) => facility.distance !== null);
+
+    return (
+        <section className="mt-10 border-y border-line py-8">
+            <p className="text-sm font-semibold uppercase text-brand">
+                {profile.neighborhoodName}
+                {profile.districtName ? ` · ${profile.districtName}` : ""}
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold">{t.neighborhood}</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
+                {t.neighborhoodIntro}
+            </p>
+            <div className="mt-6 grid gap-6 sm:grid-cols-2">
+                <div>
+                    <p className="text-xs font-semibold text-muted">
+                        {t.residents} · {profile.statisticsYear}
+                    </p>
+                    <p className="mt-2 text-3xl font-semibold">
+                        {profile.population === null
+                            ? "—"
+                            : new Intl.NumberFormat(locale).format(
+                                  profile.population,
+                              )}
+                    </p>
+                </div>
+                <div>
+                    <p className="text-xs font-semibold text-muted">
+                        {t.corporationHousing} · {profile.statisticsYear}
+                    </p>
+                    <p className="mt-2 text-3xl font-semibold">
+                        {formatPercent(
+                            profile.housingCorporationPercent,
+                            locale,
+                        ) ?? "—"}
+                    </p>
+                    <p className="mt-2 text-xs leading-5 text-muted">
+                        {t.corporationHousingNote}
+                    </p>
+                </div>
+            </div>
+            {ages.some(([, value]) => value !== null) ? (
+                <div className="mt-8">
+                    <h3 className="font-semibold">{t.ageStructure}</h3>
+                    <div className="mt-4 grid gap-4 sm:grid-cols-5">
+                        {ages.map(([label, value]) => {
+                            const percentage =
+                                value === null ? null : Number(value);
+                            return (
+                                <div key={label}>
+                                    <div className="h-2 overflow-hidden rounded-full bg-background">
+                                        <div
+                                            className="h-full rounded-full bg-brand"
+                                            style={{
+                                                width: `${Math.min(100, percentage ?? 0)}%`,
+                                            }}
+                                        />
+                                    </div>
+                                    <p className="mt-2 text-sm font-semibold">
+                                        {label}
+                                    </p>
+                                    <p className="mt-1 text-xs text-muted">
+                                        {formatPercent(value, locale) ?? "—"}
+                                    </p>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            ) : null}
+            {profile.registeredCrimesPer1000 !== null ? (
+                <div className="mt-8 bg-background p-5">
+                    <div className="flex items-start gap-3">
+                        <ShieldCheck size={20} className="mt-0.5 text-brand" />
+                        <div>
+                            <h3 className="font-semibold">
+                                {t.registeredCrime}
+                            </h3>
+                            <p className="mt-2 text-lg font-semibold">
+                                {formatNumber(
+                                    profile.registeredCrimesPer1000,
+                                    locale,
+                                )}{" "}
+                                {t.crimeScope}
+                            </p>
+                            <p className="mt-1 text-xs text-muted">
+                                {municipality}
+                                {profile.crimeStatisticsYear
+                                    ? ` · ${profile.crimeStatisticsYear}`
+                                    : ""}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            ) : null}
+            {facilities.length > 0 ? (
+                <div className="mt-8">
+                    <h3 className="font-semibold">{t.nearbyFacilities}</h3>
+                    <div className="mt-4 grid gap-px overflow-hidden border border-line bg-line sm:grid-cols-2">
+                        {facilities.map((facility) => (
+                            <div
+                                key={facility.label}
+                                className="flex items-start gap-3 bg-white p-4"
+                            >
+                                <facility.icon
+                                    size={18}
+                                    className="mt-0.5 shrink-0 text-brand"
+                                />
+                                <div>
+                                    <p className="text-sm font-semibold">
+                                        {facility.label}
+                                    </p>
+                                    <p className="mt-1 text-sm">
+                                        {facility.distance}
+                                    </p>
+                                    <p className="mt-1 text-xs text-muted">
+                                        {[facility.detail, facility.method]
+                                            .filter(Boolean)
+                                            .join(" · ")}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            ) : null}
+            <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted">
+                <span className="font-semibold">{t.sources}:</span>
+                <a
+                    href={profile.cbsSourceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline decoration-line underline-offset-4"
+                >
+                    {t.cbsSource} ({profile.statisticsYear})
+                </a>
+                {profile.crimeSourceUrl && profile.crimeStatisticsYear ? (
+                    <a
+                        href={profile.crimeSourceUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline decoration-line underline-offset-4"
+                    >
+                        {t.crimeSource} ({profile.crimeStatisticsYear})
+                    </a>
+                ) : null}
+                {profile.osmSourceUrl && profile.osmRetrievedAt ? (
+                    <a
+                        href={profile.osmSourceUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline decoration-line underline-offset-4"
+                    >
+                        {t.osmSource} (
+                        {formatDate(profile.osmRetrievedAt, locale)})
+                    </a>
+                ) : null}
+            </div>
+        </section>
+    );
+}
+
+function formatNumber(value: NumericValue, locale: string) {
+    return value === null
+        ? null
+        : new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(
+              Number(value),
+          );
+}
+
+function formatPercent(value: NumericValue, locale: string) {
+    const formatted = formatNumber(value, locale);
+    return formatted === null ? null : `${formatted}%`;
+}
+
+function formatKilometers(value: NumericValue, locale: string) {
+    const formatted = formatNumber(value, locale);
+    return formatted === null ? null : `${formatted} km`;
+}
+
+function formatMeters(value: number | null, locale: string) {
+    return value === null
+        ? null
+        : `${new Intl.NumberFormat(locale).format(value)} m`;
 }
 
 function BidWindowStatus({

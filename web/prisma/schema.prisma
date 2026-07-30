@@ -393,12 +393,63 @@ model Property {
   updatedAt              DateTime          @updatedAt
   owner                  User              @relation(fields: [ownerId], references: [id], onDelete: Restrict)
   energyLabels           EnergyLabel[]
+  neighborhoodProfile    NeighborhoodProfile?
   listings               Listing[]
 
   @@index([ownerId, bagAddressId])
   @@index([ownerId])
   @@index([postcode, houseNumber, houseNumberAddition])
   @@map("properties")
+}
+
+model NeighborhoodProfile {
+  id                           String   @id @default(uuid()) @db.Uuid
+  propertyId                   String   @unique @db.Uuid
+  neighborhoodCode             String   @db.VarChar(10)
+  neighborhoodName             String
+  districtCode                 String?  @db.VarChar(8)
+  districtName                 String?
+  municipalityCode             String   @db.VarChar(6)
+  statisticsYear               Int
+  population                   Int?
+  age0To14Percent              Decimal? @db.Decimal(5, 2)
+  age15To24Percent             Decimal? @db.Decimal(5, 2)
+  age25To44Percent             Decimal? @db.Decimal(5, 2)
+  age45To64Percent             Decimal? @db.Decimal(5, 2)
+  age65PlusPercent             Decimal? @db.Decimal(5, 2)
+  housingCorporationPercent    Decimal? @db.Decimal(5, 2)
+  registeredCrimesPer1000      Decimal? @db.Decimal(8, 2)
+  crimeStatisticsYear          Int?
+  supermarketDistanceKm        Decimal? @db.Decimal(6, 2)
+  primarySchoolDistanceKm      Decimal? @db.Decimal(6, 2)
+  daycareDistanceKm            Decimal? @db.Decimal(6, 2)
+  generalPracticeDistanceKm    Decimal? @db.Decimal(6, 2)
+  primarySchoolsWithin3Km      Decimal? @db.Decimal(6, 1)
+  supermarketsWithin1Km        Int?
+  schoolsWithin1Km             Int?
+  busStopDistanceMeters        Int?
+  tramStopDistanceMeters       Int?
+  metroStationDistanceMeters   Int?
+  trainStationDistanceMeters   Int?
+  cbsDataset                   String
+  cbsSourceUrl                 String
+  cbsRetrievedAt               DateTime
+  crimeDataset                 String?
+  crimeSourceUrl               String?
+  osmSourceUrl                 String?
+  osmRetrievedAt               DateTime?
+  createdAt                    DateTime @default(now())
+  updatedAt                    DateTime @updatedAt
+  property                     Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([neighborhoodCode])
+  @@index([housingCorporationPercent])
+  @@index([registeredCrimesPer1000])
+  @@index([supermarketDistanceKm])
+  @@index([primarySchoolDistanceKm])
+  @@index([busStopDistanceMeters])
+  @@index([trainStationDistanceMeters])
+  @@map("neighborhood_profiles")
 }
 
 model EnergyLabel {

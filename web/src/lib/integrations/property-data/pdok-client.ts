@@ -6,6 +6,11 @@ type PdokDocument = {
     type?: string;
     nummeraanduiding_id?: string;
     adresseerbaarobject_id?: string;
+    buurtcode?: string;
+    buurtnaam?: string;
+    wijkcode?: string;
+    wijknaam?: string;
+    gemeentecode?: string;
     postcode?: string;
     huisnummer?: number;
     huisnummertoevoeging?: string;
@@ -65,6 +70,13 @@ export class PdokClient {
         return {
             bagAddressId: document.nummeraanduiding_id ?? null,
             bagObjectId: document.adresseerbaarobject_id ?? null,
+            neighborhoodCode: document.buurtcode ?? null,
+            neighborhoodName: document.buurtnaam ?? null,
+            districtCode: document.wijkcode ?? null,
+            districtName: document.wijknaam ?? null,
+            municipalityCode: document.gemeentecode
+                ? `GM${document.gemeentecode}`
+                : null,
             cadastralParcelIds: document.gekoppeld_perceel ?? [],
             address: {
                 postcode:

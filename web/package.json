@@ -26,6 +26,7 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
+    "neighborhood:backfill": "tsx scripts/backfill-neighborhoods.ts",
     "validate": "npm run db:generate && npm run lint && npm run typecheck && npm run build"
   },
   "dependencies": {
@@ -60,6 +61,7 @@
     "eslint-config-next": "16.2.10",
     "prisma": "^7.8.0",
     "tailwindcss": "^4",
+    "tsx": "^4.23.1",
     "typescript": "^5"
   }
 }

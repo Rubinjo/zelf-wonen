@@ -59,6 +59,12 @@ export type MarketplaceFilters = {
     energyLabels: string[];
     amenities: string[];
     parkingOptions: string[];
+    housingCorporationPercentMin: number | null;
+    registeredCrimesPer1000Max: number | null;
+    supermarketDistanceKmMax: number | null;
+    primarySchoolDistanceKmMax: number | null;
+    busStopDistanceMetersMax: number | null;
+    trainStationDistanceMetersMax: number | null;
     bounds: MarketplaceBounds | null;
     sort: "newest" | "price_asc" | "price_desc" | "area_desc";
     page: number;
@@ -183,6 +189,24 @@ export function parseMarketplaceFilters(
         energyLabels: allowedValues(searchParams.energyLabel, energyLabels),
         amenities: allowedValues(searchParams.amenity, amenities),
         parkingOptions: allowedValues(searchParams.parking, parkingOptions),
+        housingCorporationPercentMin: positiveNumber(
+            first(searchParams.housingCorporationPercentMin),
+        ),
+        registeredCrimesPer1000Max: positiveNumber(
+            first(searchParams.registeredCrimesPer1000Max),
+        ),
+        supermarketDistanceKmMax: positiveNumber(
+            first(searchParams.supermarketDistanceKmMax),
+        ),
+        primarySchoolDistanceKmMax: positiveNumber(
+            first(searchParams.primarySchoolDistanceKmMax),
+        ),
+        busStopDistanceMetersMax: positiveNumber(
+            first(searchParams.busStopDistanceMetersMax),
+        ),
+        trainStationDistanceMetersMax: positiveNumber(
+            first(searchParams.trainStationDistanceMetersMax),
+        ),
         bounds,
         sort: ["price_asc", "price_desc", "area_desc"].includes(sort ?? "")
             ? (sort as MarketplaceFilters["sort"])
@@ -269,6 +293,40 @@ export async function searchMarketplaceListings(
                 },
             },
         };
+    }
+    const neighborhoodFilter: Prisma.NeighborhoodProfileWhereInput = {};
+    if (filters.housingCorporationPercentMin !== null) {
+        neighborhoodFilter.housingCorporationPercent = {
+            gte: filters.housingCorporationPercentMin,
+        };
+    }
+    if (filters.registeredCrimesPer1000Max !== null) {
+        neighborhoodFilter.registeredCrimesPer1000 = {
+            lte: filters.registeredCrimesPer1000Max,
+        };
+    }
+    if (filters.supermarketDistanceKmMax !== null) {
+        neighborhoodFilter.supermarketDistanceKm = {
+            lte: filters.supermarketDistanceKmMax,
+        };
+    }
+    if (filters.primarySchoolDistanceKmMax !== null) {
+        neighborhoodFilter.primarySchoolDistanceKm = {
+            lte: filters.primarySchoolDistanceKmMax,
+        };
+    }
+    if (filters.busStopDistanceMetersMax !== null) {
+        neighborhoodFilter.busStopDistanceMeters = {
+            lte: filters.busStopDistanceMetersMax,
+        };
+    }
+    if (filters.trainStationDistanceMetersMax !== null) {
+        neighborhoodFilter.trainStationDistanceMeters = {
+            lte: filters.trainStationDistanceMetersMax,
+        };
+    }
+    if (Object.keys(neighborhoodFilter).length > 0) {
+        propertyFilter.neighborhoodProfile = { is: neighborhoodFilter };
     }
 
     const where: Prisma.ListingWhereInput = {

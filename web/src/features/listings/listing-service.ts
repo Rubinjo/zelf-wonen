@@ -1,13 +1,17 @@
 import { randomUUID } from "node:crypto";
 import { Prisma } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
+import { NeighborhoodDataClient } from "@/lib/integrations/neighborhood-data-client";
 import { EnergielabelNlClient } from "@/lib/integrations/property-data/energielabel-nl-client";
+import { PdokClient } from "@/lib/integrations/property-data/pdok-client";
 import type {
     CreateListingInput,
     UpdateListingInput,
 } from "@/lib/schemas/listing";
 
 const energielabelNl = new EnergielabelNlClient();
+const pdok = new PdokClient();
+const neighborhoodData = new NeighborhoodDataClient();
 const storedEnergyLabelClasses = {
     "A++++": "A_PLUS_PLUS_PLUS_PLUS",
     "A+++": "A_PLUS_PLUS_PLUS",
@@ -38,6 +42,7 @@ export class ListingMutationError extends Error {
 const listingInclude = {
     property: {
         include: {
+            neighborhoodProfile: true,
             energyLabels: {
                 orderBy: { registeredAt: "desc" as const },
                 take: 1,
@@ -97,19 +102,52 @@ export async function createOwnerListing(
     ownerId: string,
     input: CreateListingInput,
 ) {
-    const liveEnergy = await energielabelNl
-        .lookupAddress({
-            postcode: input.postcode,
-            houseNumber: input.houseNumber,
-            addition: input.houseNumberAddition ?? undefined,
-        })
-        .catch((error) => {
+    const address = {
+        postcode: input.postcode,
+        houseNumber: input.houseNumber,
+        addition: input.houseNumberAddition ?? undefined,
+    };
+    const [liveEnergy, pdokAddress] = await Promise.all([
+        energielabelNl.lookupAddress(address).catch((error) => {
             console.error(
                 "Energielabel.nl lookup during creation failed",
                 error,
             );
             return null;
-        });
+        }),
+        pdok.lookupAddress(address).catch((error) => {
+            console.error("PDOK lookup during creation failed", error);
+            return null;
+        }),
+    ]);
+    const neighborhood =
+        pdokAddress?.neighborhoodCode &&
+        pdokAddress.neighborhoodName &&
+        pdokAddress.municipalityCode
+            ? await neighborhoodData
+                  .lookup({
+                      neighborhoodCode: pdokAddress.neighborhoodCode,
+                      neighborhoodName: pdokAddress.neighborhoodName,
+                      districtCode: pdokAddress.districtCode,
+                      districtName: pdokAddress.districtName,
+                      municipalityCode: pdokAddress.municipalityCode,
+                      latitude:
+                          input.latitude ??
+                          pdokAddress.coordinates?.latitude ??
+                          null,
+                      longitude:
+                          input.longitude ??
+                          pdokAddress.coordinates?.longitude ??
+                          null,
+                  })
+                  .catch((error) => {
+                      console.error(
+                          "Neighborhood enrichment during creation failed",
+                          error,
+                      );
+                      return null;
+                  })
+            : null;
     const listingId = randomUUID();
     const listing = await db.$transaction(async (tx) => {
         const sourceEnergy = await tx.energyLabel.findFirst({
@@ -186,6 +224,9 @@ export async function createOwnerListing(
                     ? {
                           create: energyData,
                       }
+                    : undefined,
+                neighborhoodProfile: neighborhood
+                    ? { create: neighborhood }
                     : undefined,
             },
         });
