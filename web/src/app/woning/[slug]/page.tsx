@@ -172,12 +172,35 @@ const copy = {
         neighborhoodIntro:
             "Openbare gebiedscijfers bij deze woning. Cijfers kunnen door afronding of privacyregels ontbreken.",
         residents: "Inwoners",
+        populationDensity: "Bevolkingsdichtheid",
+        residentsPerKm2: "inwoners per km²",
+        densityScore: "Dichtheidsscore",
+        densityLevels: [
+            "Zeer rustig bevolkt",
+            "Rustig bevolkt",
+            "Rond het Nederlands gemiddelde",
+            "Dichtbevolkt",
+            "Zeer dichtbevolkt",
+        ],
+        nationalAverage: "Nederlands gemiddelde",
+        timesNationalAverage: "keer het Nederlands gemiddelde",
         ageStructure: "Leeftijdsopbouw",
+        youngerPopulation: "Jongere bevolking dan Nederland",
+        similarAgePopulation: "Leeftijdsopbouw rond het Nederlands gemiddelde",
+        olderPopulation: "Oudere bevolking dan Nederland",
+        ageComparisonNote:
+            "Vergelijking op basis van het aandeel inwoners jonger dan 45 jaar. De markering NL toont het Nederlands gemiddelde per leeftijdsgroep.",
         corporationHousing: "In bezit van woningcorporaties",
         corporationHousingNote:
-            "Aandeel van de woningvoorraad. Dit is niet hetzelfde als het aandeel sociale huurwoningen.",
+            "Dit is het aandeel woningen in bezit van woningcorporaties. Een hoog aandeel kan wijzen op relatief veel huurwoningen en sociale huur, maar is niet gelijk aan het exacte aandeel sociale huurwoningen.",
         registeredCrime: "Geregistreerde misdrijven",
         crimeScope: "per 1.000 inwoners, op gemeenteniveau",
+        lowerThanNetherlands: "lager dan Nederland",
+        higherThanNetherlands: "hoger dan Nederland",
+        aroundNetherlands: "rond het Nederlands gemiddelde",
+        percentagePoints: "procentpunt",
+        comparisonMethod:
+            "Groen is gunstiger, rood vraagt aandacht en blauw is een neutrale vergelijking. Dichtheid en leeftijd zijn indicaties, geen kwaliteitsoordeel.",
         nearbyFacilities: "Voorzieningen in de buurt",
         supermarket: "Grote supermarkt",
         primarySchool: "Basisschool",
@@ -262,12 +285,35 @@ const copy = {
         neighborhoodIntro:
             "Public area statistics for this property. Values may be unavailable due to rounding or privacy rules.",
         residents: "Residents",
+        populationDensity: "Population density",
+        residentsPerKm2: "residents per km²",
+        densityScore: "Density score",
+        densityLevels: [
+            "Very sparsely populated",
+            "Sparsely populated",
+            "Around the Dutch average",
+            "Densely populated",
+            "Very densely populated",
+        ],
+        nationalAverage: "Dutch average",
+        timesNationalAverage: "times the Dutch average",
         ageStructure: "Age structure",
+        youngerPopulation: "Younger population than the Netherlands",
+        similarAgePopulation: "Age structure around the Dutch average",
+        olderPopulation: "Older population than the Netherlands",
+        ageComparisonNote:
+            "Comparison based on the share of residents under 45. The NL marker shows the Dutch average for each age group.",
         corporationHousing: "Owned by housing corporations",
         corporationHousingNote:
-            "Share of the housing stock. This is not the same as the share of social-rent homes.",
+            "This is the share of homes owned by housing corporations. A high share may indicate relatively many rental and social-rent homes, but it is not the exact social-rent share.",
         registeredCrime: "Registered crimes",
         crimeScope: "per 1,000 residents, at municipality level",
+        lowerThanNetherlands: "lower than the Netherlands",
+        higherThanNetherlands: "higher than the Netherlands",
+        aroundNetherlands: "around the Dutch average",
+        percentagePoints: "percentage points",
+        comparisonMethod:
+            "Green is more favorable, red calls for attention, and blue is a neutral comparison. Density and age are indicators, not quality judgments.",
         nearbyFacilities: "Nearby facilities",
         supermarket: "Large supermarket",
         primarySchool: "Primary school",
@@ -1074,13 +1120,22 @@ type NeighborhoodProfileView = {
     districtName: string | null;
     statisticsYear: number;
     population: number | null;
+    populationDensityPerKm2: number | null;
+    nationalPopulationDensityPerKm2: number | null;
     age0To14Percent: NumericValue;
     age15To24Percent: NumericValue;
     age25To44Percent: NumericValue;
     age45To64Percent: NumericValue;
     age65PlusPercent: NumericValue;
+    nationalAge0To14Percent: NumericValue;
+    nationalAge15To24Percent: NumericValue;
+    nationalAge25To44Percent: NumericValue;
+    nationalAge45To64Percent: NumericValue;
+    nationalAge65PlusPercent: NumericValue;
     housingCorporationPercent: NumericValue;
+    nationalHousingCorporationPercent: NumericValue;
     registeredCrimesPer1000: NumericValue;
+    nationalRegisteredCrimesPer1000: NumericValue;
     crimeStatisticsYear: number | null;
     supermarketDistanceKm: NumericValue;
     primarySchoolDistanceKm: NumericValue;
@@ -1111,12 +1166,33 @@ function NeighborhoodDetails({
     const t = copy[language];
     const locale = language === "nl" ? "nl-NL" : "en-NL";
     const ages = [
-        ["0-14", profile.age0To14Percent],
-        ["15-24", profile.age15To24Percent],
-        ["25-44", profile.age25To44Percent],
-        ["45-64", profile.age45To64Percent],
-        ["65+", profile.age65PlusPercent],
+        ["0-14", profile.age0To14Percent, profile.nationalAge0To14Percent],
+        ["15-24", profile.age15To24Percent, profile.nationalAge15To24Percent],
+        ["25-44", profile.age25To44Percent, profile.nationalAge25To44Percent],
+        ["45-64", profile.age45To64Percent, profile.nationalAge45To64Percent],
+        ["65+", profile.age65PlusPercent, profile.nationalAge65PlusPercent],
     ] as const;
+    const densityComparison = getDensityComparison(
+        profile.populationDensityPerKm2,
+        profile.nationalPopulationDensityPerKm2,
+        t,
+        locale,
+    );
+    const housingComparison = getDifferenceComparison(
+        profile.housingCorporationPercent,
+        profile.nationalHousingCorporationPercent,
+        t,
+        locale,
+        "percentagePoints",
+    );
+    const crimeComparison = getDifferenceComparison(
+        profile.registeredCrimesPer1000,
+        profile.nationalRegisteredCrimesPer1000,
+        t,
+        locale,
+        "percent",
+    );
+    const ageComparison = getAgeComparison(profile, t);
     const facilities = [
         {
             icon: ShoppingBasket,
@@ -1197,7 +1273,7 @@ function NeighborhoodDetails({
             <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
                 {t.neighborhoodIntro}
             </p>
-            <div className="mt-6 grid gap-6 sm:grid-cols-2">
+            <div className="mt-6 grid gap-6 sm:grid-cols-3">
                 <div>
                     <p className="text-xs font-semibold text-muted">
                         {t.residents} · {profile.statisticsYear}
@@ -1212,6 +1288,24 @@ function NeighborhoodDetails({
                 </div>
                 <div>
                     <p className="text-xs font-semibold text-muted">
+                        {t.populationDensity} · {profile.statisticsYear}
+                    </p>
+                    <p className="mt-2 text-3xl font-semibold">
+                        {profile.populationDensityPerKm2 === null
+                            ? "—"
+                            : new Intl.NumberFormat(locale).format(
+                                  profile.populationDensityPerKm2,
+                              )}
+                    </p>
+                    <p className="mt-1 text-xs text-muted">
+                        {t.residentsPerKm2}
+                    </p>
+                    {densityComparison ? (
+                        <ComparisonBadge comparison={densityComparison} />
+                    ) : null}
+                </div>
+                <div>
+                    <p className="text-xs font-semibold text-muted">
                         {t.corporationHousing} · {profile.statisticsYear}
                     </p>
                     <p className="mt-2 text-3xl font-semibold">
@@ -1223,24 +1317,44 @@ function NeighborhoodDetails({
                     <p className="mt-2 text-xs leading-5 text-muted">
                         {t.corporationHousingNote}
                     </p>
+                    {housingComparison ? (
+                        <ComparisonBadge comparison={housingComparison} />
+                    ) : null}
                 </div>
             </div>
             {ages.some(([, value]) => value !== null) ? (
                 <div className="mt-8">
-                    <h3 className="font-semibold">{t.ageStructure}</h3>
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                        <h3 className="font-semibold">{t.ageStructure}</h3>
+                        {ageComparison ? (
+                            <ComparisonBadge comparison={ageComparison} />
+                        ) : null}
+                    </div>
                     <div className="mt-4 grid gap-4 sm:grid-cols-5">
-                        {ages.map(([label, value]) => {
+                        {ages.map(([label, value, nationalValue]) => {
                             const percentage =
                                 value === null ? null : Number(value);
+                            const nationalPercentage =
+                                nationalValue === null
+                                    ? null
+                                    : Number(nationalValue);
                             return (
                                 <div key={label}>
-                                    <div className="h-2 overflow-hidden rounded-full bg-background">
+                                    <div className="relative h-2 bg-background">
                                         <div
-                                            className="h-full rounded-full bg-brand"
+                                            className="h-full bg-brand"
                                             style={{
                                                 width: `${Math.min(100, percentage ?? 0)}%`,
                                             }}
                                         />
+                                        {nationalPercentage !== null ? (
+                                            <span
+                                                className="absolute -top-1 h-4 w-0.5 bg-stone-800"
+                                                style={{
+                                                    left: `${Math.min(100, nationalPercentage)}%`,
+                                                }}
+                                            />
+                                        ) : null}
                                     </div>
                                     <p className="mt-2 text-sm font-semibold">
                                         {label}
@@ -1248,10 +1362,18 @@ function NeighborhoodDetails({
                                     <p className="mt-1 text-xs text-muted">
                                         {formatPercent(value, locale) ?? "—"}
                                     </p>
+                                    {nationalValue !== null ? (
+                                        <p className="mt-1 text-[10px] text-muted">
+                                            NL {formatPercent(nationalValue, locale)}
+                                        </p>
+                                    ) : null}
                                 </div>
                             );
                         })}
                     </div>
+                    <p className="mt-4 text-xs leading-5 text-muted">
+                        {t.ageComparisonNote}
+                    </p>
                 </div>
             ) : null}
             {profile.registeredCrimesPer1000 !== null ? (
@@ -1275,6 +1397,9 @@ function NeighborhoodDetails({
                                     ? ` · ${profile.crimeStatisticsYear}`
                                     : ""}
                             </p>
+                            {crimeComparison ? (
+                                <ComparisonBadge comparison={crimeComparison} />
+                            ) : null}
                         </div>
                     </div>
                 </div>
@@ -1342,8 +1467,121 @@ function NeighborhoodDetails({
                     </a>
                 ) : null}
             </div>
+            <p className="mt-4 text-xs leading-5 text-muted">
+                {t.comparisonMethod}
+            </p>
         </section>
     );
+}
+
+type Comparison = {
+    label: string;
+    detail: string;
+    tone: "good" | "neutral" | "attention" | "bad";
+};
+
+function ComparisonBadge({ comparison }: { comparison: Comparison }) {
+    const toneClasses = {
+        good: "bg-emerald-50 text-emerald-800",
+        neutral: "bg-sky-50 text-sky-800",
+        attention: "bg-amber-50 text-amber-900",
+        bad: "bg-red-50 text-red-800",
+    };
+    return (
+        <div
+            className={`mt-3 inline-flex flex-wrap gap-x-2 px-3 py-2 text-xs ${toneClasses[comparison.tone]}`}
+        >
+            <span className="font-semibold">{comparison.label}</span>
+            {comparison.detail ? <span>{comparison.detail}</span> : null}
+        </div>
+    );
+}
+
+function getDensityComparison(
+    value: number | null,
+    nationalValue: number | null,
+    t: (typeof copy)["nl"],
+    locale: string,
+): Comparison | null {
+    if (value === null || !nationalValue) return null;
+    const ratio = value / nationalValue;
+    const score = ratio < 0.5 ? 1 : ratio < 0.85 ? 2 : ratio <= 1.15 ? 3 : ratio <= 2 ? 4 : 5;
+    const tones = ["good", "good", "neutral", "attention", "bad"] as const;
+    return {
+        label: `${t.densityScore} ${score}/5 · ${t.densityLevels[score - 1]}`,
+        detail: `${new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(ratio)} ${t.timesNationalAverage} (${new Intl.NumberFormat(locale).format(nationalValue)})`,
+        tone: tones[score - 1],
+    };
+}
+
+function getDifferenceComparison(
+    value: NumericValue,
+    nationalValue: NumericValue,
+    t: (typeof copy)["nl"],
+    locale: string,
+    mode: "percentagePoints" | "percent",
+): Comparison | null {
+    if (value === null || nationalValue === null || Number(nationalValue) === 0) {
+        return null;
+    }
+    const local = Number(value);
+    const national = Number(nationalValue);
+    const difference =
+        mode === "percentagePoints"
+            ? local - national
+            : ((local - national) / national) * 100;
+    const absoluteDifference = Math.abs(difference);
+    const isSimilar = absoluteDifference < (mode === "percentagePoints" ? 5 : 15);
+    const label = isSimilar
+        ? t.aroundNetherlands
+        : difference < 0
+          ? t.lowerThanNetherlands
+          : t.higherThanNetherlands;
+    const nationalFormatted =
+        mode === "percentagePoints"
+            ? formatPercent(nationalValue, locale)
+            : formatNumber(nationalValue, locale);
+    return {
+        label,
+        detail: isSimilar
+            ? `${t.nationalAverage}: ${nationalFormatted}`
+            : `${new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(absoluteDifference)}${mode === "percent" ? "%" : ` ${t.percentagePoints}`} · ${t.nationalAverage}: ${nationalFormatted}`,
+        tone: isSimilar ? "neutral" : difference < 0 ? "good" : "bad",
+    };
+}
+
+function getAgeComparison(
+    profile: NeighborhoodProfileView,
+    t: (typeof copy)["nl"],
+): Comparison | null {
+    const localValues = [
+        profile.age0To14Percent,
+        profile.age15To24Percent,
+        profile.age25To44Percent,
+    ];
+    const nationalValues = [
+        profile.nationalAge0To14Percent,
+        profile.nationalAge15To24Percent,
+        profile.nationalAge25To44Percent,
+    ];
+    if ([...localValues, ...nationalValues].some((value) => value === null)) {
+        return null;
+    }
+    const localUnder45 = localValues.reduce<number>(
+        (total, value) => total + Number(value),
+        0,
+    );
+    const nationalUnder45 = nationalValues.reduce<number>(
+        (total, value) => total + Number(value),
+        0,
+    );
+    const difference = localUnder45 - nationalUnder45;
+    if (Math.abs(difference) < 5) {
+        return { label: t.similarAgePopulation, detail: "", tone: "good" };
+    }
+    return difference > 0
+        ? { label: t.youngerPopulation, detail: "", tone: "neutral" }
+        : { label: t.olderPopulation, detail: "", tone: "attention" };
 }
 
 function formatNumber(value: NumericValue, locale: string) {

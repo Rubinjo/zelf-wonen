@@ -1,6 +1,10 @@
-const CBS_NEIGHBORHOOD_DATASET = "85984NED";
+const CBS_NEIGHBORHOOD_FALLBACK = {
+    identifier: "85984NED",
+    year: 2024,
+};
 const CBS_CRIME_DATASET = "83648NED";
 const CBS_ODATA_URL = "https://opendata.cbs.nl/ODataApi/OData";
+const CBS_CATALOG_URL = "https://opendata.cbs.nl/ODataCatalog/Tables";
 const OVERPASS_URLS = [
     "https://overpass-api.de/api/interpreter",
     "https://overpass.kumi.systems/api/interpreter",
@@ -15,6 +19,7 @@ type CbsNeighborhoodRow = {
     k_25Tot45Jaar_10?: number | null;
     k_45Tot65Jaar_11?: number | null;
     k_65JaarOfOuder_12?: number | null;
+    Bevolkingsdichtheid_34?: number | null;
     InBezitWoningcorporatie_49?: number | null;
     AfstandTotHuisartsenpraktijk_110?: number | null;
     AfstandTotGroteSupermarkt_111?: number | null;
@@ -24,10 +29,22 @@ type CbsNeighborhoodRow = {
 };
 
 type CbsCrimeRow = {
+    RegioS?: string;
+    Perioden?: string;
     GeregistreerdeMisdrijvenPer1000Inw_3?: number | null;
 };
 
-type CbsPeriod = { Key?: string; Title?: string };
+type CbsCatalogTable = {
+    Identifier?: string;
+    Period?: string;
+};
+
+type NeighborhoodDataset = {
+    identifier: string;
+    year: number;
+};
+
+let neighborhoodDatasetsCache: NeighborhoodDataset[] | null = null;
 
 type OverpassElement = {
     id: number;
@@ -69,13 +86,22 @@ export type NeighborhoodData = {
     municipalityCode: string;
     statisticsYear: number;
     population: number | null;
+    populationDensityPerKm2: number | null;
+    nationalPopulationDensityPerKm2: number | null;
     age0To14Percent: number | null;
     age15To24Percent: number | null;
     age25To44Percent: number | null;
     age45To64Percent: number | null;
     age65PlusPercent: number | null;
+    nationalAge0To14Percent: number | null;
+    nationalAge15To24Percent: number | null;
+    nationalAge25To44Percent: number | null;
+    nationalAge45To64Percent: number | null;
+    nationalAge65PlusPercent: number | null;
     housingCorporationPercent: number | null;
+    nationalHousingCorporationPercent: number | null;
     registeredCrimesPer1000: number | null;
+    nationalRegisteredCrimesPer1000: number | null;
     crimeStatisticsYear: number | null;
     supermarketDistanceKm: number | null;
     primarySchoolDistanceKm: number | null;
@@ -114,6 +140,72 @@ async function fetchCbs<T>(
         throw new Error(`CBS lookup failed with status ${response.status}`);
     }
     return (await response.json()) as CbsResponse<T>;
+}
+
+async function latestNeighborhoodDatasets(): Promise<NeighborhoodDataset[]> {
+    if (neighborhoodDatasetsCache) return neighborhoodDatasetsCache;
+    const url = new URL(CBS_CATALOG_URL);
+    url.searchParams.set(
+        "$filter",
+        "substringof('Kerncijfers wijken en buurten',Title) and OutputStatus eq 'Regulier' and Language eq 'nl'",
+    );
+    url.searchParams.set("$select", "Identifier,Period");
+    url.searchParams.set("$orderby", "Period desc");
+    url.searchParams.set("$top", "5");
+    url.searchParams.set("$format", "json");
+    const response = await fetch(url, {
+        headers: { accept: "application/json" },
+        signal: AbortSignal.timeout(6_000),
+        next: { revalidate: 86_400 },
+    });
+    if (!response.ok) {
+        throw new Error(
+            `CBS catalog lookup failed with status ${response.status}`,
+        );
+    }
+    const payload = (await response.json()) as CbsResponse<CbsCatalogTable>;
+    const datasets = (payload.value ?? []).flatMap((table) => {
+        const year = Number(table.Period);
+        return table.Identifier && /^\d{4}$/.test(table.Period ?? "")
+            ? [{ identifier: table.Identifier, year }]
+            : [];
+    });
+    neighborhoodDatasetsCache =
+        datasets.length > 0 ? datasets : [CBS_NEIGHBORHOOD_FALLBACK];
+    return neighborhoodDatasetsCache;
+}
+
+async function lookupNeighborhoodRows(neighborhoodCode: string) {
+    const datasets = await latestNeighborhoodDatasets().catch((error) => {
+        console.error("CBS neighborhood dataset discovery failed", error);
+        return [CBS_NEIGHBORHOOD_FALLBACK];
+    });
+    for (const dataset of datasets) {
+        const result = await fetchCbs<CbsNeighborhoodRow>(
+            dataset.identifier,
+            "TypedDataSet",
+            `WijkenEnBuurten eq '${neighborhoodCode}' or WijkenEnBuurten eq 'NL00      '`,
+        ).catch(() => null);
+        const rows = result?.value ?? [];
+        const neighborhood = rows.find(
+            (row) =>
+                (row as CbsNeighborhoodRow & { WijkenEnBuurten?: string })
+                    .WijkenEnBuurten === neighborhoodCode,
+        );
+        const national = rows.find(
+            (row) =>
+                (row as CbsNeighborhoodRow & { WijkenEnBuurten?: string })
+                    .WijkenEnBuurten?.trim() === "NL00",
+        );
+        if (
+            neighborhood &&
+            "AantalInwoners_5" in neighborhood &&
+            "Bevolkingsdichtheid_34" in neighborhood
+        ) {
+            return { dataset, neighborhood, national: national ?? null };
+        }
+    }
+    return null;
 }
 
 function percentage(part: number | null | undefined, total: number | null) {
@@ -222,31 +314,43 @@ async function lookupFacilities(latitude: number, longitude: number) {
 }
 
 async function lookupCrime(municipalityCode: string) {
-    const periods = await fetchCbs<CbsPeriod>(CBS_CRIME_DATASET, "Perioden");
-    const latestPeriod = (periods.value ?? [])
-        .filter((period) => /^\d{4}$/.test(period.Title ?? ""))
-        .sort((left, right) => Number(right.Title) - Number(left.Title))[0];
-    if (!latestPeriod?.Key || !latestPeriod.Title) return null;
     const result = await fetchCbs<CbsCrimeRow>(
         CBS_CRIME_DATASET,
         "TypedDataSet",
-        `SoortMisdrijf eq 'T001161' and RegioS eq '${municipalityCode}' and Perioden eq '${latestPeriod.Key}'`,
+        `SoortMisdrijf eq 'T001161' and (RegioS eq '${municipalityCode}' or RegioS eq 'NL01  ')`,
+    );
+    const rows = result.value ?? [];
+    const municipalityRows = rows
+        .filter((row) => row.RegioS?.trim() === municipalityCode)
+        .sort((left, right) =>
+            (right.Perioden ?? "").localeCompare(left.Perioden ?? ""),
+        );
+    const municipality = municipalityRows.find((row) =>
+        rows.some(
+            (candidate) =>
+                candidate.RegioS?.trim() === "NL01" &&
+                candidate.Perioden === row.Perioden,
+        ),
+    );
+    if (!municipality?.Perioden) return null;
+    const national = rows.find(
+        (row) =>
+            row.RegioS?.trim() === "NL01" &&
+            row.Perioden === municipality.Perioden,
     );
     return {
-        value: result.value?.[0]?.GeregistreerdeMisdrijvenPer1000Inw_3 ?? null,
-        year: Number(latestPeriod.Title),
+        value: municipality.GeregistreerdeMisdrijvenPer1000Inw_3 ?? null,
+        nationalValue:
+            national?.GeregistreerdeMisdrijvenPer1000Inw_3 ?? null,
+        year: Number(municipality.Perioden.slice(0, 4)),
     };
 }
 
 export class NeighborhoodDataClient {
     async lookup(input: NeighborhoodLookup): Promise<NeighborhoodData | null> {
-        const result = await fetchCbs<CbsNeighborhoodRow>(
-            CBS_NEIGHBORHOOD_DATASET,
-            "TypedDataSet",
-            `WijkenEnBuurten eq '${input.neighborhoodCode}'`,
-        );
-        const row = result.value?.[0];
-        if (!row) return null;
+        const result = await lookupNeighborhoodRows(input.neighborhoodCode);
+        if (!result) return null;
+        const { dataset, neighborhood: row, national } = result;
 
         const [crime, facilities] = await Promise.all([
             lookupCrime(input.municipalityCode).catch((error) => {
@@ -266,6 +370,7 @@ export class NeighborhoodDataClient {
                 : null,
         ]);
         const population = row.AantalInwoners_5 ?? null;
+        const nationalPopulation = national?.AantalInwoners_5 ?? null;
         const retrievedAt = new Date();
         return {
             neighborhoodCode: input.neighborhoodCode,
@@ -273,15 +378,41 @@ export class NeighborhoodDataClient {
             districtCode: input.districtCode,
             districtName: input.districtName,
             municipalityCode: input.municipalityCode,
-            statisticsYear: 2024,
+            statisticsYear: dataset.year,
             population,
+            populationDensityPerKm2: row.Bevolkingsdichtheid_34 ?? null,
+            nationalPopulationDensityPerKm2:
+                national?.Bevolkingsdichtheid_34 ?? null,
             age0To14Percent: percentage(row.k_0Tot15Jaar_8, population),
             age15To24Percent: percentage(row.k_15Tot25Jaar_9, population),
             age25To44Percent: percentage(row.k_25Tot45Jaar_10, population),
             age45To64Percent: percentage(row.k_45Tot65Jaar_11, population),
             age65PlusPercent: percentage(row.k_65JaarOfOuder_12, population),
+            nationalAge0To14Percent: percentage(
+                national?.k_0Tot15Jaar_8,
+                nationalPopulation,
+            ),
+            nationalAge15To24Percent: percentage(
+                national?.k_15Tot25Jaar_9,
+                nationalPopulation,
+            ),
+            nationalAge25To44Percent: percentage(
+                national?.k_25Tot45Jaar_10,
+                nationalPopulation,
+            ),
+            nationalAge45To64Percent: percentage(
+                national?.k_45Tot65Jaar_11,
+                nationalPopulation,
+            ),
+            nationalAge65PlusPercent: percentage(
+                national?.k_65JaarOfOuder_12,
+                nationalPopulation,
+            ),
             housingCorporationPercent: row.InBezitWoningcorporatie_49 ?? null,
+            nationalHousingCorporationPercent:
+                national?.InBezitWoningcorporatie_49 ?? null,
             registeredCrimesPer1000: crime?.value ?? null,
+            nationalRegisteredCrimesPer1000: crime?.nationalValue ?? null,
             crimeStatisticsYear: crime?.year ?? null,
             supermarketDistanceKm: row.AfstandTotGroteSupermarkt_111 ?? null,
             primarySchoolDistanceKm: row.AfstandTotSchool_113 ?? null,
@@ -296,8 +427,8 @@ export class NeighborhoodDataClient {
             tramStopDistanceMeters: facilities?.tram.nearestMeters ?? null,
             metroStationDistanceMeters: facilities?.metro.nearestMeters ?? null,
             trainStationDistanceMeters: facilities?.train.nearestMeters ?? null,
-            cbsDataset: CBS_NEIGHBORHOOD_DATASET,
-            cbsSourceUrl: `${CBS_ODATA_URL}/${CBS_NEIGHBORHOOD_DATASET}`,
+            cbsDataset: dataset.identifier,
+            cbsSourceUrl: `${CBS_ODATA_URL}/${dataset.identifier}`,
             cbsRetrievedAt: retrievedAt,
             crimeDataset: crime ? CBS_CRIME_DATASET : null,
             crimeSourceUrl: crime

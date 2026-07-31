@@ -412,13 +412,22 @@ model NeighborhoodProfile {
   municipalityCode             String   @db.VarChar(6)
   statisticsYear               Int
   population                   Int?
+  populationDensityPerKm2      Int?
+  nationalPopulationDensityPerKm2 Int?
   age0To14Percent              Decimal? @db.Decimal(5, 2)
   age15To24Percent             Decimal? @db.Decimal(5, 2)
   age25To44Percent             Decimal? @db.Decimal(5, 2)
   age45To64Percent             Decimal? @db.Decimal(5, 2)
   age65PlusPercent             Decimal? @db.Decimal(5, 2)
+  nationalAge0To14Percent      Decimal? @db.Decimal(5, 2)
+  nationalAge15To24Percent     Decimal? @db.Decimal(5, 2)
+  nationalAge25To44Percent     Decimal? @db.Decimal(5, 2)
+  nationalAge45To64Percent     Decimal? @db.Decimal(5, 2)
+  nationalAge65PlusPercent     Decimal? @db.Decimal(5, 2)
   housingCorporationPercent    Decimal? @db.Decimal(5, 2)
+  nationalHousingCorporationPercent Decimal? @db.Decimal(5, 2)
   registeredCrimesPer1000      Decimal? @db.Decimal(8, 2)
+  nationalRegisteredCrimesPer1000 Decimal? @db.Decimal(8, 2)
   crimeStatisticsYear          Int?
   supermarketDistanceKm        Decimal? @db.Decimal(6, 2)
   primarySchoolDistanceKm      Decimal? @db.Decimal(6, 2)

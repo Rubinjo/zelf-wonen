@@ -7,7 +7,6 @@ const neighborhoodData = new NeighborhoodDataClient();
 
 async function main() {
     const properties = await db.property.findMany({
-        where: { neighborhoodProfile: null },
         select: {
             id: true,
             postcode: true,
