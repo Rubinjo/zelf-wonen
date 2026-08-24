@@ -3,20 +3,24 @@ import { z } from "zod";
 import type { Prisma } from "@/generated/prisma/client";
 import { requireEmailVerifiedUser } from "@/features/auth/guards";
 import {
-    appendTransactionEvent,
-    canonicalJson,
-    chainedHash,
     requireTransactionParticipant,
     TransactionAccessError,
 } from "@/features/transactions/transaction-service";
+import {
+    getPassportDraftStatus,
+    maybeCreatePassportVersion,
+} from "@/features/transactions/passport-service";
 import { handleApiError } from "@/lib/api-response";
 import { db } from "@/lib/db";
-import { passportNoteSchema } from "@/lib/schemas/transaction";
+import {
+    passportDraftSchema,
+    passportNoteSchema,
+} from "@/lib/schemas/transaction";
 
-export async function GET(
-    _request: NextRequest,
-    context: { params: Promise<{ transactionId: string }> },
-) {
+type Context = { params: Promise<{ transactionId: string }> };
+
+/** Retourneert de versiegeschiedenis én de huidige (live) paspoortstatus. */
+export async function GET(_request: NextRequest, context: Context) {
     try {
         const session = await requireEmailVerifiedUser();
         const transactionId = z
@@ -27,11 +31,19 @@ export async function GET(
             transactionId,
             session.user.id,
         );
-        const versions = await db.propertyPassportVersion.findMany({
-            where: { listingId: participant.listingId },
-            orderBy: { version: "desc" },
+        const [versions, draft] = await db.$transaction(async (tx) => {
+            const versions = await tx.propertyPassportVersion.findMany({
+                where: { listingId: participant.listingId },
+                orderBy: { version: "desc" },
+            });
+            const draft = await getPassportDraftStatus(
+                tx,
+                participant.listingId,
+                transactionId,
+            );
+            return [versions, draft];
         });
-        return NextResponse.json({ data: versions });
+        return NextResponse.json({ data: { versions, draft } });
     } catch (error) {
         if (error instanceof TransactionAccessError)
             return NextResponse.json(
@@ -42,10 +54,8 @@ export async function GET(
     }
 }
 
-export async function POST(
-    request: NextRequest,
-    context: { params: Promise<{ transactionId: string }> },
-) {
+/** Maakt handmatig een nieuwe versie vast (alleen verkoper/verhuurder). */
+export async function POST(request: NextRequest, context: Context) {
     try {
         const session = await requireEmailVerifiedUser();
         const transactionId = z
@@ -63,87 +73,32 @@ export async function POST(
                     error: {
                         code: "SELLER_REQUIRED",
                         message:
-                            "Alleen de verkoper kan een paspoortversie vastleggen",
+                            "Alleen de verkoper/verhuurder kan een paspoortversie vastleggen",
                     },
                 },
                 { status: 403 },
             );
-        const version = await db.$transaction(async (tx) => {
-            await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${participant.listingId}))`;
-            const previous = await tx.propertyPassportVersion.findFirst({
-                where: { listingId: participant.listingId },
-                orderBy: { version: "desc" },
-            });
-            const listing = await tx.listing.findUniqueOrThrow({
-                where: { id: participant.listingId },
-                include: {
-                    property: { include: { energyLabels: true } },
-                    media: {
-                        where: { status: "READY" },
-                        orderBy: { sortOrder: "asc" },
-                    },
-                    floorPlans: { orderBy: { sortOrder: "asc" } },
-                },
-            });
-            const snapshot = JSON.parse(
-                canonicalJson({
-                    generatedAt: new Date().toISOString(),
-                    changeNote: input.changeNote,
-                    listing,
-                }),
-            ) as Prisma.InputJsonValue;
-            const checks = [
-                listing.titleNl,
-                listing.descriptionNl,
-                listing.property.livingAreaSqm,
-                listing.property.roomCount,
-                listing.property.constructionYear,
-                listing.property.energyLabels.length,
-                listing.media.some((item) => item.kind === "PHOTO"),
-                listing.attributes,
-            ];
-            const completenessScore = Math.round(
-                (checks.filter(Boolean).length / checks.length) * 100,
-            );
-            const nextVersion = (previous?.version ?? 0) + 1;
-            const createdAt = new Date();
-            const payload = {
-                listingId: participant.listingId,
-                version: nextVersion,
-                listingVersionSource: listing.version,
-                completenessScore,
-                snapshot,
-                createdByUserId: session.user.id,
-                createdAt: createdAt.toISOString(),
-            };
-            const entryHash = chainedHash(previous?.entryHash ?? null, payload);
-            const created = await tx.propertyPassportVersion.create({
-                data: {
-                    listingId: participant.listingId,
-                    version: nextVersion,
-                    listingVersionSource: listing.version,
-                    snapshot,
-                    completenessScore,
-                    previousHash: previous?.entryHash,
-                    entryHash,
-                    createdByUserId: session.user.id,
-                    createdAt,
-                },
-            });
-            await appendTransactionEvent(
+        const result = await db.$transaction(async (tx) => {
+            const created = await maybeCreatePassportVersion(
                 tx,
+                participant.listingId,
                 transactionId,
                 session.user.id,
-                "PASSPORT_VERSION_CREATED",
-                {
-                    version: nextVersion,
-                    entryHash,
-                    changeNote: input.changeNote,
-                },
+                "MANUAL",
+                input.changeNote,
             );
             return created;
         });
-        return NextResponse.json({ data: version }, { status: 201 });
+        return NextResponse.json(
+            {
+                data: {
+                    version: result?.version ?? null,
+                    entryHash: result?.entryHash ?? null,
+                    unchanged: result === null,
+                },
+            },
+            { status: result ? 201 : 200 },
+        );
     } catch (error) {
         if (error instanceof TransactionAccessError)
             return NextResponse.json(
@@ -151,5 +106,72 @@ export async function POST(
                 { status: error.code === "TRANSACTION_NOT_FOUND" ? 404 : 403 },
             );
         return handleApiError(error, "PASSPORT_CREATE_FAILED");
+    }
+}
+
+/**
+ * Werkt de bewerkbare paspoortvelden bij (alleen verkoper/verhuurder) en legt
+ * bij een inhoudelijke wijziging automatisch een nieuwe versie vast.
+ */
+export async function PATCH(request: NextRequest, context: Context) {
+    try {
+        const session = await requireEmailVerifiedUser();
+        const transactionId = z
+            .string()
+            .uuid()
+            .parse((await context.params).transactionId);
+        const input = passportDraftSchema.parse(await request.json());
+        const participant = await requireTransactionParticipant(
+            transactionId,
+            session.user.id,
+        );
+        if (participant.sellerUserId !== session.user.id)
+            return NextResponse.json(
+                {
+                    error: {
+                        code: "SELLER_REQUIRED",
+                        message:
+                            "Alleen de verkoper/verhuurder kan het woningpaspoort bewerken",
+                    },
+                },
+                { status: 403 },
+            );
+        const result = await db.$transaction(async (tx) => {
+            await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${participant.listingId}))`;
+            const fields = input as Prisma.InputJsonValue;
+            await tx.propertyPassportDraft.upsert({
+                where: { listingId: participant.listingId },
+                create: {
+                    listingId: participant.listingId,
+                    fields,
+                    createdByUserId: session.user.id,
+                },
+                update: { fields },
+            });
+            const created = await maybeCreatePassportVersion(
+                tx,
+                participant.listingId,
+                transactionId,
+                session.user.id,
+                "DRAFT_UPDATE",
+                "Woningpaspoort-gegevens bijgewerkt",
+            );
+            return created;
+        });
+        return NextResponse.json({
+            data: {
+                draft: input,
+                version: result?.version ?? null,
+                entryHash: result?.entryHash ?? null,
+                unchanged: result === null,
+            },
+        });
+    } catch (error) {
+        if (error instanceof TransactionAccessError)
+            return NextResponse.json(
+                { error: { code: error.code, message: error.message } },
+                { status: error.code === "TRANSACTION_NOT_FOUND" ? 404 : 403 },
+            );
+        return handleApiError(error, "PASSPORT_UPDATE_FAILED");
     }
 }

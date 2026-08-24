@@ -15,11 +15,13 @@ export type MarketplaceBounds = {
     west: number;
 };
 
+export type MarketplaceStatus = "LIVE" | "UNDER_OFFER" | "SOLD" | "RENTED";
+
 export type MarketplaceListing = {
     id: string;
     slug: string;
     purpose: "SALE" | "RENT";
-    status: "LIVE";
+    status: MarketplaceStatus;
     title: string;
     street: string;
     houseNumber: number;
@@ -35,36 +37,50 @@ export type MarketplaceListing = {
     bedroomCount: number | null;
     constructionYear: number | null;
     isMonument: boolean;
+    erfpachtType: string | null;
+    erfpachtCanonCents: string | null;
     energyLabel: string | null;
     priceCents: string | null;
+    finalPriceCents: string | null;
     serviceCostsCents: string | null;
     imageUrl: string | null;
     imageUrls: string[];
     imageAlt: string;
     liveAt: string | null;
+    bidWindowOpensAt: string | null;
+    bidWindowClosesAt: string | null;
 };
 
 export type MarketplaceFilters = {
     purpose: "SALE" | "RENT";
     query: string;
+    statuses: MarketplaceStatus[];
     priceMin: number | null;
     priceMax: number | null;
     propertyTypes: string[];
     livingAreaMin: number | null;
     roomsMin: number | null;
     bedroomsMin: number | null;
+    bathroomsMin: number | null;
+    plotAreaMin: number | null;
     constructionYearMin: number | null;
     constructionYearMax: number | null;
     monumentFilter: "all" | "only" | "exclude";
+    erfpachtFilter: "all" | "leasehold" | "freehold";
     energyLabels: string[];
     amenities: string[];
     parkingOptions: string[];
+    populationDensityPerKm2Max: number | null;
     housingCorporationPercentMin: number | null;
+    housingCorporationPercentMax: number | null;
     registeredCrimesPer1000Max: number | null;
     supermarketDistanceKmMax: number | null;
     primarySchoolDistanceKmMax: number | null;
     busStopDistanceMetersMax: number | null;
     trainStationDistanceMetersMax: number | null;
+    foundationRiskFilter: "all" | "low" | "none_low";
+    noiseRoadLdenMax: number | null;
+    availableFrom: "any" | "now" | "1m" | "3m";
     bounds: MarketplaceBounds | null;
     sort: "newest" | "price_asc" | "price_desc" | "area_desc";
     page: number;
@@ -78,6 +94,7 @@ const propertyTypes = [
     "COMMERCIAL",
     "OTHER",
 ] as const;
+const marketplaceStatuses = ["LIVE", "UNDER_OFFER", "SOLD", "RENTED"] as const;
 const amenities = [
     "SOLAR_PANELS",
     "AIR_CONDITIONING",
@@ -85,6 +102,8 @@ const amenities = [
     "HEAT_PUMP",
     "EV_CHARGER",
     "FIREPLACE",
+    "MECHANICAL_VENTILATION",
+    "ALARM_SYSTEM",
 ] as const;
 const parkingOptions = [
     "ON_PROPERTY",
@@ -93,6 +112,7 @@ const parkingOptions = [
     "PARKING_PERMIT",
     "PUBLIC_GARAGE",
     "PRIVATE_GARAGE",
+    "SPACE_FOR_SALE",
 ] as const;
 const energyLabels = [
     "A_PLUS_PLUS_PLUS_PLUS_PLUS",
@@ -165,15 +185,22 @@ export function parseMarketplaceFilters(
         west < east
             ? { north, east, south, west }
             : null;
+    const selectedStatuses = allowedValues(
+        searchParams.status,
+        marketplaceStatuses,
+    ) as MarketplaceStatus[];
     return {
         purpose: first(searchParams.purpose) === "RENT" ? "RENT" : "SALE",
         query: first(searchParams.q)?.trim().slice(0, 100) ?? "",
+        statuses: selectedStatuses.length > 0 ? selectedStatuses : ["LIVE"],
         priceMin: positiveNumber(first(searchParams.priceMin)),
         priceMax: positiveNumber(first(searchParams.priceMax)),
         propertyTypes: allowedValues(searchParams.propertyType, propertyTypes),
         livingAreaMin: positiveNumber(first(searchParams.livingAreaMin)),
         roomsMin: positiveNumber(first(searchParams.roomsMin)),
         bedroomsMin: positiveNumber(first(searchParams.bedroomsMin)),
+        bathroomsMin: positiveNumber(first(searchParams.bathroomsMin)),
+        plotAreaMin: positiveNumber(first(searchParams.plotAreaMin)),
         constructionYearMin: constructionYear(
             first(searchParams.constructionYearMin),
         ),
@@ -186,11 +213,25 @@ export function parseMarketplaceFilters(
                 : monument === "false"
                   ? "exclude"
                   : "all",
+        erfpachtFilter: (() => {
+            const value = first(searchParams.erfpacht);
+            return value === "leasehold"
+                ? "leasehold"
+                : value === "freehold"
+                  ? "freehold"
+                  : "all";
+        })(),
         energyLabels: allowedValues(searchParams.energyLabel, energyLabels),
         amenities: allowedValues(searchParams.amenity, amenities),
         parkingOptions: allowedValues(searchParams.parking, parkingOptions),
+        populationDensityPerKm2Max: positiveNumber(
+            first(searchParams.populationDensityPerKm2Max),
+        ),
         housingCorporationPercentMin: positiveNumber(
             first(searchParams.housingCorporationPercentMin),
+        ),
+        housingCorporationPercentMax: positiveNumber(
+            first(searchParams.housingCorporationPercentMax),
         ),
         registeredCrimesPer1000Max: positiveNumber(
             first(searchParams.registeredCrimesPer1000Max),
@@ -207,6 +248,21 @@ export function parseMarketplaceFilters(
         trainStationDistanceMetersMax: positiveNumber(
             first(searchParams.trainStationDistanceMetersMax),
         ),
+        foundationRiskFilter: (() => {
+            const value = first(searchParams.foundationRisk);
+            return value === "low"
+                ? "low"
+                : value === "none_low"
+                  ? "none_low"
+                  : "all";
+        })(),
+        noiseRoadLdenMax: positiveNumber(first(searchParams.noiseRoadLdenMax)),
+        availableFrom: (() => {
+            const value = first(searchParams.availableFrom);
+            return value === "now" || value === "1m" || value === "3m"
+                ? value
+                : "any";
+        })(),
         bounds,
         sort: ["price_asc", "price_desc", "area_desc"].includes(sort ?? "")
             ? (sort as MarketplaceFilters["sort"])
@@ -247,6 +303,12 @@ export async function searchMarketplaceListings(
     if (filters.bedroomsMin !== null) {
         propertyFilter.bedroomCount = { gte: filters.bedroomsMin };
     }
+    if (filters.bathroomsMin !== null) {
+        propertyFilter.bathroomCount = { gte: filters.bathroomsMin };
+    }
+    if (filters.plotAreaMin !== null) {
+        propertyFilter.officialLandAreaSqm = { gte: filters.plotAreaMin };
+    }
     if (
         filters.constructionYearMin !== null ||
         filters.constructionYearMax !== null
@@ -262,6 +324,13 @@ export async function searchMarketplaceListings(
     }
     if (filters.monumentFilter !== "all") {
         propertyFilter.isMonument = filters.monumentFilter === "only";
+    }
+    if (filters.erfpachtFilter === "leasehold") {
+        propertyFilter.erfpachtType = {
+            in: ["LEASEHOLD", "LEASEHOLD_AFGEKOCHT"],
+        };
+    } else if (filters.erfpachtFilter === "freehold") {
+        propertyFilter.erfpachtType = "FREEHOLD";
     }
     if (filters.bounds) {
         propertyFilter.latitude = {
@@ -295,9 +364,19 @@ export async function searchMarketplaceListings(
         };
     }
     const neighborhoodFilter: Prisma.NeighborhoodProfileWhereInput = {};
+    const housingCorporationFilter: Prisma.DecimalNullableFilter = {};
     if (filters.housingCorporationPercentMin !== null) {
-        neighborhoodFilter.housingCorporationPercent = {
-            gte: filters.housingCorporationPercentMin,
+        housingCorporationFilter.gte = filters.housingCorporationPercentMin;
+    }
+    if (filters.housingCorporationPercentMax !== null) {
+        housingCorporationFilter.lte = filters.housingCorporationPercentMax;
+    }
+    if (Object.keys(housingCorporationFilter).length > 0) {
+        neighborhoodFilter.housingCorporationPercent = housingCorporationFilter;
+    }
+    if (filters.populationDensityPerKm2Max !== null) {
+        neighborhoodFilter.populationDensityPerKm2 = {
+            lte: filters.populationDensityPerKm2Max,
         };
     }
     if (filters.registeredCrimesPer1000Max !== null) {
@@ -325,60 +404,97 @@ export async function searchMarketplaceListings(
             lte: filters.trainStationDistanceMetersMax,
         };
     }
+    if (filters.foundationRiskFilter === "low") {
+        // Alleen woningen met een bekende, laag risico funderingssituatie.
+        neighborhoodFilter.foundationRiskLevel = {
+            in: ["NONE", "LOW"],
+        };
+    } else if (filters.foundationRiskFilter === "none_low") {
+        // Sluit bekende verhoogde risico's uit; onbekend blijft zichtbaar.
+        neighborhoodFilter.foundationRiskLevel = {
+            notIn: ["MEDIUM", "HIGH"],
+        };
+    }
+    if (filters.noiseRoadLdenMax !== null) {
+        neighborhoodFilter.noiseRoadLden = {
+            lte: filters.noiseRoadLdenMax,
+        };
+    }
     if (Object.keys(neighborhoodFilter).length > 0) {
         propertyFilter.neighborhoodProfile = { is: neighborhoodFilter };
     }
 
     const where: Prisma.ListingWhereInput = {
-        status: "LIVE",
+        status: {
+            in: filters.statuses as Prisma.EnumListingStatusFilter["in"],
+        },
         publicSlug: { not: null },
         purpose: filters.purpose,
         [priceField]:
             Object.keys(priceFilter).length > 0 ? priceFilter : { not: null },
         property: { is: propertyFilter },
     };
+    const andConditions: Prisma.ListingWhereInput[] = [];
+    if (filters.availableFrom !== "any") {
+        // Woningen zonder bekende opleverdatum gelden als direct beschikbaar
+        // en blijven binnen elke gekozen periode zichtbaar.
+        const now = new Date();
+        const horizon = new Date(now);
+        horizon.setDate(
+            horizon.getDate() +
+                (filters.availableFrom === "now"
+                    ? 0
+                    : filters.availableFrom === "1m"
+                      ? 31
+                      : 92),
+        );
+        andConditions.push({
+            OR: [{ availableFrom: null }, { availableFrom: { lte: horizon } }],
+        });
+    }
     if (filters.query) {
-        where.AND = [
-            {
-                OR: [
-                    {
-                        titleNl: {
-                            contains: filters.query,
-                            mode: "insensitive",
+        andConditions.push({
+            OR: [
+                {
+                    titleNl: {
+                        contains: filters.query,
+                        mode: "insensitive",
+                    },
+                },
+                {
+                    property: {
+                        is: {
+                            OR: [
+                                {
+                                    city: {
+                                        contains: filters.query,
+                                        mode: "insensitive",
+                                    },
+                                },
+                                {
+                                    street: {
+                                        contains: filters.query,
+                                        mode: "insensitive",
+                                    },
+                                },
+                                {
+                                    postcode: {
+                                        contains: filters.query.replaceAll(
+                                            " ",
+                                            "",
+                                        ),
+                                        mode: "insensitive",
+                                    },
+                                },
+                            ],
                         },
                     },
-                    {
-                        property: {
-                            is: {
-                                OR: [
-                                    {
-                                        city: {
-                                            contains: filters.query,
-                                            mode: "insensitive",
-                                        },
-                                    },
-                                    {
-                                        street: {
-                                            contains: filters.query,
-                                            mode: "insensitive",
-                                        },
-                                    },
-                                    {
-                                        postcode: {
-                                            contains: filters.query.replaceAll(
-                                                " ",
-                                                "",
-                                            ),
-                                            mode: "insensitive",
-                                        },
-                                    },
-                                ],
-                            },
-                        },
-                    },
-                ],
-            },
-        ];
+                },
+            ],
+        });
+    }
+    if (andConditions.length > 0) {
+        where.AND = andConditions;
     }
 
     const orderBy: Prisma.ListingOrderByWithRelationInput[] =
@@ -390,7 +506,7 @@ export async function searchMarketplaceListings(
                 ? [{ property: { livingAreaSqm: "desc" } }]
                 : [{ liveAt: { sort: "desc", nulls: "last" } }];
 
-    const [total, listings] = await db.$transaction([
+    const [total, listings] = await Promise.all([
         db.listing.count({ where }),
         db.listing.findMany({
             where,
@@ -411,17 +527,28 @@ export async function searchMarketplaceListings(
                     orderBy: { sortOrder: "asc" },
                     take: 3,
                 },
+                transactions: {
+                    where: { status: { not: "CANCELLED" } },
+                    orderBy: { createdAt: "desc" },
+                    take: 1,
+                    select: { purchasePriceCents: true },
+                },
             },
         }),
     ]);
 
     const data: MarketplaceListing[] = listings.map((listing) => {
         const address = `${listing.property.street} ${listing.property.houseNumber}${listing.property.houseNumberAddition ? ` ${listing.property.houseNumberAddition}` : ""}`;
+        const finalPriceCents =
+            listing.status === "LIVE"
+                ? null
+                : (listing.transactions[0]?.purchasePriceCents?.toString() ??
+                  null);
         return {
             id: listing.id,
             slug: listing.publicSlug!,
             purpose: listing.purpose,
-            status: "LIVE",
+            status: listing.status as MarketplaceStatus,
             title: listing.titleNl || address,
             street: listing.property.street,
             houseNumber: listing.property.houseNumber,
@@ -445,11 +572,15 @@ export async function searchMarketplaceListings(
             bedroomCount: listing.property.bedroomCount,
             constructionYear: listing.property.constructionYear,
             isMonument: listing.property.isMonument,
+            erfpachtType: listing.property.erfpachtType ?? null,
+            erfpachtCanonCents:
+                listing.property.erfpachtCanonCents?.toString() ?? null,
             energyLabel: listing.property.energyLabels[0]?.labelClass ?? null,
             priceCents:
                 (
                     listing.askingPriceCents ?? listing.monthlyRentCents
                 )?.toString() ?? null,
+            finalPriceCents,
             serviceCostsCents: listing.serviceCostsCents?.toString() ?? null,
             imageUrl: listing.media[0]
                 ? `/${listing.media[0].storageKey}`
@@ -457,6 +588,8 @@ export async function searchMarketplaceListings(
             imageUrls: listing.media.map((media) => `/${media.storageKey}`),
             imageAlt: listing.media[0]?.altTextNl || address,
             liveAt: listing.liveAt?.toISOString() ?? null,
+            bidWindowOpensAt: listing.bidWindowOpensAt?.toISOString() ?? null,
+            bidWindowClosesAt: listing.bidWindowClosesAt?.toISOString() ?? null,
         };
     });
 

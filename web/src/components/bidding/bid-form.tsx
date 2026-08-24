@@ -139,7 +139,7 @@ export function BidForm({
     return (
         <form
             onSubmit={submit}
-            className="rounded-3xl border border-line bg-white p-6 shadow-xl sm:p-7"
+            className="rounded-3xl border border-line bg-surface p-6 shadow-xl sm:p-7"
         >
             <span className="grid size-11 place-items-center rounded-2xl bg-accent text-brand-dark">
                 <ShieldCheck size={21} />

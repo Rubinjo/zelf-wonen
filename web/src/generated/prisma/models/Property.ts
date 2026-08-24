@@ -40,6 +40,7 @@ export type PropertyAvgAggregateOutputType = {
   externalStorageAreaSqm: runtime.Decimal | null
   parkingSpacePriceCents: number | null
   constructionYear: number | null
+  erfpachtCanonCents: number | null
 }
 
 export type PropertySumAggregateOutputType = {
@@ -56,6 +57,7 @@ export type PropertySumAggregateOutputType = {
   externalStorageAreaSqm: runtime.Decimal | null
   parkingSpacePriceCents: bigint | null
   constructionYear: number | null
+  erfpachtCanonCents: bigint | null
 }
 
 export type PropertyMinAggregateOutputType = {
@@ -86,6 +88,12 @@ export type PropertyMinAggregateOutputType = {
   parkingSpacePriceCents: bigint | null
   constructionYear: number | null
   isMonument: boolean | null
+  erfpachtType: $Enums.ErfpachtType | null
+  erfpachtCanonCents: bigint | null
+  erfpachtDetails: string | null
+  erfpachtEndDate: Date | null
+  erfpachtSource: string | null
+  erfpachtRetrievedAt: Date | null
   kadasterRetrievedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -119,6 +127,12 @@ export type PropertyMaxAggregateOutputType = {
   parkingSpacePriceCents: bigint | null
   constructionYear: number | null
   isMonument: boolean | null
+  erfpachtType: $Enums.ErfpachtType | null
+  erfpachtCanonCents: bigint | null
+  erfpachtDetails: string | null
+  erfpachtEndDate: Date | null
+  erfpachtSource: string | null
+  erfpachtRetrievedAt: Date | null
   kadasterRetrievedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -154,6 +168,12 @@ export type PropertyCountAggregateOutputType = {
   parkingSpacePriceCents: number
   constructionYear: number
   isMonument: number
+  erfpachtType: number
+  erfpachtCanonCents: number
+  erfpachtDetails: number
+  erfpachtEndDate: number
+  erfpachtSource: number
+  erfpachtRetrievedAt: number
   layout: number
   kadasterSourcePayload: number
   kadasterRetrievedAt: number
@@ -177,6 +197,7 @@ export type PropertyAvgAggregateInputType = {
   externalStorageAreaSqm?: true
   parkingSpacePriceCents?: true
   constructionYear?: true
+  erfpachtCanonCents?: true
 }
 
 export type PropertySumAggregateInputType = {
@@ -193,6 +214,7 @@ export type PropertySumAggregateInputType = {
   externalStorageAreaSqm?: true
   parkingSpacePriceCents?: true
   constructionYear?: true
+  erfpachtCanonCents?: true
 }
 
 export type PropertyMinAggregateInputType = {
@@ -223,6 +245,12 @@ export type PropertyMinAggregateInputType = {
   parkingSpacePriceCents?: true
   constructionYear?: true
   isMonument?: true
+  erfpachtType?: true
+  erfpachtCanonCents?: true
+  erfpachtDetails?: true
+  erfpachtEndDate?: true
+  erfpachtSource?: true
+  erfpachtRetrievedAt?: true
   kadasterRetrievedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -256,6 +284,12 @@ export type PropertyMaxAggregateInputType = {
   parkingSpacePriceCents?: true
   constructionYear?: true
   isMonument?: true
+  erfpachtType?: true
+  erfpachtCanonCents?: true
+  erfpachtDetails?: true
+  erfpachtEndDate?: true
+  erfpachtSource?: true
+  erfpachtRetrievedAt?: true
   kadasterRetrievedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -291,6 +325,12 @@ export type PropertyCountAggregateInputType = {
   parkingSpacePriceCents?: true
   constructionYear?: true
   isMonument?: true
+  erfpachtType?: true
+  erfpachtCanonCents?: true
+  erfpachtDetails?: true
+  erfpachtEndDate?: true
+  erfpachtSource?: true
+  erfpachtRetrievedAt?: true
   layout?: true
   kadasterSourcePayload?: true
   kadasterRetrievedAt?: true
@@ -415,6 +455,12 @@ export type PropertyGroupByOutputType = {
   parkingSpacePriceCents: bigint | null
   constructionYear: number | null
   isMonument: boolean
+  erfpachtType: $Enums.ErfpachtType
+  erfpachtCanonCents: bigint | null
+  erfpachtDetails: string | null
+  erfpachtEndDate: Date | null
+  erfpachtSource: string | null
+  erfpachtRetrievedAt: Date | null
   layout: runtime.JsonValue | null
   kadasterSourcePayload: runtime.JsonValue | null
   kadasterRetrievedAt: Date | null
@@ -475,6 +521,12 @@ export type PropertyWhereInput = {
   parkingSpacePriceCents?: Prisma.BigIntNullableFilter<"Property"> | bigint | number | null
   constructionYear?: Prisma.IntNullableFilter<"Property"> | number | null
   isMonument?: Prisma.BoolFilter<"Property"> | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeFilter<"Property"> | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.BigIntNullableFilter<"Property"> | bigint | number | null
+  erfpachtDetails?: Prisma.StringNullableFilter<"Property"> | string | null
+  erfpachtEndDate?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
+  erfpachtSource?: Prisma.StringNullableFilter<"Property"> | string | null
+  erfpachtRetrievedAt?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
   layout?: Prisma.JsonNullableFilter<"Property">
   kadasterSourcePayload?: Prisma.JsonNullableFilter<"Property">
   kadasterRetrievedAt?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
@@ -516,6 +568,12 @@ export type PropertyOrderByWithRelationInput = {
   parkingSpacePriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
   constructionYear?: Prisma.SortOrderInput | Prisma.SortOrder
   isMonument?: Prisma.SortOrder
+  erfpachtType?: Prisma.SortOrder
+  erfpachtCanonCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  erfpachtDetails?: Prisma.SortOrderInput | Prisma.SortOrder
+  erfpachtEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  erfpachtSource?: Prisma.SortOrderInput | Prisma.SortOrder
+  erfpachtRetrievedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   layout?: Prisma.SortOrderInput | Prisma.SortOrder
   kadasterSourcePayload?: Prisma.SortOrderInput | Prisma.SortOrder
   kadasterRetrievedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -560,6 +618,12 @@ export type PropertyWhereUniqueInput = Prisma.AtLeast<{
   parkingSpacePriceCents?: Prisma.BigIntNullableFilter<"Property"> | bigint | number | null
   constructionYear?: Prisma.IntNullableFilter<"Property"> | number | null
   isMonument?: Prisma.BoolFilter<"Property"> | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeFilter<"Property"> | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.BigIntNullableFilter<"Property"> | bigint | number | null
+  erfpachtDetails?: Prisma.StringNullableFilter<"Property"> | string | null
+  erfpachtEndDate?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
+  erfpachtSource?: Prisma.StringNullableFilter<"Property"> | string | null
+  erfpachtRetrievedAt?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
   layout?: Prisma.JsonNullableFilter<"Property">
   kadasterSourcePayload?: Prisma.JsonNullableFilter<"Property">
   kadasterRetrievedAt?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
@@ -601,6 +665,12 @@ export type PropertyOrderByWithAggregationInput = {
   parkingSpacePriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
   constructionYear?: Prisma.SortOrderInput | Prisma.SortOrder
   isMonument?: Prisma.SortOrder
+  erfpachtType?: Prisma.SortOrder
+  erfpachtCanonCents?: Prisma.SortOrderInput | Prisma.SortOrder
+  erfpachtDetails?: Prisma.SortOrderInput | Prisma.SortOrder
+  erfpachtEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  erfpachtSource?: Prisma.SortOrderInput | Prisma.SortOrder
+  erfpachtRetrievedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   layout?: Prisma.SortOrderInput | Prisma.SortOrder
   kadasterSourcePayload?: Prisma.SortOrderInput | Prisma.SortOrder
   kadasterRetrievedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -646,6 +716,12 @@ export type PropertyScalarWhereWithAggregatesInput = {
   parkingSpacePriceCents?: Prisma.BigIntNullableWithAggregatesFilter<"Property"> | bigint | number | null
   constructionYear?: Prisma.IntNullableWithAggregatesFilter<"Property"> | number | null
   isMonument?: Prisma.BoolWithAggregatesFilter<"Property"> | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeWithAggregatesFilter<"Property"> | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.BigIntNullableWithAggregatesFilter<"Property"> | bigint | number | null
+  erfpachtDetails?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
+  erfpachtEndDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Property"> | Date | string | null
+  erfpachtSource?: Prisma.StringNullableWithAggregatesFilter<"Property"> | string | null
+  erfpachtRetrievedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Property"> | Date | string | null
   layout?: Prisma.JsonNullableWithAggregatesFilter<"Property">
   kadasterSourcePayload?: Prisma.JsonNullableWithAggregatesFilter<"Property">
   kadasterRetrievedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Property"> | Date | string | null
@@ -682,6 +758,12 @@ export type PropertyCreateInput = {
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   isMonument?: boolean
+  erfpachtType?: $Enums.ErfpachtType
+  erfpachtCanonCents?: bigint | number | null
+  erfpachtDetails?: string | null
+  erfpachtEndDate?: Date | string | null
+  erfpachtSource?: string | null
+  erfpachtRetrievedAt?: Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -723,6 +805,12 @@ export type PropertyUncheckedCreateInput = {
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   isMonument?: boolean
+  erfpachtType?: $Enums.ErfpachtType
+  erfpachtCanonCents?: bigint | number | null
+  erfpachtDetails?: string | null
+  erfpachtEndDate?: Date | string | null
+  erfpachtSource?: string | null
+  erfpachtRetrievedAt?: Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -762,6 +850,12 @@ export type PropertyUpdateInput = {
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeFieldUpdateOperationsInput | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  erfpachtDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  erfpachtSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -803,6 +897,12 @@ export type PropertyUncheckedUpdateInput = {
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeFieldUpdateOperationsInput | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  erfpachtDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  erfpachtSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -843,6 +943,12 @@ export type PropertyCreateManyInput = {
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   isMonument?: boolean
+  erfpachtType?: $Enums.ErfpachtType
+  erfpachtCanonCents?: bigint | number | null
+  erfpachtDetails?: string | null
+  erfpachtEndDate?: Date | string | null
+  erfpachtSource?: string | null
+  erfpachtRetrievedAt?: Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -879,6 +985,12 @@ export type PropertyUpdateManyMutationInput = {
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeFieldUpdateOperationsInput | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  erfpachtDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  erfpachtSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -916,6 +1028,12 @@ export type PropertyUncheckedUpdateManyInput = {
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeFieldUpdateOperationsInput | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  erfpachtDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  erfpachtSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -979,6 +1097,12 @@ export type PropertyCountOrderByAggregateInput = {
   parkingSpacePriceCents?: Prisma.SortOrder
   constructionYear?: Prisma.SortOrder
   isMonument?: Prisma.SortOrder
+  erfpachtType?: Prisma.SortOrder
+  erfpachtCanonCents?: Prisma.SortOrder
+  erfpachtDetails?: Prisma.SortOrder
+  erfpachtEndDate?: Prisma.SortOrder
+  erfpachtSource?: Prisma.SortOrder
+  erfpachtRetrievedAt?: Prisma.SortOrder
   layout?: Prisma.SortOrder
   kadasterSourcePayload?: Prisma.SortOrder
   kadasterRetrievedAt?: Prisma.SortOrder
@@ -1000,6 +1124,7 @@ export type PropertyAvgOrderByAggregateInput = {
   externalStorageAreaSqm?: Prisma.SortOrder
   parkingSpacePriceCents?: Prisma.SortOrder
   constructionYear?: Prisma.SortOrder
+  erfpachtCanonCents?: Prisma.SortOrder
 }
 
 export type PropertyMaxOrderByAggregateInput = {
@@ -1030,6 +1155,12 @@ export type PropertyMaxOrderByAggregateInput = {
   parkingSpacePriceCents?: Prisma.SortOrder
   constructionYear?: Prisma.SortOrder
   isMonument?: Prisma.SortOrder
+  erfpachtType?: Prisma.SortOrder
+  erfpachtCanonCents?: Prisma.SortOrder
+  erfpachtDetails?: Prisma.SortOrder
+  erfpachtEndDate?: Prisma.SortOrder
+  erfpachtSource?: Prisma.SortOrder
+  erfpachtRetrievedAt?: Prisma.SortOrder
   kadasterRetrievedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -1063,6 +1194,12 @@ export type PropertyMinOrderByAggregateInput = {
   parkingSpacePriceCents?: Prisma.SortOrder
   constructionYear?: Prisma.SortOrder
   isMonument?: Prisma.SortOrder
+  erfpachtType?: Prisma.SortOrder
+  erfpachtCanonCents?: Prisma.SortOrder
+  erfpachtDetails?: Prisma.SortOrder
+  erfpachtEndDate?: Prisma.SortOrder
+  erfpachtSource?: Prisma.SortOrder
+  erfpachtRetrievedAt?: Prisma.SortOrder
   kadasterRetrievedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -1082,6 +1219,7 @@ export type PropertySumOrderByAggregateInput = {
   externalStorageAreaSqm?: Prisma.SortOrder
   parkingSpacePriceCents?: Prisma.SortOrder
   constructionYear?: Prisma.SortOrder
+  erfpachtCanonCents?: Prisma.SortOrder
 }
 
 export type PropertyScalarRelationFilter = {
@@ -1181,6 +1319,10 @@ export type NullableBigIntFieldUpdateOperationsInput = {
   divide?: bigint | number
 }
 
+export type EnumErfpachtTypeFieldUpdateOperationsInput = {
+  set?: $Enums.ErfpachtType
+}
+
 export type PropertyCreateNestedOneWithoutNeighborhoodProfileInput = {
   create?: Prisma.XOR<Prisma.PropertyCreateWithoutNeighborhoodProfileInput, Prisma.PropertyUncheckedCreateWithoutNeighborhoodProfileInput>
   connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutNeighborhoodProfileInput
@@ -1252,6 +1394,12 @@ export type PropertyCreateWithoutOwnerInput = {
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   isMonument?: boolean
+  erfpachtType?: $Enums.ErfpachtType
+  erfpachtCanonCents?: bigint | number | null
+  erfpachtDetails?: string | null
+  erfpachtEndDate?: Date | string | null
+  erfpachtSource?: string | null
+  erfpachtRetrievedAt?: Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -1291,6 +1439,12 @@ export type PropertyUncheckedCreateWithoutOwnerInput = {
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   isMonument?: boolean
+  erfpachtType?: $Enums.ErfpachtType
+  erfpachtCanonCents?: bigint | number | null
+  erfpachtDetails?: string | null
+  erfpachtEndDate?: Date | string | null
+  erfpachtSource?: string | null
+  erfpachtRetrievedAt?: Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -1360,6 +1514,12 @@ export type PropertyScalarWhereInput = {
   parkingSpacePriceCents?: Prisma.BigIntNullableFilter<"Property"> | bigint | number | null
   constructionYear?: Prisma.IntNullableFilter<"Property"> | number | null
   isMonument?: Prisma.BoolFilter<"Property"> | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeFilter<"Property"> | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.BigIntNullableFilter<"Property"> | bigint | number | null
+  erfpachtDetails?: Prisma.StringNullableFilter<"Property"> | string | null
+  erfpachtEndDate?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
+  erfpachtSource?: Prisma.StringNullableFilter<"Property"> | string | null
+  erfpachtRetrievedAt?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
   layout?: Prisma.JsonNullableFilter<"Property">
   kadasterSourcePayload?: Prisma.JsonNullableFilter<"Property">
   kadasterRetrievedAt?: Prisma.DateTimeNullableFilter<"Property"> | Date | string | null
@@ -1396,6 +1556,12 @@ export type PropertyCreateWithoutNeighborhoodProfileInput = {
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   isMonument?: boolean
+  erfpachtType?: $Enums.ErfpachtType
+  erfpachtCanonCents?: bigint | number | null
+  erfpachtDetails?: string | null
+  erfpachtEndDate?: Date | string | null
+  erfpachtSource?: string | null
+  erfpachtRetrievedAt?: Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -1436,6 +1602,12 @@ export type PropertyUncheckedCreateWithoutNeighborhoodProfileInput = {
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   isMonument?: boolean
+  erfpachtType?: $Enums.ErfpachtType
+  erfpachtCanonCents?: bigint | number | null
+  erfpachtDetails?: string | null
+  erfpachtEndDate?: Date | string | null
+  erfpachtSource?: string | null
+  erfpachtRetrievedAt?: Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -1490,6 +1662,12 @@ export type PropertyUpdateWithoutNeighborhoodProfileInput = {
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeFieldUpdateOperationsInput | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  erfpachtDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  erfpachtSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1530,6 +1708,12 @@ export type PropertyUncheckedUpdateWithoutNeighborhoodProfileInput = {
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeFieldUpdateOperationsInput | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  erfpachtDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  erfpachtSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1568,6 +1752,12 @@ export type PropertyCreateWithoutEnergyLabelsInput = {
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   isMonument?: boolean
+  erfpachtType?: $Enums.ErfpachtType
+  erfpachtCanonCents?: bigint | number | null
+  erfpachtDetails?: string | null
+  erfpachtEndDate?: Date | string | null
+  erfpachtSource?: string | null
+  erfpachtRetrievedAt?: Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -1608,6 +1798,12 @@ export type PropertyUncheckedCreateWithoutEnergyLabelsInput = {
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   isMonument?: boolean
+  erfpachtType?: $Enums.ErfpachtType
+  erfpachtCanonCents?: bigint | number | null
+  erfpachtDetails?: string | null
+  erfpachtEndDate?: Date | string | null
+  erfpachtSource?: string | null
+  erfpachtRetrievedAt?: Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -1662,6 +1858,12 @@ export type PropertyUpdateWithoutEnergyLabelsInput = {
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeFieldUpdateOperationsInput | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  erfpachtDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  erfpachtSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1702,6 +1904,12 @@ export type PropertyUncheckedUpdateWithoutEnergyLabelsInput = {
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeFieldUpdateOperationsInput | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  erfpachtDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  erfpachtSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1740,6 +1948,12 @@ export type PropertyCreateWithoutListingsInput = {
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   isMonument?: boolean
+  erfpachtType?: $Enums.ErfpachtType
+  erfpachtCanonCents?: bigint | number | null
+  erfpachtDetails?: string | null
+  erfpachtEndDate?: Date | string | null
+  erfpachtSource?: string | null
+  erfpachtRetrievedAt?: Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -1780,6 +1994,12 @@ export type PropertyUncheckedCreateWithoutListingsInput = {
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   isMonument?: boolean
+  erfpachtType?: $Enums.ErfpachtType
+  erfpachtCanonCents?: bigint | number | null
+  erfpachtDetails?: string | null
+  erfpachtEndDate?: Date | string | null
+  erfpachtSource?: string | null
+  erfpachtRetrievedAt?: Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -1834,6 +2054,12 @@ export type PropertyUpdateWithoutListingsInput = {
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeFieldUpdateOperationsInput | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  erfpachtDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  erfpachtSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1874,6 +2100,12 @@ export type PropertyUncheckedUpdateWithoutListingsInput = {
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeFieldUpdateOperationsInput | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  erfpachtDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  erfpachtSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1912,6 +2144,12 @@ export type PropertyCreateManyOwnerInput = {
   parkingSpacePriceCents?: bigint | number | null
   constructionYear?: number | null
   isMonument?: boolean
+  erfpachtType?: $Enums.ErfpachtType
+  erfpachtCanonCents?: bigint | number | null
+  erfpachtDetails?: string | null
+  erfpachtEndDate?: Date | string | null
+  erfpachtSource?: string | null
+  erfpachtRetrievedAt?: Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Date | string | null
@@ -1948,6 +2186,12 @@ export type PropertyUpdateWithoutOwnerInput = {
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeFieldUpdateOperationsInput | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  erfpachtDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  erfpachtSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1987,6 +2231,12 @@ export type PropertyUncheckedUpdateWithoutOwnerInput = {
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeFieldUpdateOperationsInput | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  erfpachtDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  erfpachtSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2026,6 +2276,12 @@ export type PropertyUncheckedUpdateManyWithoutOwnerInput = {
   parkingSpacePriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isMonument?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  erfpachtType?: Prisma.EnumErfpachtTypeFieldUpdateOperationsInput | $Enums.ErfpachtType
+  erfpachtCanonCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  erfpachtDetails?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  erfpachtSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  erfpachtRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   layout?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterSourcePayload?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   kadasterRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2103,6 +2359,12 @@ export type PropertySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   parkingSpacePriceCents?: boolean
   constructionYear?: boolean
   isMonument?: boolean
+  erfpachtType?: boolean
+  erfpachtCanonCents?: boolean
+  erfpachtDetails?: boolean
+  erfpachtEndDate?: boolean
+  erfpachtSource?: boolean
+  erfpachtRetrievedAt?: boolean
   layout?: boolean
   kadasterSourcePayload?: boolean
   kadasterRetrievedAt?: boolean
@@ -2145,6 +2407,12 @@ export type PropertySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   parkingSpacePriceCents?: boolean
   constructionYear?: boolean
   isMonument?: boolean
+  erfpachtType?: boolean
+  erfpachtCanonCents?: boolean
+  erfpachtDetails?: boolean
+  erfpachtEndDate?: boolean
+  erfpachtSource?: boolean
+  erfpachtRetrievedAt?: boolean
   layout?: boolean
   kadasterSourcePayload?: boolean
   kadasterRetrievedAt?: boolean
@@ -2183,6 +2451,12 @@ export type PropertySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   parkingSpacePriceCents?: boolean
   constructionYear?: boolean
   isMonument?: boolean
+  erfpachtType?: boolean
+  erfpachtCanonCents?: boolean
+  erfpachtDetails?: boolean
+  erfpachtEndDate?: boolean
+  erfpachtSource?: boolean
+  erfpachtRetrievedAt?: boolean
   layout?: boolean
   kadasterSourcePayload?: boolean
   kadasterRetrievedAt?: boolean
@@ -2221,6 +2495,12 @@ export type PropertySelectScalar = {
   parkingSpacePriceCents?: boolean
   constructionYear?: boolean
   isMonument?: boolean
+  erfpachtType?: boolean
+  erfpachtCanonCents?: boolean
+  erfpachtDetails?: boolean
+  erfpachtEndDate?: boolean
+  erfpachtSource?: boolean
+  erfpachtRetrievedAt?: boolean
   layout?: boolean
   kadasterSourcePayload?: boolean
   kadasterRetrievedAt?: boolean
@@ -2228,7 +2508,7 @@ export type PropertySelectScalar = {
   updatedAt?: boolean
 }
 
-export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "bagAddressId" | "bagBuildingId" | "cadastralParcelId" | "postcode" | "houseNumber" | "houseNumberAddition" | "street" | "city" | "municipality" | "province" | "latitude" | "longitude" | "propertyType" | "livingAreaSqm" | "officialLandAreaSqm" | "volumeCubicMeters" | "roomCount" | "bedroomCount" | "bathroomCount" | "floorCount" | "roofType" | "externalStorageAreaSqm" | "amenities" | "parkingOptions" | "parkingSpacePriceCents" | "constructionYear" | "isMonument" | "layout" | "kadasterSourcePayload" | "kadasterRetrievedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
+export type PropertyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerId" | "bagAddressId" | "bagBuildingId" | "cadastralParcelId" | "postcode" | "houseNumber" | "houseNumberAddition" | "street" | "city" | "municipality" | "province" | "latitude" | "longitude" | "propertyType" | "livingAreaSqm" | "officialLandAreaSqm" | "volumeCubicMeters" | "roomCount" | "bedroomCount" | "bathroomCount" | "floorCount" | "roofType" | "externalStorageAreaSqm" | "amenities" | "parkingOptions" | "parkingSpacePriceCents" | "constructionYear" | "isMonument" | "erfpachtType" | "erfpachtCanonCents" | "erfpachtDetails" | "erfpachtEndDate" | "erfpachtSource" | "erfpachtRetrievedAt" | "layout" | "kadasterSourcePayload" | "kadasterRetrievedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["property"]>
 export type PropertyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   energyLabels?: boolean | Prisma.Property$energyLabelsArgs<ExtArgs>
@@ -2281,6 +2561,12 @@ export type $PropertyPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     parkingSpacePriceCents: bigint | null
     constructionYear: number | null
     isMonument: boolean
+    erfpachtType: $Enums.ErfpachtType
+    erfpachtCanonCents: bigint | null
+    erfpachtDetails: string | null
+    erfpachtEndDate: Date | null
+    erfpachtSource: string | null
+    erfpachtRetrievedAt: Date | null
     layout: runtime.JsonValue | null
     kadasterSourcePayload: runtime.JsonValue | null
     kadasterRetrievedAt: Date | null
@@ -2742,6 +3028,12 @@ export interface PropertyFieldRefs {
   readonly parkingSpacePriceCents: Prisma.FieldRef<"Property", 'BigInt'>
   readonly constructionYear: Prisma.FieldRef<"Property", 'Int'>
   readonly isMonument: Prisma.FieldRef<"Property", 'Boolean'>
+  readonly erfpachtType: Prisma.FieldRef<"Property", 'ErfpachtType'>
+  readonly erfpachtCanonCents: Prisma.FieldRef<"Property", 'BigInt'>
+  readonly erfpachtDetails: Prisma.FieldRef<"Property", 'String'>
+  readonly erfpachtEndDate: Prisma.FieldRef<"Property", 'DateTime'>
+  readonly erfpachtSource: Prisma.FieldRef<"Property", 'String'>
+  readonly erfpachtRetrievedAt: Prisma.FieldRef<"Property", 'DateTime'>
   readonly layout: Prisma.FieldRef<"Property", 'Json'>
   readonly kadasterSourcePayload: Prisma.FieldRef<"Property", 'Json'>
   readonly kadasterRetrievedAt: Prisma.FieldRef<"Property", 'DateTime'>

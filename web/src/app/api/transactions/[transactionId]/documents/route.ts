@@ -3,6 +3,7 @@ import { mkdir, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import type { TransactionMilestoneType } from "@/generated/prisma/client";
 import { requireEmailVerifiedUser } from "@/features/auth/guards";
 import {
     appendTransactionEvent,
@@ -11,6 +12,12 @@ import {
 } from "@/features/transactions/transaction-service";
 import { handleApiError } from "@/lib/api-response";
 import { db } from "@/lib/db";
+import { reconcileMilestones } from "@/features/transactions/milestone-engine";
+import {
+    isPassportDocumentCategory,
+    maybeCreatePassportVersion,
+    PASSPORT_DOCUMENT_CATEGORY_LABELS,
+} from "@/features/transactions/passport-service";
 import { documentCategorySchema } from "@/lib/schemas/transaction";
 
 const allowedTypes = {
@@ -20,6 +27,15 @@ const allowedTypes = {
     "image/webp": ".webp",
 } as const;
 const maxBytes = 20 * 1024 * 1024;
+
+/** Documentcategorieën die een voorwaarde-mijlpaal kunnen afronden. */
+const conditionCategoryToMilestone: Partial<
+    Record<string, TransactionMilestoneType>
+> = {
+    FINANCING: "FINANCING",
+    BUILDING_INSPECTION: "BUILDING_INSPECTION",
+    SECURITY_DEPOSIT: "SECURITY_DEPOSIT",
+};
 
 function hasExpectedSignature(bytes: Buffer, mimeType: string) {
     if (mimeType === "application/pdf")
@@ -175,6 +191,42 @@ export async function POST(
                     sizeBytes: created.sizeBytes.toString(),
                 },
             );
+            // Een woningpaspoort-document (bv. energielabel, plattegrond, VvE)
+            // leidt tot een nieuwe, automatische paspoortversie wanneer de
+            // dossierinhoud daadwerkelijk verandert.
+            if (isPassportDocumentCategory(category)) {
+                const label = PASSPORT_DOCUMENT_CATEGORY_LABELS[category] ?? category;
+                await maybeCreatePassportVersion(
+                    tx,
+                    participant.listingId,
+                    transactionId,
+                    session.user.id,
+                    "DOCUMENT_UPLOAD",
+                    `Document toegevoegd: ${label}`,
+                );
+            }
+            // Een bewijsstuk kan een voorwaarde-stap automatisch afronden
+            // (bv. financiering, bouwkundige keuring, waarborgsom/borg).
+            await reconcileMilestones(tx, transactionId);
+            const stepType = conditionCategoryToMilestone[category as string];
+            if (stepType) {
+                const step = await tx.transactionMilestone.findUnique({
+                    where: {
+                        transactionId_type: { transactionId, type: stepType },
+                    },
+                    select: { status: true, title: true },
+                });
+                if (step?.status === "COMPLETED") {
+                    await tx.transactionMessage.create({
+                        data: {
+                            transactionId,
+                            authorUserId: session.user.id,
+                            kind: "SYSTEM",
+                            body: `De stap "${step.title}" is automatisch afgerond op basis van het geüploade bewijsstuk.`,
+                        },
+                    });
+                }
+            }
             await tx.propertyTransaction.update({
                 where: { id: transactionId },
                 data: { version: { increment: 1 } },

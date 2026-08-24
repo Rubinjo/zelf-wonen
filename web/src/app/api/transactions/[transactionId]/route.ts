@@ -10,6 +10,8 @@ import {
 } from "@/features/transactions/transaction-service";
 import { handleApiError } from "@/lib/api-response";
 import { db } from "@/lib/db";
+import { reconcileMilestones } from "@/features/transactions/milestone-engine";
+import { buildSecurityReference } from "@/features/transactions/security-state";
 import { transactionDetailsSchema } from "@/lib/schemas/transaction";
 
 function accessError(error: TransactionAccessError) {
@@ -106,29 +108,10 @@ export async function PATCH(
                         version: { increment: 1 },
                     },
                 });
-                if (bothConfirmed) {
-                    await tx.transactionMilestone.update({
-                        where: {
-                            transactionId_type: {
-                                transactionId,
-                                type: "PURCHASE_AGREEMENT",
-                            },
-                        },
-                        data: { status: "COMPLETED", completedAt: new Date() },
-                    });
-                    await tx.transactionMilestone.update({
-                        where: {
-                            transactionId_type: {
-                                transactionId,
-                                type: "COOLING_OFF_PERIOD",
-                            },
-                        },
-                        data: {
-                            status: "IN_PROGRESS",
-                            dueAt: current.coolingOffEndsAt,
-                        },
-                    });
-                }
+                // De voortgangsmotor leidt de mijlpaalstatussen af uit de
+                // bevestigingen (bv. koop-/huurovereenkomst = compleet zodra
+                // beide partijen hebben bevestigd).
+                await reconcileMilestones(tx, transactionId);
                 await appendTransactionEvent(
                     tx,
                     transactionId,
@@ -147,33 +130,50 @@ export async function PATCH(
                 return updated;
             }
             if (input.section === "NOTARY") {
+                // Rolgebaseerd: de verkoper mag een notaris alleen voorstellen;
+                // alleen de koper bevestigt de uiteindelijke notaris.
+                const isSeller = participant.sellerUserId === session.user.id;
+                const notaryPayload =
+                    input.notaryDetails as Prisma.InputJsonValue;
+                if (isSeller && input.action !== "PROPOSE") {
+                    throw new TransactionAccessError(
+                        "TRANSACTION_FORBIDDEN",
+                        "Als verkoper kun je een notaris alleen voorstellen; de koper bevestigt de notaris.",
+                    );
+                }
+                if (!isSeller && input.action !== "CONFIRM") {
+                    throw new TransactionAccessError(
+                        "TRANSACTION_FORBIDDEN",
+                        "Alleen de koper bevestigt de uiteindelijke notaris.",
+                    );
+                }
                 const updated = await tx.propertyTransaction.update({
                     where: { id: transactionId },
-                    data: {
-                        notaryDetails:
-                            input.notaryDetails as Prisma.InputJsonValue,
-                        version: { increment: 1 },
-                    },
+                    data: isSeller
+                        ? {
+                              notaryProposal: notaryPayload,
+                              notaryProposedByUserId: session.user.id,
+                              notaryProposedAt: new Date(),
+                              version: { increment: 1 },
+                          }
+                        : {
+                              notaryDetails: notaryPayload,
+                              notaryConfirmedByUserId: session.user.id,
+                              notaryConfirmedAt: new Date(),
+                              version: { increment: 1 },
+                          },
                 });
-                await tx.transactionMilestone.update({
-                    where: {
-                        transactionId_type: {
-                            transactionId,
-                            type: "NOTARY_SELECTION",
-                        },
-                    },
-                    data: {
-                        status: "COMPLETED",
-                        completedAt: new Date(),
-                        details: input.notaryDetails as Prisma.InputJsonValue,
-                    },
-                });
+                await reconcileMilestones(tx, transactionId);
                 await appendTransactionEvent(
                     tx,
                     transactionId,
                     session.user.id,
                     "NOTARY_UPDATED",
-                    input.notaryDetails as Prisma.InputJsonValue,
+                    {
+                        action: input.action,
+                        role: isSeller ? "SELLER" : "BUYER",
+                        notaryDetails: notaryPayload,
+                    },
                 );
                 return updated;
             }
@@ -186,25 +186,196 @@ export async function PATCH(
                         version: { increment: 1 },
                     },
                 });
-                await tx.transactionMilestone.update({
-                    where: {
-                        transactionId_type: {
-                            transactionId,
-                            type: "FINAL_INSPECTION",
-                        },
-                    },
-                    data: {
-                        status: "COMPLETED",
-                        completedAt: new Date(),
-                        details: input.handoverDetails as Prisma.InputJsonValue,
-                    },
-                });
+                await reconcileMilestones(tx, transactionId);
                 await appendTransactionEvent(
                     tx,
                     transactionId,
                     session.user.id,
                     "HANDOVER_UPDATED",
                     input.handoverDetails as Prisma.InputJsonValue,
+                );
+                return updated;
+            }
+            if (input.section === "SECURITY") {
+                // Waarborgsom (Art 7:26 lid 4 BW). Het platform houdt zelf geen
+                // geld aan: de storting loopt via de kwaliteitsrekening van de
+                // notaris. Hier wordt uitsluitend de status gecoördineerd en
+                // vastgelegd (append-only eventlog).
+                const agreement = await tx.purchaseAgreement.findUnique({
+                    where: { transactionId },
+                    select: {
+                        status: true,
+                        securityType: true,
+                        securityAmountCents: true,
+                    },
+                });
+                if (
+                    !agreement ||
+                    agreement.securityType === "NONE" ||
+                    agreement.status !== "SIGNED"
+                ) {
+                    throw new TransactionAccessError(
+                        "TRANSACTION_FORBIDDEN",
+                        "Er is nog geen ondertekende waarborgsom-afspraak.",
+                    );
+                }
+                const isSeller = participant.sellerUserId === session.user.id;
+                const isBuyer = participant.buyerUserId === session.user.id;
+                if (input.action === "CHOOSE_FORM") {
+                    // Alleen de koper kiest de vorm van zekerheid (waarborgsom
+                    // of bankgarantie, Art 7:26 lid 4 BW). De verkoper heeft
+                    // op de overeenkomst alleen "REQUIRED" vastgelegd.
+                    if (!isBuyer) {
+                        throw new TransactionAccessError(
+                            "TRANSACTION_FORBIDDEN",
+                            "Alleen de koper kiest de vorm van zekerheid (waarborgsom of bankgarantie).",
+                        );
+                    }
+                    if (
+                        input.form !== "DEPOSIT" &&
+                        input.form !== "BANK_GUARANTEE"
+                    ) {
+                        throw new TransactionAccessError(
+                            "TRANSACTION_FORBIDDEN",
+                            "Kies waarborgsom (depot notaris) of bankgarantie.",
+                        );
+                    }
+                    const currentSecurity =
+                        await tx.propertyTransaction.findUnique({
+                            where: { id: transactionId },
+                            select: {
+                                securityPaidAt: true,
+                                securityConfirmedAt: true,
+                            },
+                        });
+                    if (
+                        currentSecurity?.securityPaidAt ||
+                        currentSecurity?.securityConfirmedAt
+                    ) {
+                        throw new TransactionAccessError(
+                            "TRANSACTION_FORBIDDEN",
+                            "De vorm van zekerheid kan niet meer worden gewijzigd nadat deze is geregeld.",
+                        );
+                    }
+                    // Bij waarborgsom wordt het betaalkenmerk direct
+                    // aangemaakt, zodat de koper meteen weet waarop hij moet
+                    // overmaken (geen aparte knop nodig). Bij een bankgarantie
+                    // is er geen storting en dus geen kenmerk.
+                    const reference =
+                        input.form === "DEPOSIT"
+                            ? buildSecurityReference(transactionId)
+                            : null;
+                    const updated = await tx.propertyTransaction.update({
+                        where: { id: transactionId },
+                        data: {
+                            securityForm: input.form,
+                            securityFormChosenAt: new Date(),
+                            securityFormChosenByUserId: session.user.id,
+                            // Bij wisselen van vorm worden depot-specifieke
+                            // gegevens gereset (betaalkenmerk geldt alleen
+                            // voor een storting op de kwaliteitsrekening).
+                            securityReference: reference,
+                            securityPaidAt: null,
+                            securityPaidByUserId: null,
+                            securityConfirmedAt: null,
+                            securityConfirmedByUserId: null,
+                            version: { increment: 1 },
+                        },
+                    });
+                    await appendTransactionEvent(
+                        tx,
+                        transactionId,
+                        session.user.id,
+                        "SECURITY_FORM_CHOSEN",
+                        { form: input.form },
+                    );
+                    if (reference) {
+                        await appendTransactionEvent(
+                            tx,
+                            transactionId,
+                            session.user.id,
+                            "SECURITY_REFERENCE_CREATED",
+                            { reference },
+                        );
+                    }
+                    return updated;
+                }
+                if (input.action === "GENERATE_REFERENCE") {
+                    // Idempotent: één betaalkenmerk per transactie.
+                    const existing = await tx.propertyTransaction.findUnique({
+                        where: { id: transactionId },
+                        select: { securityReference: true },
+                    });
+                    if (!existing?.securityReference) {
+                        const reference =
+                            buildSecurityReference(transactionId);
+                        await tx.propertyTransaction.update({
+                            where: { id: transactionId },
+                            data: {
+                                securityReference: reference,
+                                version: { increment: 1 },
+                            },
+                        });
+                        await appendTransactionEvent(
+                            tx,
+                            transactionId,
+                            session.user.id,
+                            "SECURITY_REFERENCE_CREATED",
+                            { reference },
+                        );
+                    }
+                    return current;
+                }
+                if (input.action === "MARK_PAID") {
+                    if (!isBuyer) {
+                        throw new TransactionAccessError(
+                            "TRANSACTION_FORBIDDEN",
+                            "Alleen de koper kan aangeven dat de waarborgsom is overgemaakt.",
+                        );
+                    }
+                    const updated = await tx.propertyTransaction.update({
+                        where: { id: transactionId },
+                        data: {
+                            securityPaidAt: new Date(),
+                            securityPaidByUserId: session.user.id,
+                            version: { increment: 1 },
+                        },
+                    });
+                    await appendTransactionEvent(
+                        tx,
+                        transactionId,
+                        session.user.id,
+                        "SECURITY_PAID",
+                        {
+                            amountCents:
+                                agreement.securityAmountCents?.toString() ??
+                                null,
+                        },
+                    );
+                    return updated;
+                }
+                // CONFIRM: alleen de verkoper bevestigt de ontvangst (bv. nadat
+                // de notaris de storting op de kwaliteitsrekening bevestigt).
+                if (!isSeller) {
+                    throw new TransactionAccessError(
+                        "TRANSACTION_FORBIDDEN",
+                        "Alleen de verkoper kan de ontvangst van de waarborgsom bevestigen.",
+                    );
+                }
+                const updated = await tx.propertyTransaction.update({
+                    where: { id: transactionId },
+                    data: {
+                        securityConfirmedAt: new Date(),
+                        securityConfirmedByUserId: session.user.id,
+                        version: { increment: 1 },
+                    },
+                });
+                await appendTransactionEvent(
+                    tx,
+                    transactionId,
+                    session.user.id,
+                    "SECURITY_CONFIRMED",
+                    {},
                 );
                 return updated;
             }
@@ -241,6 +412,9 @@ export async function PATCH(
                 .every((milestone) =>
                     ["COMPLETED", "WAIVED"].includes(milestone.status),
                 );
+            // Een notaris geldt pas als gekozen nadat de koper heeft bevestigd;
+            // sinds de rolgebaseerde flow wordt notaryDetails alleen door de
+            // koper geschreven, dus aanwezigheid impliceert bevestiging.
             const notaryReady =
                 current.listing.purpose === "RENT" ||
                 Boolean(current.notaryDetails);
@@ -261,13 +435,7 @@ export async function PATCH(
                     version: { increment: 1 },
                 },
             });
-            await tx.transactionMilestone.updateMany({
-                where: {
-                    transactionId,
-                    type: { in: ["DEED_OF_TRANSFER", "KEY_HANDOVER"] },
-                },
-                data: { status: "COMPLETED", completedAt: new Date() },
-            });
+            await reconcileMilestones(tx, transactionId);
             const listing = await tx.listing.findUniqueOrThrow({
                 where: { id: participant.listingId },
                 select: { purpose: true },

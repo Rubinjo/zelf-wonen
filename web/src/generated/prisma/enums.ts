@@ -38,6 +38,24 @@ export const ListingStatus = {
 export type ListingStatus = (typeof ListingStatus)[keyof typeof ListingStatus]
 
 
+export const ListingSource = {
+  FUNDA: 'FUNDA',
+  KAMERNET: 'KAMERNET'
+} as const
+
+export type ListingSource = (typeof ListingSource)[keyof typeof ListingSource]
+
+
+export const AggregatedListingStatus = {
+  ACTIVE: 'ACTIVE',
+  EXPIRED: 'EXPIRED',
+  OFFLINE: 'OFFLINE',
+  ERROR: 'ERROR'
+} as const
+
+export type AggregatedListingStatus = (typeof AggregatedListingStatus)[keyof typeof AggregatedListingStatus]
+
+
 export const PropertyType = {
   HOUSE: 'HOUSE',
   APARTMENT: 'APARTMENT',
@@ -88,6 +106,26 @@ export const ParkingOption = {
 } as const
 
 export type ParkingOption = (typeof ParkingOption)[keyof typeof ParkingOption]
+
+
+export const ErfpachtType = {
+  UNKNOWN: 'UNKNOWN',
+  FREEHOLD: 'FREEHOLD',
+  LEASEHOLD: 'LEASEHOLD',
+  LEASEHOLD_AFGEKOCHT: 'LEASEHOLD_AFGEKOCHT'
+} as const
+
+export type ErfpachtType = (typeof ErfpachtType)[keyof typeof ErfpachtType]
+
+
+export const FoundationRiskLevel = {
+  NONE: 'NONE',
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH'
+} as const
+
+export type FoundationRiskLevel = (typeof FoundationRiskLevel)[keyof typeof FoundationRiskLevel]
 
 
 export const EnergyLabelClass = {
@@ -159,7 +197,8 @@ export type VerificationStatus = (typeof VerificationStatus)[keyof typeof Verifi
 export const VerificationPurpose = {
   ACCOUNT_ACCESS: 'ACCOUNT_ACCESS',
   LISTING_PUBLICATION: 'LISTING_PUBLICATION',
-  EXTERNAL_PUBLICATION: 'EXTERNAL_PUBLICATION'
+  EXTERNAL_PUBLICATION: 'EXTERNAL_PUBLICATION',
+  AGREEMENT_SIGNING: 'AGREEMENT_SIGNING'
 } as const
 
 export type VerificationPurpose = (typeof VerificationPurpose)[keyof typeof VerificationPurpose]
@@ -303,8 +342,13 @@ export const TransactionDocumentCategory = {
   PROPERTY_PASSPORT: 'PROPERTY_PASSPORT',
   FINANCING: 'FINANCING',
   BUILDING_INSPECTION: 'BUILDING_INSPECTION',
+  SECURITY_DEPOSIT: 'SECURITY_DEPOSIT',
   NOTARY: 'NOTARY',
   FINAL_INSPECTION: 'FINAL_INSPECTION',
+  ENERGY_LABEL: 'ENERGY_LABEL',
+  FLOOR_PLAN: 'FLOOR_PLAN',
+  VVE: 'VVE',
+  CADASTRAL: 'CADASTRAL',
   OTHER: 'OTHER'
 } as const
 
@@ -323,18 +367,53 @@ export type TransactionDocumentStatus = (typeof TransactionDocumentStatus)[keyof
 export const TransactionEventType = {
   ROOM_CREATED: 'ROOM_CREATED',
   MESSAGE_SENT: 'MESSAGE_SENT',
+  MESSAGE_IMPORTED: 'MESSAGE_IMPORTED',
   DOCUMENT_UPLOADED: 'DOCUMENT_UPLOADED',
   DOCUMENT_DOWNLOADED: 'DOCUMENT_DOWNLOADED',
   MILESTONE_UPDATED: 'MILESTONE_UPDATED',
   CONTRACT_CONFIRMED: 'CONTRACT_CONFIRMED',
+  AGREEMENT_UPDATED: 'AGREEMENT_UPDATED',
+  AGREEMENT_SUBMITTED: 'AGREEMENT_SUBMITTED',
+  AGREEMENT_SIGNED: 'AGREEMENT_SIGNED',
   NOTARY_UPDATED: 'NOTARY_UPDATED',
   HANDOVER_UPDATED: 'HANDOVER_UPDATED',
   PASSPORT_VERSION_CREATED: 'PASSPORT_VERSION_CREATED',
+  SECURITY_FORM_CHOSEN: 'SECURITY_FORM_CHOSEN',
+  SECURITY_REFERENCE_CREATED: 'SECURITY_REFERENCE_CREATED',
+  SECURITY_PAID: 'SECURITY_PAID',
+  SECURITY_CONFIRMED: 'SECURITY_CONFIRMED',
   TRANSACTION_COMPLETED: 'TRANSACTION_COMPLETED',
   TRANSACTION_CANCELLED: 'TRANSACTION_CANCELLED'
 } as const
 
 export type TransactionEventType = (typeof TransactionEventType)[keyof typeof TransactionEventType]
+
+
+export const PurchaseAgreementStatus = {
+  DRAFT: 'DRAFT',
+  AWAITING_SIGNATURES: 'AWAITING_SIGNATURES',
+  PARTIALLY_SIGNED: 'PARTIALLY_SIGNED',
+  SIGNED: 'SIGNED',
+  VOID: 'VOID'
+} as const
+
+export type PurchaseAgreementStatus = (typeof PurchaseAgreementStatus)[keyof typeof PurchaseAgreementStatus]
+
+
+export const AgreementSecurityType = {
+  NONE: 'NONE',
+  REQUIRED: 'REQUIRED'
+} as const
+
+export type AgreementSecurityType = (typeof AgreementSecurityType)[keyof typeof AgreementSecurityType]
+
+
+export const TransactionSecurityForm = {
+  DEPOSIT: 'DEPOSIT',
+  BANK_GUARANTEE: 'BANK_GUARANTEE'
+} as const
+
+export type TransactionSecurityForm = (typeof TransactionSecurityForm)[keyof typeof TransactionSecurityForm]
 
 
 export const SeekerNotificationType = {

@@ -108,7 +108,7 @@ export function ViewingBooking({
     }
 
     return (
-        <div className="rounded-3xl border border-line bg-white p-6 shadow-xl sm:p-7">
+        <div className="rounded-3xl border border-line bg-surface p-6 shadow-xl sm:p-7">
             <span className="grid size-11 place-items-center rounded-xl bg-accent text-brand-dark">
                 <CalendarDays size={21} />
             </span>

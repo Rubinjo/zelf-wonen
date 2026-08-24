@@ -22,6 +22,10 @@ import type {
     MarketplaceBounds,
     MarketplaceListing,
 } from "@/features/listings/marketplace-service";
+import {
+    isBiddingClosed,
+    StatusBadge,
+} from "@/components/listing/status-badge";
 
 const energyNames: Record<string, string> = {
     A_PLUS_PLUS_PLUS_PLUS_PLUS: "A+++++",
@@ -38,6 +42,12 @@ const energyNames: Record<string, string> = {
     G: "G",
 };
 
+function listingPriceCents(listing: MarketplaceListing) {
+    return listing.status === "SOLD" || listing.status === "RENTED"
+        ? (listing.finalPriceCents ?? listing.priceCents)
+        : listing.priceCents;
+}
+
 function formatMarkerPrice(priceCents: string | null) {
     if (!priceCents) return "Prijs op aanvraag";
     const price = Number(priceCents) / 100;
@@ -47,6 +57,25 @@ function formatMarkerPrice(priceCents: string | null) {
         }).format(price / 1_000_000)} mln`;
     }
     return `€${Math.round(price / 1_000)}k`;
+}
+
+function erfpachtLabel(listing: MarketplaceListing) {
+    if (listing.erfpachtType === "LEASEHOLD") {
+        if (listing.erfpachtCanonCents) {
+            const canon = new Intl.NumberFormat("nl-NL", {
+                style: "currency",
+                currency: "EUR",
+                maximumFractionDigits: 0,
+            }).format(Number(listing.erfpachtCanonCents) / 100);
+            return `Erfpacht · canon ${canon}/jaar`;
+        }
+        return "Erfpacht";
+    }
+    if (listing.erfpachtType === "LEASEHOLD_AFGEKOCHT") {
+        return "Erfpacht afgekocht";
+    }
+    if (listing.erfpachtType === "FREEHOLD") return "Volle eigendom";
+    return null;
 }
 
 function FitListings({
@@ -114,7 +143,7 @@ function MapControls({
                         onClick={onClearBounds}
                         aria-label="Wis kaartgebied"
                         title="Wis kaartgebied"
-                        className="grid size-10 place-items-center rounded-md border border-line bg-white text-muted shadow-md transition hover:border-brand hover:text-brand"
+                        className="grid size-10 place-items-center rounded-md border border-line bg-surface text-muted shadow-md transition hover:border-brand hover:text-brand"
                     >
                         <X size={17} />
                     </button>
@@ -125,7 +154,7 @@ function MapControls({
                 onClick={onCollapse}
                 aria-label="Minimaliseer kaart"
                 title="Minimaliseer kaart"
-                className="pointer-events-auto absolute right-3 hidden size-10 place-items-center rounded-md bg-white text-brand shadow-lg transition hover:bg-background lg:grid"
+                className="pointer-events-auto absolute right-3 hidden size-10 place-items-center rounded-md bg-surface text-brand shadow-lg transition hover:bg-background lg:grid"
             >
                 <PanelRightClose size={19} />
             </button>
@@ -166,16 +195,18 @@ export function MarketplaceMap({
             ),
         [mappableListings],
     );
+    // Uses the standard OpenStreetMap tiles; in dark mode the tile layer is
+    // re-styled to a colorful dark map via a CSS filter (see globals.css).
 
     if (mappableListings.length === 0) {
         return (
-            <div className="relative grid h-full min-h-96 place-items-center bg-[#e9eee9] px-8 text-center">
+            <div className="relative grid h-full min-h-96 place-items-center bg-[#e9eee9] px-8 text-center dark:bg-[#17221d]">
                 <button
                     type="button"
                     onClick={onCollapse}
                     aria-label="Minimaliseer kaart"
                     title="Minimaliseer kaart"
-                    className="absolute right-3 top-3 hidden size-10 place-items-center rounded-md bg-white text-brand shadow-lg transition hover:bg-background lg:grid"
+                    className="absolute right-3 top-3 hidden size-10 place-items-center rounded-md bg-surface text-brand shadow-lg transition hover:bg-background lg:grid"
                 >
                     <PanelRightClose size={19} />
                 </button>
@@ -226,7 +257,7 @@ export function MarketplaceMap({
                         position={[listing.latitude!, listing.longitude!]}
                         icon={divIcon({
                             className: "marketplace-marker-shell",
-                            html: `<span class="marketplace-marker${selected ? " is-selected" : ""}">${formatMarkerPrice(listing.priceCents)}</span>`,
+                            html: `<span class="marketplace-marker${selected ? " is-selected" : ""}">${formatMarkerPrice(listingPriceCents(listing))}</span>`,
                             iconAnchor: [42, 18],
                             popupAnchor: [0, -18],
                         })}
@@ -259,18 +290,31 @@ export function MarketplaceMap({
                             >
                                 {listing.street} {listing.houseNumber}
                             </Link>
-                            {listing.isMonument ? (
-                                <span className="mt-2 inline-flex items-center gap-1.5 rounded-sm bg-background px-2 py-1 text-xs font-semibold text-brand">
-                                    <Landmark size={13} /> Monument
-                                </span>
-                            ) : null}
+                            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                                <StatusBadge
+                                    status={listing.status}
+                                    purpose={listing.purpose}
+                                    biddingClosed={isBiddingClosed(listing)}
+                                />
+                                {listing.isMonument ? (
+                                    <span className="inline-flex items-center gap-1.5 rounded-sm bg-background px-2 py-1 text-xs font-semibold text-brand">
+                                        <Landmark size={13} /> Monument
+                                    </span>
+                                ) : null}
+                            </div>
                             <p className="mt-1 text-sm text-muted">
                                 {listing.postcode} {listing.city}
                             </p>
                             <p className="mt-2 font-semibold text-brand">
-                                {formatMarkerPrice(listing.priceCents)}
+                                {formatMarkerPrice(listingPriceCents(listing))}
                                 {listing.purpose === "RENT" ? " / mnd" : ""}
                             </p>
+                            {erfpachtLabel(listing) ? (
+                                <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-muted">
+                                    <Landmark size={13} className="text-brand" />
+                                    {erfpachtLabel(listing)}
+                                </p>
+                            ) : null}
                             <div className="mt-3 flex items-center gap-3 border-t border-line pt-3 text-sm text-muted">
                                 <span className="inline-flex items-center gap-1">
                                     <Maximize2 size={14} />
@@ -281,7 +325,7 @@ export function MarketplaceMap({
                                     {listing.roomCount ?? "—"} kamers
                                 </span>
                                 {listing.energyLabel ? (
-                                    <span className="ml-auto rounded-sm bg-[#dff4d8] px-2 py-0.5 text-xs font-bold text-[#1f6b2b]">
+                                    <span className="ml-auto rounded-sm bg-[#dff4d8] px-2 py-0.5 text-xs font-bold text-[#1f6b2b] dark:bg-emerald-500/15 dark:text-emerald-300">
                                         {energyNames[listing.energyLabel] ??
                                             "?"}
                                     </span>

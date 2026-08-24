@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { dutchPostcodeSchema } from "./property";
+import { dutchPostcodeSchema, erfpachtTypeSchema } from "./property";
 
 const maxDatabaseBigInt = BigInt("9223372036854775807");
 const centsSchema = z
@@ -100,6 +100,27 @@ export const listingAttributesSchema = z.object({
         .default([]),
 });
 
+const energyLabelInputSchema = z.object({
+    registrationNumber: z.string().trim().max(120).nullable(),
+    labelClass: z.enum([
+        "A+++++",
+        "A++++",
+        "A+++",
+        "A++",
+        "A+",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+    ]),
+    primaryFossilEnergyKwhSqmYear: z.number().nonnegative().nullable(),
+    registeredAt: z.string().datetime().nullable(),
+    validUntil: z.string().datetime().nullable(),
+});
+
 export const createListingSchema = z.object({
     purpose: z.enum(["SALE", "RENT"]),
     propertyType: propertyTypeSchema,
@@ -129,6 +150,10 @@ export const createListingSchema = z.object({
         .nullable()
         .optional(),
     isMonument: z.boolean().default(false),
+    erfpachtType: erfpachtTypeSchema.default("UNKNOWN"),
+    erfpachtCanonCents: centsSchema.nullable().optional(),
+    erfpachtDetails: z.string().trim().max(240).nullable().optional(),
+    erfpachtEndDate: z.string().datetime().nullable().optional(),
     livingAreaSqm: z.number().positive().max(10_000).nullable().optional(),
     roomCount: z.number().int().positive().max(100).nullable().optional(),
     bedroomCount: z.number().int().nonnegative().max(100).nullable().optional(),
@@ -150,6 +175,23 @@ export const createListingSchema = z.object({
     amenities: z.array(propertyAmenitySchema).max(20).optional(),
     parkingOptions: z.array(parkingOptionSchema).max(20).optional(),
     parkingSpacePriceCents: centsSchema.nullable().optional(),
+    titleNl: z.string().trim().max(140).nullable().optional(),
+    titleEn: z.string().trim().max(140).nullable().optional(),
+    descriptionNl: z.string().trim().max(12_000).nullable().optional(),
+    descriptionEn: z.string().trim().max(12_000).nullable().optional(),
+    askingPriceCents: centsSchema.nullable().optional(),
+    monthlyRentCents: centsSchema.nullable().optional(),
+    serviceCostsCents: centsSchema.nullable().optional(),
+    viewingNotes: z.string().trim().max(2_000).nullable().optional(),
+    biddingMethod: biddingMethodSchema.default("PRIVATE"),
+    minimumBidCents: positiveCentsSchema.nullable().optional(),
+    bidIncrementCents: positiveCentsSchema.nullable().optional(),
+    allowBidConditions: z.boolean().default(true),
+    bidWindowOpensAt: z.string().datetime().nullable().optional(),
+    bidWindowClosesAt: z.string().datetime().nullable().optional(),
+    floorplannerEmbedUrl: z.string().url().max(2_000).nullable().optional(),
+    attributes: listingAttributesSchema.nullable().optional(),
+    energyLabel: energyLabelInputSchema.nullable().optional(),
 });
 
 export const updateListingSchema = z
@@ -198,6 +240,10 @@ export const updateListingSchema = z
             .nullable()
             .optional(),
         isMonument: z.boolean().optional(),
+        erfpachtType: erfpachtTypeSchema.optional(),
+        erfpachtCanonCents: centsSchema.nullable().optional(),
+        erfpachtDetails: z.string().trim().max(240).nullable().optional(),
+        erfpachtEndDate: z.string().datetime().nullable().optional(),
         titleNl: z.string().trim().max(140).nullable().optional(),
         titleEn: z.string().trim().max(140).nullable().optional(),
         descriptionNl: z.string().trim().max(12_000).nullable().optional(),

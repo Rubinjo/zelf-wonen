@@ -143,7 +143,16 @@ export async function getTransactionRoom(
             listing: {
                 include: {
                     property: {
-                        include: {
+                        select: {
+                            propertyType: true,
+                            street: true,
+                            houseNumber: true,
+                            houseNumberAddition: true,
+                            postcode: true,
+                            city: true,
+                            livingAreaSqm: true,
+                            roomCount: true,
+                            constructionYear: true,
                             energyLabels: {
                                 orderBy: { registeredAt: "desc" },
                                 take: 1,
@@ -155,6 +164,9 @@ export async function getTransactionRoom(
             acceptedBid: true,
             seller: { select: { id: true, name: true, email: true } },
             buyer: { select: { id: true, name: true, email: true } },
+            securityPaidBy: { select: { id: true, name: true } },
+            securityConfirmedBy: { select: { id: true, name: true } },
+            securityFormChosenBy: { select: { id: true, name: true } },
             milestones: { orderBy: { sortOrder: "asc" } },
             messages: {
                 include: {
@@ -170,6 +182,74 @@ export async function getTransactionRoom(
                 orderBy: { createdAt: "desc" },
             },
             events: { orderBy: { occurredAt: "desc" }, take: 50 },
+            agreement: true,
         },
     });
+}
+
+// Verplaatst de berichten die vóór de koop tussen koper en verkoper over de
+// advertentie zijn gewisseld naar de chat van de transactieruimte. Roep dit aan
+// binnen dezelfde database-transactie als het aanmaken van de transactie.
+export async function transferListingMessagesToTransaction(
+    tx: Prisma.TransactionClient,
+    transaction: {
+        id: string;
+        listingId: string;
+        sellerUserId: string;
+        buyerUserId: string;
+    },
+) {
+    const messages = await tx.listingMessage.findMany({
+        where: {
+            listingId: transaction.listingId,
+            // Alleen de berichtenlijn van de koper wordt overgezet.
+            seekerUserId: transaction.buyerUserId,
+            transferredToTransactionId: null,
+        },
+        orderBy: { createdAt: "asc" },
+    });
+    if (messages.length === 0) return 0;
+    const occurredAt = new Date();
+    for (const message of messages) {
+        await tx.transactionMessage.create({
+            data: {
+                transactionId: transaction.id,
+                authorUserId: message.authorUserId,
+                kind: "TEXT",
+                body: message.body,
+                createdAt: message.createdAt,
+            },
+        });
+    }
+    await tx.listingMessage.updateMany({
+        where: { id: { in: messages.map((message) => message.id) } },
+        data: {
+            transferredToTransactionId: transaction.id,
+            transferredAt: occurredAt,
+        },
+    });
+    await tx.transactionMessage.create({
+        data: {
+            transactionId: transaction.id,
+            authorUserId: transaction.buyerUserId,
+            kind: "SYSTEM",
+            body: `${messages.length} bericht${messages.length === 1 ? "" : "en"} van vóór de koop zijn overgezet naar deze transactiechat.`,
+            createdAt: occurredAt,
+        },
+    });
+    await appendTransactionEvent(
+        tx,
+        transaction.id,
+        transaction.buyerUserId,
+        "MESSAGE_IMPORTED",
+        {
+            count: messages.length,
+            messageIds: messages.map((message) => message.id),
+        },
+    );
+    await tx.propertyTransaction.update({
+        where: { id: transaction.id },
+        data: { version: { increment: 1 } },
+    });
+    return messages.length;
 }

@@ -2,17 +2,21 @@ import { randomUUID } from "node:crypto";
 import { Prisma } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
 import { NeighborhoodDataClient } from "@/lib/integrations/neighborhood-data-client";
-import { EnergielabelNlClient } from "@/lib/integrations/property-data/energielabel-nl-client";
 import { PdokClient } from "@/lib/integrations/property-data/pdok-client";
+import { hasVerifiedIdentity } from "@/features/identity/idin-service";
+import {
+    getQuestionnaireSections,
+    type QuestionnaireAnswer,
+} from "@/features/listings/property-questionnaire";
 import type {
     CreateListingInput,
     UpdateListingInput,
 } from "@/lib/schemas/listing";
 
-const energielabelNl = new EnergielabelNlClient();
 const pdok = new PdokClient();
 const neighborhoodData = new NeighborhoodDataClient();
 const storedEnergyLabelClasses = {
+    "A+++++": "A_PLUS_PLUS_PLUS_PLUS_PLUS",
     "A++++": "A_PLUS_PLUS_PLUS_PLUS",
     "A+++": "A_PLUS_PLUS_PLUS",
     "A++": "A_PLUS_PLUS",
@@ -87,7 +91,11 @@ export async function listOwnerListings(ownerId: string) {
         include: listingInclude,
         orderBy: { updatedAt: "desc" },
     });
-    return listings.map((listing) => serializeListing(listing));
+    const verified = await hasVerifiedIdentity(ownerId);
+    return listings.map((listing) => ({
+        ...serializeListing(listing),
+        identityVerified: verified,
+    }));
 }
 
 export async function getOwnerListing(ownerId: string, listingId: string) {
@@ -95,7 +103,11 @@ export async function getOwnerListing(ownerId: string, listingId: string) {
         where: { id: listingId, ownerId },
         include: listingInclude,
     });
-    return listing ? serializeListing(listing) : null;
+    if (!listing) return null;
+    return {
+        ...serializeListing(listing),
+        identityVerified: await hasVerifiedIdentity(ownerId),
+    };
 }
 
 export async function createOwnerListing(
@@ -107,49 +119,8 @@ export async function createOwnerListing(
         houseNumber: input.houseNumber,
         addition: input.houseNumberAddition ?? undefined,
     };
-    const [liveEnergy, pdokAddress] = await Promise.all([
-        energielabelNl.lookupAddress(address).catch((error) => {
-            console.error(
-                "Energielabel.nl lookup during creation failed",
-                error,
-            );
-            return null;
-        }),
-        pdok.lookupAddress(address).catch((error) => {
-            console.error("PDOK lookup during creation failed", error);
-            return null;
-        }),
-    ]);
-    const neighborhood =
-        pdokAddress?.neighborhoodCode &&
-        pdokAddress.neighborhoodName &&
-        pdokAddress.municipalityCode
-            ? await neighborhoodData
-                  .lookup({
-                      neighborhoodCode: pdokAddress.neighborhoodCode,
-                      neighborhoodName: pdokAddress.neighborhoodName,
-                      districtCode: pdokAddress.districtCode,
-                      districtName: pdokAddress.districtName,
-                      municipalityCode: pdokAddress.municipalityCode,
-                      latitude:
-                          input.latitude ??
-                          pdokAddress.coordinates?.latitude ??
-                          null,
-                      longitude:
-                          input.longitude ??
-                          pdokAddress.coordinates?.longitude ??
-                          null,
-                  })
-                  .catch((error) => {
-                      console.error(
-                          "Neighborhood enrichment during creation failed",
-                          error,
-                      );
-                      return null;
-                  })
-            : null;
     const listingId = randomUUID();
-    const listing = await db.$transaction(async (tx) => {
+    const { listing, propertyId } = await db.$transaction(async (tx) => {
         const sourceEnergy = await tx.energyLabel.findFirst({
             where: {
                 labelClass: { not: "UNKNOWN" },
@@ -161,13 +132,20 @@ export async function createOwnerListing(
             },
             orderBy: { registeredAt: "desc" },
         });
-        const energyData = liveEnergy
+        const energyData = input.energyLabel
             ? {
-                  registrationNumber: null,
-                  labelClass: storedEnergyLabelClasses[liveEnergy.labelClass],
-                  primaryFossilEnergyKwhSqmYear: null,
-                  registeredAt: liveEnergy.registeredAt,
-                  validUntil: liveEnergy.validUntil,
+                  registrationNumber: input.energyLabel.registrationNumber,
+                  labelClass:
+                      storedEnergyLabelClasses[input.energyLabel.labelClass] ??
+                      "UNKNOWN",
+                  primaryFossilEnergyKwhSqmYear:
+                      input.energyLabel.primaryFossilEnergyKwhSqmYear,
+                  registeredAt: input.energyLabel.registeredAt
+                      ? new Date(input.energyLabel.registeredAt)
+                      : null,
+                  validUntil: input.energyLabel.validUntil
+                      ? new Date(input.energyLabel.validUntil)
+                      : null,
                   source: "ENERGIELABEL_NL",
                   retrievedAt: new Date(),
               }
@@ -214,6 +192,25 @@ export async function createOwnerListing(
                 externalStorageAreaSqm: input.externalStorageAreaSqm,
                 amenities: input.amenities,
                 parkingOptions: input.parkingOptions,
+                erfpachtType: input.erfpachtType ?? "UNKNOWN",
+                erfpachtCanonCents:
+                    input.erfpachtCanonCents == null
+                        ? null
+                        : BigInt(input.erfpachtCanonCents),
+                erfpachtDetails: input.erfpachtDetails ?? null,
+                erfpachtEndDate: input.erfpachtEndDate
+                    ? new Date(input.erfpachtEndDate)
+                    : null,
+                erfpachtSource:
+                    input.erfpachtType &&
+                    input.erfpachtType !== "UNKNOWN"
+                        ? "MANUAL"
+                        : null,
+                erfpachtRetrievedAt:
+                    input.erfpachtType &&
+                    input.erfpachtType !== "UNKNOWN"
+                        ? new Date()
+                        : null,
                 parkingSpacePriceCents:
                     !input.parkingOptions?.includes("SPACE_FOR_SALE") ||
                     input.parkingSpacePriceCents === undefined ||
@@ -225,24 +222,126 @@ export async function createOwnerListing(
                           create: energyData,
                       }
                     : undefined,
-                neighborhoodProfile: neighborhood
-                    ? { create: neighborhood }
-                    : undefined,
             },
         });
 
-        return tx.listing.create({
+        const listing = await tx.listing.create({
             data: {
                 id: listingId,
                 ownerId,
                 propertyId: property.id,
                 purpose: input.purpose,
+                titleNl: input.titleNl ?? null,
+                titleEn: input.titleEn ?? null,
+                descriptionNl: input.descriptionNl ?? null,
+                descriptionEn: input.descriptionEn ?? null,
+                askingPriceCents:
+                    input.askingPriceCents == null
+                        ? null
+                        : BigInt(input.askingPriceCents),
+                monthlyRentCents:
+                    input.monthlyRentCents == null
+                        ? null
+                        : BigInt(input.monthlyRentCents),
+                serviceCostsCents:
+                    input.serviceCostsCents == null
+                        ? null
+                        : BigInt(input.serviceCostsCents),
+                viewingNotes: input.viewingNotes ?? null,
+                biddingMethod: input.biddingMethod,
+                minimumBidCents:
+                    input.minimumBidCents == null
+                        ? null
+                        : BigInt(input.minimumBidCents),
+                bidIncrementCents:
+                    input.bidIncrementCents == null
+                        ? null
+                        : BigInt(input.bidIncrementCents),
+                allowBidConditions: input.allowBidConditions,
+                bidWindowOpensAt: input.bidWindowOpensAt
+                    ? new Date(input.bidWindowOpensAt)
+                    : null,
+                bidWindowClosesAt: input.bidWindowClosesAt
+                    ? new Date(input.bidWindowClosesAt)
+                    : null,
+                attributes:
+                    input.attributes === undefined
+                        ? undefined
+                        : input.attributes === null
+                          ? Prisma.JsonNull
+                          : (input.attributes as Prisma.InputJsonValue),
+                floorPlans: input.floorplannerEmbedUrl
+                    ? {
+                          create: {
+                              mode: "FLOORPLANNER_EMBED",
+                              embedUrl: input.floorplannerEmbedUrl,
+                              floorName: "Interactive floor plan",
+                          },
+                      }
+                    : undefined,
             },
             include: listingInclude,
         });
+        return { listing, propertyId: property.id };
     });
 
-    return serializeListing(listing);
+    const result = {
+        ...serializeListing(listing),
+        identityVerified: await hasVerifiedIdentity(ownerId),
+    };
+
+    // Neighborhood stats (CBS/Overpass) are enriched in the background so the
+    // create response never waits on slow external APIs. Properties can always
+    // be backfilled later via `npm run neighborhood:backfill`.
+    void enrichNeighborhood(propertyId, address, {
+        latitude: input.latitude ?? null,
+        longitude: input.longitude ?? null,
+    });
+
+    return result;
+}
+
+async function enrichNeighborhood(
+    propertyId: string,
+    address: { postcode: string; houseNumber: number; addition?: string },
+    coordinates: { latitude: number | null; longitude: number | null },
+) {
+    try {
+        const pdokAddress = await pdok.lookupAddress(address);
+        if (
+            !pdokAddress?.neighborhoodCode ||
+            !pdokAddress.neighborhoodName ||
+            !pdokAddress.municipalityCode
+        ) {
+            return;
+        }
+        const profile = await neighborhoodData.lookup({
+            neighborhoodCode: pdokAddress.neighborhoodCode,
+            neighborhoodName: pdokAddress.neighborhoodName,
+            districtCode: pdokAddress.districtCode,
+            districtName: pdokAddress.districtName,
+            municipalityCode: pdokAddress.municipalityCode,
+            latitude:
+                coordinates.latitude ??
+                pdokAddress.coordinates?.latitude ??
+                null,
+            longitude:
+                coordinates.longitude ??
+                pdokAddress.coordinates?.longitude ??
+                null,
+        });
+        if (!profile) return;
+        await db.property.update({
+            where: { id: propertyId },
+            data: {
+                neighborhoodProfile: {
+                    upsert: { create: profile, update: profile },
+                },
+            },
+        });
+    } catch (error) {
+        console.error("Background neighborhood enrichment failed", error);
+    }
 }
 
 export async function updateOwnerListing(
@@ -315,6 +414,35 @@ export async function updateOwnerListing(
                             : BigInt(input.parkingSpacePriceCents),
                 constructionYear: input.constructionYear,
                 isMonument: input.isMonument,
+                erfpachtType: input.erfpachtType,
+                erfpachtCanonCents:
+                    input.erfpachtCanonCents === undefined
+                        ? undefined
+                        : input.erfpachtCanonCents === null
+                          ? null
+                          : BigInt(input.erfpachtCanonCents),
+                erfpachtDetails:
+                    input.erfpachtDetails === undefined
+                        ? undefined
+                        : input.erfpachtDetails,
+                erfpachtEndDate:
+                    input.erfpachtEndDate === undefined
+                        ? undefined
+                        : input.erfpachtEndDate
+                          ? new Date(input.erfpachtEndDate)
+                          : null,
+                erfpachtSource:
+                    input.erfpachtType === undefined
+                        ? undefined
+                        : input.erfpachtType !== "UNKNOWN"
+                          ? "MANUAL"
+                          : null,
+                erfpachtRetrievedAt:
+                    input.erfpachtType === undefined
+                        ? undefined
+                        : input.erfpachtType !== "UNKNOWN"
+                          ? new Date()
+                          : null,
             },
         });
 
@@ -413,7 +541,10 @@ export async function updateOwnerListing(
         });
     });
 
-    return serializeListing(updated);
+    return {
+        ...serializeListing(updated),
+        identityVerified: await hasVerifiedIdentity(ownerId),
+    };
 }
 
 export type ReadinessIssue = {
@@ -432,10 +563,24 @@ export function collectReadinessIssues(listing: {
     bidIncrementCents: bigint | null;
     bidWindowOpensAt: Date | null;
     bidWindowClosesAt: Date | null;
-    property: { livingAreaSqm: unknown; roomCount: number | null };
-    media: Array<{ kind: string; status: string }>;
+    attributes: Prisma.JsonValue | null;
+    property: {
+        propertyType: string;
+        livingAreaSqm: unknown;
+        roomCount: number | null;
+        constructionYear: number | null;
+        energyLabels: Array<{ labelClass: string }>;
+    };
+    media: Array<{
+        kind: string;
+        status: string;
+        altTextNl: string | null;
+    }>;
 }) {
     const issues: ReadinessIssue[] = [];
+    const isBuilding = ["HOUSE", "APARTMENT", "COMMERCIAL", "OTHER"].includes(
+        listing.property.propertyType,
+    );
     if (!listing.titleNl?.trim())
         issues.push({
             field: "titleNl",
@@ -460,6 +605,12 @@ export function collectReadinessIssues(listing: {
             code: "REQUIRED",
             message: "Vul het aantal kamers in",
         });
+    if (isBuilding && !listing.property.constructionYear)
+        issues.push({
+            field: "constructionYear",
+            code: "CONSTRUCTION_YEAR_REQUIRED",
+            message: "Vul het bouwjaar in",
+        });
     if (listing.purpose === "SALE" && !listing.askingPriceCents)
         issues.push({
             field: "askingPriceCents",
@@ -471,6 +622,12 @@ export function collectReadinessIssues(listing: {
             field: "monthlyRentCents",
             code: "REQUIRED",
             message: "Vul een maandelijkse huurprijs in",
+        });
+    if (listing.biddingMethod !== "OPEN" && !listing.bidWindowOpensAt)
+        issues.push({
+            field: "bidWindowOpensAt",
+            code: "REQUIRED",
+            message: "Vul een begintijd voor de biedingsronde in",
         });
     if (listing.biddingMethod !== "OPEN" && !listing.bidWindowClosesAt)
         issues.push({
@@ -484,17 +641,82 @@ export function collectReadinessIssues(listing: {
             code: "REQUIRED",
             message: "Vul een minimale biedstap voor open bieden in",
         });
-    if (
-        !listing.media.some(
-            (item) => item.kind === "PHOTO" && item.status === "READY",
-        )
-    ) {
+
+    const readyPhotos = listing.media.filter(
+        (item) => item.kind === "PHOTO" && item.status === "READY",
+    ).length;
+    if (readyPhotos < 5)
         issues.push({
             field: "media",
-            code: "PHOTO_REQUIRED",
-            message: "Upload minimaal één foto",
+            code: "PHOTO_MINIMUM",
+            message: `Upload minimaal 5 foto's (er zijn er ${readyPhotos})`,
         });
-    }
+
+    if (
+        isBuilding &&
+        !listing.media.some(
+            (item) =>
+                item.kind === "DOCUMENT" &&
+                item.status === "READY" &&
+                item.altTextNl !== "Lijst van zaken",
+        )
+    )
+        issues.push({
+            field: "energyLabels",
+            code: "ENERGY_LABEL_PDF_REQUIRED",
+            message: "Upload het officiële energielabel als PDF-document",
+        });
+
+    const attributes = listing.attributes as {
+        movableItems?: Array<{ name?: unknown }>;
+        questionnaireAnswers?: QuestionnaireAnswer[];
+    } | null;
+    const movableItems = Array.isArray(attributes?.movableItems)
+        ? attributes.movableItems.filter(
+              (item) => String(item?.name ?? "").trim().length > 0,
+          )
+        : [];
+    const hasMovableItemsList =
+        movableItems.length > 0 ||
+        listing.media.some(
+            (item) =>
+                item.kind === "DOCUMENT" &&
+                item.status === "READY" &&
+                item.altTextNl === "Lijst van zaken",
+        );
+    if (!hasMovableItemsList)
+        issues.push({
+            field: "movableItems",
+            code: "MOVABLE_ITEMS_REQUIRED",
+            message: "Vul de lijst van zaken in of upload de PDF",
+        });
+
+    const questionnaireAnswers = Array.isArray(attributes?.questionnaireAnswers)
+        ? attributes.questionnaireAnswers
+        : [];
+    const applicableQuestionIds = new Set(
+        getQuestionnaireSections(listing.property.propertyType).flatMap(
+            (questionnaireSection) =>
+                questionnaireSection.questions.map((question) => question.id),
+        ),
+    );
+    const unansweredCount = [...applicableQuestionIds].filter(
+        (questionId) =>
+            !questionnaireAnswers.some(
+                (answer) => answer.questionId === questionId,
+            ),
+    ).length;
+    if (unansweredCount > 0)
+        issues.push({
+            field: "questionnaireAnswers",
+            code: "QUESTIONNAIRE_REQUIRED",
+            message: `Beantwoord de vragenlijst volledig (${
+                unansweredCount === 1
+                    ? "nog 1 vraag open"
+                    : `nog ${unansweredCount} vragen open`
+            })`,
+        });
+
     if (
         listing.bidWindowOpensAt &&
         listing.bidWindowClosesAt &&
@@ -514,13 +736,49 @@ export async function validateOwnerListing(ownerId: string, listingId: string) {
         await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${listingId}))`;
         const listing = await tx.listing.findFirst({
             where: { id: listingId, ownerId },
-            include: { property: true, media: true },
+            include: {
+                property: {
+                    include: {
+                        energyLabels: {
+                            orderBy: { registeredAt: "desc" as const },
+                            take: 1,
+                        },
+                    },
+                },
+                media: true,
+            },
         });
         if (!listing)
             throw new ListingMutationError(
                 "LISTING_NOT_FOUND",
                 "Listing not found",
             );
+        if (!["DRAFT", "READY_FOR_VERIFICATION"].includes(listing.status)) {
+            throw new ListingMutationError(
+                "LISTING_LOCKED",
+                "Live or finalized listings cannot be revalidated for editing",
+            );
+        }
+        const issues = collectReadinessIssues(listing);
+        if (issues.length > 0) {
+            const serialized = serializeListing(listing) as {
+                status: string;
+                validatedAt: unknown;
+            };
+            if (listing.status === "READY_FOR_VERIFICATION") {
+                await tx.listing.update({
+                    where: { id: listingId },
+                    data: {
+                        status: "DRAFT",
+                        validatedAt: null,
+                        version: { increment: 1 },
+                    },
+                });
+                serialized.status = "DRAFT";
+                serialized.validatedAt = null;
+            }
+            return { ready: false, issues, listing: serialized };
+        }
         if (listing.status === "READY_FOR_VERIFICATION") {
             return {
                 ready: true,
@@ -528,19 +786,6 @@ export async function validateOwnerListing(ownerId: string, listingId: string) {
                 listing: serializeListing(listing),
             };
         }
-        if (listing.status !== "DRAFT") {
-            throw new ListingMutationError(
-                "LISTING_LOCKED",
-                "Live or finalized listings cannot be revalidated for editing",
-            );
-        }
-        const issues = collectReadinessIssues(listing);
-        if (issues.length > 0)
-            return {
-                ready: false,
-                issues,
-                listing: serializeListing(listing),
-            };
 
         const slug =
             listing.publicSlug ??

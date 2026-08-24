@@ -49,6 +49,18 @@ export type PropertyTransactionMinAggregateOutputType = {
   buyerContractConfirmedAt: Date | null
   sellerContractConfirmedAt: Date | null
   coolingOffEndsAt: Date | null
+  notaryProposedByUserId: string | null
+  notaryProposedAt: Date | null
+  notaryConfirmedByUserId: string | null
+  notaryConfirmedAt: Date | null
+  securityForm: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt: Date | null
+  securityFormChosenByUserId: string | null
+  securityReference: string | null
+  securityPaidAt: Date | null
+  securityPaidByUserId: string | null
+  securityConfirmedAt: Date | null
+  securityConfirmedByUserId: string | null
   completedAt: Date | null
   cancelledAt: Date | null
   cancellationReason: string | null
@@ -70,6 +82,18 @@ export type PropertyTransactionMaxAggregateOutputType = {
   buyerContractConfirmedAt: Date | null
   sellerContractConfirmedAt: Date | null
   coolingOffEndsAt: Date | null
+  notaryProposedByUserId: string | null
+  notaryProposedAt: Date | null
+  notaryConfirmedByUserId: string | null
+  notaryConfirmedAt: Date | null
+  securityForm: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt: Date | null
+  securityFormChosenByUserId: string | null
+  securityReference: string | null
+  securityPaidAt: Date | null
+  securityPaidByUserId: string | null
+  securityConfirmedAt: Date | null
+  securityConfirmedByUserId: string | null
   completedAt: Date | null
   cancelledAt: Date | null
   cancellationReason: string | null
@@ -92,8 +116,21 @@ export type PropertyTransactionCountAggregateOutputType = {
   buyerContractConfirmedAt: number
   sellerContractConfirmedAt: number
   coolingOffEndsAt: number
+  notaryProposal: number
+  notaryProposedByUserId: number
+  notaryProposedAt: number
   notaryDetails: number
+  notaryConfirmedByUserId: number
+  notaryConfirmedAt: number
   handoverDetails: number
+  securityForm: number
+  securityFormChosenAt: number
+  securityFormChosenByUserId: number
+  securityReference: number
+  securityPaidAt: number
+  securityPaidByUserId: number
+  securityConfirmedAt: number
+  securityConfirmedByUserId: number
   completedAt: number
   cancelledAt: number
   cancellationReason: number
@@ -127,6 +164,18 @@ export type PropertyTransactionMinAggregateInputType = {
   buyerContractConfirmedAt?: true
   sellerContractConfirmedAt?: true
   coolingOffEndsAt?: true
+  notaryProposedByUserId?: true
+  notaryProposedAt?: true
+  notaryConfirmedByUserId?: true
+  notaryConfirmedAt?: true
+  securityForm?: true
+  securityFormChosenAt?: true
+  securityFormChosenByUserId?: true
+  securityReference?: true
+  securityPaidAt?: true
+  securityPaidByUserId?: true
+  securityConfirmedAt?: true
+  securityConfirmedByUserId?: true
   completedAt?: true
   cancelledAt?: true
   cancellationReason?: true
@@ -148,6 +197,18 @@ export type PropertyTransactionMaxAggregateInputType = {
   buyerContractConfirmedAt?: true
   sellerContractConfirmedAt?: true
   coolingOffEndsAt?: true
+  notaryProposedByUserId?: true
+  notaryProposedAt?: true
+  notaryConfirmedByUserId?: true
+  notaryConfirmedAt?: true
+  securityForm?: true
+  securityFormChosenAt?: true
+  securityFormChosenByUserId?: true
+  securityReference?: true
+  securityPaidAt?: true
+  securityPaidByUserId?: true
+  securityConfirmedAt?: true
+  securityConfirmedByUserId?: true
   completedAt?: true
   cancelledAt?: true
   cancellationReason?: true
@@ -170,8 +231,21 @@ export type PropertyTransactionCountAggregateInputType = {
   buyerContractConfirmedAt?: true
   sellerContractConfirmedAt?: true
   coolingOffEndsAt?: true
+  notaryProposal?: true
+  notaryProposedByUserId?: true
+  notaryProposedAt?: true
   notaryDetails?: true
+  notaryConfirmedByUserId?: true
+  notaryConfirmedAt?: true
   handoverDetails?: true
+  securityForm?: true
+  securityFormChosenAt?: true
+  securityFormChosenByUserId?: true
+  securityReference?: true
+  securityPaidAt?: true
+  securityPaidByUserId?: true
+  securityConfirmedAt?: true
+  securityConfirmedByUserId?: true
   completedAt?: true
   cancelledAt?: true
   cancellationReason?: true
@@ -281,8 +355,21 @@ export type PropertyTransactionGroupByOutputType = {
   buyerContractConfirmedAt: Date | null
   sellerContractConfirmedAt: Date | null
   coolingOffEndsAt: Date | null
+  notaryProposal: runtime.JsonValue | null
+  notaryProposedByUserId: string | null
+  notaryProposedAt: Date | null
   notaryDetails: runtime.JsonValue | null
+  notaryConfirmedByUserId: string | null
+  notaryConfirmedAt: Date | null
   handoverDetails: runtime.JsonValue | null
+  securityForm: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt: Date | null
+  securityFormChosenByUserId: string | null
+  securityReference: string | null
+  securityPaidAt: Date | null
+  securityPaidByUserId: string | null
+  securityConfirmedAt: Date | null
+  securityConfirmedByUserId: string | null
   completedAt: Date | null
   cancelledAt: Date | null
   cancellationReason: string | null
@@ -328,8 +415,21 @@ export type PropertyTransactionWhereInput = {
   buyerContractConfirmedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   sellerContractConfirmedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   coolingOffEndsAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
+  notaryProposal?: Prisma.JsonNullableFilter<"PropertyTransaction">
+  notaryProposedByUserId?: Prisma.UuidNullableFilter<"PropertyTransaction"> | string | null
+  notaryProposedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   notaryDetails?: Prisma.JsonNullableFilter<"PropertyTransaction">
+  notaryConfirmedByUserId?: Prisma.UuidNullableFilter<"PropertyTransaction"> | string | null
+  notaryConfirmedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   handoverDetails?: Prisma.JsonNullableFilter<"PropertyTransaction">
+  securityForm?: Prisma.EnumTransactionSecurityFormNullableFilter<"PropertyTransaction"> | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
+  securityFormChosenByUserId?: Prisma.UuidNullableFilter<"PropertyTransaction"> | string | null
+  securityReference?: Prisma.StringNullableFilter<"PropertyTransaction"> | string | null
+  securityPaidAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
+  securityPaidByUserId?: Prisma.UuidNullableFilter<"PropertyTransaction"> | string | null
+  securityConfirmedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
+  securityConfirmedByUserId?: Prisma.UuidNullableFilter<"PropertyTransaction"> | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   cancelledAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   cancellationReason?: Prisma.StringNullableFilter<"PropertyTransaction"> | string | null
@@ -340,10 +440,18 @@ export type PropertyTransactionWhereInput = {
   acceptedBid?: Prisma.XOR<Prisma.BidScalarRelationFilter, Prisma.BidWhereInput>
   seller?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   buyer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  notaryProposedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  notaryConfirmedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  securityPaidBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  securityConfirmedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  securityFormChosenBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   milestones?: Prisma.TransactionMilestoneListRelationFilter
   messages?: Prisma.TransactionMessageListRelationFilter
   documents?: Prisma.TransactionDocumentListRelationFilter
   events?: Prisma.TransactionEventListRelationFilter
+  agreement?: Prisma.XOR<Prisma.PurchaseAgreementNullableScalarRelationFilter, Prisma.PurchaseAgreementWhereInput> | null
+  idinAttempts?: Prisma.IdentityVerificationAttemptListRelationFilter
+  importedListingMessages?: Prisma.ListingMessageListRelationFilter
 }
 
 export type PropertyTransactionOrderByWithRelationInput = {
@@ -360,8 +468,21 @@ export type PropertyTransactionOrderByWithRelationInput = {
   buyerContractConfirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   sellerContractConfirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   coolingOffEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  notaryProposal?: Prisma.SortOrderInput | Prisma.SortOrder
+  notaryProposedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  notaryProposedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   notaryDetails?: Prisma.SortOrderInput | Prisma.SortOrder
+  notaryConfirmedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  notaryConfirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   handoverDetails?: Prisma.SortOrderInput | Prisma.SortOrder
+  securityForm?: Prisma.SortOrderInput | Prisma.SortOrder
+  securityFormChosenAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  securityFormChosenByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  securityReference?: Prisma.SortOrderInput | Prisma.SortOrder
+  securityPaidAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  securityPaidByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  securityConfirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  securityConfirmedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
   cancellationReason?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -372,10 +493,18 @@ export type PropertyTransactionOrderByWithRelationInput = {
   acceptedBid?: Prisma.BidOrderByWithRelationInput
   seller?: Prisma.UserOrderByWithRelationInput
   buyer?: Prisma.UserOrderByWithRelationInput
+  notaryProposedBy?: Prisma.UserOrderByWithRelationInput
+  notaryConfirmedBy?: Prisma.UserOrderByWithRelationInput
+  securityPaidBy?: Prisma.UserOrderByWithRelationInput
+  securityConfirmedBy?: Prisma.UserOrderByWithRelationInput
+  securityFormChosenBy?: Prisma.UserOrderByWithRelationInput
   milestones?: Prisma.TransactionMilestoneOrderByRelationAggregateInput
   messages?: Prisma.TransactionMessageOrderByRelationAggregateInput
   documents?: Prisma.TransactionDocumentOrderByRelationAggregateInput
   events?: Prisma.TransactionEventOrderByRelationAggregateInput
+  agreement?: Prisma.PurchaseAgreementOrderByWithRelationInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptOrderByRelationAggregateInput
+  importedListingMessages?: Prisma.ListingMessageOrderByRelationAggregateInput
 }
 
 export type PropertyTransactionWhereUniqueInput = Prisma.AtLeast<{
@@ -395,8 +524,21 @@ export type PropertyTransactionWhereUniqueInput = Prisma.AtLeast<{
   buyerContractConfirmedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   sellerContractConfirmedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   coolingOffEndsAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
+  notaryProposal?: Prisma.JsonNullableFilter<"PropertyTransaction">
+  notaryProposedByUserId?: Prisma.UuidNullableFilter<"PropertyTransaction"> | string | null
+  notaryProposedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   notaryDetails?: Prisma.JsonNullableFilter<"PropertyTransaction">
+  notaryConfirmedByUserId?: Prisma.UuidNullableFilter<"PropertyTransaction"> | string | null
+  notaryConfirmedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   handoverDetails?: Prisma.JsonNullableFilter<"PropertyTransaction">
+  securityForm?: Prisma.EnumTransactionSecurityFormNullableFilter<"PropertyTransaction"> | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
+  securityFormChosenByUserId?: Prisma.UuidNullableFilter<"PropertyTransaction"> | string | null
+  securityReference?: Prisma.StringNullableFilter<"PropertyTransaction"> | string | null
+  securityPaidAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
+  securityPaidByUserId?: Prisma.UuidNullableFilter<"PropertyTransaction"> | string | null
+  securityConfirmedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
+  securityConfirmedByUserId?: Prisma.UuidNullableFilter<"PropertyTransaction"> | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   cancelledAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   cancellationReason?: Prisma.StringNullableFilter<"PropertyTransaction"> | string | null
@@ -407,10 +549,18 @@ export type PropertyTransactionWhereUniqueInput = Prisma.AtLeast<{
   acceptedBid?: Prisma.XOR<Prisma.BidScalarRelationFilter, Prisma.BidWhereInput>
   seller?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   buyer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  notaryProposedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  notaryConfirmedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  securityPaidBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  securityConfirmedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  securityFormChosenBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   milestones?: Prisma.TransactionMilestoneListRelationFilter
   messages?: Prisma.TransactionMessageListRelationFilter
   documents?: Prisma.TransactionDocumentListRelationFilter
   events?: Prisma.TransactionEventListRelationFilter
+  agreement?: Prisma.XOR<Prisma.PurchaseAgreementNullableScalarRelationFilter, Prisma.PurchaseAgreementWhereInput> | null
+  idinAttempts?: Prisma.IdentityVerificationAttemptListRelationFilter
+  importedListingMessages?: Prisma.ListingMessageListRelationFilter
 }, "id" | "acceptedBidId">
 
 export type PropertyTransactionOrderByWithAggregationInput = {
@@ -427,8 +577,21 @@ export type PropertyTransactionOrderByWithAggregationInput = {
   buyerContractConfirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   sellerContractConfirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   coolingOffEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  notaryProposal?: Prisma.SortOrderInput | Prisma.SortOrder
+  notaryProposedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  notaryProposedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   notaryDetails?: Prisma.SortOrderInput | Prisma.SortOrder
+  notaryConfirmedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  notaryConfirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   handoverDetails?: Prisma.SortOrderInput | Prisma.SortOrder
+  securityForm?: Prisma.SortOrderInput | Prisma.SortOrder
+  securityFormChosenAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  securityFormChosenByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  securityReference?: Prisma.SortOrderInput | Prisma.SortOrder
+  securityPaidAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  securityPaidByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  securityConfirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  securityConfirmedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
   cancellationReason?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -459,8 +622,21 @@ export type PropertyTransactionScalarWhereWithAggregatesInput = {
   buyerContractConfirmedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PropertyTransaction"> | Date | string | null
   sellerContractConfirmedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PropertyTransaction"> | Date | string | null
   coolingOffEndsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PropertyTransaction"> | Date | string | null
+  notaryProposal?: Prisma.JsonNullableWithAggregatesFilter<"PropertyTransaction">
+  notaryProposedByUserId?: Prisma.UuidNullableWithAggregatesFilter<"PropertyTransaction"> | string | null
+  notaryProposedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PropertyTransaction"> | Date | string | null
   notaryDetails?: Prisma.JsonNullableWithAggregatesFilter<"PropertyTransaction">
+  notaryConfirmedByUserId?: Prisma.UuidNullableWithAggregatesFilter<"PropertyTransaction"> | string | null
+  notaryConfirmedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PropertyTransaction"> | Date | string | null
   handoverDetails?: Prisma.JsonNullableWithAggregatesFilter<"PropertyTransaction">
+  securityForm?: Prisma.EnumTransactionSecurityFormNullableWithAggregatesFilter<"PropertyTransaction"> | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PropertyTransaction"> | Date | string | null
+  securityFormChosenByUserId?: Prisma.UuidNullableWithAggregatesFilter<"PropertyTransaction"> | string | null
+  securityReference?: Prisma.StringNullableWithAggregatesFilter<"PropertyTransaction"> | string | null
+  securityPaidAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PropertyTransaction"> | Date | string | null
+  securityPaidByUserId?: Prisma.UuidNullableWithAggregatesFilter<"PropertyTransaction"> | string | null
+  securityConfirmedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PropertyTransaction"> | Date | string | null
+  securityConfirmedByUserId?: Prisma.UuidNullableWithAggregatesFilter<"PropertyTransaction"> | string | null
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PropertyTransaction"> | Date | string | null
   cancelledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PropertyTransaction"> | Date | string | null
   cancellationReason?: Prisma.StringNullableWithAggregatesFilter<"PropertyTransaction"> | string | null
@@ -479,8 +655,16 @@ export type PropertyTransactionCreateInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -491,10 +675,18 @@ export type PropertyTransactionCreateInput = {
   acceptedBid: Prisma.BidCreateNestedOneWithoutTransactionInput
   seller: Prisma.UserCreateNestedOneWithoutSellingTransactionsInput
   buyer: Prisma.UserCreateNestedOneWithoutBuyingTransactionsInput
+  notaryProposedBy?: Prisma.UserCreateNestedOneWithoutProposedNotariesInput
+  notaryConfirmedBy?: Prisma.UserCreateNestedOneWithoutConfirmedNotariesInput
+  securityPaidBy?: Prisma.UserCreateNestedOneWithoutSecurityPaymentsInput
+  securityConfirmedBy?: Prisma.UserCreateNestedOneWithoutSecurityConfirmationsInput
+  securityFormChosenBy?: Prisma.UserCreateNestedOneWithoutSecurityFormChoicesInput
   milestones?: Prisma.TransactionMilestoneCreateNestedManyWithoutTransactionInput
   messages?: Prisma.TransactionMessageCreateNestedManyWithoutTransactionInput
   documents?: Prisma.TransactionDocumentCreateNestedManyWithoutTransactionInput
   events?: Prisma.TransactionEventCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionUncheckedCreateInput = {
@@ -511,8 +703,21 @@ export type PropertyTransactionUncheckedCreateInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -523,6 +728,9 @@ export type PropertyTransactionUncheckedCreateInput = {
   messages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutTransactionInput
   documents?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutTransactionInput
   events?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementUncheckedCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionUpdateInput = {
@@ -535,8 +743,16 @@ export type PropertyTransactionUpdateInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -547,10 +763,18 @@ export type PropertyTransactionUpdateInput = {
   acceptedBid?: Prisma.BidUpdateOneRequiredWithoutTransactionNestedInput
   seller?: Prisma.UserUpdateOneRequiredWithoutSellingTransactionsNestedInput
   buyer?: Prisma.UserUpdateOneRequiredWithoutBuyingTransactionsNestedInput
+  notaryProposedBy?: Prisma.UserUpdateOneWithoutProposedNotariesNestedInput
+  notaryConfirmedBy?: Prisma.UserUpdateOneWithoutConfirmedNotariesNestedInput
+  securityPaidBy?: Prisma.UserUpdateOneWithoutSecurityPaymentsNestedInput
+  securityConfirmedBy?: Prisma.UserUpdateOneWithoutSecurityConfirmationsNestedInput
+  securityFormChosenBy?: Prisma.UserUpdateOneWithoutSecurityFormChoicesNestedInput
   milestones?: Prisma.TransactionMilestoneUpdateManyWithoutTransactionNestedInput
   messages?: Prisma.TransactionMessageUpdateManyWithoutTransactionNestedInput
   documents?: Prisma.TransactionDocumentUpdateManyWithoutTransactionNestedInput
   events?: Prisma.TransactionEventUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionUncheckedUpdateInput = {
@@ -567,8 +791,21 @@ export type PropertyTransactionUncheckedUpdateInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -579,6 +816,9 @@ export type PropertyTransactionUncheckedUpdateInput = {
   messages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutTransactionNestedInput
   documents?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutTransactionNestedInput
   events?: Prisma.TransactionEventUncheckedUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUncheckedUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionCreateManyInput = {
@@ -595,8 +835,21 @@ export type PropertyTransactionCreateManyInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -615,8 +868,16 @@ export type PropertyTransactionUpdateManyMutationInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -639,8 +900,21 @@ export type PropertyTransactionUncheckedUpdateManyInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -678,8 +952,21 @@ export type PropertyTransactionCountOrderByAggregateInput = {
   buyerContractConfirmedAt?: Prisma.SortOrder
   sellerContractConfirmedAt?: Prisma.SortOrder
   coolingOffEndsAt?: Prisma.SortOrder
+  notaryProposal?: Prisma.SortOrder
+  notaryProposedByUserId?: Prisma.SortOrder
+  notaryProposedAt?: Prisma.SortOrder
   notaryDetails?: Prisma.SortOrder
+  notaryConfirmedByUserId?: Prisma.SortOrder
+  notaryConfirmedAt?: Prisma.SortOrder
   handoverDetails?: Prisma.SortOrder
+  securityForm?: Prisma.SortOrder
+  securityFormChosenAt?: Prisma.SortOrder
+  securityFormChosenByUserId?: Prisma.SortOrder
+  securityReference?: Prisma.SortOrder
+  securityPaidAt?: Prisma.SortOrder
+  securityPaidByUserId?: Prisma.SortOrder
+  securityConfirmedAt?: Prisma.SortOrder
+  securityConfirmedByUserId?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   cancelledAt?: Prisma.SortOrder
   cancellationReason?: Prisma.SortOrder
@@ -706,6 +993,18 @@ export type PropertyTransactionMaxOrderByAggregateInput = {
   buyerContractConfirmedAt?: Prisma.SortOrder
   sellerContractConfirmedAt?: Prisma.SortOrder
   coolingOffEndsAt?: Prisma.SortOrder
+  notaryProposedByUserId?: Prisma.SortOrder
+  notaryProposedAt?: Prisma.SortOrder
+  notaryConfirmedByUserId?: Prisma.SortOrder
+  notaryConfirmedAt?: Prisma.SortOrder
+  securityForm?: Prisma.SortOrder
+  securityFormChosenAt?: Prisma.SortOrder
+  securityFormChosenByUserId?: Prisma.SortOrder
+  securityReference?: Prisma.SortOrder
+  securityPaidAt?: Prisma.SortOrder
+  securityPaidByUserId?: Prisma.SortOrder
+  securityConfirmedAt?: Prisma.SortOrder
+  securityConfirmedByUserId?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   cancelledAt?: Prisma.SortOrder
   cancellationReason?: Prisma.SortOrder
@@ -727,6 +1026,18 @@ export type PropertyTransactionMinOrderByAggregateInput = {
   buyerContractConfirmedAt?: Prisma.SortOrder
   sellerContractConfirmedAt?: Prisma.SortOrder
   coolingOffEndsAt?: Prisma.SortOrder
+  notaryProposedByUserId?: Prisma.SortOrder
+  notaryProposedAt?: Prisma.SortOrder
+  notaryConfirmedByUserId?: Prisma.SortOrder
+  notaryConfirmedAt?: Prisma.SortOrder
+  securityForm?: Prisma.SortOrder
+  securityFormChosenAt?: Prisma.SortOrder
+  securityFormChosenByUserId?: Prisma.SortOrder
+  securityReference?: Prisma.SortOrder
+  securityPaidAt?: Prisma.SortOrder
+  securityPaidByUserId?: Prisma.SortOrder
+  securityConfirmedAt?: Prisma.SortOrder
+  securityConfirmedByUserId?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   cancelledAt?: Prisma.SortOrder
   cancellationReason?: Prisma.SortOrder
@@ -759,6 +1070,41 @@ export type PropertyTransactionCreateNestedManyWithoutBuyerInput = {
   connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
 }
 
+export type PropertyTransactionCreateNestedManyWithoutNotaryProposedByInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutNotaryProposedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutNotaryProposedByInput> | Prisma.PropertyTransactionCreateWithoutNotaryProposedByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutNotaryProposedByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutNotaryProposedByInput | Prisma.PropertyTransactionCreateOrConnectWithoutNotaryProposedByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManyNotaryProposedByInputEnvelope
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+}
+
+export type PropertyTransactionCreateNestedManyWithoutNotaryConfirmedByInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutNotaryConfirmedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutNotaryConfirmedByInput> | Prisma.PropertyTransactionCreateWithoutNotaryConfirmedByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutNotaryConfirmedByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutNotaryConfirmedByInput | Prisma.PropertyTransactionCreateOrConnectWithoutNotaryConfirmedByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManyNotaryConfirmedByInputEnvelope
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+}
+
+export type PropertyTransactionCreateNestedManyWithoutSecurityPaidByInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityPaidByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityPaidByInput> | Prisma.PropertyTransactionCreateWithoutSecurityPaidByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutSecurityPaidByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutSecurityPaidByInput | Prisma.PropertyTransactionCreateOrConnectWithoutSecurityPaidByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManySecurityPaidByInputEnvelope
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+}
+
+export type PropertyTransactionCreateNestedManyWithoutSecurityConfirmedByInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityConfirmedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityConfirmedByInput> | Prisma.PropertyTransactionCreateWithoutSecurityConfirmedByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutSecurityConfirmedByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutSecurityConfirmedByInput | Prisma.PropertyTransactionCreateOrConnectWithoutSecurityConfirmedByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManySecurityConfirmedByInputEnvelope
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+}
+
+export type PropertyTransactionCreateNestedManyWithoutSecurityFormChosenByInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityFormChosenByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityFormChosenByInput> | Prisma.PropertyTransactionCreateWithoutSecurityFormChosenByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutSecurityFormChosenByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutSecurityFormChosenByInput | Prisma.PropertyTransactionCreateOrConnectWithoutSecurityFormChosenByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManySecurityFormChosenByInputEnvelope
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+}
+
 export type PropertyTransactionUncheckedCreateNestedManyWithoutSellerInput = {
   create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSellerInput, Prisma.PropertyTransactionUncheckedCreateWithoutSellerInput> | Prisma.PropertyTransactionCreateWithoutSellerInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutSellerInput[]
   connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutSellerInput | Prisma.PropertyTransactionCreateOrConnectWithoutSellerInput[]
@@ -770,6 +1116,41 @@ export type PropertyTransactionUncheckedCreateNestedManyWithoutBuyerInput = {
   create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutBuyerInput, Prisma.PropertyTransactionUncheckedCreateWithoutBuyerInput> | Prisma.PropertyTransactionCreateWithoutBuyerInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutBuyerInput[]
   connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutBuyerInput | Prisma.PropertyTransactionCreateOrConnectWithoutBuyerInput[]
   createMany?: Prisma.PropertyTransactionCreateManyBuyerInputEnvelope
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+}
+
+export type PropertyTransactionUncheckedCreateNestedManyWithoutNotaryProposedByInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutNotaryProposedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutNotaryProposedByInput> | Prisma.PropertyTransactionCreateWithoutNotaryProposedByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutNotaryProposedByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutNotaryProposedByInput | Prisma.PropertyTransactionCreateOrConnectWithoutNotaryProposedByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManyNotaryProposedByInputEnvelope
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+}
+
+export type PropertyTransactionUncheckedCreateNestedManyWithoutNotaryConfirmedByInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutNotaryConfirmedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutNotaryConfirmedByInput> | Prisma.PropertyTransactionCreateWithoutNotaryConfirmedByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutNotaryConfirmedByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutNotaryConfirmedByInput | Prisma.PropertyTransactionCreateOrConnectWithoutNotaryConfirmedByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManyNotaryConfirmedByInputEnvelope
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+}
+
+export type PropertyTransactionUncheckedCreateNestedManyWithoutSecurityPaidByInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityPaidByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityPaidByInput> | Prisma.PropertyTransactionCreateWithoutSecurityPaidByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutSecurityPaidByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutSecurityPaidByInput | Prisma.PropertyTransactionCreateOrConnectWithoutSecurityPaidByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManySecurityPaidByInputEnvelope
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+}
+
+export type PropertyTransactionUncheckedCreateNestedManyWithoutSecurityConfirmedByInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityConfirmedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityConfirmedByInput> | Prisma.PropertyTransactionCreateWithoutSecurityConfirmedByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutSecurityConfirmedByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutSecurityConfirmedByInput | Prisma.PropertyTransactionCreateOrConnectWithoutSecurityConfirmedByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManySecurityConfirmedByInputEnvelope
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+}
+
+export type PropertyTransactionUncheckedCreateNestedManyWithoutSecurityFormChosenByInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityFormChosenByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityFormChosenByInput> | Prisma.PropertyTransactionCreateWithoutSecurityFormChosenByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutSecurityFormChosenByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutSecurityFormChosenByInput | Prisma.PropertyTransactionCreateOrConnectWithoutSecurityFormChosenByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManySecurityFormChosenByInputEnvelope
   connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
 }
 
@@ -801,6 +1182,76 @@ export type PropertyTransactionUpdateManyWithoutBuyerNestedInput = {
   deleteMany?: Prisma.PropertyTransactionScalarWhereInput | Prisma.PropertyTransactionScalarWhereInput[]
 }
 
+export type PropertyTransactionUpdateManyWithoutNotaryProposedByNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutNotaryProposedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutNotaryProposedByInput> | Prisma.PropertyTransactionCreateWithoutNotaryProposedByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutNotaryProposedByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutNotaryProposedByInput | Prisma.PropertyTransactionCreateOrConnectWithoutNotaryProposedByInput[]
+  upsert?: Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutNotaryProposedByInput | Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutNotaryProposedByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManyNotaryProposedByInputEnvelope
+  set?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  disconnect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  delete?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  update?: Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutNotaryProposedByInput | Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutNotaryProposedByInput[]
+  updateMany?: Prisma.PropertyTransactionUpdateManyWithWhereWithoutNotaryProposedByInput | Prisma.PropertyTransactionUpdateManyWithWhereWithoutNotaryProposedByInput[]
+  deleteMany?: Prisma.PropertyTransactionScalarWhereInput | Prisma.PropertyTransactionScalarWhereInput[]
+}
+
+export type PropertyTransactionUpdateManyWithoutNotaryConfirmedByNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutNotaryConfirmedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutNotaryConfirmedByInput> | Prisma.PropertyTransactionCreateWithoutNotaryConfirmedByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutNotaryConfirmedByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutNotaryConfirmedByInput | Prisma.PropertyTransactionCreateOrConnectWithoutNotaryConfirmedByInput[]
+  upsert?: Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutNotaryConfirmedByInput | Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutNotaryConfirmedByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManyNotaryConfirmedByInputEnvelope
+  set?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  disconnect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  delete?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  update?: Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutNotaryConfirmedByInput | Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutNotaryConfirmedByInput[]
+  updateMany?: Prisma.PropertyTransactionUpdateManyWithWhereWithoutNotaryConfirmedByInput | Prisma.PropertyTransactionUpdateManyWithWhereWithoutNotaryConfirmedByInput[]
+  deleteMany?: Prisma.PropertyTransactionScalarWhereInput | Prisma.PropertyTransactionScalarWhereInput[]
+}
+
+export type PropertyTransactionUpdateManyWithoutSecurityPaidByNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityPaidByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityPaidByInput> | Prisma.PropertyTransactionCreateWithoutSecurityPaidByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutSecurityPaidByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutSecurityPaidByInput | Prisma.PropertyTransactionCreateOrConnectWithoutSecurityPaidByInput[]
+  upsert?: Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutSecurityPaidByInput | Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutSecurityPaidByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManySecurityPaidByInputEnvelope
+  set?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  disconnect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  delete?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  update?: Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutSecurityPaidByInput | Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutSecurityPaidByInput[]
+  updateMany?: Prisma.PropertyTransactionUpdateManyWithWhereWithoutSecurityPaidByInput | Prisma.PropertyTransactionUpdateManyWithWhereWithoutSecurityPaidByInput[]
+  deleteMany?: Prisma.PropertyTransactionScalarWhereInput | Prisma.PropertyTransactionScalarWhereInput[]
+}
+
+export type PropertyTransactionUpdateManyWithoutSecurityConfirmedByNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityConfirmedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityConfirmedByInput> | Prisma.PropertyTransactionCreateWithoutSecurityConfirmedByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutSecurityConfirmedByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutSecurityConfirmedByInput | Prisma.PropertyTransactionCreateOrConnectWithoutSecurityConfirmedByInput[]
+  upsert?: Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutSecurityConfirmedByInput | Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutSecurityConfirmedByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManySecurityConfirmedByInputEnvelope
+  set?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  disconnect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  delete?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  update?: Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutSecurityConfirmedByInput | Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutSecurityConfirmedByInput[]
+  updateMany?: Prisma.PropertyTransactionUpdateManyWithWhereWithoutSecurityConfirmedByInput | Prisma.PropertyTransactionUpdateManyWithWhereWithoutSecurityConfirmedByInput[]
+  deleteMany?: Prisma.PropertyTransactionScalarWhereInput | Prisma.PropertyTransactionScalarWhereInput[]
+}
+
+export type PropertyTransactionUpdateManyWithoutSecurityFormChosenByNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityFormChosenByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityFormChosenByInput> | Prisma.PropertyTransactionCreateWithoutSecurityFormChosenByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutSecurityFormChosenByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutSecurityFormChosenByInput | Prisma.PropertyTransactionCreateOrConnectWithoutSecurityFormChosenByInput[]
+  upsert?: Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutSecurityFormChosenByInput | Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutSecurityFormChosenByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManySecurityFormChosenByInputEnvelope
+  set?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  disconnect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  delete?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  update?: Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutSecurityFormChosenByInput | Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutSecurityFormChosenByInput[]
+  updateMany?: Prisma.PropertyTransactionUpdateManyWithWhereWithoutSecurityFormChosenByInput | Prisma.PropertyTransactionUpdateManyWithWhereWithoutSecurityFormChosenByInput[]
+  deleteMany?: Prisma.PropertyTransactionScalarWhereInput | Prisma.PropertyTransactionScalarWhereInput[]
+}
+
 export type PropertyTransactionUncheckedUpdateManyWithoutSellerNestedInput = {
   create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSellerInput, Prisma.PropertyTransactionUncheckedCreateWithoutSellerInput> | Prisma.PropertyTransactionCreateWithoutSellerInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutSellerInput[]
   connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutSellerInput | Prisma.PropertyTransactionCreateOrConnectWithoutSellerInput[]
@@ -826,6 +1277,76 @@ export type PropertyTransactionUncheckedUpdateManyWithoutBuyerNestedInput = {
   connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
   update?: Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutBuyerInput | Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutBuyerInput[]
   updateMany?: Prisma.PropertyTransactionUpdateManyWithWhereWithoutBuyerInput | Prisma.PropertyTransactionUpdateManyWithWhereWithoutBuyerInput[]
+  deleteMany?: Prisma.PropertyTransactionScalarWhereInput | Prisma.PropertyTransactionScalarWhereInput[]
+}
+
+export type PropertyTransactionUncheckedUpdateManyWithoutNotaryProposedByNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutNotaryProposedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutNotaryProposedByInput> | Prisma.PropertyTransactionCreateWithoutNotaryProposedByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutNotaryProposedByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutNotaryProposedByInput | Prisma.PropertyTransactionCreateOrConnectWithoutNotaryProposedByInput[]
+  upsert?: Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutNotaryProposedByInput | Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutNotaryProposedByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManyNotaryProposedByInputEnvelope
+  set?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  disconnect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  delete?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  update?: Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutNotaryProposedByInput | Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutNotaryProposedByInput[]
+  updateMany?: Prisma.PropertyTransactionUpdateManyWithWhereWithoutNotaryProposedByInput | Prisma.PropertyTransactionUpdateManyWithWhereWithoutNotaryProposedByInput[]
+  deleteMany?: Prisma.PropertyTransactionScalarWhereInput | Prisma.PropertyTransactionScalarWhereInput[]
+}
+
+export type PropertyTransactionUncheckedUpdateManyWithoutNotaryConfirmedByNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutNotaryConfirmedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutNotaryConfirmedByInput> | Prisma.PropertyTransactionCreateWithoutNotaryConfirmedByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutNotaryConfirmedByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutNotaryConfirmedByInput | Prisma.PropertyTransactionCreateOrConnectWithoutNotaryConfirmedByInput[]
+  upsert?: Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutNotaryConfirmedByInput | Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutNotaryConfirmedByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManyNotaryConfirmedByInputEnvelope
+  set?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  disconnect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  delete?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  update?: Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutNotaryConfirmedByInput | Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutNotaryConfirmedByInput[]
+  updateMany?: Prisma.PropertyTransactionUpdateManyWithWhereWithoutNotaryConfirmedByInput | Prisma.PropertyTransactionUpdateManyWithWhereWithoutNotaryConfirmedByInput[]
+  deleteMany?: Prisma.PropertyTransactionScalarWhereInput | Prisma.PropertyTransactionScalarWhereInput[]
+}
+
+export type PropertyTransactionUncheckedUpdateManyWithoutSecurityPaidByNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityPaidByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityPaidByInput> | Prisma.PropertyTransactionCreateWithoutSecurityPaidByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutSecurityPaidByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutSecurityPaidByInput | Prisma.PropertyTransactionCreateOrConnectWithoutSecurityPaidByInput[]
+  upsert?: Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutSecurityPaidByInput | Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutSecurityPaidByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManySecurityPaidByInputEnvelope
+  set?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  disconnect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  delete?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  update?: Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutSecurityPaidByInput | Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutSecurityPaidByInput[]
+  updateMany?: Prisma.PropertyTransactionUpdateManyWithWhereWithoutSecurityPaidByInput | Prisma.PropertyTransactionUpdateManyWithWhereWithoutSecurityPaidByInput[]
+  deleteMany?: Prisma.PropertyTransactionScalarWhereInput | Prisma.PropertyTransactionScalarWhereInput[]
+}
+
+export type PropertyTransactionUncheckedUpdateManyWithoutSecurityConfirmedByNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityConfirmedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityConfirmedByInput> | Prisma.PropertyTransactionCreateWithoutSecurityConfirmedByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutSecurityConfirmedByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutSecurityConfirmedByInput | Prisma.PropertyTransactionCreateOrConnectWithoutSecurityConfirmedByInput[]
+  upsert?: Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutSecurityConfirmedByInput | Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutSecurityConfirmedByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManySecurityConfirmedByInputEnvelope
+  set?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  disconnect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  delete?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  update?: Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutSecurityConfirmedByInput | Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutSecurityConfirmedByInput[]
+  updateMany?: Prisma.PropertyTransactionUpdateManyWithWhereWithoutSecurityConfirmedByInput | Prisma.PropertyTransactionUpdateManyWithWhereWithoutSecurityConfirmedByInput[]
+  deleteMany?: Prisma.PropertyTransactionScalarWhereInput | Prisma.PropertyTransactionScalarWhereInput[]
+}
+
+export type PropertyTransactionUncheckedUpdateManyWithoutSecurityFormChosenByNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityFormChosenByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityFormChosenByInput> | Prisma.PropertyTransactionCreateWithoutSecurityFormChosenByInput[] | Prisma.PropertyTransactionUncheckedCreateWithoutSecurityFormChosenByInput[]
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutSecurityFormChosenByInput | Prisma.PropertyTransactionCreateOrConnectWithoutSecurityFormChosenByInput[]
+  upsert?: Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutSecurityFormChosenByInput | Prisma.PropertyTransactionUpsertWithWhereUniqueWithoutSecurityFormChosenByInput[]
+  createMany?: Prisma.PropertyTransactionCreateManySecurityFormChosenByInputEnvelope
+  set?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  disconnect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  delete?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  connect?: Prisma.PropertyTransactionWhereUniqueInput | Prisma.PropertyTransactionWhereUniqueInput[]
+  update?: Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutSecurityFormChosenByInput | Prisma.PropertyTransactionUpdateWithWhereUniqueWithoutSecurityFormChosenByInput[]
+  updateMany?: Prisma.PropertyTransactionUpdateManyWithWhereWithoutSecurityFormChosenByInput | Prisma.PropertyTransactionUpdateManyWithWhereWithoutSecurityFormChosenByInput[]
   deleteMany?: Prisma.PropertyTransactionScalarWhereInput | Prisma.PropertyTransactionScalarWhereInput[]
 }
 
@@ -871,6 +1392,22 @@ export type PropertyTransactionUncheckedUpdateManyWithoutListingNestedInput = {
   deleteMany?: Prisma.PropertyTransactionScalarWhereInput | Prisma.PropertyTransactionScalarWhereInput[]
 }
 
+export type PropertyTransactionCreateNestedOneWithoutIdinAttemptsInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutIdinAttemptsInput, Prisma.PropertyTransactionUncheckedCreateWithoutIdinAttemptsInput>
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutIdinAttemptsInput
+  connect?: Prisma.PropertyTransactionWhereUniqueInput
+}
+
+export type PropertyTransactionUpdateOneWithoutIdinAttemptsNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutIdinAttemptsInput, Prisma.PropertyTransactionUncheckedCreateWithoutIdinAttemptsInput>
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutIdinAttemptsInput
+  upsert?: Prisma.PropertyTransactionUpsertWithoutIdinAttemptsInput
+  disconnect?: Prisma.PropertyTransactionWhereInput | boolean
+  delete?: Prisma.PropertyTransactionWhereInput | boolean
+  connect?: Prisma.PropertyTransactionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyTransactionUpdateToOneWithWhereWithoutIdinAttemptsInput, Prisma.PropertyTransactionUpdateWithoutIdinAttemptsInput>, Prisma.PropertyTransactionUncheckedUpdateWithoutIdinAttemptsInput>
+}
+
 export type PropertyTransactionCreateNestedOneWithoutAcceptedBidInput = {
   create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutAcceptedBidInput, Prisma.PropertyTransactionUncheckedCreateWithoutAcceptedBidInput>
   connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutAcceptedBidInput
@@ -905,6 +1442,24 @@ export type PropertyTransactionUncheckedUpdateOneWithoutAcceptedBidNestedInput =
 
 export type EnumTransactionStatusFieldUpdateOperationsInput = {
   set?: $Enums.TransactionStatus
+}
+
+export type NullableEnumTransactionSecurityFormFieldUpdateOperationsInput = {
+  set?: $Enums.TransactionSecurityForm | null
+}
+
+export type PropertyTransactionCreateNestedOneWithoutAgreementInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutAgreementInput, Prisma.PropertyTransactionUncheckedCreateWithoutAgreementInput>
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutAgreementInput
+  connect?: Prisma.PropertyTransactionWhereUniqueInput
+}
+
+export type PropertyTransactionUpdateOneRequiredWithoutAgreementNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutAgreementInput, Prisma.PropertyTransactionUncheckedCreateWithoutAgreementInput>
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutAgreementInput
+  upsert?: Prisma.PropertyTransactionUpsertWithoutAgreementInput
+  connect?: Prisma.PropertyTransactionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyTransactionUpdateToOneWithWhereWithoutAgreementInput, Prisma.PropertyTransactionUpdateWithoutAgreementInput>, Prisma.PropertyTransactionUncheckedUpdateWithoutAgreementInput>
 }
 
 export type PropertyTransactionCreateNestedOneWithoutMilestonesInput = {
@@ -963,6 +1518,22 @@ export type PropertyTransactionUpdateOneRequiredWithoutEventsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyTransactionUpdateToOneWithWhereWithoutEventsInput, Prisma.PropertyTransactionUpdateWithoutEventsInput>, Prisma.PropertyTransactionUncheckedUpdateWithoutEventsInput>
 }
 
+export type PropertyTransactionCreateNestedOneWithoutImportedListingMessagesInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutImportedListingMessagesInput, Prisma.PropertyTransactionUncheckedCreateWithoutImportedListingMessagesInput>
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutImportedListingMessagesInput
+  connect?: Prisma.PropertyTransactionWhereUniqueInput
+}
+
+export type PropertyTransactionUpdateOneWithoutImportedListingMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutImportedListingMessagesInput, Prisma.PropertyTransactionUncheckedCreateWithoutImportedListingMessagesInput>
+  connectOrCreate?: Prisma.PropertyTransactionCreateOrConnectWithoutImportedListingMessagesInput
+  upsert?: Prisma.PropertyTransactionUpsertWithoutImportedListingMessagesInput
+  disconnect?: Prisma.PropertyTransactionWhereInput | boolean
+  delete?: Prisma.PropertyTransactionWhereInput | boolean
+  connect?: Prisma.PropertyTransactionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyTransactionUpdateToOneWithWhereWithoutImportedListingMessagesInput, Prisma.PropertyTransactionUpdateWithoutImportedListingMessagesInput>, Prisma.PropertyTransactionUncheckedUpdateWithoutImportedListingMessagesInput>
+}
+
 export type PropertyTransactionCreateWithoutSellerInput = {
   id?: string
   status?: $Enums.TransactionStatus
@@ -973,8 +1544,16 @@ export type PropertyTransactionCreateWithoutSellerInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -984,10 +1563,18 @@ export type PropertyTransactionCreateWithoutSellerInput = {
   listing: Prisma.ListingCreateNestedOneWithoutTransactionsInput
   acceptedBid: Prisma.BidCreateNestedOneWithoutTransactionInput
   buyer: Prisma.UserCreateNestedOneWithoutBuyingTransactionsInput
+  notaryProposedBy?: Prisma.UserCreateNestedOneWithoutProposedNotariesInput
+  notaryConfirmedBy?: Prisma.UserCreateNestedOneWithoutConfirmedNotariesInput
+  securityPaidBy?: Prisma.UserCreateNestedOneWithoutSecurityPaymentsInput
+  securityConfirmedBy?: Prisma.UserCreateNestedOneWithoutSecurityConfirmationsInput
+  securityFormChosenBy?: Prisma.UserCreateNestedOneWithoutSecurityFormChoicesInput
   milestones?: Prisma.TransactionMilestoneCreateNestedManyWithoutTransactionInput
   messages?: Prisma.TransactionMessageCreateNestedManyWithoutTransactionInput
   documents?: Prisma.TransactionDocumentCreateNestedManyWithoutTransactionInput
   events?: Prisma.TransactionEventCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionUncheckedCreateWithoutSellerInput = {
@@ -1003,8 +1590,21 @@ export type PropertyTransactionUncheckedCreateWithoutSellerInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1015,6 +1615,9 @@ export type PropertyTransactionUncheckedCreateWithoutSellerInput = {
   messages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutTransactionInput
   documents?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutTransactionInput
   events?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementUncheckedCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionCreateOrConnectWithoutSellerInput = {
@@ -1037,8 +1640,16 @@ export type PropertyTransactionCreateWithoutBuyerInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1048,10 +1659,18 @@ export type PropertyTransactionCreateWithoutBuyerInput = {
   listing: Prisma.ListingCreateNestedOneWithoutTransactionsInput
   acceptedBid: Prisma.BidCreateNestedOneWithoutTransactionInput
   seller: Prisma.UserCreateNestedOneWithoutSellingTransactionsInput
+  notaryProposedBy?: Prisma.UserCreateNestedOneWithoutProposedNotariesInput
+  notaryConfirmedBy?: Prisma.UserCreateNestedOneWithoutConfirmedNotariesInput
+  securityPaidBy?: Prisma.UserCreateNestedOneWithoutSecurityPaymentsInput
+  securityConfirmedBy?: Prisma.UserCreateNestedOneWithoutSecurityConfirmationsInput
+  securityFormChosenBy?: Prisma.UserCreateNestedOneWithoutSecurityFormChoicesInput
   milestones?: Prisma.TransactionMilestoneCreateNestedManyWithoutTransactionInput
   messages?: Prisma.TransactionMessageCreateNestedManyWithoutTransactionInput
   documents?: Prisma.TransactionDocumentCreateNestedManyWithoutTransactionInput
   events?: Prisma.TransactionEventCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionUncheckedCreateWithoutBuyerInput = {
@@ -1067,8 +1686,21 @@ export type PropertyTransactionUncheckedCreateWithoutBuyerInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1079,6 +1711,9 @@ export type PropertyTransactionUncheckedCreateWithoutBuyerInput = {
   messages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutTransactionInput
   documents?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutTransactionInput
   events?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementUncheckedCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionCreateOrConnectWithoutBuyerInput = {
@@ -1088,6 +1723,486 @@ export type PropertyTransactionCreateOrConnectWithoutBuyerInput = {
 
 export type PropertyTransactionCreateManyBuyerInputEnvelope = {
   data: Prisma.PropertyTransactionCreateManyBuyerInput | Prisma.PropertyTransactionCreateManyBuyerInput[]
+  skipDuplicates?: boolean
+}
+
+export type PropertyTransactionCreateWithoutNotaryProposedByInput = {
+  id?: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  listing: Prisma.ListingCreateNestedOneWithoutTransactionsInput
+  acceptedBid: Prisma.BidCreateNestedOneWithoutTransactionInput
+  seller: Prisma.UserCreateNestedOneWithoutSellingTransactionsInput
+  buyer: Prisma.UserCreateNestedOneWithoutBuyingTransactionsInput
+  notaryConfirmedBy?: Prisma.UserCreateNestedOneWithoutConfirmedNotariesInput
+  securityPaidBy?: Prisma.UserCreateNestedOneWithoutSecurityPaymentsInput
+  securityConfirmedBy?: Prisma.UserCreateNestedOneWithoutSecurityConfirmationsInput
+  securityFormChosenBy?: Prisma.UserCreateNestedOneWithoutSecurityFormChoicesInput
+  milestones?: Prisma.TransactionMilestoneCreateNestedManyWithoutTransactionInput
+  messages?: Prisma.TransactionMessageCreateNestedManyWithoutTransactionInput
+  documents?: Prisma.TransactionDocumentCreateNestedManyWithoutTransactionInput
+  events?: Prisma.TransactionEventCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageCreateNestedManyWithoutTransferredToTransactionInput
+}
+
+export type PropertyTransactionUncheckedCreateWithoutNotaryProposedByInput = {
+  id?: string
+  listingId: string
+  acceptedBidId: string
+  sellerUserId: string
+  buyerUserId: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  milestones?: Prisma.TransactionMilestoneUncheckedCreateNestedManyWithoutTransactionInput
+  messages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutTransactionInput
+  documents?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutTransactionInput
+  events?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementUncheckedCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedCreateNestedManyWithoutTransferredToTransactionInput
+}
+
+export type PropertyTransactionCreateOrConnectWithoutNotaryProposedByInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutNotaryProposedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutNotaryProposedByInput>
+}
+
+export type PropertyTransactionCreateManyNotaryProposedByInputEnvelope = {
+  data: Prisma.PropertyTransactionCreateManyNotaryProposedByInput | Prisma.PropertyTransactionCreateManyNotaryProposedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type PropertyTransactionCreateWithoutNotaryConfirmedByInput = {
+  id?: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  listing: Prisma.ListingCreateNestedOneWithoutTransactionsInput
+  acceptedBid: Prisma.BidCreateNestedOneWithoutTransactionInput
+  seller: Prisma.UserCreateNestedOneWithoutSellingTransactionsInput
+  buyer: Prisma.UserCreateNestedOneWithoutBuyingTransactionsInput
+  notaryProposedBy?: Prisma.UserCreateNestedOneWithoutProposedNotariesInput
+  securityPaidBy?: Prisma.UserCreateNestedOneWithoutSecurityPaymentsInput
+  securityConfirmedBy?: Prisma.UserCreateNestedOneWithoutSecurityConfirmationsInput
+  securityFormChosenBy?: Prisma.UserCreateNestedOneWithoutSecurityFormChoicesInput
+  milestones?: Prisma.TransactionMilestoneCreateNestedManyWithoutTransactionInput
+  messages?: Prisma.TransactionMessageCreateNestedManyWithoutTransactionInput
+  documents?: Prisma.TransactionDocumentCreateNestedManyWithoutTransactionInput
+  events?: Prisma.TransactionEventCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageCreateNestedManyWithoutTransferredToTransactionInput
+}
+
+export type PropertyTransactionUncheckedCreateWithoutNotaryConfirmedByInput = {
+  id?: string
+  listingId: string
+  acceptedBidId: string
+  sellerUserId: string
+  buyerUserId: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  milestones?: Prisma.TransactionMilestoneUncheckedCreateNestedManyWithoutTransactionInput
+  messages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutTransactionInput
+  documents?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutTransactionInput
+  events?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementUncheckedCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedCreateNestedManyWithoutTransferredToTransactionInput
+}
+
+export type PropertyTransactionCreateOrConnectWithoutNotaryConfirmedByInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutNotaryConfirmedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutNotaryConfirmedByInput>
+}
+
+export type PropertyTransactionCreateManyNotaryConfirmedByInputEnvelope = {
+  data: Prisma.PropertyTransactionCreateManyNotaryConfirmedByInput | Prisma.PropertyTransactionCreateManyNotaryConfirmedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type PropertyTransactionCreateWithoutSecurityPaidByInput = {
+  id?: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  listing: Prisma.ListingCreateNestedOneWithoutTransactionsInput
+  acceptedBid: Prisma.BidCreateNestedOneWithoutTransactionInput
+  seller: Prisma.UserCreateNestedOneWithoutSellingTransactionsInput
+  buyer: Prisma.UserCreateNestedOneWithoutBuyingTransactionsInput
+  notaryProposedBy?: Prisma.UserCreateNestedOneWithoutProposedNotariesInput
+  notaryConfirmedBy?: Prisma.UserCreateNestedOneWithoutConfirmedNotariesInput
+  securityConfirmedBy?: Prisma.UserCreateNestedOneWithoutSecurityConfirmationsInput
+  securityFormChosenBy?: Prisma.UserCreateNestedOneWithoutSecurityFormChoicesInput
+  milestones?: Prisma.TransactionMilestoneCreateNestedManyWithoutTransactionInput
+  messages?: Prisma.TransactionMessageCreateNestedManyWithoutTransactionInput
+  documents?: Prisma.TransactionDocumentCreateNestedManyWithoutTransactionInput
+  events?: Prisma.TransactionEventCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageCreateNestedManyWithoutTransferredToTransactionInput
+}
+
+export type PropertyTransactionUncheckedCreateWithoutSecurityPaidByInput = {
+  id?: string
+  listingId: string
+  acceptedBidId: string
+  sellerUserId: string
+  buyerUserId: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  milestones?: Prisma.TransactionMilestoneUncheckedCreateNestedManyWithoutTransactionInput
+  messages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutTransactionInput
+  documents?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutTransactionInput
+  events?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementUncheckedCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedCreateNestedManyWithoutTransferredToTransactionInput
+}
+
+export type PropertyTransactionCreateOrConnectWithoutSecurityPaidByInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityPaidByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityPaidByInput>
+}
+
+export type PropertyTransactionCreateManySecurityPaidByInputEnvelope = {
+  data: Prisma.PropertyTransactionCreateManySecurityPaidByInput | Prisma.PropertyTransactionCreateManySecurityPaidByInput[]
+  skipDuplicates?: boolean
+}
+
+export type PropertyTransactionCreateWithoutSecurityConfirmedByInput = {
+  id?: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  listing: Prisma.ListingCreateNestedOneWithoutTransactionsInput
+  acceptedBid: Prisma.BidCreateNestedOneWithoutTransactionInput
+  seller: Prisma.UserCreateNestedOneWithoutSellingTransactionsInput
+  buyer: Prisma.UserCreateNestedOneWithoutBuyingTransactionsInput
+  notaryProposedBy?: Prisma.UserCreateNestedOneWithoutProposedNotariesInput
+  notaryConfirmedBy?: Prisma.UserCreateNestedOneWithoutConfirmedNotariesInput
+  securityPaidBy?: Prisma.UserCreateNestedOneWithoutSecurityPaymentsInput
+  securityFormChosenBy?: Prisma.UserCreateNestedOneWithoutSecurityFormChoicesInput
+  milestones?: Prisma.TransactionMilestoneCreateNestedManyWithoutTransactionInput
+  messages?: Prisma.TransactionMessageCreateNestedManyWithoutTransactionInput
+  documents?: Prisma.TransactionDocumentCreateNestedManyWithoutTransactionInput
+  events?: Prisma.TransactionEventCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageCreateNestedManyWithoutTransferredToTransactionInput
+}
+
+export type PropertyTransactionUncheckedCreateWithoutSecurityConfirmedByInput = {
+  id?: string
+  listingId: string
+  acceptedBidId: string
+  sellerUserId: string
+  buyerUserId: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  milestones?: Prisma.TransactionMilestoneUncheckedCreateNestedManyWithoutTransactionInput
+  messages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutTransactionInput
+  documents?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutTransactionInput
+  events?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementUncheckedCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedCreateNestedManyWithoutTransferredToTransactionInput
+}
+
+export type PropertyTransactionCreateOrConnectWithoutSecurityConfirmedByInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityConfirmedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityConfirmedByInput>
+}
+
+export type PropertyTransactionCreateManySecurityConfirmedByInputEnvelope = {
+  data: Prisma.PropertyTransactionCreateManySecurityConfirmedByInput | Prisma.PropertyTransactionCreateManySecurityConfirmedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type PropertyTransactionCreateWithoutSecurityFormChosenByInput = {
+  id?: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  listing: Prisma.ListingCreateNestedOneWithoutTransactionsInput
+  acceptedBid: Prisma.BidCreateNestedOneWithoutTransactionInput
+  seller: Prisma.UserCreateNestedOneWithoutSellingTransactionsInput
+  buyer: Prisma.UserCreateNestedOneWithoutBuyingTransactionsInput
+  notaryProposedBy?: Prisma.UserCreateNestedOneWithoutProposedNotariesInput
+  notaryConfirmedBy?: Prisma.UserCreateNestedOneWithoutConfirmedNotariesInput
+  securityPaidBy?: Prisma.UserCreateNestedOneWithoutSecurityPaymentsInput
+  securityConfirmedBy?: Prisma.UserCreateNestedOneWithoutSecurityConfirmationsInput
+  milestones?: Prisma.TransactionMilestoneCreateNestedManyWithoutTransactionInput
+  messages?: Prisma.TransactionMessageCreateNestedManyWithoutTransactionInput
+  documents?: Prisma.TransactionDocumentCreateNestedManyWithoutTransactionInput
+  events?: Prisma.TransactionEventCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageCreateNestedManyWithoutTransferredToTransactionInput
+}
+
+export type PropertyTransactionUncheckedCreateWithoutSecurityFormChosenByInput = {
+  id?: string
+  listingId: string
+  acceptedBidId: string
+  sellerUserId: string
+  buyerUserId: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  milestones?: Prisma.TransactionMilestoneUncheckedCreateNestedManyWithoutTransactionInput
+  messages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutTransactionInput
+  documents?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutTransactionInput
+  events?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementUncheckedCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedCreateNestedManyWithoutTransferredToTransactionInput
+}
+
+export type PropertyTransactionCreateOrConnectWithoutSecurityFormChosenByInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityFormChosenByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityFormChosenByInput>
+}
+
+export type PropertyTransactionCreateManySecurityFormChosenByInputEnvelope = {
+  data: Prisma.PropertyTransactionCreateManySecurityFormChosenByInput | Prisma.PropertyTransactionCreateManySecurityFormChosenByInput[]
   skipDuplicates?: boolean
 }
 
@@ -1124,8 +2239,21 @@ export type PropertyTransactionScalarWhereInput = {
   buyerContractConfirmedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   sellerContractConfirmedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   coolingOffEndsAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
+  notaryProposal?: Prisma.JsonNullableFilter<"PropertyTransaction">
+  notaryProposedByUserId?: Prisma.UuidNullableFilter<"PropertyTransaction"> | string | null
+  notaryProposedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   notaryDetails?: Prisma.JsonNullableFilter<"PropertyTransaction">
+  notaryConfirmedByUserId?: Prisma.UuidNullableFilter<"PropertyTransaction"> | string | null
+  notaryConfirmedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   handoverDetails?: Prisma.JsonNullableFilter<"PropertyTransaction">
+  securityForm?: Prisma.EnumTransactionSecurityFormNullableFilter<"PropertyTransaction"> | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
+  securityFormChosenByUserId?: Prisma.UuidNullableFilter<"PropertyTransaction"> | string | null
+  securityReference?: Prisma.StringNullableFilter<"PropertyTransaction"> | string | null
+  securityPaidAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
+  securityPaidByUserId?: Prisma.UuidNullableFilter<"PropertyTransaction"> | string | null
+  securityConfirmedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
+  securityConfirmedByUserId?: Prisma.UuidNullableFilter<"PropertyTransaction"> | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   cancelledAt?: Prisma.DateTimeNullableFilter<"PropertyTransaction"> | Date | string | null
   cancellationReason?: Prisma.StringNullableFilter<"PropertyTransaction"> | string | null
@@ -1150,6 +2278,86 @@ export type PropertyTransactionUpdateManyWithWhereWithoutBuyerInput = {
   data: Prisma.XOR<Prisma.PropertyTransactionUpdateManyMutationInput, Prisma.PropertyTransactionUncheckedUpdateManyWithoutBuyerInput>
 }
 
+export type PropertyTransactionUpsertWithWhereUniqueWithoutNotaryProposedByInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  update: Prisma.XOR<Prisma.PropertyTransactionUpdateWithoutNotaryProposedByInput, Prisma.PropertyTransactionUncheckedUpdateWithoutNotaryProposedByInput>
+  create: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutNotaryProposedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutNotaryProposedByInput>
+}
+
+export type PropertyTransactionUpdateWithWhereUniqueWithoutNotaryProposedByInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  data: Prisma.XOR<Prisma.PropertyTransactionUpdateWithoutNotaryProposedByInput, Prisma.PropertyTransactionUncheckedUpdateWithoutNotaryProposedByInput>
+}
+
+export type PropertyTransactionUpdateManyWithWhereWithoutNotaryProposedByInput = {
+  where: Prisma.PropertyTransactionScalarWhereInput
+  data: Prisma.XOR<Prisma.PropertyTransactionUpdateManyMutationInput, Prisma.PropertyTransactionUncheckedUpdateManyWithoutNotaryProposedByInput>
+}
+
+export type PropertyTransactionUpsertWithWhereUniqueWithoutNotaryConfirmedByInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  update: Prisma.XOR<Prisma.PropertyTransactionUpdateWithoutNotaryConfirmedByInput, Prisma.PropertyTransactionUncheckedUpdateWithoutNotaryConfirmedByInput>
+  create: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutNotaryConfirmedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutNotaryConfirmedByInput>
+}
+
+export type PropertyTransactionUpdateWithWhereUniqueWithoutNotaryConfirmedByInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  data: Prisma.XOR<Prisma.PropertyTransactionUpdateWithoutNotaryConfirmedByInput, Prisma.PropertyTransactionUncheckedUpdateWithoutNotaryConfirmedByInput>
+}
+
+export type PropertyTransactionUpdateManyWithWhereWithoutNotaryConfirmedByInput = {
+  where: Prisma.PropertyTransactionScalarWhereInput
+  data: Prisma.XOR<Prisma.PropertyTransactionUpdateManyMutationInput, Prisma.PropertyTransactionUncheckedUpdateManyWithoutNotaryConfirmedByInput>
+}
+
+export type PropertyTransactionUpsertWithWhereUniqueWithoutSecurityPaidByInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  update: Prisma.XOR<Prisma.PropertyTransactionUpdateWithoutSecurityPaidByInput, Prisma.PropertyTransactionUncheckedUpdateWithoutSecurityPaidByInput>
+  create: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityPaidByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityPaidByInput>
+}
+
+export type PropertyTransactionUpdateWithWhereUniqueWithoutSecurityPaidByInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  data: Prisma.XOR<Prisma.PropertyTransactionUpdateWithoutSecurityPaidByInput, Prisma.PropertyTransactionUncheckedUpdateWithoutSecurityPaidByInput>
+}
+
+export type PropertyTransactionUpdateManyWithWhereWithoutSecurityPaidByInput = {
+  where: Prisma.PropertyTransactionScalarWhereInput
+  data: Prisma.XOR<Prisma.PropertyTransactionUpdateManyMutationInput, Prisma.PropertyTransactionUncheckedUpdateManyWithoutSecurityPaidByInput>
+}
+
+export type PropertyTransactionUpsertWithWhereUniqueWithoutSecurityConfirmedByInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  update: Prisma.XOR<Prisma.PropertyTransactionUpdateWithoutSecurityConfirmedByInput, Prisma.PropertyTransactionUncheckedUpdateWithoutSecurityConfirmedByInput>
+  create: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityConfirmedByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityConfirmedByInput>
+}
+
+export type PropertyTransactionUpdateWithWhereUniqueWithoutSecurityConfirmedByInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  data: Prisma.XOR<Prisma.PropertyTransactionUpdateWithoutSecurityConfirmedByInput, Prisma.PropertyTransactionUncheckedUpdateWithoutSecurityConfirmedByInput>
+}
+
+export type PropertyTransactionUpdateManyWithWhereWithoutSecurityConfirmedByInput = {
+  where: Prisma.PropertyTransactionScalarWhereInput
+  data: Prisma.XOR<Prisma.PropertyTransactionUpdateManyMutationInput, Prisma.PropertyTransactionUncheckedUpdateManyWithoutSecurityConfirmedByInput>
+}
+
+export type PropertyTransactionUpsertWithWhereUniqueWithoutSecurityFormChosenByInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  update: Prisma.XOR<Prisma.PropertyTransactionUpdateWithoutSecurityFormChosenByInput, Prisma.PropertyTransactionUncheckedUpdateWithoutSecurityFormChosenByInput>
+  create: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutSecurityFormChosenByInput, Prisma.PropertyTransactionUncheckedCreateWithoutSecurityFormChosenByInput>
+}
+
+export type PropertyTransactionUpdateWithWhereUniqueWithoutSecurityFormChosenByInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  data: Prisma.XOR<Prisma.PropertyTransactionUpdateWithoutSecurityFormChosenByInput, Prisma.PropertyTransactionUncheckedUpdateWithoutSecurityFormChosenByInput>
+}
+
+export type PropertyTransactionUpdateManyWithWhereWithoutSecurityFormChosenByInput = {
+  where: Prisma.PropertyTransactionScalarWhereInput
+  data: Prisma.XOR<Prisma.PropertyTransactionUpdateManyMutationInput, Prisma.PropertyTransactionUncheckedUpdateManyWithoutSecurityFormChosenByInput>
+}
+
 export type PropertyTransactionCreateWithoutListingInput = {
   id?: string
   status?: $Enums.TransactionStatus
@@ -1160,8 +2368,16 @@ export type PropertyTransactionCreateWithoutListingInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1171,10 +2387,18 @@ export type PropertyTransactionCreateWithoutListingInput = {
   acceptedBid: Prisma.BidCreateNestedOneWithoutTransactionInput
   seller: Prisma.UserCreateNestedOneWithoutSellingTransactionsInput
   buyer: Prisma.UserCreateNestedOneWithoutBuyingTransactionsInput
+  notaryProposedBy?: Prisma.UserCreateNestedOneWithoutProposedNotariesInput
+  notaryConfirmedBy?: Prisma.UserCreateNestedOneWithoutConfirmedNotariesInput
+  securityPaidBy?: Prisma.UserCreateNestedOneWithoutSecurityPaymentsInput
+  securityConfirmedBy?: Prisma.UserCreateNestedOneWithoutSecurityConfirmationsInput
+  securityFormChosenBy?: Prisma.UserCreateNestedOneWithoutSecurityFormChoicesInput
   milestones?: Prisma.TransactionMilestoneCreateNestedManyWithoutTransactionInput
   messages?: Prisma.TransactionMessageCreateNestedManyWithoutTransactionInput
   documents?: Prisma.TransactionDocumentCreateNestedManyWithoutTransactionInput
   events?: Prisma.TransactionEventCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionUncheckedCreateWithoutListingInput = {
@@ -1190,8 +2414,21 @@ export type PropertyTransactionUncheckedCreateWithoutListingInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1202,6 +2439,9 @@ export type PropertyTransactionUncheckedCreateWithoutListingInput = {
   messages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutTransactionInput
   documents?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutTransactionInput
   events?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementUncheckedCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionCreateOrConnectWithoutListingInput = {
@@ -1230,6 +2470,194 @@ export type PropertyTransactionUpdateManyWithWhereWithoutListingInput = {
   data: Prisma.XOR<Prisma.PropertyTransactionUpdateManyMutationInput, Prisma.PropertyTransactionUncheckedUpdateManyWithoutListingInput>
 }
 
+export type PropertyTransactionCreateWithoutIdinAttemptsInput = {
+  id?: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  listing: Prisma.ListingCreateNestedOneWithoutTransactionsInput
+  acceptedBid: Prisma.BidCreateNestedOneWithoutTransactionInput
+  seller: Prisma.UserCreateNestedOneWithoutSellingTransactionsInput
+  buyer: Prisma.UserCreateNestedOneWithoutBuyingTransactionsInput
+  notaryProposedBy?: Prisma.UserCreateNestedOneWithoutProposedNotariesInput
+  notaryConfirmedBy?: Prisma.UserCreateNestedOneWithoutConfirmedNotariesInput
+  securityPaidBy?: Prisma.UserCreateNestedOneWithoutSecurityPaymentsInput
+  securityConfirmedBy?: Prisma.UserCreateNestedOneWithoutSecurityConfirmationsInput
+  securityFormChosenBy?: Prisma.UserCreateNestedOneWithoutSecurityFormChoicesInput
+  milestones?: Prisma.TransactionMilestoneCreateNestedManyWithoutTransactionInput
+  messages?: Prisma.TransactionMessageCreateNestedManyWithoutTransactionInput
+  documents?: Prisma.TransactionDocumentCreateNestedManyWithoutTransactionInput
+  events?: Prisma.TransactionEventCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementCreateNestedOneWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageCreateNestedManyWithoutTransferredToTransactionInput
+}
+
+export type PropertyTransactionUncheckedCreateWithoutIdinAttemptsInput = {
+  id?: string
+  listingId: string
+  acceptedBidId: string
+  sellerUserId: string
+  buyerUserId: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  milestones?: Prisma.TransactionMilestoneUncheckedCreateNestedManyWithoutTransactionInput
+  messages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutTransactionInput
+  documents?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutTransactionInput
+  events?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementUncheckedCreateNestedOneWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedCreateNestedManyWithoutTransferredToTransactionInput
+}
+
+export type PropertyTransactionCreateOrConnectWithoutIdinAttemptsInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutIdinAttemptsInput, Prisma.PropertyTransactionUncheckedCreateWithoutIdinAttemptsInput>
+}
+
+export type PropertyTransactionUpsertWithoutIdinAttemptsInput = {
+  update: Prisma.XOR<Prisma.PropertyTransactionUpdateWithoutIdinAttemptsInput, Prisma.PropertyTransactionUncheckedUpdateWithoutIdinAttemptsInput>
+  create: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutIdinAttemptsInput, Prisma.PropertyTransactionUncheckedCreateWithoutIdinAttemptsInput>
+  where?: Prisma.PropertyTransactionWhereInput
+}
+
+export type PropertyTransactionUpdateToOneWithWhereWithoutIdinAttemptsInput = {
+  where?: Prisma.PropertyTransactionWhereInput
+  data: Prisma.XOR<Prisma.PropertyTransactionUpdateWithoutIdinAttemptsInput, Prisma.PropertyTransactionUncheckedUpdateWithoutIdinAttemptsInput>
+}
+
+export type PropertyTransactionUpdateWithoutIdinAttemptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  listing?: Prisma.ListingUpdateOneRequiredWithoutTransactionsNestedInput
+  acceptedBid?: Prisma.BidUpdateOneRequiredWithoutTransactionNestedInput
+  seller?: Prisma.UserUpdateOneRequiredWithoutSellingTransactionsNestedInput
+  buyer?: Prisma.UserUpdateOneRequiredWithoutBuyingTransactionsNestedInput
+  notaryProposedBy?: Prisma.UserUpdateOneWithoutProposedNotariesNestedInput
+  notaryConfirmedBy?: Prisma.UserUpdateOneWithoutConfirmedNotariesNestedInput
+  securityPaidBy?: Prisma.UserUpdateOneWithoutSecurityPaymentsNestedInput
+  securityConfirmedBy?: Prisma.UserUpdateOneWithoutSecurityConfirmationsNestedInput
+  securityFormChosenBy?: Prisma.UserUpdateOneWithoutSecurityFormChoicesNestedInput
+  milestones?: Prisma.TransactionMilestoneUpdateManyWithoutTransactionNestedInput
+  messages?: Prisma.TransactionMessageUpdateManyWithoutTransactionNestedInput
+  documents?: Prisma.TransactionDocumentUpdateManyWithoutTransactionNestedInput
+  events?: Prisma.TransactionEventUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUpdateOneWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUpdateManyWithoutTransferredToTransactionNestedInput
+}
+
+export type PropertyTransactionUncheckedUpdateWithoutIdinAttemptsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptedBidId?: Prisma.StringFieldUpdateOperationsInput | string
+  sellerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  buyerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  milestones?: Prisma.TransactionMilestoneUncheckedUpdateManyWithoutTransactionNestedInput
+  messages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutTransactionNestedInput
+  documents?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutTransactionNestedInput
+  events?: Prisma.TransactionEventUncheckedUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUncheckedUpdateOneWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedUpdateManyWithoutTransferredToTransactionNestedInput
+}
+
 export type PropertyTransactionCreateWithoutAcceptedBidInput = {
   id?: string
   status?: $Enums.TransactionStatus
@@ -1240,8 +2668,16 @@ export type PropertyTransactionCreateWithoutAcceptedBidInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1251,10 +2687,18 @@ export type PropertyTransactionCreateWithoutAcceptedBidInput = {
   listing: Prisma.ListingCreateNestedOneWithoutTransactionsInput
   seller: Prisma.UserCreateNestedOneWithoutSellingTransactionsInput
   buyer: Prisma.UserCreateNestedOneWithoutBuyingTransactionsInput
+  notaryProposedBy?: Prisma.UserCreateNestedOneWithoutProposedNotariesInput
+  notaryConfirmedBy?: Prisma.UserCreateNestedOneWithoutConfirmedNotariesInput
+  securityPaidBy?: Prisma.UserCreateNestedOneWithoutSecurityPaymentsInput
+  securityConfirmedBy?: Prisma.UserCreateNestedOneWithoutSecurityConfirmationsInput
+  securityFormChosenBy?: Prisma.UserCreateNestedOneWithoutSecurityFormChoicesInput
   milestones?: Prisma.TransactionMilestoneCreateNestedManyWithoutTransactionInput
   messages?: Prisma.TransactionMessageCreateNestedManyWithoutTransactionInput
   documents?: Prisma.TransactionDocumentCreateNestedManyWithoutTransactionInput
   events?: Prisma.TransactionEventCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionUncheckedCreateWithoutAcceptedBidInput = {
@@ -1270,8 +2714,21 @@ export type PropertyTransactionUncheckedCreateWithoutAcceptedBidInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1282,6 +2739,9 @@ export type PropertyTransactionUncheckedCreateWithoutAcceptedBidInput = {
   messages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutTransactionInput
   documents?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutTransactionInput
   events?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementUncheckedCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionCreateOrConnectWithoutAcceptedBidInput = {
@@ -1310,8 +2770,16 @@ export type PropertyTransactionUpdateWithoutAcceptedBidInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1321,10 +2789,18 @@ export type PropertyTransactionUpdateWithoutAcceptedBidInput = {
   listing?: Prisma.ListingUpdateOneRequiredWithoutTransactionsNestedInput
   seller?: Prisma.UserUpdateOneRequiredWithoutSellingTransactionsNestedInput
   buyer?: Prisma.UserUpdateOneRequiredWithoutBuyingTransactionsNestedInput
+  notaryProposedBy?: Prisma.UserUpdateOneWithoutProposedNotariesNestedInput
+  notaryConfirmedBy?: Prisma.UserUpdateOneWithoutConfirmedNotariesNestedInput
+  securityPaidBy?: Prisma.UserUpdateOneWithoutSecurityPaymentsNestedInput
+  securityConfirmedBy?: Prisma.UserUpdateOneWithoutSecurityConfirmationsNestedInput
+  securityFormChosenBy?: Prisma.UserUpdateOneWithoutSecurityFormChoicesNestedInput
   milestones?: Prisma.TransactionMilestoneUpdateManyWithoutTransactionNestedInput
   messages?: Prisma.TransactionMessageUpdateManyWithoutTransactionNestedInput
   documents?: Prisma.TransactionDocumentUpdateManyWithoutTransactionNestedInput
   events?: Prisma.TransactionEventUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionUncheckedUpdateWithoutAcceptedBidInput = {
@@ -1340,8 +2816,21 @@ export type PropertyTransactionUncheckedUpdateWithoutAcceptedBidInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1352,6 +2841,197 @@ export type PropertyTransactionUncheckedUpdateWithoutAcceptedBidInput = {
   messages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutTransactionNestedInput
   documents?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutTransactionNestedInput
   events?: Prisma.TransactionEventUncheckedUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUncheckedUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedUpdateManyWithoutTransferredToTransactionNestedInput
+}
+
+export type PropertyTransactionCreateWithoutAgreementInput = {
+  id?: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  listing: Prisma.ListingCreateNestedOneWithoutTransactionsInput
+  acceptedBid: Prisma.BidCreateNestedOneWithoutTransactionInput
+  seller: Prisma.UserCreateNestedOneWithoutSellingTransactionsInput
+  buyer: Prisma.UserCreateNestedOneWithoutBuyingTransactionsInput
+  notaryProposedBy?: Prisma.UserCreateNestedOneWithoutProposedNotariesInput
+  notaryConfirmedBy?: Prisma.UserCreateNestedOneWithoutConfirmedNotariesInput
+  securityPaidBy?: Prisma.UserCreateNestedOneWithoutSecurityPaymentsInput
+  securityConfirmedBy?: Prisma.UserCreateNestedOneWithoutSecurityConfirmationsInput
+  securityFormChosenBy?: Prisma.UserCreateNestedOneWithoutSecurityFormChoicesInput
+  milestones?: Prisma.TransactionMilestoneCreateNestedManyWithoutTransactionInput
+  messages?: Prisma.TransactionMessageCreateNestedManyWithoutTransactionInput
+  documents?: Prisma.TransactionDocumentCreateNestedManyWithoutTransactionInput
+  events?: Prisma.TransactionEventCreateNestedManyWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageCreateNestedManyWithoutTransferredToTransactionInput
+}
+
+export type PropertyTransactionUncheckedCreateWithoutAgreementInput = {
+  id?: string
+  listingId: string
+  acceptedBidId: string
+  sellerUserId: string
+  buyerUserId: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  milestones?: Prisma.TransactionMilestoneUncheckedCreateNestedManyWithoutTransactionInput
+  messages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutTransactionInput
+  documents?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutTransactionInput
+  events?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedCreateNestedManyWithoutTransferredToTransactionInput
+}
+
+export type PropertyTransactionCreateOrConnectWithoutAgreementInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutAgreementInput, Prisma.PropertyTransactionUncheckedCreateWithoutAgreementInput>
+}
+
+export type PropertyTransactionUpsertWithoutAgreementInput = {
+  update: Prisma.XOR<Prisma.PropertyTransactionUpdateWithoutAgreementInput, Prisma.PropertyTransactionUncheckedUpdateWithoutAgreementInput>
+  create: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutAgreementInput, Prisma.PropertyTransactionUncheckedCreateWithoutAgreementInput>
+  where?: Prisma.PropertyTransactionWhereInput
+}
+
+export type PropertyTransactionUpdateToOneWithWhereWithoutAgreementInput = {
+  where?: Prisma.PropertyTransactionWhereInput
+  data: Prisma.XOR<Prisma.PropertyTransactionUpdateWithoutAgreementInput, Prisma.PropertyTransactionUncheckedUpdateWithoutAgreementInput>
+}
+
+export type PropertyTransactionUpdateWithoutAgreementInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  listing?: Prisma.ListingUpdateOneRequiredWithoutTransactionsNestedInput
+  acceptedBid?: Prisma.BidUpdateOneRequiredWithoutTransactionNestedInput
+  seller?: Prisma.UserUpdateOneRequiredWithoutSellingTransactionsNestedInput
+  buyer?: Prisma.UserUpdateOneRequiredWithoutBuyingTransactionsNestedInput
+  notaryProposedBy?: Prisma.UserUpdateOneWithoutProposedNotariesNestedInput
+  notaryConfirmedBy?: Prisma.UserUpdateOneWithoutConfirmedNotariesNestedInput
+  securityPaidBy?: Prisma.UserUpdateOneWithoutSecurityPaymentsNestedInput
+  securityConfirmedBy?: Prisma.UserUpdateOneWithoutSecurityConfirmationsNestedInput
+  securityFormChosenBy?: Prisma.UserUpdateOneWithoutSecurityFormChoicesNestedInput
+  milestones?: Prisma.TransactionMilestoneUpdateManyWithoutTransactionNestedInput
+  messages?: Prisma.TransactionMessageUpdateManyWithoutTransactionNestedInput
+  documents?: Prisma.TransactionDocumentUpdateManyWithoutTransactionNestedInput
+  events?: Prisma.TransactionEventUpdateManyWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUpdateManyWithoutTransferredToTransactionNestedInput
+}
+
+export type PropertyTransactionUncheckedUpdateWithoutAgreementInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptedBidId?: Prisma.StringFieldUpdateOperationsInput | string
+  sellerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  buyerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  milestones?: Prisma.TransactionMilestoneUncheckedUpdateManyWithoutTransactionNestedInput
+  messages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutTransactionNestedInput
+  documents?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutTransactionNestedInput
+  events?: Prisma.TransactionEventUncheckedUpdateManyWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionCreateWithoutMilestonesInput = {
@@ -1364,8 +3044,16 @@ export type PropertyTransactionCreateWithoutMilestonesInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1376,9 +3064,17 @@ export type PropertyTransactionCreateWithoutMilestonesInput = {
   acceptedBid: Prisma.BidCreateNestedOneWithoutTransactionInput
   seller: Prisma.UserCreateNestedOneWithoutSellingTransactionsInput
   buyer: Prisma.UserCreateNestedOneWithoutBuyingTransactionsInput
+  notaryProposedBy?: Prisma.UserCreateNestedOneWithoutProposedNotariesInput
+  notaryConfirmedBy?: Prisma.UserCreateNestedOneWithoutConfirmedNotariesInput
+  securityPaidBy?: Prisma.UserCreateNestedOneWithoutSecurityPaymentsInput
+  securityConfirmedBy?: Prisma.UserCreateNestedOneWithoutSecurityConfirmationsInput
+  securityFormChosenBy?: Prisma.UserCreateNestedOneWithoutSecurityFormChoicesInput
   messages?: Prisma.TransactionMessageCreateNestedManyWithoutTransactionInput
   documents?: Prisma.TransactionDocumentCreateNestedManyWithoutTransactionInput
   events?: Prisma.TransactionEventCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionUncheckedCreateWithoutMilestonesInput = {
@@ -1395,8 +3091,21 @@ export type PropertyTransactionUncheckedCreateWithoutMilestonesInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1406,6 +3115,9 @@ export type PropertyTransactionUncheckedCreateWithoutMilestonesInput = {
   messages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutTransactionInput
   documents?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutTransactionInput
   events?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementUncheckedCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionCreateOrConnectWithoutMilestonesInput = {
@@ -1434,8 +3146,16 @@ export type PropertyTransactionUpdateWithoutMilestonesInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1446,9 +3166,17 @@ export type PropertyTransactionUpdateWithoutMilestonesInput = {
   acceptedBid?: Prisma.BidUpdateOneRequiredWithoutTransactionNestedInput
   seller?: Prisma.UserUpdateOneRequiredWithoutSellingTransactionsNestedInput
   buyer?: Prisma.UserUpdateOneRequiredWithoutBuyingTransactionsNestedInput
+  notaryProposedBy?: Prisma.UserUpdateOneWithoutProposedNotariesNestedInput
+  notaryConfirmedBy?: Prisma.UserUpdateOneWithoutConfirmedNotariesNestedInput
+  securityPaidBy?: Prisma.UserUpdateOneWithoutSecurityPaymentsNestedInput
+  securityConfirmedBy?: Prisma.UserUpdateOneWithoutSecurityConfirmationsNestedInput
+  securityFormChosenBy?: Prisma.UserUpdateOneWithoutSecurityFormChoicesNestedInput
   messages?: Prisma.TransactionMessageUpdateManyWithoutTransactionNestedInput
   documents?: Prisma.TransactionDocumentUpdateManyWithoutTransactionNestedInput
   events?: Prisma.TransactionEventUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionUncheckedUpdateWithoutMilestonesInput = {
@@ -1465,8 +3193,21 @@ export type PropertyTransactionUncheckedUpdateWithoutMilestonesInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1476,6 +3217,9 @@ export type PropertyTransactionUncheckedUpdateWithoutMilestonesInput = {
   messages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutTransactionNestedInput
   documents?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutTransactionNestedInput
   events?: Prisma.TransactionEventUncheckedUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUncheckedUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionCreateWithoutMessagesInput = {
@@ -1488,8 +3232,16 @@ export type PropertyTransactionCreateWithoutMessagesInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1500,9 +3252,17 @@ export type PropertyTransactionCreateWithoutMessagesInput = {
   acceptedBid: Prisma.BidCreateNestedOneWithoutTransactionInput
   seller: Prisma.UserCreateNestedOneWithoutSellingTransactionsInput
   buyer: Prisma.UserCreateNestedOneWithoutBuyingTransactionsInput
+  notaryProposedBy?: Prisma.UserCreateNestedOneWithoutProposedNotariesInput
+  notaryConfirmedBy?: Prisma.UserCreateNestedOneWithoutConfirmedNotariesInput
+  securityPaidBy?: Prisma.UserCreateNestedOneWithoutSecurityPaymentsInput
+  securityConfirmedBy?: Prisma.UserCreateNestedOneWithoutSecurityConfirmationsInput
+  securityFormChosenBy?: Prisma.UserCreateNestedOneWithoutSecurityFormChoicesInput
   milestones?: Prisma.TransactionMilestoneCreateNestedManyWithoutTransactionInput
   documents?: Prisma.TransactionDocumentCreateNestedManyWithoutTransactionInput
   events?: Prisma.TransactionEventCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionUncheckedCreateWithoutMessagesInput = {
@@ -1519,8 +3279,21 @@ export type PropertyTransactionUncheckedCreateWithoutMessagesInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1530,6 +3303,9 @@ export type PropertyTransactionUncheckedCreateWithoutMessagesInput = {
   milestones?: Prisma.TransactionMilestoneUncheckedCreateNestedManyWithoutTransactionInput
   documents?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutTransactionInput
   events?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementUncheckedCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionCreateOrConnectWithoutMessagesInput = {
@@ -1558,8 +3334,16 @@ export type PropertyTransactionUpdateWithoutMessagesInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1570,9 +3354,17 @@ export type PropertyTransactionUpdateWithoutMessagesInput = {
   acceptedBid?: Prisma.BidUpdateOneRequiredWithoutTransactionNestedInput
   seller?: Prisma.UserUpdateOneRequiredWithoutSellingTransactionsNestedInput
   buyer?: Prisma.UserUpdateOneRequiredWithoutBuyingTransactionsNestedInput
+  notaryProposedBy?: Prisma.UserUpdateOneWithoutProposedNotariesNestedInput
+  notaryConfirmedBy?: Prisma.UserUpdateOneWithoutConfirmedNotariesNestedInput
+  securityPaidBy?: Prisma.UserUpdateOneWithoutSecurityPaymentsNestedInput
+  securityConfirmedBy?: Prisma.UserUpdateOneWithoutSecurityConfirmationsNestedInput
+  securityFormChosenBy?: Prisma.UserUpdateOneWithoutSecurityFormChoicesNestedInput
   milestones?: Prisma.TransactionMilestoneUpdateManyWithoutTransactionNestedInput
   documents?: Prisma.TransactionDocumentUpdateManyWithoutTransactionNestedInput
   events?: Prisma.TransactionEventUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionUncheckedUpdateWithoutMessagesInput = {
@@ -1589,8 +3381,21 @@ export type PropertyTransactionUncheckedUpdateWithoutMessagesInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1600,6 +3405,9 @@ export type PropertyTransactionUncheckedUpdateWithoutMessagesInput = {
   milestones?: Prisma.TransactionMilestoneUncheckedUpdateManyWithoutTransactionNestedInput
   documents?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutTransactionNestedInput
   events?: Prisma.TransactionEventUncheckedUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUncheckedUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionCreateWithoutDocumentsInput = {
@@ -1612,8 +3420,16 @@ export type PropertyTransactionCreateWithoutDocumentsInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1624,9 +3440,17 @@ export type PropertyTransactionCreateWithoutDocumentsInput = {
   acceptedBid: Prisma.BidCreateNestedOneWithoutTransactionInput
   seller: Prisma.UserCreateNestedOneWithoutSellingTransactionsInput
   buyer: Prisma.UserCreateNestedOneWithoutBuyingTransactionsInput
+  notaryProposedBy?: Prisma.UserCreateNestedOneWithoutProposedNotariesInput
+  notaryConfirmedBy?: Prisma.UserCreateNestedOneWithoutConfirmedNotariesInput
+  securityPaidBy?: Prisma.UserCreateNestedOneWithoutSecurityPaymentsInput
+  securityConfirmedBy?: Prisma.UserCreateNestedOneWithoutSecurityConfirmationsInput
+  securityFormChosenBy?: Prisma.UserCreateNestedOneWithoutSecurityFormChoicesInput
   milestones?: Prisma.TransactionMilestoneCreateNestedManyWithoutTransactionInput
   messages?: Prisma.TransactionMessageCreateNestedManyWithoutTransactionInput
   events?: Prisma.TransactionEventCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionUncheckedCreateWithoutDocumentsInput = {
@@ -1643,8 +3467,21 @@ export type PropertyTransactionUncheckedCreateWithoutDocumentsInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1654,6 +3491,9 @@ export type PropertyTransactionUncheckedCreateWithoutDocumentsInput = {
   milestones?: Prisma.TransactionMilestoneUncheckedCreateNestedManyWithoutTransactionInput
   messages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutTransactionInput
   events?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementUncheckedCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionCreateOrConnectWithoutDocumentsInput = {
@@ -1682,8 +3522,16 @@ export type PropertyTransactionUpdateWithoutDocumentsInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1694,9 +3542,17 @@ export type PropertyTransactionUpdateWithoutDocumentsInput = {
   acceptedBid?: Prisma.BidUpdateOneRequiredWithoutTransactionNestedInput
   seller?: Prisma.UserUpdateOneRequiredWithoutSellingTransactionsNestedInput
   buyer?: Prisma.UserUpdateOneRequiredWithoutBuyingTransactionsNestedInput
+  notaryProposedBy?: Prisma.UserUpdateOneWithoutProposedNotariesNestedInput
+  notaryConfirmedBy?: Prisma.UserUpdateOneWithoutConfirmedNotariesNestedInput
+  securityPaidBy?: Prisma.UserUpdateOneWithoutSecurityPaymentsNestedInput
+  securityConfirmedBy?: Prisma.UserUpdateOneWithoutSecurityConfirmationsNestedInput
+  securityFormChosenBy?: Prisma.UserUpdateOneWithoutSecurityFormChoicesNestedInput
   milestones?: Prisma.TransactionMilestoneUpdateManyWithoutTransactionNestedInput
   messages?: Prisma.TransactionMessageUpdateManyWithoutTransactionNestedInput
   events?: Prisma.TransactionEventUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionUncheckedUpdateWithoutDocumentsInput = {
@@ -1713,8 +3569,21 @@ export type PropertyTransactionUncheckedUpdateWithoutDocumentsInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1724,6 +3593,9 @@ export type PropertyTransactionUncheckedUpdateWithoutDocumentsInput = {
   milestones?: Prisma.TransactionMilestoneUncheckedUpdateManyWithoutTransactionNestedInput
   messages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutTransactionNestedInput
   events?: Prisma.TransactionEventUncheckedUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUncheckedUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionCreateWithoutEventsInput = {
@@ -1736,8 +3608,16 @@ export type PropertyTransactionCreateWithoutEventsInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1748,9 +3628,17 @@ export type PropertyTransactionCreateWithoutEventsInput = {
   acceptedBid: Prisma.BidCreateNestedOneWithoutTransactionInput
   seller: Prisma.UserCreateNestedOneWithoutSellingTransactionsInput
   buyer: Prisma.UserCreateNestedOneWithoutBuyingTransactionsInput
+  notaryProposedBy?: Prisma.UserCreateNestedOneWithoutProposedNotariesInput
+  notaryConfirmedBy?: Prisma.UserCreateNestedOneWithoutConfirmedNotariesInput
+  securityPaidBy?: Prisma.UserCreateNestedOneWithoutSecurityPaymentsInput
+  securityConfirmedBy?: Prisma.UserCreateNestedOneWithoutSecurityConfirmationsInput
+  securityFormChosenBy?: Prisma.UserCreateNestedOneWithoutSecurityFormChoicesInput
   milestones?: Prisma.TransactionMilestoneCreateNestedManyWithoutTransactionInput
   messages?: Prisma.TransactionMessageCreateNestedManyWithoutTransactionInput
   documents?: Prisma.TransactionDocumentCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionUncheckedCreateWithoutEventsInput = {
@@ -1767,8 +3655,21 @@ export type PropertyTransactionUncheckedCreateWithoutEventsInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1778,6 +3679,9 @@ export type PropertyTransactionUncheckedCreateWithoutEventsInput = {
   milestones?: Prisma.TransactionMilestoneUncheckedCreateNestedManyWithoutTransactionInput
   messages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutTransactionInput
   documents?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementUncheckedCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedCreateNestedManyWithoutTransferredToTransactionInput
 }
 
 export type PropertyTransactionCreateOrConnectWithoutEventsInput = {
@@ -1806,8 +3710,16 @@ export type PropertyTransactionUpdateWithoutEventsInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1818,9 +3730,17 @@ export type PropertyTransactionUpdateWithoutEventsInput = {
   acceptedBid?: Prisma.BidUpdateOneRequiredWithoutTransactionNestedInput
   seller?: Prisma.UserUpdateOneRequiredWithoutSellingTransactionsNestedInput
   buyer?: Prisma.UserUpdateOneRequiredWithoutBuyingTransactionsNestedInput
+  notaryProposedBy?: Prisma.UserUpdateOneWithoutProposedNotariesNestedInput
+  notaryConfirmedBy?: Prisma.UserUpdateOneWithoutConfirmedNotariesNestedInput
+  securityPaidBy?: Prisma.UserUpdateOneWithoutSecurityPaymentsNestedInput
+  securityConfirmedBy?: Prisma.UserUpdateOneWithoutSecurityConfirmationsNestedInput
+  securityFormChosenBy?: Prisma.UserUpdateOneWithoutSecurityFormChoicesNestedInput
   milestones?: Prisma.TransactionMilestoneUpdateManyWithoutTransactionNestedInput
   messages?: Prisma.TransactionMessageUpdateManyWithoutTransactionNestedInput
   documents?: Prisma.TransactionDocumentUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionUncheckedUpdateWithoutEventsInput = {
@@ -1837,8 +3757,21 @@ export type PropertyTransactionUncheckedUpdateWithoutEventsInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1848,6 +3781,197 @@ export type PropertyTransactionUncheckedUpdateWithoutEventsInput = {
   milestones?: Prisma.TransactionMilestoneUncheckedUpdateManyWithoutTransactionNestedInput
   messages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutTransactionNestedInput
   documents?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUncheckedUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedUpdateManyWithoutTransferredToTransactionNestedInput
+}
+
+export type PropertyTransactionCreateWithoutImportedListingMessagesInput = {
+  id?: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  listing: Prisma.ListingCreateNestedOneWithoutTransactionsInput
+  acceptedBid: Prisma.BidCreateNestedOneWithoutTransactionInput
+  seller: Prisma.UserCreateNestedOneWithoutSellingTransactionsInput
+  buyer: Prisma.UserCreateNestedOneWithoutBuyingTransactionsInput
+  notaryProposedBy?: Prisma.UserCreateNestedOneWithoutProposedNotariesInput
+  notaryConfirmedBy?: Prisma.UserCreateNestedOneWithoutConfirmedNotariesInput
+  securityPaidBy?: Prisma.UserCreateNestedOneWithoutSecurityPaymentsInput
+  securityConfirmedBy?: Prisma.UserCreateNestedOneWithoutSecurityConfirmationsInput
+  securityFormChosenBy?: Prisma.UserCreateNestedOneWithoutSecurityFormChoicesInput
+  milestones?: Prisma.TransactionMilestoneCreateNestedManyWithoutTransactionInput
+  messages?: Prisma.TransactionMessageCreateNestedManyWithoutTransactionInput
+  documents?: Prisma.TransactionDocumentCreateNestedManyWithoutTransactionInput
+  events?: Prisma.TransactionEventCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput
+}
+
+export type PropertyTransactionUncheckedCreateWithoutImportedListingMessagesInput = {
+  id?: string
+  listingId: string
+  acceptedBidId: string
+  sellerUserId: string
+  buyerUserId: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  milestones?: Prisma.TransactionMilestoneUncheckedCreateNestedManyWithoutTransactionInput
+  messages?: Prisma.TransactionMessageUncheckedCreateNestedManyWithoutTransactionInput
+  documents?: Prisma.TransactionDocumentUncheckedCreateNestedManyWithoutTransactionInput
+  events?: Prisma.TransactionEventUncheckedCreateNestedManyWithoutTransactionInput
+  agreement?: Prisma.PurchaseAgreementUncheckedCreateNestedOneWithoutTransactionInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput
+}
+
+export type PropertyTransactionCreateOrConnectWithoutImportedListingMessagesInput = {
+  where: Prisma.PropertyTransactionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutImportedListingMessagesInput, Prisma.PropertyTransactionUncheckedCreateWithoutImportedListingMessagesInput>
+}
+
+export type PropertyTransactionUpsertWithoutImportedListingMessagesInput = {
+  update: Prisma.XOR<Prisma.PropertyTransactionUpdateWithoutImportedListingMessagesInput, Prisma.PropertyTransactionUncheckedUpdateWithoutImportedListingMessagesInput>
+  create: Prisma.XOR<Prisma.PropertyTransactionCreateWithoutImportedListingMessagesInput, Prisma.PropertyTransactionUncheckedCreateWithoutImportedListingMessagesInput>
+  where?: Prisma.PropertyTransactionWhereInput
+}
+
+export type PropertyTransactionUpdateToOneWithWhereWithoutImportedListingMessagesInput = {
+  where?: Prisma.PropertyTransactionWhereInput
+  data: Prisma.XOR<Prisma.PropertyTransactionUpdateWithoutImportedListingMessagesInput, Prisma.PropertyTransactionUncheckedUpdateWithoutImportedListingMessagesInput>
+}
+
+export type PropertyTransactionUpdateWithoutImportedListingMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  listing?: Prisma.ListingUpdateOneRequiredWithoutTransactionsNestedInput
+  acceptedBid?: Prisma.BidUpdateOneRequiredWithoutTransactionNestedInput
+  seller?: Prisma.UserUpdateOneRequiredWithoutSellingTransactionsNestedInput
+  buyer?: Prisma.UserUpdateOneRequiredWithoutBuyingTransactionsNestedInput
+  notaryProposedBy?: Prisma.UserUpdateOneWithoutProposedNotariesNestedInput
+  notaryConfirmedBy?: Prisma.UserUpdateOneWithoutConfirmedNotariesNestedInput
+  securityPaidBy?: Prisma.UserUpdateOneWithoutSecurityPaymentsNestedInput
+  securityConfirmedBy?: Prisma.UserUpdateOneWithoutSecurityConfirmationsNestedInput
+  securityFormChosenBy?: Prisma.UserUpdateOneWithoutSecurityFormChoicesNestedInput
+  milestones?: Prisma.TransactionMilestoneUpdateManyWithoutTransactionNestedInput
+  messages?: Prisma.TransactionMessageUpdateManyWithoutTransactionNestedInput
+  documents?: Prisma.TransactionDocumentUpdateManyWithoutTransactionNestedInput
+  events?: Prisma.TransactionEventUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput
+}
+
+export type PropertyTransactionUncheckedUpdateWithoutImportedListingMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptedBidId?: Prisma.StringFieldUpdateOperationsInput | string
+  sellerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  buyerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  milestones?: Prisma.TransactionMilestoneUncheckedUpdateManyWithoutTransactionNestedInput
+  messages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutTransactionNestedInput
+  documents?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutTransactionNestedInput
+  events?: Prisma.TransactionEventUncheckedUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUncheckedUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput
 }
 
 export type PropertyTransactionCreateManySellerInput = {
@@ -1863,8 +3987,21 @@ export type PropertyTransactionCreateManySellerInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1886,8 +4023,201 @@ export type PropertyTransactionCreateManyBuyerInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PropertyTransactionCreateManyNotaryProposedByInput = {
+  id?: string
+  listingId: string
+  acceptedBidId: string
+  sellerUserId: string
+  buyerUserId: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PropertyTransactionCreateManyNotaryConfirmedByInput = {
+  id?: string
+  listingId: string
+  acceptedBidId: string
+  sellerUserId: string
+  buyerUserId: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PropertyTransactionCreateManySecurityPaidByInput = {
+  id?: string
+  listingId: string
+  acceptedBidId: string
+  sellerUserId: string
+  buyerUserId: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PropertyTransactionCreateManySecurityConfirmedByInput = {
+  id?: string
+  listingId: string
+  acceptedBidId: string
+  sellerUserId: string
+  buyerUserId: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancellationReason?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PropertyTransactionCreateManySecurityFormChosenByInput = {
+  id?: string
+  listingId: string
+  acceptedBidId: string
+  sellerUserId: string
+  buyerUserId: string
+  status?: $Enums.TransactionStatus
+  purchasePriceCents: bigint | number
+  currency?: string
+  targetTransferDate?: Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Date | string | null
+  sellerContractConfirmedAt?: Date | string | null
+  coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -1906,8 +4236,16 @@ export type PropertyTransactionUpdateWithoutSellerInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1917,10 +4255,18 @@ export type PropertyTransactionUpdateWithoutSellerInput = {
   listing?: Prisma.ListingUpdateOneRequiredWithoutTransactionsNestedInput
   acceptedBid?: Prisma.BidUpdateOneRequiredWithoutTransactionNestedInput
   buyer?: Prisma.UserUpdateOneRequiredWithoutBuyingTransactionsNestedInput
+  notaryProposedBy?: Prisma.UserUpdateOneWithoutProposedNotariesNestedInput
+  notaryConfirmedBy?: Prisma.UserUpdateOneWithoutConfirmedNotariesNestedInput
+  securityPaidBy?: Prisma.UserUpdateOneWithoutSecurityPaymentsNestedInput
+  securityConfirmedBy?: Prisma.UserUpdateOneWithoutSecurityConfirmationsNestedInput
+  securityFormChosenBy?: Prisma.UserUpdateOneWithoutSecurityFormChoicesNestedInput
   milestones?: Prisma.TransactionMilestoneUpdateManyWithoutTransactionNestedInput
   messages?: Prisma.TransactionMessageUpdateManyWithoutTransactionNestedInput
   documents?: Prisma.TransactionDocumentUpdateManyWithoutTransactionNestedInput
   events?: Prisma.TransactionEventUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionUncheckedUpdateWithoutSellerInput = {
@@ -1936,8 +4282,21 @@ export type PropertyTransactionUncheckedUpdateWithoutSellerInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1948,6 +4307,9 @@ export type PropertyTransactionUncheckedUpdateWithoutSellerInput = {
   messages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutTransactionNestedInput
   documents?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutTransactionNestedInput
   events?: Prisma.TransactionEventUncheckedUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUncheckedUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionUncheckedUpdateManyWithoutSellerInput = {
@@ -1963,8 +4325,21 @@ export type PropertyTransactionUncheckedUpdateManyWithoutSellerInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1983,8 +4358,16 @@ export type PropertyTransactionUpdateWithoutBuyerInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1994,10 +4377,18 @@ export type PropertyTransactionUpdateWithoutBuyerInput = {
   listing?: Prisma.ListingUpdateOneRequiredWithoutTransactionsNestedInput
   acceptedBid?: Prisma.BidUpdateOneRequiredWithoutTransactionNestedInput
   seller?: Prisma.UserUpdateOneRequiredWithoutSellingTransactionsNestedInput
+  notaryProposedBy?: Prisma.UserUpdateOneWithoutProposedNotariesNestedInput
+  notaryConfirmedBy?: Prisma.UserUpdateOneWithoutConfirmedNotariesNestedInput
+  securityPaidBy?: Prisma.UserUpdateOneWithoutSecurityPaymentsNestedInput
+  securityConfirmedBy?: Prisma.UserUpdateOneWithoutSecurityConfirmationsNestedInput
+  securityFormChosenBy?: Prisma.UserUpdateOneWithoutSecurityFormChoicesNestedInput
   milestones?: Prisma.TransactionMilestoneUpdateManyWithoutTransactionNestedInput
   messages?: Prisma.TransactionMessageUpdateManyWithoutTransactionNestedInput
   documents?: Prisma.TransactionDocumentUpdateManyWithoutTransactionNestedInput
   events?: Prisma.TransactionEventUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionUncheckedUpdateWithoutBuyerInput = {
@@ -2013,8 +4404,21 @@ export type PropertyTransactionUncheckedUpdateWithoutBuyerInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2025,6 +4429,9 @@ export type PropertyTransactionUncheckedUpdateWithoutBuyerInput = {
   messages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutTransactionNestedInput
   documents?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutTransactionNestedInput
   events?: Prisma.TransactionEventUncheckedUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUncheckedUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionUncheckedUpdateManyWithoutBuyerInput = {
@@ -2040,8 +4447,631 @@ export type PropertyTransactionUncheckedUpdateManyWithoutBuyerInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PropertyTransactionUpdateWithoutNotaryProposedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  listing?: Prisma.ListingUpdateOneRequiredWithoutTransactionsNestedInput
+  acceptedBid?: Prisma.BidUpdateOneRequiredWithoutTransactionNestedInput
+  seller?: Prisma.UserUpdateOneRequiredWithoutSellingTransactionsNestedInput
+  buyer?: Prisma.UserUpdateOneRequiredWithoutBuyingTransactionsNestedInput
+  notaryConfirmedBy?: Prisma.UserUpdateOneWithoutConfirmedNotariesNestedInput
+  securityPaidBy?: Prisma.UserUpdateOneWithoutSecurityPaymentsNestedInput
+  securityConfirmedBy?: Prisma.UserUpdateOneWithoutSecurityConfirmationsNestedInput
+  securityFormChosenBy?: Prisma.UserUpdateOneWithoutSecurityFormChoicesNestedInput
+  milestones?: Prisma.TransactionMilestoneUpdateManyWithoutTransactionNestedInput
+  messages?: Prisma.TransactionMessageUpdateManyWithoutTransactionNestedInput
+  documents?: Prisma.TransactionDocumentUpdateManyWithoutTransactionNestedInput
+  events?: Prisma.TransactionEventUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUpdateManyWithoutTransferredToTransactionNestedInput
+}
+
+export type PropertyTransactionUncheckedUpdateWithoutNotaryProposedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptedBidId?: Prisma.StringFieldUpdateOperationsInput | string
+  sellerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  buyerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  milestones?: Prisma.TransactionMilestoneUncheckedUpdateManyWithoutTransactionNestedInput
+  messages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutTransactionNestedInput
+  documents?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutTransactionNestedInput
+  events?: Prisma.TransactionEventUncheckedUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUncheckedUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedUpdateManyWithoutTransferredToTransactionNestedInput
+}
+
+export type PropertyTransactionUncheckedUpdateManyWithoutNotaryProposedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptedBidId?: Prisma.StringFieldUpdateOperationsInput | string
+  sellerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  buyerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PropertyTransactionUpdateWithoutNotaryConfirmedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  listing?: Prisma.ListingUpdateOneRequiredWithoutTransactionsNestedInput
+  acceptedBid?: Prisma.BidUpdateOneRequiredWithoutTransactionNestedInput
+  seller?: Prisma.UserUpdateOneRequiredWithoutSellingTransactionsNestedInput
+  buyer?: Prisma.UserUpdateOneRequiredWithoutBuyingTransactionsNestedInput
+  notaryProposedBy?: Prisma.UserUpdateOneWithoutProposedNotariesNestedInput
+  securityPaidBy?: Prisma.UserUpdateOneWithoutSecurityPaymentsNestedInput
+  securityConfirmedBy?: Prisma.UserUpdateOneWithoutSecurityConfirmationsNestedInput
+  securityFormChosenBy?: Prisma.UserUpdateOneWithoutSecurityFormChoicesNestedInput
+  milestones?: Prisma.TransactionMilestoneUpdateManyWithoutTransactionNestedInput
+  messages?: Prisma.TransactionMessageUpdateManyWithoutTransactionNestedInput
+  documents?: Prisma.TransactionDocumentUpdateManyWithoutTransactionNestedInput
+  events?: Prisma.TransactionEventUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUpdateManyWithoutTransferredToTransactionNestedInput
+}
+
+export type PropertyTransactionUncheckedUpdateWithoutNotaryConfirmedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptedBidId?: Prisma.StringFieldUpdateOperationsInput | string
+  sellerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  buyerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  milestones?: Prisma.TransactionMilestoneUncheckedUpdateManyWithoutTransactionNestedInput
+  messages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutTransactionNestedInput
+  documents?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutTransactionNestedInput
+  events?: Prisma.TransactionEventUncheckedUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUncheckedUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedUpdateManyWithoutTransferredToTransactionNestedInput
+}
+
+export type PropertyTransactionUncheckedUpdateManyWithoutNotaryConfirmedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptedBidId?: Prisma.StringFieldUpdateOperationsInput | string
+  sellerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  buyerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PropertyTransactionUpdateWithoutSecurityPaidByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  listing?: Prisma.ListingUpdateOneRequiredWithoutTransactionsNestedInput
+  acceptedBid?: Prisma.BidUpdateOneRequiredWithoutTransactionNestedInput
+  seller?: Prisma.UserUpdateOneRequiredWithoutSellingTransactionsNestedInput
+  buyer?: Prisma.UserUpdateOneRequiredWithoutBuyingTransactionsNestedInput
+  notaryProposedBy?: Prisma.UserUpdateOneWithoutProposedNotariesNestedInput
+  notaryConfirmedBy?: Prisma.UserUpdateOneWithoutConfirmedNotariesNestedInput
+  securityConfirmedBy?: Prisma.UserUpdateOneWithoutSecurityConfirmationsNestedInput
+  securityFormChosenBy?: Prisma.UserUpdateOneWithoutSecurityFormChoicesNestedInput
+  milestones?: Prisma.TransactionMilestoneUpdateManyWithoutTransactionNestedInput
+  messages?: Prisma.TransactionMessageUpdateManyWithoutTransactionNestedInput
+  documents?: Prisma.TransactionDocumentUpdateManyWithoutTransactionNestedInput
+  events?: Prisma.TransactionEventUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUpdateManyWithoutTransferredToTransactionNestedInput
+}
+
+export type PropertyTransactionUncheckedUpdateWithoutSecurityPaidByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptedBidId?: Prisma.StringFieldUpdateOperationsInput | string
+  sellerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  buyerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  milestones?: Prisma.TransactionMilestoneUncheckedUpdateManyWithoutTransactionNestedInput
+  messages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutTransactionNestedInput
+  documents?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutTransactionNestedInput
+  events?: Prisma.TransactionEventUncheckedUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUncheckedUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedUpdateManyWithoutTransferredToTransactionNestedInput
+}
+
+export type PropertyTransactionUncheckedUpdateManyWithoutSecurityPaidByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptedBidId?: Prisma.StringFieldUpdateOperationsInput | string
+  sellerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  buyerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PropertyTransactionUpdateWithoutSecurityConfirmedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  listing?: Prisma.ListingUpdateOneRequiredWithoutTransactionsNestedInput
+  acceptedBid?: Prisma.BidUpdateOneRequiredWithoutTransactionNestedInput
+  seller?: Prisma.UserUpdateOneRequiredWithoutSellingTransactionsNestedInput
+  buyer?: Prisma.UserUpdateOneRequiredWithoutBuyingTransactionsNestedInput
+  notaryProposedBy?: Prisma.UserUpdateOneWithoutProposedNotariesNestedInput
+  notaryConfirmedBy?: Prisma.UserUpdateOneWithoutConfirmedNotariesNestedInput
+  securityPaidBy?: Prisma.UserUpdateOneWithoutSecurityPaymentsNestedInput
+  securityFormChosenBy?: Prisma.UserUpdateOneWithoutSecurityFormChoicesNestedInput
+  milestones?: Prisma.TransactionMilestoneUpdateManyWithoutTransactionNestedInput
+  messages?: Prisma.TransactionMessageUpdateManyWithoutTransactionNestedInput
+  documents?: Prisma.TransactionDocumentUpdateManyWithoutTransactionNestedInput
+  events?: Prisma.TransactionEventUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUpdateManyWithoutTransferredToTransactionNestedInput
+}
+
+export type PropertyTransactionUncheckedUpdateWithoutSecurityConfirmedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptedBidId?: Prisma.StringFieldUpdateOperationsInput | string
+  sellerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  buyerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  milestones?: Prisma.TransactionMilestoneUncheckedUpdateManyWithoutTransactionNestedInput
+  messages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutTransactionNestedInput
+  documents?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutTransactionNestedInput
+  events?: Prisma.TransactionEventUncheckedUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUncheckedUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedUpdateManyWithoutTransferredToTransactionNestedInput
+}
+
+export type PropertyTransactionUncheckedUpdateManyWithoutSecurityConfirmedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptedBidId?: Prisma.StringFieldUpdateOperationsInput | string
+  sellerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  buyerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PropertyTransactionUpdateWithoutSecurityFormChosenByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  listing?: Prisma.ListingUpdateOneRequiredWithoutTransactionsNestedInput
+  acceptedBid?: Prisma.BidUpdateOneRequiredWithoutTransactionNestedInput
+  seller?: Prisma.UserUpdateOneRequiredWithoutSellingTransactionsNestedInput
+  buyer?: Prisma.UserUpdateOneRequiredWithoutBuyingTransactionsNestedInput
+  notaryProposedBy?: Prisma.UserUpdateOneWithoutProposedNotariesNestedInput
+  notaryConfirmedBy?: Prisma.UserUpdateOneWithoutConfirmedNotariesNestedInput
+  securityPaidBy?: Prisma.UserUpdateOneWithoutSecurityPaymentsNestedInput
+  securityConfirmedBy?: Prisma.UserUpdateOneWithoutSecurityConfirmationsNestedInput
+  milestones?: Prisma.TransactionMilestoneUpdateManyWithoutTransactionNestedInput
+  messages?: Prisma.TransactionMessageUpdateManyWithoutTransactionNestedInput
+  documents?: Prisma.TransactionDocumentUpdateManyWithoutTransactionNestedInput
+  events?: Prisma.TransactionEventUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUpdateManyWithoutTransferredToTransactionNestedInput
+}
+
+export type PropertyTransactionUncheckedUpdateWithoutSecurityFormChosenByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptedBidId?: Prisma.StringFieldUpdateOperationsInput | string
+  sellerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  buyerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  milestones?: Prisma.TransactionMilestoneUncheckedUpdateManyWithoutTransactionNestedInput
+  messages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutTransactionNestedInput
+  documents?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutTransactionNestedInput
+  events?: Prisma.TransactionEventUncheckedUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUncheckedUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedUpdateManyWithoutTransferredToTransactionNestedInput
+}
+
+export type PropertyTransactionUncheckedUpdateManyWithoutSecurityFormChosenByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.StringFieldUpdateOperationsInput | string
+  acceptedBidId?: Prisma.StringFieldUpdateOperationsInput | string
+  sellerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  buyerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+  purchasePriceCents?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  targetTransferDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contractTerms?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2063,8 +5093,21 @@ export type PropertyTransactionCreateManyListingInput = {
   buyerContractConfirmedAt?: Date | string | null
   sellerContractConfirmedAt?: Date | string | null
   coolingOffEndsAt?: Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: string | null
+  notaryProposedAt?: Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: string | null
+  notaryConfirmedAt?: Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Date | string | null
+  securityFormChosenByUserId?: string | null
+  securityReference?: string | null
+  securityPaidAt?: Date | string | null
+  securityPaidByUserId?: string | null
+  securityConfirmedAt?: Date | string | null
+  securityConfirmedByUserId?: string | null
   completedAt?: Date | string | null
   cancelledAt?: Date | string | null
   cancellationReason?: string | null
@@ -2083,8 +5126,16 @@ export type PropertyTransactionUpdateWithoutListingInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2094,10 +5145,18 @@ export type PropertyTransactionUpdateWithoutListingInput = {
   acceptedBid?: Prisma.BidUpdateOneRequiredWithoutTransactionNestedInput
   seller?: Prisma.UserUpdateOneRequiredWithoutSellingTransactionsNestedInput
   buyer?: Prisma.UserUpdateOneRequiredWithoutBuyingTransactionsNestedInput
+  notaryProposedBy?: Prisma.UserUpdateOneWithoutProposedNotariesNestedInput
+  notaryConfirmedBy?: Prisma.UserUpdateOneWithoutConfirmedNotariesNestedInput
+  securityPaidBy?: Prisma.UserUpdateOneWithoutSecurityPaymentsNestedInput
+  securityConfirmedBy?: Prisma.UserUpdateOneWithoutSecurityConfirmationsNestedInput
+  securityFormChosenBy?: Prisma.UserUpdateOneWithoutSecurityFormChoicesNestedInput
   milestones?: Prisma.TransactionMilestoneUpdateManyWithoutTransactionNestedInput
   messages?: Prisma.TransactionMessageUpdateManyWithoutTransactionNestedInput
   documents?: Prisma.TransactionDocumentUpdateManyWithoutTransactionNestedInput
   events?: Prisma.TransactionEventUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionUncheckedUpdateWithoutListingInput = {
@@ -2113,8 +5172,21 @@ export type PropertyTransactionUncheckedUpdateWithoutListingInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2125,6 +5197,9 @@ export type PropertyTransactionUncheckedUpdateWithoutListingInput = {
   messages?: Prisma.TransactionMessageUncheckedUpdateManyWithoutTransactionNestedInput
   documents?: Prisma.TransactionDocumentUncheckedUpdateManyWithoutTransactionNestedInput
   events?: Prisma.TransactionEventUncheckedUpdateManyWithoutTransactionNestedInput
+  agreement?: Prisma.PurchaseAgreementUncheckedUpdateOneWithoutTransactionNestedInput
+  idinAttempts?: Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput
+  importedListingMessages?: Prisma.ListingMessageUncheckedUpdateManyWithoutTransferredToTransactionNestedInput
 }
 
 export type PropertyTransactionUncheckedUpdateManyWithoutListingInput = {
@@ -2140,8 +5215,21 @@ export type PropertyTransactionUncheckedUpdateManyWithoutListingInput = {
   buyerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sellerContractConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   coolingOffEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notaryProposal?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryProposedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryProposedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notaryDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  notaryConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notaryConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   handoverDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  securityForm?: Prisma.NullableEnumTransactionSecurityFormFieldUpdateOperationsInput | $Enums.TransactionSecurityForm | null
+  securityFormChosenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityFormChosenByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityPaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityPaidByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  securityConfirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  securityConfirmedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancellationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2160,6 +5248,8 @@ export type PropertyTransactionCountOutputType = {
   messages: number
   documents: number
   events: number
+  idinAttempts: number
+  importedListingMessages: number
 }
 
 export type PropertyTransactionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2167,6 +5257,8 @@ export type PropertyTransactionCountOutputTypeSelect<ExtArgs extends runtime.Typ
   messages?: boolean | PropertyTransactionCountOutputTypeCountMessagesArgs
   documents?: boolean | PropertyTransactionCountOutputTypeCountDocumentsArgs
   events?: boolean | PropertyTransactionCountOutputTypeCountEventsArgs
+  idinAttempts?: boolean | PropertyTransactionCountOutputTypeCountIdinAttemptsArgs
+  importedListingMessages?: boolean | PropertyTransactionCountOutputTypeCountImportedListingMessagesArgs
 }
 
 /**
@@ -2207,6 +5299,20 @@ export type PropertyTransactionCountOutputTypeCountEventsArgs<ExtArgs extends ru
   where?: Prisma.TransactionEventWhereInput
 }
 
+/**
+ * PropertyTransactionCountOutputType without action
+ */
+export type PropertyTransactionCountOutputTypeCountIdinAttemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.IdentityVerificationAttemptWhereInput
+}
+
+/**
+ * PropertyTransactionCountOutputType without action
+ */
+export type PropertyTransactionCountOutputTypeCountImportedListingMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ListingMessageWhereInput
+}
+
 
 export type PropertyTransactionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2222,8 +5328,21 @@ export type PropertyTransactionSelect<ExtArgs extends runtime.Types.Extensions.I
   buyerContractConfirmedAt?: boolean
   sellerContractConfirmedAt?: boolean
   coolingOffEndsAt?: boolean
+  notaryProposal?: boolean
+  notaryProposedByUserId?: boolean
+  notaryProposedAt?: boolean
   notaryDetails?: boolean
+  notaryConfirmedByUserId?: boolean
+  notaryConfirmedAt?: boolean
   handoverDetails?: boolean
+  securityForm?: boolean
+  securityFormChosenAt?: boolean
+  securityFormChosenByUserId?: boolean
+  securityReference?: boolean
+  securityPaidAt?: boolean
+  securityPaidByUserId?: boolean
+  securityConfirmedAt?: boolean
+  securityConfirmedByUserId?: boolean
   completedAt?: boolean
   cancelledAt?: boolean
   cancellationReason?: boolean
@@ -2234,10 +5353,18 @@ export type PropertyTransactionSelect<ExtArgs extends runtime.Types.Extensions.I
   acceptedBid?: boolean | Prisma.BidDefaultArgs<ExtArgs>
   seller?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   buyer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  notaryProposedBy?: boolean | Prisma.PropertyTransaction$notaryProposedByArgs<ExtArgs>
+  notaryConfirmedBy?: boolean | Prisma.PropertyTransaction$notaryConfirmedByArgs<ExtArgs>
+  securityPaidBy?: boolean | Prisma.PropertyTransaction$securityPaidByArgs<ExtArgs>
+  securityConfirmedBy?: boolean | Prisma.PropertyTransaction$securityConfirmedByArgs<ExtArgs>
+  securityFormChosenBy?: boolean | Prisma.PropertyTransaction$securityFormChosenByArgs<ExtArgs>
   milestones?: boolean | Prisma.PropertyTransaction$milestonesArgs<ExtArgs>
   messages?: boolean | Prisma.PropertyTransaction$messagesArgs<ExtArgs>
   documents?: boolean | Prisma.PropertyTransaction$documentsArgs<ExtArgs>
   events?: boolean | Prisma.PropertyTransaction$eventsArgs<ExtArgs>
+  agreement?: boolean | Prisma.PropertyTransaction$agreementArgs<ExtArgs>
+  idinAttempts?: boolean | Prisma.PropertyTransaction$idinAttemptsArgs<ExtArgs>
+  importedListingMessages?: boolean | Prisma.PropertyTransaction$importedListingMessagesArgs<ExtArgs>
   _count?: boolean | Prisma.PropertyTransactionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["propertyTransaction"]>
 
@@ -2255,8 +5382,21 @@ export type PropertyTransactionSelectCreateManyAndReturn<ExtArgs extends runtime
   buyerContractConfirmedAt?: boolean
   sellerContractConfirmedAt?: boolean
   coolingOffEndsAt?: boolean
+  notaryProposal?: boolean
+  notaryProposedByUserId?: boolean
+  notaryProposedAt?: boolean
   notaryDetails?: boolean
+  notaryConfirmedByUserId?: boolean
+  notaryConfirmedAt?: boolean
   handoverDetails?: boolean
+  securityForm?: boolean
+  securityFormChosenAt?: boolean
+  securityFormChosenByUserId?: boolean
+  securityReference?: boolean
+  securityPaidAt?: boolean
+  securityPaidByUserId?: boolean
+  securityConfirmedAt?: boolean
+  securityConfirmedByUserId?: boolean
   completedAt?: boolean
   cancelledAt?: boolean
   cancellationReason?: boolean
@@ -2267,6 +5407,11 @@ export type PropertyTransactionSelectCreateManyAndReturn<ExtArgs extends runtime
   acceptedBid?: boolean | Prisma.BidDefaultArgs<ExtArgs>
   seller?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   buyer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  notaryProposedBy?: boolean | Prisma.PropertyTransaction$notaryProposedByArgs<ExtArgs>
+  notaryConfirmedBy?: boolean | Prisma.PropertyTransaction$notaryConfirmedByArgs<ExtArgs>
+  securityPaidBy?: boolean | Prisma.PropertyTransaction$securityPaidByArgs<ExtArgs>
+  securityConfirmedBy?: boolean | Prisma.PropertyTransaction$securityConfirmedByArgs<ExtArgs>
+  securityFormChosenBy?: boolean | Prisma.PropertyTransaction$securityFormChosenByArgs<ExtArgs>
 }, ExtArgs["result"]["propertyTransaction"]>
 
 export type PropertyTransactionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2283,8 +5428,21 @@ export type PropertyTransactionSelectUpdateManyAndReturn<ExtArgs extends runtime
   buyerContractConfirmedAt?: boolean
   sellerContractConfirmedAt?: boolean
   coolingOffEndsAt?: boolean
+  notaryProposal?: boolean
+  notaryProposedByUserId?: boolean
+  notaryProposedAt?: boolean
   notaryDetails?: boolean
+  notaryConfirmedByUserId?: boolean
+  notaryConfirmedAt?: boolean
   handoverDetails?: boolean
+  securityForm?: boolean
+  securityFormChosenAt?: boolean
+  securityFormChosenByUserId?: boolean
+  securityReference?: boolean
+  securityPaidAt?: boolean
+  securityPaidByUserId?: boolean
+  securityConfirmedAt?: boolean
+  securityConfirmedByUserId?: boolean
   completedAt?: boolean
   cancelledAt?: boolean
   cancellationReason?: boolean
@@ -2295,6 +5453,11 @@ export type PropertyTransactionSelectUpdateManyAndReturn<ExtArgs extends runtime
   acceptedBid?: boolean | Prisma.BidDefaultArgs<ExtArgs>
   seller?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   buyer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  notaryProposedBy?: boolean | Prisma.PropertyTransaction$notaryProposedByArgs<ExtArgs>
+  notaryConfirmedBy?: boolean | Prisma.PropertyTransaction$notaryConfirmedByArgs<ExtArgs>
+  securityPaidBy?: boolean | Prisma.PropertyTransaction$securityPaidByArgs<ExtArgs>
+  securityConfirmedBy?: boolean | Prisma.PropertyTransaction$securityConfirmedByArgs<ExtArgs>
+  securityFormChosenBy?: boolean | Prisma.PropertyTransaction$securityFormChosenByArgs<ExtArgs>
 }, ExtArgs["result"]["propertyTransaction"]>
 
 export type PropertyTransactionSelectScalar = {
@@ -2311,8 +5474,21 @@ export type PropertyTransactionSelectScalar = {
   buyerContractConfirmedAt?: boolean
   sellerContractConfirmedAt?: boolean
   coolingOffEndsAt?: boolean
+  notaryProposal?: boolean
+  notaryProposedByUserId?: boolean
+  notaryProposedAt?: boolean
   notaryDetails?: boolean
+  notaryConfirmedByUserId?: boolean
+  notaryConfirmedAt?: boolean
   handoverDetails?: boolean
+  securityForm?: boolean
+  securityFormChosenAt?: boolean
+  securityFormChosenByUserId?: boolean
+  securityReference?: boolean
+  securityPaidAt?: boolean
+  securityPaidByUserId?: boolean
+  securityConfirmedAt?: boolean
+  securityConfirmedByUserId?: boolean
   completedAt?: boolean
   cancelledAt?: boolean
   cancellationReason?: boolean
@@ -2321,16 +5497,24 @@ export type PropertyTransactionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PropertyTransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "listingId" | "acceptedBidId" | "sellerUserId" | "buyerUserId" | "status" | "purchasePriceCents" | "currency" | "targetTransferDate" | "contractTerms" | "buyerContractConfirmedAt" | "sellerContractConfirmedAt" | "coolingOffEndsAt" | "notaryDetails" | "handoverDetails" | "completedAt" | "cancelledAt" | "cancellationReason" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["propertyTransaction"]>
+export type PropertyTransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "listingId" | "acceptedBidId" | "sellerUserId" | "buyerUserId" | "status" | "purchasePriceCents" | "currency" | "targetTransferDate" | "contractTerms" | "buyerContractConfirmedAt" | "sellerContractConfirmedAt" | "coolingOffEndsAt" | "notaryProposal" | "notaryProposedByUserId" | "notaryProposedAt" | "notaryDetails" | "notaryConfirmedByUserId" | "notaryConfirmedAt" | "handoverDetails" | "securityForm" | "securityFormChosenAt" | "securityFormChosenByUserId" | "securityReference" | "securityPaidAt" | "securityPaidByUserId" | "securityConfirmedAt" | "securityConfirmedByUserId" | "completedAt" | "cancelledAt" | "cancellationReason" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["propertyTransaction"]>
 export type PropertyTransactionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   listing?: boolean | Prisma.ListingDefaultArgs<ExtArgs>
   acceptedBid?: boolean | Prisma.BidDefaultArgs<ExtArgs>
   seller?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   buyer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  notaryProposedBy?: boolean | Prisma.PropertyTransaction$notaryProposedByArgs<ExtArgs>
+  notaryConfirmedBy?: boolean | Prisma.PropertyTransaction$notaryConfirmedByArgs<ExtArgs>
+  securityPaidBy?: boolean | Prisma.PropertyTransaction$securityPaidByArgs<ExtArgs>
+  securityConfirmedBy?: boolean | Prisma.PropertyTransaction$securityConfirmedByArgs<ExtArgs>
+  securityFormChosenBy?: boolean | Prisma.PropertyTransaction$securityFormChosenByArgs<ExtArgs>
   milestones?: boolean | Prisma.PropertyTransaction$milestonesArgs<ExtArgs>
   messages?: boolean | Prisma.PropertyTransaction$messagesArgs<ExtArgs>
   documents?: boolean | Prisma.PropertyTransaction$documentsArgs<ExtArgs>
   events?: boolean | Prisma.PropertyTransaction$eventsArgs<ExtArgs>
+  agreement?: boolean | Prisma.PropertyTransaction$agreementArgs<ExtArgs>
+  idinAttempts?: boolean | Prisma.PropertyTransaction$idinAttemptsArgs<ExtArgs>
+  importedListingMessages?: boolean | Prisma.PropertyTransaction$importedListingMessagesArgs<ExtArgs>
   _count?: boolean | Prisma.PropertyTransactionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PropertyTransactionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2338,12 +5522,22 @@ export type PropertyTransactionIncludeCreateManyAndReturn<ExtArgs extends runtim
   acceptedBid?: boolean | Prisma.BidDefaultArgs<ExtArgs>
   seller?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   buyer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  notaryProposedBy?: boolean | Prisma.PropertyTransaction$notaryProposedByArgs<ExtArgs>
+  notaryConfirmedBy?: boolean | Prisma.PropertyTransaction$notaryConfirmedByArgs<ExtArgs>
+  securityPaidBy?: boolean | Prisma.PropertyTransaction$securityPaidByArgs<ExtArgs>
+  securityConfirmedBy?: boolean | Prisma.PropertyTransaction$securityConfirmedByArgs<ExtArgs>
+  securityFormChosenBy?: boolean | Prisma.PropertyTransaction$securityFormChosenByArgs<ExtArgs>
 }
 export type PropertyTransactionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   listing?: boolean | Prisma.ListingDefaultArgs<ExtArgs>
   acceptedBid?: boolean | Prisma.BidDefaultArgs<ExtArgs>
   seller?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   buyer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  notaryProposedBy?: boolean | Prisma.PropertyTransaction$notaryProposedByArgs<ExtArgs>
+  notaryConfirmedBy?: boolean | Prisma.PropertyTransaction$notaryConfirmedByArgs<ExtArgs>
+  securityPaidBy?: boolean | Prisma.PropertyTransaction$securityPaidByArgs<ExtArgs>
+  securityConfirmedBy?: boolean | Prisma.PropertyTransaction$securityConfirmedByArgs<ExtArgs>
+  securityFormChosenBy?: boolean | Prisma.PropertyTransaction$securityFormChosenByArgs<ExtArgs>
 }
 
 export type $PropertyTransactionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2353,10 +5547,18 @@ export type $PropertyTransactionPayload<ExtArgs extends runtime.Types.Extensions
     acceptedBid: Prisma.$BidPayload<ExtArgs>
     seller: Prisma.$UserPayload<ExtArgs>
     buyer: Prisma.$UserPayload<ExtArgs>
+    notaryProposedBy: Prisma.$UserPayload<ExtArgs> | null
+    notaryConfirmedBy: Prisma.$UserPayload<ExtArgs> | null
+    securityPaidBy: Prisma.$UserPayload<ExtArgs> | null
+    securityConfirmedBy: Prisma.$UserPayload<ExtArgs> | null
+    securityFormChosenBy: Prisma.$UserPayload<ExtArgs> | null
     milestones: Prisma.$TransactionMilestonePayload<ExtArgs>[]
     messages: Prisma.$TransactionMessagePayload<ExtArgs>[]
     documents: Prisma.$TransactionDocumentPayload<ExtArgs>[]
     events: Prisma.$TransactionEventPayload<ExtArgs>[]
+    agreement: Prisma.$PurchaseAgreementPayload<ExtArgs> | null
+    idinAttempts: Prisma.$IdentityVerificationAttemptPayload<ExtArgs>[]
+    importedListingMessages: Prisma.$ListingMessagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2372,8 +5574,21 @@ export type $PropertyTransactionPayload<ExtArgs extends runtime.Types.Extensions
     buyerContractConfirmedAt: Date | null
     sellerContractConfirmedAt: Date | null
     coolingOffEndsAt: Date | null
+    notaryProposal: runtime.JsonValue | null
+    notaryProposedByUserId: string | null
+    notaryProposedAt: Date | null
     notaryDetails: runtime.JsonValue | null
+    notaryConfirmedByUserId: string | null
+    notaryConfirmedAt: Date | null
     handoverDetails: runtime.JsonValue | null
+    securityForm: $Enums.TransactionSecurityForm | null
+    securityFormChosenAt: Date | null
+    securityFormChosenByUserId: string | null
+    securityReference: string | null
+    securityPaidAt: Date | null
+    securityPaidByUserId: string | null
+    securityConfirmedAt: Date | null
+    securityConfirmedByUserId: string | null
     completedAt: Date | null
     cancelledAt: Date | null
     cancellationReason: string | null
@@ -2778,10 +5993,18 @@ export interface Prisma__PropertyTransactionClient<T, Null = never, ExtArgs exte
   acceptedBid<T extends Prisma.BidDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BidDefaultArgs<ExtArgs>>): Prisma.Prisma__BidClient<runtime.Types.Result.GetResult<Prisma.$BidPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   seller<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   buyer<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  notaryProposedBy<T extends Prisma.PropertyTransaction$notaryProposedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyTransaction$notaryProposedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  notaryConfirmedBy<T extends Prisma.PropertyTransaction$notaryConfirmedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyTransaction$notaryConfirmedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  securityPaidBy<T extends Prisma.PropertyTransaction$securityPaidByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyTransaction$securityPaidByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  securityConfirmedBy<T extends Prisma.PropertyTransaction$securityConfirmedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyTransaction$securityConfirmedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  securityFormChosenBy<T extends Prisma.PropertyTransaction$securityFormChosenByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyTransaction$securityFormChosenByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   milestones<T extends Prisma.PropertyTransaction$milestonesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyTransaction$milestonesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransactionMilestonePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messages<T extends Prisma.PropertyTransaction$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyTransaction$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransactionMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   documents<T extends Prisma.PropertyTransaction$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyTransaction$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransactionDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   events<T extends Prisma.PropertyTransaction$eventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyTransaction$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TransactionEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  agreement<T extends Prisma.PropertyTransaction$agreementArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyTransaction$agreementArgs<ExtArgs>>): Prisma.Prisma__PurchaseAgreementClient<runtime.Types.Result.GetResult<Prisma.$PurchaseAgreementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  idinAttempts<T extends Prisma.PropertyTransaction$idinAttemptsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyTransaction$idinAttemptsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IdentityVerificationAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  importedListingMessages<T extends Prisma.PropertyTransaction$importedListingMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyTransaction$importedListingMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ListingMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2824,8 +6047,21 @@ export interface PropertyTransactionFieldRefs {
   readonly buyerContractConfirmedAt: Prisma.FieldRef<"PropertyTransaction", 'DateTime'>
   readonly sellerContractConfirmedAt: Prisma.FieldRef<"PropertyTransaction", 'DateTime'>
   readonly coolingOffEndsAt: Prisma.FieldRef<"PropertyTransaction", 'DateTime'>
+  readonly notaryProposal: Prisma.FieldRef<"PropertyTransaction", 'Json'>
+  readonly notaryProposedByUserId: Prisma.FieldRef<"PropertyTransaction", 'String'>
+  readonly notaryProposedAt: Prisma.FieldRef<"PropertyTransaction", 'DateTime'>
   readonly notaryDetails: Prisma.FieldRef<"PropertyTransaction", 'Json'>
+  readonly notaryConfirmedByUserId: Prisma.FieldRef<"PropertyTransaction", 'String'>
+  readonly notaryConfirmedAt: Prisma.FieldRef<"PropertyTransaction", 'DateTime'>
   readonly handoverDetails: Prisma.FieldRef<"PropertyTransaction", 'Json'>
+  readonly securityForm: Prisma.FieldRef<"PropertyTransaction", 'TransactionSecurityForm'>
+  readonly securityFormChosenAt: Prisma.FieldRef<"PropertyTransaction", 'DateTime'>
+  readonly securityFormChosenByUserId: Prisma.FieldRef<"PropertyTransaction", 'String'>
+  readonly securityReference: Prisma.FieldRef<"PropertyTransaction", 'String'>
+  readonly securityPaidAt: Prisma.FieldRef<"PropertyTransaction", 'DateTime'>
+  readonly securityPaidByUserId: Prisma.FieldRef<"PropertyTransaction", 'String'>
+  readonly securityConfirmedAt: Prisma.FieldRef<"PropertyTransaction", 'DateTime'>
+  readonly securityConfirmedByUserId: Prisma.FieldRef<"PropertyTransaction", 'String'>
   readonly completedAt: Prisma.FieldRef<"PropertyTransaction", 'DateTime'>
   readonly cancelledAt: Prisma.FieldRef<"PropertyTransaction", 'DateTime'>
   readonly cancellationReason: Prisma.FieldRef<"PropertyTransaction", 'String'>
@@ -3233,6 +6469,101 @@ export type PropertyTransactionDeleteManyArgs<ExtArgs extends runtime.Types.Exte
 }
 
 /**
+ * PropertyTransaction.notaryProposedBy
+ */
+export type PropertyTransaction$notaryProposedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * PropertyTransaction.notaryConfirmedBy
+ */
+export type PropertyTransaction$notaryConfirmedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * PropertyTransaction.securityPaidBy
+ */
+export type PropertyTransaction$securityPaidByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * PropertyTransaction.securityConfirmedBy
+ */
+export type PropertyTransaction$securityConfirmedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * PropertyTransaction.securityFormChosenBy
+ */
+export type PropertyTransaction$securityFormChosenByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
  * PropertyTransaction.milestones
  */
 export type PropertyTransaction$milestonesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3326,6 +6657,73 @@ export type PropertyTransaction$eventsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.TransactionEventScalarFieldEnum | Prisma.TransactionEventScalarFieldEnum[]
+}
+
+/**
+ * PropertyTransaction.agreement
+ */
+export type PropertyTransaction$agreementArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PurchaseAgreement
+   */
+  select?: Prisma.PurchaseAgreementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PurchaseAgreement
+   */
+  omit?: Prisma.PurchaseAgreementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PurchaseAgreementInclude<ExtArgs> | null
+  where?: Prisma.PurchaseAgreementWhereInput
+}
+
+/**
+ * PropertyTransaction.idinAttempts
+ */
+export type PropertyTransaction$idinAttemptsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the IdentityVerificationAttempt
+   */
+  select?: Prisma.IdentityVerificationAttemptSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the IdentityVerificationAttempt
+   */
+  omit?: Prisma.IdentityVerificationAttemptOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.IdentityVerificationAttemptInclude<ExtArgs> | null
+  where?: Prisma.IdentityVerificationAttemptWhereInput
+  orderBy?: Prisma.IdentityVerificationAttemptOrderByWithRelationInput | Prisma.IdentityVerificationAttemptOrderByWithRelationInput[]
+  cursor?: Prisma.IdentityVerificationAttemptWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.IdentityVerificationAttemptScalarFieldEnum | Prisma.IdentityVerificationAttemptScalarFieldEnum[]
+}
+
+/**
+ * PropertyTransaction.importedListingMessages
+ */
+export type PropertyTransaction$importedListingMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ListingMessage
+   */
+  select?: Prisma.ListingMessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ListingMessage
+   */
+  omit?: Prisma.ListingMessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ListingMessageInclude<ExtArgs> | null
+  where?: Prisma.ListingMessageWhereInput
+  orderBy?: Prisma.ListingMessageOrderByWithRelationInput | Prisma.ListingMessageOrderByWithRelationInput[]
+  cursor?: Prisma.ListingMessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ListingMessageScalarFieldEnum | Prisma.ListingMessageScalarFieldEnum[]
 }
 
 /**

@@ -25,6 +25,10 @@ import type {
     MarketplaceBounds,
     MarketplaceListing,
 } from "@/features/listings/marketplace-service";
+import {
+    isBiddingClosed,
+    StatusBadge,
+} from "@/components/listing/status-badge";
 
 const MarketplaceMap = dynamic(
     () =>
@@ -34,7 +38,7 @@ const MarketplaceMap = dynamic(
     {
         ssr: false,
         loading: () => (
-            <div className="grid h-full min-h-96 place-items-center bg-[#e9eee9] text-sm font-semibold text-muted">
+            <div className="grid h-full min-h-96 place-items-center bg-[#e9eee9] text-sm font-semibold text-muted dark:bg-[#17221d]">
                 Kaart laden…
             </div>
         ),
@@ -78,13 +82,36 @@ function getServerFavoritesSnapshot() {
 }
 
 function formatPrice(listing: MarketplaceListing) {
-    if (!listing.priceCents) return "Prijs op aanvraag";
+    const priceCents =
+        listing.status === "SOLD" || listing.status === "RENTED"
+            ? (listing.finalPriceCents ?? listing.priceCents)
+            : listing.priceCents;
+    if (!priceCents) return "Prijs op aanvraag";
     const price = new Intl.NumberFormat("nl-NL", {
         style: "currency",
         currency: "EUR",
         maximumFractionDigits: 0,
-    }).format(Number(listing.priceCents) / 100);
+    }).format(Number(priceCents) / 100);
     return listing.purpose === "RENT" ? `${price} / maand` : `${price} k.k.`;
+}
+
+function erfpachtLabel(listing: MarketplaceListing) {
+    if (listing.erfpachtType === "LEASEHOLD") {
+        if (listing.erfpachtCanonCents) {
+            const canon = new Intl.NumberFormat("nl-NL", {
+                style: "currency",
+                currency: "EUR",
+                maximumFractionDigits: 0,
+            }).format(Number(listing.erfpachtCanonCents) / 100);
+            return `Erfpacht · canon ${canon}/jaar`;
+        }
+        return "Erfpacht";
+    }
+    if (listing.erfpachtType === "LEASEHOLD_AFGEKOCHT") {
+        return "Erfpacht afgekocht";
+    }
+    if (listing.erfpachtType === "FREEHOLD") return "Volle eigendom";
+    return null;
 }
 
 function FavoriteButton({
@@ -231,7 +258,9 @@ export function MarketplaceResults({
             next.set(key, value.toFixed(6));
         }
         next.delete("page");
-        startTransition(() => router.push(`/zoeken?${next.toString()}`));
+        startTransition(() =>
+            router.push(`/zoeken?${next.toString()}`, { scroll: false }),
+        );
     }
 
     function clearMapBounds() {
@@ -241,13 +270,15 @@ export function MarketplaceResults({
         }
         next.delete("page");
         startTransition(() =>
-            router.push(`/zoeken${next.size ? `?${next.toString()}` : ""}`),
+            router.push(`/zoeken${next.size ? `?${next.toString()}` : ""}`, {
+                scroll: false,
+            }),
         );
     }
 
     if (listings.length === 0) {
         return (
-            <div className="border-y border-line bg-white px-6 py-20 text-center">
+            <div className="border-y border-line bg-surface px-6 py-20 text-center">
                 <Building2 size={36} className="mx-auto text-brand" />
                 <h2 className="mt-5 text-2xl font-semibold">
                     Geen woningen gevonden
@@ -305,7 +336,7 @@ export function MarketplaceResults({
                             <button
                                 type="button"
                                 onClick={() => setMapCollapsed(false)}
-                                className="inline-flex h-10 items-center gap-2 rounded-md border border-line bg-white px-4 text-sm font-semibold text-brand transition hover:border-brand"
+                                className="inline-flex h-10 items-center gap-2 rounded-md border border-line bg-surface px-4 text-sm font-semibold text-brand transition hover:border-brand"
                             >
                                 <PanelRightOpen size={17} /> Kaart tonen
                             </button>
@@ -314,14 +345,14 @@ export function MarketplaceResults({
                     <div
                         className={`grid gap-5 sm:grid-cols-2 ${mapCollapsed ? "lg:grid-cols-3 xl:grid-cols-4" : ""}`}
                     >
-                        {listings.map((listing) => (
+                        {listings.map((listing, index) => (
                             <article
                                 id={`listing-${listing.id}`}
                                 key={listing.id}
                                 onMouseEnter={() => setSelectedId(listing.id)}
-                                className={`group overflow-hidden rounded-lg border bg-white transition ${selectedId === listing.id ? "border-brand shadow-[0_12px_30px_rgba(16,40,32,.1)]" : "border-line hover:border-brand/40"}`}
+                                className={`group overflow-hidden rounded-lg border bg-surface transition ${selectedId === listing.id ? "border-brand shadow-[0_12px_30px_rgba(16,40,32,.1)]" : "border-line hover:border-brand/40"}`}
                             >
-                                <div className="relative aspect-4/3 overflow-hidden bg-[#dde9e1]">
+                                <div className="relative aspect-4/3 overflow-hidden bg-[#dde9e1] dark:bg-[#1a2621]">
                                     <FavoriteButton
                                         listingId={listing.id}
                                         active={activeFavorites.includes(
@@ -329,20 +360,31 @@ export function MarketplaceResults({
                                         )}
                                         onToggle={toggleFavorite}
                                     />
-                                    {listing.isMonument ? (
-                                        <span className="absolute left-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-sm bg-white/95 px-2.5 py-1 text-xs font-semibold text-brand shadow-sm">
-                                            <Landmark size={13} /> Monument
-                                        </span>
-                                    ) : null}
+                                    <div className="absolute left-3 top-3 z-10 flex flex-col items-start gap-1.5">
+                                        <StatusBadge
+                                            status={listing.status}
+                                            purpose={listing.purpose}
+                                            biddingClosed={isBiddingClosed(
+                                                listing,
+                                            )}
+                                        />
+                                        {listing.isMonument ? (
+                                            <span className="inline-flex items-center gap-1.5 rounded-sm bg-white/95 px-2.5 py-1 text-xs font-semibold text-brand shadow-sm">
+                                                <Landmark size={13} /> Monument
+                                            </span>
+                                        ) : null}
+                                    </div>
                                     <Link
                                         href={`/woning/${listing.slug}`}
                                         aria-label={`Bekijk ${listing.street} ${listing.houseNumber}`}
+                                        className="relative block h-full w-full"
                                     >
                                         {listing.imageUrl ? (
                                             <Image
                                                 src={listing.imageUrl}
                                                 alt={listing.imageAlt}
                                                 fill
+                                                priority={index === 0}
                                                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
                                                 className="object-cover transition duration-500 group-hover:scale-[1.03]"
                                             />
@@ -352,11 +394,6 @@ export function MarketplaceResults({
                                             </div>
                                         )}
                                     </Link>
-                                    <span className="absolute bottom-3 left-3 rounded-sm bg-white/95 px-2.5 py-1 text-xs font-semibold text-brand">
-                                        {listing.purpose === "SALE"
-                                            ? "Te koop"
-                                            : "Te huur"}
-                                    </span>
                                     {listing.imageUrl ? (
                                         <span className="absolute bottom-3 right-3 inline-flex items-center gap-1 rounded-sm bg-black/65 px-2 py-1 text-xs font-medium text-white">
                                             <Images size={13} /> Foto&apos;s
@@ -379,6 +416,15 @@ export function MarketplaceResults({
                                     <p className="mt-4 text-xl font-semibold">
                                         {formatPrice(listing)}
                                     </p>
+                                    {erfpachtLabel(listing) ? (
+                                        <p className="mt-1.5 inline-flex items-center gap-1.5 text-sm text-muted">
+                                            <Landmark
+                                                size={15}
+                                                className="text-brand"
+                                            />
+                                            {erfpachtLabel(listing)}
+                                        </p>
+                                    ) : null}
                                     <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-line pt-4 text-sm text-muted">
                                         <span className="inline-flex items-center gap-1.5">
                                             <Maximize2 size={15} />
@@ -395,7 +441,7 @@ export function MarketplaceResults({
                                             </span>
                                         ) : null}
                                         {listing.energyLabel ? (
-                                            <span className="ml-auto rounded-sm bg-[#dff4d8] px-2 py-0.5 text-xs font-bold text-[#1f6b2b]">
+                                            <span className="ml-auto rounded-sm bg-[#dff4d8] px-2 py-0.5 text-xs font-bold text-[#1f6b2b] dark:bg-emerald-500/15 dark:text-emerald-300">
                                                 {energyNames[
                                                     listing.energyLabel
                                                 ] ?? "?"}
@@ -454,7 +500,7 @@ function SaveSearchButton({
     });
     if (!authenticated) return null;
     return (
-        <div className="border-b border-line bg-white px-4 py-3 sm:px-6 lg:px-8">
+        <div className="border-b border-line bg-surface px-4 py-3 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-[1600px]">
                 {mutation.isSuccess ? (
                     <p className="inline-flex items-center gap-2 text-sm font-semibold text-brand">

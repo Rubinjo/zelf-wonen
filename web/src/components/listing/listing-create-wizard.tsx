@@ -2,27 +2,10 @@
 
 import { useState, type FormEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
-import {
-    ArrowLeft,
-    ArrowRight,
-    CalendarDays,
-    Check,
-    CircleAlert,
-    ExternalLink,
-    FileUp,
-    Home,
-    Leaf,
-    LoaderCircle,
-    MapPin,
-    Search,
-} from "lucide-react";
+import { LoaderCircle, MapPin, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-    parkingOptions,
-    propertyAmenityOptions,
-    roofTypeOptions,
-} from "@/lib/property-options";
 import type { PropertyData } from "@/lib/schemas/property";
+import { storeNewListingDraft } from "@/features/listings/create-listing-draft";
 
 type DraftAddress = {
     postcode: string;
@@ -31,46 +14,6 @@ type DraftAddress = {
     street: string;
     city: string;
 };
-
-const energyLabelStyles: Record<
-    NonNullable<PropertyData["energy"]>["labelClass"],
-    string
-> = {
-    "A+++++": "bg-emerald-700 text-white",
-    "A++++": "bg-emerald-700 text-white",
-    "A+++": "bg-emerald-700 text-white",
-    "A++": "bg-emerald-700 text-white",
-    "A+": "bg-emerald-700 text-white",
-    A: "bg-emerald-600 text-white",
-    B: "bg-lime-500 text-stone-950",
-    C: "bg-yellow-400 text-stone-950",
-    D: "bg-amber-400 text-stone-950",
-    E: "bg-orange-500 text-white",
-    F: "bg-orange-700 text-white",
-    G: "bg-red-700 text-white",
-};
-
-const dutchDateFormatter = new Intl.DateTimeFormat("nl-NL", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-});
-
-function formatDate(value: string) {
-    return dutchDateFormatter.format(new Date(value));
-}
-
-function formNumber(form: FormData, name: string) {
-    const value = String(form.get(name) ?? "").trim();
-    return value ? Number(value) : null;
-}
-
-function formEurosToCents(form: FormData, name: string) {
-    const value = String(form.get(name) ?? "").trim();
-    return value
-        ? String(Math.round(Number(value.replace(",", ".")) * 100))
-        : null;
-}
 
 async function parseResponse(response: Response) {
     const payload = await response.json();
@@ -81,7 +24,6 @@ async function parseResponse(response: Response) {
 
 export function ListingCreateWizard() {
     const router = useRouter();
-    const [step, setStep] = useState<1 | 2>(1);
     const [address, setAddress] = useState<DraftAddress>({
         postcode: "",
         houseNumber: "",
@@ -89,13 +31,7 @@ export function ListingCreateWizard() {
         street: "",
         city: "",
     });
-    const [propertyData, setPropertyData] = useState<PropertyData | null>(null);
     const [lookupError, setLookupError] = useState("");
-    const [energyLabelFile, setEnergyLabelFile] = useState<File | null>(null);
-    const [parkingSpaceForSale, setParkingSpaceForSale] = useState(false);
-    const [createdListingId, setCreatedListingId] = useState<string | null>(
-        null,
-    );
 
     const lookup = useMutation({
         mutationFn: async () => {
@@ -104,17 +40,29 @@ export function ListingCreateWizard() {
                 houseNumber: address.houseNumber,
             });
             if (address.addition) query.set("addition", address.addition);
-            return parseResponse(await fetch(`/api/property-data?${query}`));
-        },
-        onSuccess(data: PropertyData) {
-            setPropertyData(data);
+            const property = (await parseResponse(
+                await fetch(`/api/property-data?${query}`),
+            )) as PropertyData;
             setAddress((current) => ({
                 ...current,
-                street: data.address.street,
-                city: data.address.city,
+                street: property.address.street,
+                city: property.address.city,
             }));
+            return property;
+        },
+        onSuccess(property) {
             setLookupError("");
-            setStep(2);
+            storeNewListingDraft({
+                address: {
+                    postcode: address.postcode,
+                    houseNumber: address.houseNumber,
+                    addition: address.addition,
+                    street: property.address.street,
+                    city: property.address.city,
+                },
+                property,
+            });
+            router.push("/dashboard/listings/new?create=1");
         },
         onError(error) {
             setLookupError(
@@ -123,84 +71,26 @@ export function ListingCreateWizard() {
         },
     });
 
-    const createListing = useMutation({
-        mutationFn: async (form: FormData) => {
-            let listingId = createdListingId;
-            if (!listingId) {
-                const number = Number(address.houseNumber);
-                const selectedParkingOptions = form.getAll("parkingOptions");
-                const input = {
-                    purpose: form.get("purpose"),
-                    propertyType: form.get("propertyType"),
-                    postcode: address.postcode,
-                    houseNumber: number,
-                    houseNumberAddition: address.addition || null,
-                    street: propertyData?.address.street ?? address.street,
-                    city: propertyData?.address.city ?? address.city,
-                    municipality: propertyData?.address.municipality ?? null,
-                    province: propertyData?.address.province ?? null,
-                    bagAddressId: propertyData?.bagAddressId ?? null,
-                    bagBuildingId: propertyData?.bagBuildingId ?? null,
-                    cadastralParcelId: propertyData?.cadastralParcelId ?? null,
-                    latitude: propertyData?.coordinates?.latitude ?? null,
-                    longitude: propertyData?.coordinates?.longitude ?? null,
-                    officialLandAreaSqm:
-                        Number(form.get("officialLandAreaSqm")) || null,
-                    constructionYear:
-                        Number(form.get("constructionYear")) || null,
-                    isMonument: form.get("isMonument") === "on",
-                    livingAreaSqm: Number(form.get("livingAreaSqm")) || null,
-                    roomCount: Number(form.get("roomCount")) || null,
-                    bedroomCount: Number(form.get("bedroomCount")) || null,
-                    bathroomCount: formNumber(form, "bathroomCount"),
-                    floorCount: formNumber(form, "floorCount"),
-                    roofType: form.get("roofType") || null,
-                    externalStorageAreaSqm: formNumber(
-                        form,
-                        "externalStorageAreaSqm",
-                    ),
-                    amenities: form.getAll("amenities"),
-                    parkingOptions: selectedParkingOptions,
-                    parkingSpacePriceCents: selectedParkingOptions.includes(
-                        "SPACE_FOR_SALE",
-                    )
-                        ? formEurosToCents(form, "parkingSpacePrice")
-                        : null,
-                };
-                const listing = (await parseResponse(
-                    await fetch("/api/listings", {
-                        method: "POST",
-                        headers: { "content-type": "application/json" },
-                        body: JSON.stringify(input),
-                    }),
-                )) as { id: string };
-                listingId = listing.id;
-                setCreatedListingId(listingId);
-            }
-
-            if (energyLabelFile) {
-                const upload = new FormData();
-                upload.set("file", energyLabelFile);
-                upload.set("kind", "DOCUMENT");
-                await parseResponse(
-                    await fetch(`/api/listings/${listingId}/media`, {
-                        method: "POST",
-                        body: upload,
-                    }),
-                );
-            }
-
-            return { id: listingId };
-        },
-        onSuccess(data: { id: string }) {
-            router.push(`/dashboard/listings/${data.id}`);
-            router.refresh();
-        },
-    });
-
-    function handleLookup(event: FormEvent) {
+    function handleSubmit(event: FormEvent) {
         event.preventDefault();
+        setLookupError("");
         lookup.mutate();
+    }
+
+    function handleManualContinue() {
+        if (!address.street || !address.city) return;
+        setLookupError("");
+        storeNewListingDraft({
+            address: {
+                postcode: address.postcode,
+                houseNumber: address.houseNumber,
+                addition: address.addition,
+                street: address.street,
+                city: address.city,
+            },
+            property: null,
+        });
+        router.push("/dashboard/listings/new?create=1");
     }
 
     return (
@@ -213,588 +103,142 @@ export function ListingCreateWizard() {
                     Voeg je woning toe
                 </h1>
                 <p className="mt-3 text-muted">
-                    We halen eerst betrouwbare adresgegevens op. Alles blijft
-                    een concept totdat jij publiceert.
+                    We controleren het adres en openen daarna je concept. Je
+                    slaat het concept zelf op; alles blijft een concept totdat
+                    je publiceert.
                 </p>
             </div>
-            <div className="mb-8 flex items-center gap-3">
-                {["Adres", "Basisgegevens"].map((label, index) => {
-                    const number = index + 1;
-                    return (
-                        <div
-                            key={label}
-                            className="flex flex-1 items-center gap-3"
-                        >
-                            <span
-                                className={`grid size-9 shrink-0 place-items-center rounded-full text-sm font-bold ${step >= number ? "bg-brand text-white" : "border border-line bg-white text-muted"}`}
-                            >
-                                {step > number ? <Check size={16} /> : number}
-                            </span>
-                            <span className="hidden text-sm font-semibold sm:block">
-                                {label}
-                            </span>
-                            {index === 0 ? (
-                                <span className="h-px flex-1 bg-line" />
-                            ) : null}
-                        </div>
-                    );
-                })}
-            </div>
-
-            {step === 1 ? (
-                <form
-                    onSubmit={handleLookup}
-                    className="rounded-4xl border border-line bg-white p-6 shadow-sm sm:p-9"
-                >
-                    <span className="grid size-12 place-items-center rounded-2xl bg-accent text-brand-dark">
-                        <MapPin size={22} />
-                    </span>
-                    <h2 className="mt-6 text-2xl font-semibold">
-                        Waar staat de woning?
-                    </h2>
-                    <p className="mt-2 text-sm leading-6 text-muted">
-                        PDOK controleert het adres en koppelt beschikbare BAG-,
-                        Kadaster- en energielabelgegevens.
-                    </p>
-                    <div className="mt-7 grid gap-4 sm:grid-cols-[1fr_140px_120px]">
-                        <Field label="Postcode">
-                            <input
-                                required
-                                value={address.postcode}
-                                onChange={(event) =>
-                                    setAddress({
-                                        ...address,
-                                        postcode:
-                                            event.target.value.toUpperCase(),
-                                    })
-                                }
-                                placeholder="1234 AB"
-                                className="input"
-                            />
-                        </Field>
-                        <Field label="Huisnummer">
-                            <input
-                                required
-                                type="number"
-                                min="1"
-                                value={address.houseNumber}
-                                onChange={(event) =>
-                                    setAddress({
-                                        ...address,
-                                        houseNumber: event.target.value,
-                                    })
-                                }
-                                className="input"
-                            />
-                        </Field>
-                        <Field label="Toevoeging">
-                            <input
-                                value={address.addition}
-                                onChange={(event) =>
-                                    setAddress({
-                                        ...address,
-                                        addition: event.target.value,
-                                    })
-                                }
-                                className="input"
-                            />
-                        </Field>
-                    </div>
-                    {lookupError ? (
-                        <div className="mt-5 rounded-2xl bg-amber-50 p-4 text-sm text-amber-900">
-                            <p>{lookupError}</p>
-                            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                                <input
-                                    value={address.street}
-                                    onChange={(event) =>
-                                        setAddress({
-                                            ...address,
-                                            street: event.target.value,
-                                        })
-                                    }
-                                    placeholder="Straatnaam"
-                                    className="input bg-white"
-                                />
-                                <input
-                                    value={address.city}
-                                    onChange={(event) =>
-                                        setAddress({
-                                            ...address,
-                                            city: event.target.value,
-                                        })
-                                    }
-                                    placeholder="Plaats"
-                                    className="input bg-white"
-                                />
-                            </div>
-                            <button
-                                type="button"
-                                disabled={!address.street || !address.city}
-                                onClick={() => setStep(2)}
-                                className="mt-3 font-semibold text-brand disabled:opacity-40"
-                            >
-                                Handmatig doorgaan →
-                            </button>
-                        </div>
-                    ) : null}
-                    <button
-                        disabled={lookup.isPending}
-                        className="mt-7 inline-flex h-12 items-center gap-2 rounded-full bg-brand px-6 font-semibold text-white disabled:opacity-60"
-                    >
-                        {lookup.isPending ? (
-                            <LoaderCircle className="animate-spin" size={18} />
-                        ) : (
-                            <Search size={18} />
-                        )}{" "}
-                        Adres controleren
-                    </button>
-                </form>
-            ) : (
-                <form
-                    onSubmit={(event) => {
-                        event.preventDefault();
-                        createListing.mutate(new FormData(event.currentTarget));
-                    }}
-                    className="rounded-4xl border border-line bg-white p-6 shadow-sm sm:p-9"
-                >
-                    <div className="flex items-start gap-4 rounded-2xl bg-background p-4">
-                        <span className="grid size-10 place-items-center rounded-xl bg-white text-brand">
-                            <Home size={19} />
-                        </span>
-                        <div>
-                            <p className="font-semibold">
-                                {propertyData?.address.street ?? address.street}{" "}
-                                {address.houseNumber}
-                                {address.addition}
-                            </p>
-                            <p className="text-sm text-muted">
-                                {address.postcode}{" "}
-                                {propertyData?.address.city ?? address.city}
-                            </p>
-                        </div>
-                    </div>
-                    <h2 className="mt-7 text-2xl font-semibold">
-                        Vertel ons de basis
-                    </h2>
-                    <div className="mt-6 grid gap-5 sm:grid-cols-2">
-                        <Field label="Ik wil">
-                            <select name="purpose" className="input">
-                                <option value="SALE">Verkopen</option>
-                                <option value="RENT">Verhuren</option>
-                            </select>
-                        </Field>
-                        <Field label="Woningtype">
-                            <select
-                                name="propertyType"
-                                defaultValue={
-                                    propertyData?.suggestedPropertyType ??
-                                    "HOUSE"
-                                }
-                                className="input"
-                            >
-                                <option value="HOUSE">Woonhuis</option>
-                                <option value="APARTMENT">Appartement</option>
-                                <option value="PARKING">Parkeerplaats</option>
-                                <option value="LAND">Grond</option>
-                                <option value="COMMERCIAL">Commercieel</option>
-                                <option value="OTHER">Overig</option>
-                            </select>
-                        </Field>
-                        <Field label="Woonoppervlak (m²)">
-                            <input
-                                name="livingAreaSqm"
-                                type="number"
-                                min="1"
-                                step="0.1"
-                                required
-                                defaultValue={propertyData?.livingAreaSqm ?? ""}
-                                className="input"
-                            />
-                        </Field>
-                        <Field label="Perceeloppervlak (m²)">
-                            <input
-                                name="officialLandAreaSqm"
-                                type="number"
-                                min="0"
-                                step="0.1"
-                                defaultValue={
-                                    propertyData?.officialLandAreaSqm ?? ""
-                                }
-                                className="input"
-                            />
-                        </Field>
-                        <Field label="Externe bergruimte (m²)">
-                            <input
-                                name="externalStorageAreaSqm"
-                                type="number"
-                                min="0"
-                                max="10000"
-                                step="0.1"
-                                className="input"
-                            />
-                        </Field>
-                        <Field label="Aantal kamers">
-                            <input
-                                name="roomCount"
-                                type="number"
-                                min="1"
-                                required
-                                defaultValue={propertyData?.roomCount ?? ""}
-                                className="input"
-                            />
-                        </Field>
-                        <Field label="Aantal slaapkamers">
-                            <input
-                                name="bedroomCount"
-                                type="number"
-                                min="0"
-                                defaultValue={propertyData?.bedroomCount ?? ""}
-                                className="input"
-                            />
-                        </Field>
-                        <Field label="Aantal badkamers">
-                            <input
-                                name="bathroomCount"
-                                type="number"
-                                min="0"
-                                max="100"
-                                className="input"
-                            />
-                        </Field>
-                        <Field label="Bouwjaar">
-                            <input
-                                name="constructionYear"
-                                type="number"
-                                min="1000"
-                                max="2200"
-                                defaultValue={
-                                    propertyData?.constructionYear ?? ""
-                                }
-                                className="input"
-                            />
-                        </Field>
-                        <label className="flex items-center gap-3 self-end rounded-md border border-line px-4 py-3 text-sm font-semibold">
-                            <input
-                                type="checkbox"
-                                name="isMonument"
-                                className="size-4 accent-brand"
-                            />
-                            Monumentaal pand
-                        </label>
-                        <Field label="Aantal woonlagen">
-                            <input
-                                name="floorCount"
-                                type="number"
-                                min="1"
-                                max="100"
-                                className="input"
-                            />
-                        </Field>
-                        <Field label="Daktype">
-                            <select name="roofType" className="input">
-                                <option value="">Niet opgegeven</option>
-                                {roofTypeOptions.map((option) => (
-                                    <option
-                                        key={option.value}
-                                        value={option.value}
-                                    >
-                                        {option.label}
-                                    </option>
-                                ))}
-                            </select>
-                        </Field>
-                    </div>
-                    <PropertyOptionsSection
-                        title="Voorzieningen"
-                        name="amenities"
-                        options={propertyAmenityOptions}
-                    />
-                    <PropertyOptionsSection
-                        title="Parkeren"
-                        name="parkingOptions"
-                        options={parkingOptions}
-                        onOptionChange={(value, selected) => {
-                            if (value === "SPACE_FOR_SALE") {
-                                setParkingSpaceForSale(selected);
+            <form
+                onSubmit={handleSubmit}
+                className="rounded-4xl border border-line bg-surface p-6 shadow-sm sm:p-9"
+            >
+                <span className="grid size-12 place-items-center rounded-2xl bg-accent text-brand-dark">
+                    <MapPin size={22} />
+                </span>
+                <h2 className="mt-6 text-2xl font-semibold">
+                    Waar staat de woning?
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-muted">
+                    PDOK controleert het adres en koppelt beschikbare BAG-,
+                    Kadaster- en energielabelgegevens. Daarna ga je meteen
+                    verder in je concept.
+                </p>
+                <div className="mt-7 grid gap-4 sm:grid-cols-[1fr_140px_120px]">
+                    <Field label="Postcode">
+                        <input
+                            required
+                            value={address.postcode}
+                            onChange={(event) =>
+                                setAddress({
+                                    ...address,
+                                    postcode: event.target.value.toUpperCase(),
+                                })
                             }
-                        }}
-                    />
-                    {parkingSpaceForSale ? (
-                        <div className="mt-5 max-w-sm">
-                            <Field label="Prijs parkeerplaats apart te koop (€)">
-                                <input
-                                    name="parkingSpacePrice"
-                                    type="number"
-                                    min="0"
-                                    step="0.01"
-                                    className="input"
-                                />
-                            </Field>
+                            placeholder="1234 AB"
+                            className="input"
+                        />
+                    </Field>
+                    <Field label="Huisnummer">
+                        <input
+                            required
+                            type="number"
+                            min="1"
+                            value={address.houseNumber}
+                            onChange={(event) =>
+                                setAddress({
+                                    ...address,
+                                    houseNumber: event.target.value,
+                                })
+                            }
+                            className="input"
+                        />
+                    </Field>
+                    <Field label="Toevoeging">
+                        <input
+                            value={address.addition}
+                            onChange={(event) =>
+                                setAddress({
+                                    ...address,
+                                    addition: event.target.value,
+                                })
+                            }
+                            className="input"
+                        />
+                    </Field>
+                </div>
+                {lookupError ? (
+                    <div className="mt-5 rounded-2xl bg-amber-50 p-4 text-sm text-amber-900 dark:bg-amber-500/15 dark:text-amber-200">
+                        <p>{lookupError}</p>
+                        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                            <input
+                                value={address.street}
+                                onChange={(event) =>
+                                    setAddress({
+                                        ...address,
+                                        street: event.target.value,
+                                    })
+                                }
+                                placeholder="Straatnaam"
+                                className="input"
+                            />
+                            <input
+                                value={address.city}
+                                onChange={(event) =>
+                                    setAddress({
+                                        ...address,
+                                        city: event.target.value,
+                                    })
+                                }
+                                placeholder="Plaats"
+                                className="input"
+                            />
                         </div>
-                    ) : null}
-                    <EnergyLabelSection
-                        energy={propertyData?.energy ?? null}
-                        file={energyLabelFile}
-                        onFileChange={setEnergyLabelFile}
-                    />
-                    {createListing.error ? (
-                        <p className="mt-5 rounded-2xl bg-red-50 p-4 text-sm text-red-700">
-                            {createListing.error.message}
-                        </p>
-                    ) : null}
-                    <div className="mt-8 flex justify-between gap-3">
                         <button
                             type="button"
-                            onClick={() => setStep(1)}
-                            className="inline-flex h-12 items-center gap-2 rounded-full border border-line px-5 font-semibold"
+                            disabled={!address.street || !address.city}
+                            onClick={handleManualContinue}
+                            className="mt-3 font-semibold text-brand disabled:opacity-40"
                         >
-                            <ArrowLeft size={17} /> Terug
-                        </button>
-                        <button
-                            disabled={createListing.isPending}
-                            className="inline-flex h-12 items-center gap-2 rounded-full bg-brand px-6 font-semibold text-white disabled:opacity-60"
-                        >
-                            {createListing.isPending ? (
-                                <LoaderCircle
-                                    className="animate-spin"
-                                    size={18}
-                                />
-                            ) : null}{" "}
-                            Concept maken <ArrowRight size={17} />
+                            Handmatig doorgaan →
                         </button>
                     </div>
-                </form>
-            )}
+                ) : null}
+                <button
+                    disabled={lookup.isPending}
+                    className="mt-7 inline-flex h-12 items-center gap-2 rounded-full bg-brand px-6 font-semibold text-white disabled:opacity-60"
+                >
+                    {lookup.isPending ? (
+                        <LoaderCircle className="animate-spin" size={18} />
+                    ) : (
+                        <Search size={18} />
+                    )}{" "}
+                    {lookup.isPending
+                        ? "Adres controleren..."
+                        : "Adres controleren"}
+                </button>
+            </form>
         </div>
-    );
-}
-
-function PropertyOptionsSection({
-    title,
-    name,
-    options,
-    onOptionChange,
-}: {
-    title: string;
-    name: string;
-    options: ReadonlyArray<{ value: string; label: string }>;
-    onOptionChange?: (value: string, selected: boolean) => void;
-}) {
-    return (
-        <fieldset className="mt-8 border-t border-line pt-7">
-            <legend className="font-semibold">{title}</legend>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                {options.map((option) => (
-                    <label
-                        key={option.value}
-                        className="flex min-h-11 cursor-pointer items-center gap-3 border border-line px-4 py-2.5 text-sm"
-                    >
-                        <input
-                            type="checkbox"
-                            name={name}
-                            value={option.value}
-                            onChange={(event) =>
-                                onOptionChange?.(
-                                    option.value,
-                                    event.target.checked,
-                                )
-                            }
-                            className="size-4 accent-brand"
-                        />
-                        {option.label}
-                    </label>
-                ))}
-            </div>
-        </fieldset>
-    );
-}
-
-function EnergyLabelSection({
-    energy,
-    file,
-    onFileChange,
-}: {
-    energy: PropertyData["energy"];
-    file: File | null;
-    onFileChange: (file: File | null) => void;
-}) {
-    const isExpired = Boolean(
-        energy?.validUntil && new Date(energy.validUntil) < new Date(),
-    );
-
-    return (
-        <section className="mt-9 border-t border-line pt-8">
-            <div className="flex items-start gap-3">
-                <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-emerald-50 text-emerald-700">
-                    <Leaf size={19} />
-                </span>
-                <div>
-                    <h2 className="text-xl font-semibold">Energielabel</h2>
-                    <p className="mt-1 text-sm leading-6 text-muted">
-                        We zoeken ook oudere registraties op, zodat je weet of
-                        er al een label voor deze woning bekend is.
-                    </p>
-                </div>
-            </div>
-
-            {energy ? (
-                <div className="mt-5 grid gap-5 bg-background p-5 sm:grid-cols-[112px_1fr] sm:items-center">
-                    <div
-                        className={`grid h-20 w-28 place-items-center text-3xl font-bold ${energyLabelStyles[energy.labelClass]}`}
-                    >
-                        {energy.labelClass}
-                    </div>
-                    <div>
-                        <p className="font-semibold">
-                            {isExpired
-                                ? "Ouder, verlopen label gevonden"
-                                : "Energielabel gevonden"}
-                        </p>
-                        <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted">
-                            {energy.registeredAt ? (
-                                <span className="inline-flex items-center gap-2">
-                                    <CalendarDays size={15} /> Geregistreerd op{" "}
-                                    {formatDate(energy.registeredAt)}
-                                </span>
-                            ) : null}
-                            {energy.validUntil ? (
-                                <span
-                                    className={
-                                        isExpired
-                                            ? "font-semibold text-amber-800"
-                                            : undefined
-                                    }
-                                >
-                                    {isExpired ? "Verlopen op" : "Geldig tot"}{" "}
-                                    {formatDate(energy.validUntil)}
-                                </span>
-                            ) : null}
-                        </div>
-                        {energy.registrationNumber ? (
-                            <p className="mt-2 text-xs text-muted">
-                                Registratienummer: {energy.registrationNumber}
-                            </p>
-                        ) : null}
-                        {!energy.validUntil ? (
-                            <p className="mt-3 inline-flex items-start gap-2 text-sm leading-6 text-amber-900">
-                                <CircleAlert
-                                    className="mt-1 shrink-0"
-                                    size={15}
-                                />
-                                De geldigheidsdatum is niet beschikbaar.
-                                Controleer het label voordat je publiceert.
-                            </p>
-                        ) : null}
-                    </div>
-                </div>
-            ) : (
-                <div className="mt-5 flex items-start gap-3 bg-amber-50 p-5 text-amber-950">
-                    <CircleAlert className="mt-0.5 shrink-0" size={19} />
-                    <div>
-                        <p className="font-semibold">
-                            Geen energielabel gevonden
-                        </p>
-                        <p className="mt-1 text-sm leading-6">
-                            Er kan toch een label bestaan. Controleer dit eerst
-                            in de officiële energielabelzoeker.
-                        </p>
-                    </div>
-                </div>
-            )}
-
-            <div className="mt-5 border border-line bg-white p-5">
-                <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                    <div>
-                        <p className="font-semibold">
-                            Energielabel als PDF toevoegen
-                        </p>
-                        <p className="mt-1 text-sm leading-6 text-muted">
-                            Upload het officiële document nu, of voeg het later
-                            toe in je concept.
-                        </p>
-                        {file ? (
-                            <p className="mt-2 text-sm font-semibold text-brand-dark">
-                                {file.name}
-                            </p>
-                        ) : null}
-                    </div>
-                    <label className="inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full border border-line px-4 text-sm font-semibold">
-                        <FileUp size={16} />
-                        {file ? "Ander bestand" : "PDF kiezen"}
-                        <input
-                            type="file"
-                            accept="application/pdf"
-                            className="sr-only"
-                            onChange={(event) =>
-                                onFileChange(event.target.files?.[0] ?? null)
-                            }
-                        />
-                    </label>
-                </div>
-            </div>
-
-            <div className="mt-6">
-                <h3 className="font-semibold">
-                    {isExpired || !energy
-                        ? "Zo vraag je een nieuw energielabel aan"
-                        : "Wil je het energielabel vernieuwen?"}
-                </h3>
-                <ol className="mt-3 grid gap-3 text-sm leading-6 text-muted sm:grid-cols-3">
-                    <li>
-                        <span className="font-semibold text-foreground">
-                            1.
-                        </span>{" "}
-                        Vraag offertes aan bij een gecertificeerd
-                        energieadviseur.
-                    </li>
-                    <li>
-                        <span className="font-semibold text-foreground">
-                            2.
-                        </span>{" "}
-                        Plan de woningopname en leg bouwtekeningen en
-                        verduurzamingsfacturen klaar.
-                    </li>
-                    <li>
-                        <span className="font-semibold text-foreground">
-                            3.
-                        </span>{" "}
-                        De adviseur registreert het label; daarna kun je het via
-                        MijnOverheid downloaden.
-                    </li>
-                </ol>
-                <div className="mt-5 flex flex-wrap gap-3">
-                    <a
-                        href="https://www.energielabel.nl/woningen/zoek-je-energielabel/"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex h-11 items-center gap-2 rounded-full border border-line px-4 text-sm font-semibold"
-                    >
-                        Controleer bestaand label <ExternalLink size={15} />
-                    </a>
-                    <a
-                        href="https://www.centraalregistertechniek.nl/energielabel/particulieren/woning"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex h-11 items-center gap-2 rounded-full bg-foreground px-4 text-sm font-semibold text-white"
-                    >
-                        Zoek een energieadviseur <ExternalLink size={15} />
-                    </a>
-                </div>
-            </div>
-        </section>
     );
 }
 
 function Field({
     label,
+    required,
     children,
 }: {
     label: string;
+    required?: boolean;
     children: React.ReactNode;
 }) {
     return (
         <label className="block text-sm font-semibold">
             {label}
+            {required ? (
+                <span className="text-red-600" title="Verplicht veld">
+                    {" "}
+                    *
+                </span>
+            ) : null}
             <span className="mt-2 block">{children}</span>
         </label>
     );

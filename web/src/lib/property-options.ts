@@ -29,6 +29,14 @@ export const parkingOptions = [
     { value: "SPACE_FOR_SALE", label: "Parkeerplaats apart te koop" },
 ] as const;
 
+export const erfpachtOptions = [
+    { value: "UNKNOWN", label: "Onbekend" },
+    { value: "FREEHOLD", label: "Volle eigendom" },
+    { value: "LEASEHOLD", label: "Erfpacht" },
+    { value: "LEASEHOLD_AFGEKOCHT", label: "Erfpacht afgekocht" },
+] as const;
+
 export type RoofType = (typeof roofTypeOptions)[number]["value"];
 export type PropertyAmenity = (typeof propertyAmenityOptions)[number]["value"];
 export type ParkingOption = (typeof parkingOptions)[number]["value"];
+export type ErfpachtType = (typeof erfpachtOptions)[number]["value"];

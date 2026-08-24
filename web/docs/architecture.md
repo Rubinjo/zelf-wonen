@@ -2,7 +2,11 @@
 
 ## Goals and trust boundaries
 
-ZelfWonen is a bilingual self-service sales/rental platform. The Next.js application is a modular monolith for transactional workflows; deterministic price regression runs in an isolated Python service. External providers are hidden behind adapters.
+ZelfWonen is a bilingual self-service sales/rental platform. The Next.js application is a modular monolith for transactional workflows; deterministic price regression runs in an isolated Python service; and a second isolated Python/uv cron microservice (`aggregator/`) ingests external listings. External providers are hidden behind adapters.
+
+The strategic direction is shifting from **publishing** listings outward to
+**aggregating** listings inward from Funda and Kamernet (see "Inbound listing
+aggregator" below).
 
 Two verification gates are deliberately separate:
 
@@ -135,9 +139,65 @@ RVO EP-Online exposes public-data delivery for registered labels and performance
 - Floorplanner embeds use an allowlisted host and project identifier. The platform stores no untrusted arbitrary iframe HTML.
 - Publishing uses short-lived signed URLs or provider-side media transfer; the public-base URL in the scaffold is only an adapter seam.
 
-### Simulated Funda layer
+### Simulated Funda layer (deprecated)
 
-No real direct-to-consumer Funda endpoint is assumed. `ListingPublisher` is the stable port and `FundaPublisher` is a simulated adapter. Each submission includes a persisted idempotency key, payload hash, selected package, provider reference, status, and response hash. Replace the adapter when contractual API documentation is available.
+> **Deprecated.** Push-publishing listings to Funda/Kamernet is being
+> abandoned in favour of the inbound aggregator described below. The existing
+> `ListingPublisher` port, `FundaPublisher` simulated adapter, publication
+> orders and iDIN publication gate remain only for compatibility and are no
+> longer a product direction.
+
+## Inbound listing aggregator
+
+ZelfWonen no longer pushes listings out to portals. Instead a dedicated Python
+cron microservice (repo root `aggregator/`, managed with `uv`) scrapes, parses,
+normalizes and deduplicates rental/sale listings **from** Funda and Kamernet
+into a centralized discovery layer. More sources plug in through a single
+`SourceAdapter` interface.
+
+```mermaid
+flowchart LR
+  Cron[Cron microservice\npython + uv] --> Adapter[SourceAdapter\npluggable]
+  Adapter --> Funda[Funda adapter]
+  Adapter --> Kamernet[Kamernet adapter]
+  Adapter --> Proxy{Proxy pool\nrotating residential\n+ UA rotation}
+  Proxy --> Funda
+  Proxy --> Kamernet
+  Cron --> Normalize[Strict normalization]
+  Normalize --> Dedup[Address dedup\npostcode+house OR street+house]
+  Dedup --> PG[(PostgreSQL\naggregated_listings\n+ platform_links)]
+  Cron --> Raw[(raw_payloads\nHTML/JSON debugging)]
+  Cron --> Storage[(Object storage\nre-hosted images)]
+```
+
+Key decisions:
+
+- **Resilience:** rotating residential proxies and User-Agent rotation with
+  exponential backoff, jitter and a polite delay. A scrape that runs longer than
+  the 6-hour interval is prevented from overlapping itself by a PostgreSQL
+  advisory lock.
+- **Normalization:** chaotic HTML/JSON is mapped onto one strict internal schema
+  (`aggregator/app/models.py`). The web app only ever reads normalized rows.
+- **Images:** source images are downloaded and re-hosted in platform-controlled
+  object storage (S3/R2) and served through our own CDN/domain; source images
+  are never hotlinked.
+- **Deduplication:** the same property listed on Funda and Kamernet with
+  different IDs merges into one `AggregatedListing` master by
+  `postcode + house number` OR `street + house number`. Every direct link is
+  kept in `aggregated_platform_links` so the UI can show branded outbound links.
+- **Incremental + expiry:** only listings whose summary (price/status/title)
+  changed are fully re-fetched; raw responses land in `raw_payloads`. A listing
+  that 404s or disappears from a sitemap is marked `OFFLINE`/`EXPIRED` — never
+  deleted — preserving historical data.
+
+Aggregated properties are an **informational discovery layer only**: bidding,
+viewing appointments and the transaction always happen on the original
+platform. The `/woning/[slug]` page renders aggregated listings with branded
+links back to Funda/Kamernet and no platform bidding/viewing UI.
+
+Scraping Funda and Kamernet is adversarial and may conflict with their terms;
+lawful access (licensed feeds or contractual agreement) and image-hosting rights
+must be confirmed with counsel before production use.
 
 ## Biedlogboek integrity
 

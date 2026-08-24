@@ -238,7 +238,7 @@ export function AuthActions({
                     type="button"
                     onClick={handleSignOut}
                     disabled={isSigningOut}
-                    className="grid size-10 place-items-center rounded-full border border-line bg-white transition hover:border-brand/30 hover:text-brand disabled:opacity-50"
+                    className="grid size-10 place-items-center rounded-full border border-line bg-surface transition hover:border-brand/30 hover:text-brand disabled:opacity-50"
                     aria-label={t.signOut}
                     title={t.signOut}
                 >
@@ -259,7 +259,7 @@ export function AuthActions({
                     <button
                         type="button"
                         onClick={() => open("sign-in")}
-                        className="hidden h-10 rounded-full border border-line bg-white px-4 text-sm font-semibold transition hover:border-brand/30 sm:block"
+                        className="hidden h-10 rounded-full border border-line bg-surface px-4 text-sm font-semibold transition hover:border-brand/30 sm:block"
                     >
                         {t.signIn}
                     </button>
@@ -273,7 +273,7 @@ export function AuthActions({
                     <button
                         type="button"
                         onClick={() => open("sign-in")}
-                        className="grid size-10 place-items-center rounded-full border border-line bg-white sm:hidden"
+                        className="grid size-10 place-items-center rounded-full border border-line bg-surface sm:hidden"
                         aria-label={t.signIn}
                     >
                         <UserRound size={17} />
@@ -292,7 +292,7 @@ export function AuthActions({
             {mode && typeof document !== "undefined"
                 ? createPortal(
                       <div
-                          className="fixed inset-0 z-100 flex min-h-dvh items-center justify-center overflow-y-auto bg-brand-dark/55 p-4 backdrop-blur-sm sm:p-8"
+                          className="fixed inset-0 z-2000 flex min-h-dvh items-center justify-center overflow-y-auto bg-brand-dark/55 p-4 backdrop-blur-sm sm:p-8"
                           role="presentation"
                           onMouseDown={(event) => {
                               if (event.currentTarget === event.target)
@@ -303,7 +303,7 @@ export function AuthActions({
                               role="dialog"
                               aria-modal="true"
                               aria-labelledby="auth-title"
-                              className="my-auto max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto rounded-4xl border border-white/20 bg-white p-6 text-left shadow-[0_30px_100px_rgba(6,74,58,.35)] sm:max-h-[calc(100dvh-4rem)] sm:p-8"
+                              className="my-auto max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto rounded-4xl border border-white/20 bg-surface p-6 text-left shadow-[0_30px_100px_rgba(6,74,58,.35)] sm:max-h-[calc(100dvh-4rem)] sm:p-8"
                           >
                               <div className="flex items-start justify-between gap-4">
                                   <span className="grid size-11 place-items-center rounded-2xl bg-accent text-brand-dark">

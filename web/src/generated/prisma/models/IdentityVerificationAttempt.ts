@@ -28,6 +28,7 @@ export type IdentityVerificationAttemptMinAggregateOutputType = {
   id: string | null
   userId: string | null
   listingId: string | null
+  transactionId: string | null
   purpose: $Enums.VerificationPurpose | null
   provider: string | null
   providerReference: string | null
@@ -44,6 +45,7 @@ export type IdentityVerificationAttemptMaxAggregateOutputType = {
   id: string | null
   userId: string | null
   listingId: string | null
+  transactionId: string | null
   purpose: $Enums.VerificationPurpose | null
   provider: string | null
   providerReference: string | null
@@ -60,6 +62,7 @@ export type IdentityVerificationAttemptCountAggregateOutputType = {
   id: number
   userId: number
   listingId: number
+  transactionId: number
   purpose: number
   provider: number
   providerReference: number
@@ -79,6 +82,7 @@ export type IdentityVerificationAttemptMinAggregateInputType = {
   id?: true
   userId?: true
   listingId?: true
+  transactionId?: true
   purpose?: true
   provider?: true
   providerReference?: true
@@ -95,6 +99,7 @@ export type IdentityVerificationAttemptMaxAggregateInputType = {
   id?: true
   userId?: true
   listingId?: true
+  transactionId?: true
   purpose?: true
   provider?: true
   providerReference?: true
@@ -111,6 +116,7 @@ export type IdentityVerificationAttemptCountAggregateInputType = {
   id?: true
   userId?: true
   listingId?: true
+  transactionId?: true
   purpose?: true
   provider?: true
   providerReference?: true
@@ -201,6 +207,7 @@ export type IdentityVerificationAttemptGroupByOutputType = {
   id: string
   userId: string
   listingId: string | null
+  transactionId: string | null
   purpose: $Enums.VerificationPurpose
   provider: string
   providerReference: string
@@ -239,6 +246,7 @@ export type IdentityVerificationAttemptWhereInput = {
   id?: Prisma.UuidFilter<"IdentityVerificationAttempt"> | string
   userId?: Prisma.UuidFilter<"IdentityVerificationAttempt"> | string
   listingId?: Prisma.UuidNullableFilter<"IdentityVerificationAttempt"> | string | null
+  transactionId?: Prisma.UuidNullableFilter<"IdentityVerificationAttempt"> | string | null
   purpose?: Prisma.EnumVerificationPurposeFilter<"IdentityVerificationAttempt"> | $Enums.VerificationPurpose
   provider?: Prisma.StringFilter<"IdentityVerificationAttempt"> | string
   providerReference?: Prisma.StringFilter<"IdentityVerificationAttempt"> | string
@@ -252,12 +260,14 @@ export type IdentityVerificationAttemptWhereInput = {
   responsePayloadHash?: Prisma.StringNullableFilter<"IdentityVerificationAttempt"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   listing?: Prisma.XOR<Prisma.ListingNullableScalarRelationFilter, Prisma.ListingWhereInput> | null
+  transaction?: Prisma.XOR<Prisma.PropertyTransactionNullableScalarRelationFilter, Prisma.PropertyTransactionWhereInput> | null
 }
 
 export type IdentityVerificationAttemptOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   listingId?: Prisma.SortOrderInput | Prisma.SortOrder
+  transactionId?: Prisma.SortOrderInput | Prisma.SortOrder
   purpose?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerReference?: Prisma.SortOrder
@@ -271,6 +281,7 @@ export type IdentityVerificationAttemptOrderByWithRelationInput = {
   responsePayloadHash?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   listing?: Prisma.ListingOrderByWithRelationInput
+  transaction?: Prisma.PropertyTransactionOrderByWithRelationInput
 }
 
 export type IdentityVerificationAttemptWhereUniqueInput = Prisma.AtLeast<{
@@ -281,6 +292,7 @@ export type IdentityVerificationAttemptWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.IdentityVerificationAttemptWhereInput | Prisma.IdentityVerificationAttemptWhereInput[]
   userId?: Prisma.UuidFilter<"IdentityVerificationAttempt"> | string
   listingId?: Prisma.UuidNullableFilter<"IdentityVerificationAttempt"> | string | null
+  transactionId?: Prisma.UuidNullableFilter<"IdentityVerificationAttempt"> | string | null
   purpose?: Prisma.EnumVerificationPurposeFilter<"IdentityVerificationAttempt"> | $Enums.VerificationPurpose
   provider?: Prisma.StringFilter<"IdentityVerificationAttempt"> | string
   status?: Prisma.EnumVerificationStatusFilter<"IdentityVerificationAttempt"> | $Enums.VerificationStatus
@@ -293,12 +305,14 @@ export type IdentityVerificationAttemptWhereUniqueInput = Prisma.AtLeast<{
   responsePayloadHash?: Prisma.StringNullableFilter<"IdentityVerificationAttempt"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   listing?: Prisma.XOR<Prisma.ListingNullableScalarRelationFilter, Prisma.ListingWhereInput> | null
+  transaction?: Prisma.XOR<Prisma.PropertyTransactionNullableScalarRelationFilter, Prisma.PropertyTransactionWhereInput> | null
 }, "id" | "providerReference">
 
 export type IdentityVerificationAttemptOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   listingId?: Prisma.SortOrderInput | Prisma.SortOrder
+  transactionId?: Prisma.SortOrderInput | Prisma.SortOrder
   purpose?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerReference?: Prisma.SortOrder
@@ -322,6 +336,7 @@ export type IdentityVerificationAttemptScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"IdentityVerificationAttempt"> | string
   userId?: Prisma.UuidWithAggregatesFilter<"IdentityVerificationAttempt"> | string
   listingId?: Prisma.UuidNullableWithAggregatesFilter<"IdentityVerificationAttempt"> | string | null
+  transactionId?: Prisma.UuidNullableWithAggregatesFilter<"IdentityVerificationAttempt"> | string | null
   purpose?: Prisma.EnumVerificationPurposeWithAggregatesFilter<"IdentityVerificationAttempt"> | $Enums.VerificationPurpose
   provider?: Prisma.StringWithAggregatesFilter<"IdentityVerificationAttempt"> | string
   providerReference?: Prisma.StringWithAggregatesFilter<"IdentityVerificationAttempt"> | string
@@ -350,12 +365,14 @@ export type IdentityVerificationAttemptCreateInput = {
   responsePayloadHash?: string | null
   user: Prisma.UserCreateNestedOneWithoutIdentityAttemptsInput
   listing?: Prisma.ListingCreateNestedOneWithoutIdentityAttemptsInput
+  transaction?: Prisma.PropertyTransactionCreateNestedOneWithoutIdinAttemptsInput
 }
 
 export type IdentityVerificationAttemptUncheckedCreateInput = {
   id?: string
   userId: string
   listingId?: string | null
+  transactionId?: string | null
   purpose: $Enums.VerificationPurpose
   provider: string
   providerReference: string
@@ -384,12 +401,14 @@ export type IdentityVerificationAttemptUpdateInput = {
   responsePayloadHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutIdentityAttemptsNestedInput
   listing?: Prisma.ListingUpdateOneWithoutIdentityAttemptsNestedInput
+  transaction?: Prisma.PropertyTransactionUpdateOneWithoutIdinAttemptsNestedInput
 }
 
 export type IdentityVerificationAttemptUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   listingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purpose?: Prisma.EnumVerificationPurposeFieldUpdateOperationsInput | $Enums.VerificationPurpose
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   providerReference?: Prisma.StringFieldUpdateOperationsInput | string
@@ -407,6 +426,7 @@ export type IdentityVerificationAttemptCreateManyInput = {
   id?: string
   userId: string
   listingId?: string | null
+  transactionId?: string | null
   purpose: $Enums.VerificationPurpose
   provider: string
   providerReference: string
@@ -439,6 +459,7 @@ export type IdentityVerificationAttemptUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   listingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purpose?: Prisma.EnumVerificationPurposeFieldUpdateOperationsInput | $Enums.VerificationPurpose
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   providerReference?: Prisma.StringFieldUpdateOperationsInput | string
@@ -466,6 +487,7 @@ export type IdentityVerificationAttemptCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   listingId?: Prisma.SortOrder
+  transactionId?: Prisma.SortOrder
   purpose?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerReference?: Prisma.SortOrder
@@ -483,6 +505,7 @@ export type IdentityVerificationAttemptMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   listingId?: Prisma.SortOrder
+  transactionId?: Prisma.SortOrder
   purpose?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerReference?: Prisma.SortOrder
@@ -499,6 +522,7 @@ export type IdentityVerificationAttemptMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   listingId?: Prisma.SortOrder
+  transactionId?: Prisma.SortOrder
   purpose?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerReference?: Prisma.SortOrder
@@ -603,6 +627,48 @@ export type EnumVerificationStatusFieldUpdateOperationsInput = {
   set?: $Enums.VerificationStatus
 }
 
+export type IdentityVerificationAttemptCreateNestedManyWithoutTransactionInput = {
+  create?: Prisma.XOR<Prisma.IdentityVerificationAttemptCreateWithoutTransactionInput, Prisma.IdentityVerificationAttemptUncheckedCreateWithoutTransactionInput> | Prisma.IdentityVerificationAttemptCreateWithoutTransactionInput[] | Prisma.IdentityVerificationAttemptUncheckedCreateWithoutTransactionInput[]
+  connectOrCreate?: Prisma.IdentityVerificationAttemptCreateOrConnectWithoutTransactionInput | Prisma.IdentityVerificationAttemptCreateOrConnectWithoutTransactionInput[]
+  createMany?: Prisma.IdentityVerificationAttemptCreateManyTransactionInputEnvelope
+  connect?: Prisma.IdentityVerificationAttemptWhereUniqueInput | Prisma.IdentityVerificationAttemptWhereUniqueInput[]
+}
+
+export type IdentityVerificationAttemptUncheckedCreateNestedManyWithoutTransactionInput = {
+  create?: Prisma.XOR<Prisma.IdentityVerificationAttemptCreateWithoutTransactionInput, Prisma.IdentityVerificationAttemptUncheckedCreateWithoutTransactionInput> | Prisma.IdentityVerificationAttemptCreateWithoutTransactionInput[] | Prisma.IdentityVerificationAttemptUncheckedCreateWithoutTransactionInput[]
+  connectOrCreate?: Prisma.IdentityVerificationAttemptCreateOrConnectWithoutTransactionInput | Prisma.IdentityVerificationAttemptCreateOrConnectWithoutTransactionInput[]
+  createMany?: Prisma.IdentityVerificationAttemptCreateManyTransactionInputEnvelope
+  connect?: Prisma.IdentityVerificationAttemptWhereUniqueInput | Prisma.IdentityVerificationAttemptWhereUniqueInput[]
+}
+
+export type IdentityVerificationAttemptUpdateManyWithoutTransactionNestedInput = {
+  create?: Prisma.XOR<Prisma.IdentityVerificationAttemptCreateWithoutTransactionInput, Prisma.IdentityVerificationAttemptUncheckedCreateWithoutTransactionInput> | Prisma.IdentityVerificationAttemptCreateWithoutTransactionInput[] | Prisma.IdentityVerificationAttemptUncheckedCreateWithoutTransactionInput[]
+  connectOrCreate?: Prisma.IdentityVerificationAttemptCreateOrConnectWithoutTransactionInput | Prisma.IdentityVerificationAttemptCreateOrConnectWithoutTransactionInput[]
+  upsert?: Prisma.IdentityVerificationAttemptUpsertWithWhereUniqueWithoutTransactionInput | Prisma.IdentityVerificationAttemptUpsertWithWhereUniqueWithoutTransactionInput[]
+  createMany?: Prisma.IdentityVerificationAttemptCreateManyTransactionInputEnvelope
+  set?: Prisma.IdentityVerificationAttemptWhereUniqueInput | Prisma.IdentityVerificationAttemptWhereUniqueInput[]
+  disconnect?: Prisma.IdentityVerificationAttemptWhereUniqueInput | Prisma.IdentityVerificationAttemptWhereUniqueInput[]
+  delete?: Prisma.IdentityVerificationAttemptWhereUniqueInput | Prisma.IdentityVerificationAttemptWhereUniqueInput[]
+  connect?: Prisma.IdentityVerificationAttemptWhereUniqueInput | Prisma.IdentityVerificationAttemptWhereUniqueInput[]
+  update?: Prisma.IdentityVerificationAttemptUpdateWithWhereUniqueWithoutTransactionInput | Prisma.IdentityVerificationAttemptUpdateWithWhereUniqueWithoutTransactionInput[]
+  updateMany?: Prisma.IdentityVerificationAttemptUpdateManyWithWhereWithoutTransactionInput | Prisma.IdentityVerificationAttemptUpdateManyWithWhereWithoutTransactionInput[]
+  deleteMany?: Prisma.IdentityVerificationAttemptScalarWhereInput | Prisma.IdentityVerificationAttemptScalarWhereInput[]
+}
+
+export type IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionNestedInput = {
+  create?: Prisma.XOR<Prisma.IdentityVerificationAttemptCreateWithoutTransactionInput, Prisma.IdentityVerificationAttemptUncheckedCreateWithoutTransactionInput> | Prisma.IdentityVerificationAttemptCreateWithoutTransactionInput[] | Prisma.IdentityVerificationAttemptUncheckedCreateWithoutTransactionInput[]
+  connectOrCreate?: Prisma.IdentityVerificationAttemptCreateOrConnectWithoutTransactionInput | Prisma.IdentityVerificationAttemptCreateOrConnectWithoutTransactionInput[]
+  upsert?: Prisma.IdentityVerificationAttemptUpsertWithWhereUniqueWithoutTransactionInput | Prisma.IdentityVerificationAttemptUpsertWithWhereUniqueWithoutTransactionInput[]
+  createMany?: Prisma.IdentityVerificationAttemptCreateManyTransactionInputEnvelope
+  set?: Prisma.IdentityVerificationAttemptWhereUniqueInput | Prisma.IdentityVerificationAttemptWhereUniqueInput[]
+  disconnect?: Prisma.IdentityVerificationAttemptWhereUniqueInput | Prisma.IdentityVerificationAttemptWhereUniqueInput[]
+  delete?: Prisma.IdentityVerificationAttemptWhereUniqueInput | Prisma.IdentityVerificationAttemptWhereUniqueInput[]
+  connect?: Prisma.IdentityVerificationAttemptWhereUniqueInput | Prisma.IdentityVerificationAttemptWhereUniqueInput[]
+  update?: Prisma.IdentityVerificationAttemptUpdateWithWhereUniqueWithoutTransactionInput | Prisma.IdentityVerificationAttemptUpdateWithWhereUniqueWithoutTransactionInput[]
+  updateMany?: Prisma.IdentityVerificationAttemptUpdateManyWithWhereWithoutTransactionInput | Prisma.IdentityVerificationAttemptUpdateManyWithWhereWithoutTransactionInput[]
+  deleteMany?: Prisma.IdentityVerificationAttemptScalarWhereInput | Prisma.IdentityVerificationAttemptScalarWhereInput[]
+}
+
 export type IdentityVerificationAttemptCreateWithoutUserInput = {
   id?: string
   purpose: $Enums.VerificationPurpose
@@ -617,11 +683,13 @@ export type IdentityVerificationAttemptCreateWithoutUserInput = {
   failureCode?: string | null
   responsePayloadHash?: string | null
   listing?: Prisma.ListingCreateNestedOneWithoutIdentityAttemptsInput
+  transaction?: Prisma.PropertyTransactionCreateNestedOneWithoutIdinAttemptsInput
 }
 
 export type IdentityVerificationAttemptUncheckedCreateWithoutUserInput = {
   id?: string
   listingId?: string | null
+  transactionId?: string | null
   purpose: $Enums.VerificationPurpose
   provider: string
   providerReference: string
@@ -668,6 +736,7 @@ export type IdentityVerificationAttemptScalarWhereInput = {
   id?: Prisma.UuidFilter<"IdentityVerificationAttempt"> | string
   userId?: Prisma.UuidFilter<"IdentityVerificationAttempt"> | string
   listingId?: Prisma.UuidNullableFilter<"IdentityVerificationAttempt"> | string | null
+  transactionId?: Prisma.UuidNullableFilter<"IdentityVerificationAttempt"> | string | null
   purpose?: Prisma.EnumVerificationPurposeFilter<"IdentityVerificationAttempt"> | $Enums.VerificationPurpose
   provider?: Prisma.StringFilter<"IdentityVerificationAttempt"> | string
   providerReference?: Prisma.StringFilter<"IdentityVerificationAttempt"> | string
@@ -695,11 +764,13 @@ export type IdentityVerificationAttemptCreateWithoutListingInput = {
   failureCode?: string | null
   responsePayloadHash?: string | null
   user: Prisma.UserCreateNestedOneWithoutIdentityAttemptsInput
+  transaction?: Prisma.PropertyTransactionCreateNestedOneWithoutIdinAttemptsInput
 }
 
 export type IdentityVerificationAttemptUncheckedCreateWithoutListingInput = {
   id?: string
   userId: string
+  transactionId?: string | null
   purpose: $Enums.VerificationPurpose
   provider: string
   providerReference: string
@@ -739,9 +810,70 @@ export type IdentityVerificationAttemptUpdateManyWithWhereWithoutListingInput = 
   data: Prisma.XOR<Prisma.IdentityVerificationAttemptUpdateManyMutationInput, Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutListingInput>
 }
 
+export type IdentityVerificationAttemptCreateWithoutTransactionInput = {
+  id?: string
+  purpose: $Enums.VerificationPurpose
+  provider: string
+  providerReference: string
+  status?: $Enums.VerificationStatus
+  subjectReferenceHash?: string | null
+  attributesMatched?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  requestedAt?: Date | string
+  completedAt?: Date | string | null
+  expiresAt?: Date | string | null
+  failureCode?: string | null
+  responsePayloadHash?: string | null
+  user: Prisma.UserCreateNestedOneWithoutIdentityAttemptsInput
+  listing?: Prisma.ListingCreateNestedOneWithoutIdentityAttemptsInput
+}
+
+export type IdentityVerificationAttemptUncheckedCreateWithoutTransactionInput = {
+  id?: string
+  userId: string
+  listingId?: string | null
+  purpose: $Enums.VerificationPurpose
+  provider: string
+  providerReference: string
+  status?: $Enums.VerificationStatus
+  subjectReferenceHash?: string | null
+  attributesMatched?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  requestedAt?: Date | string
+  completedAt?: Date | string | null
+  expiresAt?: Date | string | null
+  failureCode?: string | null
+  responsePayloadHash?: string | null
+}
+
+export type IdentityVerificationAttemptCreateOrConnectWithoutTransactionInput = {
+  where: Prisma.IdentityVerificationAttemptWhereUniqueInput
+  create: Prisma.XOR<Prisma.IdentityVerificationAttemptCreateWithoutTransactionInput, Prisma.IdentityVerificationAttemptUncheckedCreateWithoutTransactionInput>
+}
+
+export type IdentityVerificationAttemptCreateManyTransactionInputEnvelope = {
+  data: Prisma.IdentityVerificationAttemptCreateManyTransactionInput | Prisma.IdentityVerificationAttemptCreateManyTransactionInput[]
+  skipDuplicates?: boolean
+}
+
+export type IdentityVerificationAttemptUpsertWithWhereUniqueWithoutTransactionInput = {
+  where: Prisma.IdentityVerificationAttemptWhereUniqueInput
+  update: Prisma.XOR<Prisma.IdentityVerificationAttemptUpdateWithoutTransactionInput, Prisma.IdentityVerificationAttemptUncheckedUpdateWithoutTransactionInput>
+  create: Prisma.XOR<Prisma.IdentityVerificationAttemptCreateWithoutTransactionInput, Prisma.IdentityVerificationAttemptUncheckedCreateWithoutTransactionInput>
+}
+
+export type IdentityVerificationAttemptUpdateWithWhereUniqueWithoutTransactionInput = {
+  where: Prisma.IdentityVerificationAttemptWhereUniqueInput
+  data: Prisma.XOR<Prisma.IdentityVerificationAttemptUpdateWithoutTransactionInput, Prisma.IdentityVerificationAttemptUncheckedUpdateWithoutTransactionInput>
+}
+
+export type IdentityVerificationAttemptUpdateManyWithWhereWithoutTransactionInput = {
+  where: Prisma.IdentityVerificationAttemptScalarWhereInput
+  data: Prisma.XOR<Prisma.IdentityVerificationAttemptUpdateManyMutationInput, Prisma.IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionInput>
+}
+
 export type IdentityVerificationAttemptCreateManyUserInput = {
   id?: string
   listingId?: string | null
+  transactionId?: string | null
   purpose: $Enums.VerificationPurpose
   provider: string
   providerReference: string
@@ -769,11 +901,13 @@ export type IdentityVerificationAttemptUpdateWithoutUserInput = {
   failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responsePayloadHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   listing?: Prisma.ListingUpdateOneWithoutIdentityAttemptsNestedInput
+  transaction?: Prisma.PropertyTransactionUpdateOneWithoutIdinAttemptsNestedInput
 }
 
 export type IdentityVerificationAttemptUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   listingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purpose?: Prisma.EnumVerificationPurposeFieldUpdateOperationsInput | $Enums.VerificationPurpose
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   providerReference?: Prisma.StringFieldUpdateOperationsInput | string
@@ -790,6 +924,7 @@ export type IdentityVerificationAttemptUncheckedUpdateWithoutUserInput = {
 export type IdentityVerificationAttemptUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   listingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purpose?: Prisma.EnumVerificationPurposeFieldUpdateOperationsInput | $Enums.VerificationPurpose
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   providerReference?: Prisma.StringFieldUpdateOperationsInput | string
@@ -806,6 +941,7 @@ export type IdentityVerificationAttemptUncheckedUpdateManyWithoutUserInput = {
 export type IdentityVerificationAttemptCreateManyListingInput = {
   id?: string
   userId: string
+  transactionId?: string | null
   purpose: $Enums.VerificationPurpose
   provider: string
   providerReference: string
@@ -833,11 +969,13 @@ export type IdentityVerificationAttemptUpdateWithoutListingInput = {
   failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responsePayloadHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutIdentityAttemptsNestedInput
+  transaction?: Prisma.PropertyTransactionUpdateOneWithoutIdinAttemptsNestedInput
 }
 
 export type IdentityVerificationAttemptUncheckedUpdateWithoutListingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purpose?: Prisma.EnumVerificationPurposeFieldUpdateOperationsInput | $Enums.VerificationPurpose
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   providerReference?: Prisma.StringFieldUpdateOperationsInput | string
@@ -854,6 +992,75 @@ export type IdentityVerificationAttemptUncheckedUpdateWithoutListingInput = {
 export type IdentityVerificationAttemptUncheckedUpdateManyWithoutListingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.EnumVerificationPurposeFieldUpdateOperationsInput | $Enums.VerificationPurpose
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  providerReference?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+  subjectReferenceHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attributesMatched?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responsePayloadHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type IdentityVerificationAttemptCreateManyTransactionInput = {
+  id?: string
+  userId: string
+  listingId?: string | null
+  purpose: $Enums.VerificationPurpose
+  provider: string
+  providerReference: string
+  status?: $Enums.VerificationStatus
+  subjectReferenceHash?: string | null
+  attributesMatched?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  requestedAt?: Date | string
+  completedAt?: Date | string | null
+  expiresAt?: Date | string | null
+  failureCode?: string | null
+  responsePayloadHash?: string | null
+}
+
+export type IdentityVerificationAttemptUpdateWithoutTransactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  purpose?: Prisma.EnumVerificationPurposeFieldUpdateOperationsInput | $Enums.VerificationPurpose
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  providerReference?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+  subjectReferenceHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attributesMatched?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responsePayloadHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  user?: Prisma.UserUpdateOneRequiredWithoutIdentityAttemptsNestedInput
+  listing?: Prisma.ListingUpdateOneWithoutIdentityAttemptsNestedInput
+}
+
+export type IdentityVerificationAttemptUncheckedUpdateWithoutTransactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.EnumVerificationPurposeFieldUpdateOperationsInput | $Enums.VerificationPurpose
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  providerReference?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+  subjectReferenceHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attributesMatched?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failureCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responsePayloadHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type IdentityVerificationAttemptUncheckedUpdateManyWithoutTransactionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  listingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purpose?: Prisma.EnumVerificationPurposeFieldUpdateOperationsInput | $Enums.VerificationPurpose
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   providerReference?: Prisma.StringFieldUpdateOperationsInput | string
@@ -873,6 +1080,7 @@ export type IdentityVerificationAttemptSelect<ExtArgs extends runtime.Types.Exte
   id?: boolean
   userId?: boolean
   listingId?: boolean
+  transactionId?: boolean
   purpose?: boolean
   provider?: boolean
   providerReference?: boolean
@@ -886,12 +1094,14 @@ export type IdentityVerificationAttemptSelect<ExtArgs extends runtime.Types.Exte
   responsePayloadHash?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   listing?: boolean | Prisma.IdentityVerificationAttempt$listingArgs<ExtArgs>
+  transaction?: boolean | Prisma.IdentityVerificationAttempt$transactionArgs<ExtArgs>
 }, ExtArgs["result"]["identityVerificationAttempt"]>
 
 export type IdentityVerificationAttemptSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
   listingId?: boolean
+  transactionId?: boolean
   purpose?: boolean
   provider?: boolean
   providerReference?: boolean
@@ -905,12 +1115,14 @@ export type IdentityVerificationAttemptSelectCreateManyAndReturn<ExtArgs extends
   responsePayloadHash?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   listing?: boolean | Prisma.IdentityVerificationAttempt$listingArgs<ExtArgs>
+  transaction?: boolean | Prisma.IdentityVerificationAttempt$transactionArgs<ExtArgs>
 }, ExtArgs["result"]["identityVerificationAttempt"]>
 
 export type IdentityVerificationAttemptSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
   listingId?: boolean
+  transactionId?: boolean
   purpose?: boolean
   provider?: boolean
   providerReference?: boolean
@@ -924,12 +1136,14 @@ export type IdentityVerificationAttemptSelectUpdateManyAndReturn<ExtArgs extends
   responsePayloadHash?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   listing?: boolean | Prisma.IdentityVerificationAttempt$listingArgs<ExtArgs>
+  transaction?: boolean | Prisma.IdentityVerificationAttempt$transactionArgs<ExtArgs>
 }, ExtArgs["result"]["identityVerificationAttempt"]>
 
 export type IdentityVerificationAttemptSelectScalar = {
   id?: boolean
   userId?: boolean
   listingId?: boolean
+  transactionId?: boolean
   purpose?: boolean
   provider?: boolean
   providerReference?: boolean
@@ -943,18 +1157,21 @@ export type IdentityVerificationAttemptSelectScalar = {
   responsePayloadHash?: boolean
 }
 
-export type IdentityVerificationAttemptOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "listingId" | "purpose" | "provider" | "providerReference" | "status" | "subjectReferenceHash" | "attributesMatched" | "requestedAt" | "completedAt" | "expiresAt" | "failureCode" | "responsePayloadHash", ExtArgs["result"]["identityVerificationAttempt"]>
+export type IdentityVerificationAttemptOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "listingId" | "transactionId" | "purpose" | "provider" | "providerReference" | "status" | "subjectReferenceHash" | "attributesMatched" | "requestedAt" | "completedAt" | "expiresAt" | "failureCode" | "responsePayloadHash", ExtArgs["result"]["identityVerificationAttempt"]>
 export type IdentityVerificationAttemptInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   listing?: boolean | Prisma.IdentityVerificationAttempt$listingArgs<ExtArgs>
+  transaction?: boolean | Prisma.IdentityVerificationAttempt$transactionArgs<ExtArgs>
 }
 export type IdentityVerificationAttemptIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   listing?: boolean | Prisma.IdentityVerificationAttempt$listingArgs<ExtArgs>
+  transaction?: boolean | Prisma.IdentityVerificationAttempt$transactionArgs<ExtArgs>
 }
 export type IdentityVerificationAttemptIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   listing?: boolean | Prisma.IdentityVerificationAttempt$listingArgs<ExtArgs>
+  transaction?: boolean | Prisma.IdentityVerificationAttempt$transactionArgs<ExtArgs>
 }
 
 export type $IdentityVerificationAttemptPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -962,11 +1179,13 @@ export type $IdentityVerificationAttemptPayload<ExtArgs extends runtime.Types.Ex
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
     listing: Prisma.$ListingPayload<ExtArgs> | null
+    transaction: Prisma.$PropertyTransactionPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
     listingId: string | null
+    transactionId: string | null
     purpose: $Enums.VerificationPurpose
     provider: string
     providerReference: string
@@ -1374,6 +1593,7 @@ export interface Prisma__IdentityVerificationAttemptClient<T, Null = never, ExtA
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   listing<T extends Prisma.IdentityVerificationAttempt$listingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.IdentityVerificationAttempt$listingArgs<ExtArgs>>): Prisma.Prisma__ListingClient<runtime.Types.Result.GetResult<Prisma.$ListingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  transaction<T extends Prisma.IdentityVerificationAttempt$transactionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.IdentityVerificationAttempt$transactionArgs<ExtArgs>>): Prisma.Prisma__PropertyTransactionClient<runtime.Types.Result.GetResult<Prisma.$PropertyTransactionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1406,6 +1626,7 @@ export interface IdentityVerificationAttemptFieldRefs {
   readonly id: Prisma.FieldRef<"IdentityVerificationAttempt", 'String'>
   readonly userId: Prisma.FieldRef<"IdentityVerificationAttempt", 'String'>
   readonly listingId: Prisma.FieldRef<"IdentityVerificationAttempt", 'String'>
+  readonly transactionId: Prisma.FieldRef<"IdentityVerificationAttempt", 'String'>
   readonly purpose: Prisma.FieldRef<"IdentityVerificationAttempt", 'VerificationPurpose'>
   readonly provider: Prisma.FieldRef<"IdentityVerificationAttempt", 'String'>
   readonly providerReference: Prisma.FieldRef<"IdentityVerificationAttempt", 'String'>
@@ -1834,6 +2055,25 @@ export type IdentityVerificationAttempt$listingArgs<ExtArgs extends runtime.Type
    */
   include?: Prisma.ListingInclude<ExtArgs> | null
   where?: Prisma.ListingWhereInput
+}
+
+/**
+ * IdentityVerificationAttempt.transaction
+ */
+export type IdentityVerificationAttempt$transactionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PropertyTransaction
+   */
+  select?: Prisma.PropertyTransactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PropertyTransaction
+   */
+  omit?: Prisma.PropertyTransactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PropertyTransactionInclude<ExtArgs> | null
+  where?: Prisma.PropertyTransactionWhereInput
 }
 
 /**

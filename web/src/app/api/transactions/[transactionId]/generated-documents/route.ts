@@ -5,7 +5,7 @@ import {
     requireTransactionParticipant,
     TransactionAccessError,
 } from "@/features/transactions/transaction-service";
-import { generateTransactionPdf } from "@/features/transactions/transaction-pdf";
+import { generateTransactionPdf, PassportNotFoundError } from "@/features/transactions/transaction-pdf";
 import { handleApiError } from "@/lib/api-response";
 
 const inputSchema = z.object({ type: z.enum(["AGREEMENT", "PASSPORT"]) });
@@ -42,6 +42,16 @@ export async function POST(
             return NextResponse.json(
                 { error: { code: error.code, message: error.message } },
                 { status: error.code === "TRANSACTION_NOT_FOUND" ? 404 : 403 },
+            );
+        if (error instanceof PassportNotFoundError)
+            return NextResponse.json(
+                {
+                    error: {
+                        code: "PASSPORT_NOT_FOUND",
+                        message: error.message,
+                    },
+                },
+                { status: 409 },
             );
         if (
             error instanceof Error &&

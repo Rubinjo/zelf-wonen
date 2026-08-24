@@ -1,5 +1,7 @@
 import { createHash } from "node:crypto";
 import { db } from "@/lib/db";
+import { hasVerifiedIdentity } from "@/features/identity/idin-service";
+import { collectReadinessIssues } from "@/features/listings/listing-service";
 import { FundaPublisher } from "@/lib/integrations/publishing/funda-publisher";
 import type { PublicationPayload } from "@/lib/integrations/publishing/publisher";
 import type { PublishListingInput } from "@/lib/schemas/listing";
@@ -67,21 +69,6 @@ export async function publishListing(
                 where: { status: "READY" },
                 orderBy: { sortOrder: "asc" },
             },
-            identityAttempts: {
-                where: {
-                    userId,
-                    status: "VERIFIED",
-                    purpose: {
-                        in: ["LISTING_PUBLICATION", "EXTERNAL_PUBLICATION"],
-                    },
-                    OR: [
-                        { expiresAt: null },
-                        { expiresAt: { gt: new Date() } },
-                    ],
-                },
-                orderBy: { completedAt: "desc" },
-                take: 1,
-            },
         },
     });
 
@@ -103,26 +90,24 @@ export async function publishListing(
             "Validate the draft before publishing",
         );
     }
-    if (!listing.identityAttempts[0]) {
+    const identityVerified = await hasVerifiedIdentity(userId);
+    if (!identityVerified) {
         throw new PublicationGateError(
             "IDIN_VERIFICATION_REQUIRED",
             "Complete iDIN identity verification before publishing",
         );
     }
     const photos = listing.media.filter((item) => item.kind === "PHOTO");
-    if (
-        !listing.descriptionNl ||
-        !listing.property.livingAreaSqm ||
-        !listing.property.roomCount ||
-        photos.length === 0 ||
-        (listing.purpose === "SALE" && !listing.askingPriceCents) ||
-        (listing.purpose === "RENT" && !listing.monthlyRentCents)
-    ) {
+    if (collectReadinessIssues(listing).length > 0) {
         throw new PublicationGateError(
             "LISTING_NOT_READY",
-            "Complete the required listing fields and add at least one photo",
+            "Complete all required fields (including energy label, movable items list and questionnaire) before publishing",
         );
     }
+    // collectReadinessIssues guarantees the fields below are non-null.
+    const descriptionNl = listing.descriptionNl as string;
+    const roomCount = listing.property.roomCount as number;
+    const livingAreaSqm = Number(listing.property.livingAreaSqm);
 
     const latestEnergy = listing.property.energyLabels[0] ?? null;
     const payload: PublicationPayload = {
@@ -138,9 +123,9 @@ export async function publishListing(
         },
         askingPriceCents: listing.askingPriceCents?.toString() ?? null,
         monthlyRentCents: listing.monthlyRentCents?.toString() ?? null,
-        livingAreaSqm: Number(listing.property.livingAreaSqm),
-        roomCount: listing.property.roomCount,
-        description: { nl: listing.descriptionNl, en: listing.descriptionEn },
+        livingAreaSqm,
+        roomCount,
+        description: { nl: descriptionNl, en: listing.descriptionEn },
         energy: latestEnergy
             ? {
                   labelClass: energyLabelNames[latestEnergy.labelClass],

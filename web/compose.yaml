@@ -44,5 +44,35 @@ services:
       retries: 5
       start_period: 10s
 
+  # Inbound aggregator cron service. Runs under the `aggregator` profile so it
+  # does not start with the default `docker compose up`.
+  aggregator:
+    build:
+      context: ../aggregator
+      dockerfile: Dockerfile
+    image: houser-aggregator:local
+    container_name: houser-aggregator
+    restart: unless-stopped
+    init: true
+    profiles: ["aggregator"]
+    environment:
+      AGGREGATOR_DATABASE_URL: postgresql://houser:houser_dev_password@postgres:5432/houser
+      AGGREGATOR_SYNC_INTERVAL_SECONDS: ${AGGREGATOR_SYNC_INTERVAL_SECONDS:-21600}
+      AGGREGATOR_PROXY_URLS: ${AGGREGATOR_PROXY_URLS:-}
+      AGGREGATOR_ENABLED_SOURCES: ${AGGREGATOR_ENABLED_SOURCES:-FUNDA,KAMERNET}
+      AGGREGATOR_IMAGE_STORAGE_MODE: ${AGGREGATOR_IMAGE_STORAGE_MODE:-local}
+      AGGREGATOR_LOCAL_MEDIA_DIR: ${AGGREGATOR_LOCAL_MEDIA_DIR:-/app/media}
+      AGGREGATOR_OBJECT_STORAGE_ENDPOINT_URL: ${AGGREGATOR_OBJECT_STORAGE_ENDPOINT_URL:-}
+      AGGREGATOR_OBJECT_STORAGE_BUCKET: ${AGGREGATOR_OBJECT_STORAGE_BUCKET:-zelfwonen-listings}
+      AGGREGATOR_OBJECT_STORAGE_REGION: ${AGGREGATOR_OBJECT_STORAGE_REGION:-auto}
+      AGGREGATOR_OBJECT_STORAGE_ACCESS_KEY_ID: ${AGGREGATOR_OBJECT_STORAGE_ACCESS_KEY_ID:-}
+      AGGREGATOR_OBJECT_STORAGE_SECRET_ACCESS_KEY: ${AGGREGATOR_OBJECT_STORAGE_SECRET_ACCESS_KEY:-}
+    volumes:
+      # Local-mode images land in web/public so Next.js can serve them.
+      - ./public/aggregated-media:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   houser_postgres_data:

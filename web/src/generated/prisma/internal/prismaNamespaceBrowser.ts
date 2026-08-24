@@ -72,11 +72,14 @@ export const ModelName = {
   BidEvent: 'BidEvent',
   BidLogbookExport: 'BidLogbookExport',
   PropertyTransaction: 'PropertyTransaction',
+  PurchaseAgreement: 'PurchaseAgreement',
   TransactionMilestone: 'TransactionMilestone',
   TransactionMessage: 'TransactionMessage',
   TransactionDocument: 'TransactionDocument',
   PropertyPassportVersion: 'PropertyPassportVersion',
+  PropertyPassportDraft: 'PropertyPassportDraft',
   TransactionEvent: 'TransactionEvent',
+  ListingMessage: 'ListingMessage',
   FavoriteListing: 'FavoriteListing',
   SavedSearch: 'SavedSearch',
   NotificationPreference: 'NotificationPreference',
@@ -85,7 +88,11 @@ export const ModelName = {
   ShortlistItem: 'ShortlistItem',
   EstimateCache: 'EstimateCache',
   PostcodePriceStat: 'PostcodePriceStat',
-  AuditEvent: 'AuditEvent'
+  AuditEvent: 'AuditEvent',
+  AggregatedListing: 'AggregatedListing',
+  AggregatedPlatformLink: 'AggregatedPlatformLink',
+  AggregatedListingImage: 'AggregatedListingImage',
+  RawPayload: 'RawPayload'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -207,6 +214,12 @@ export const PropertyScalarFieldEnum = {
   parkingSpacePriceCents: 'parkingSpacePriceCents',
   constructionYear: 'constructionYear',
   isMonument: 'isMonument',
+  erfpachtType: 'erfpachtType',
+  erfpachtCanonCents: 'erfpachtCanonCents',
+  erfpachtDetails: 'erfpachtDetails',
+  erfpachtEndDate: 'erfpachtEndDate',
+  erfpachtSource: 'erfpachtSource',
+  erfpachtRetrievedAt: 'erfpachtRetrievedAt',
   layout: 'layout',
   kadasterSourcePayload: 'kadasterSourcePayload',
   kadasterRetrievedAt: 'kadasterRetrievedAt',
@@ -255,6 +268,32 @@ export const NeighborhoodProfileScalarFieldEnum = {
   tramStopDistanceMeters: 'tramStopDistanceMeters',
   metroStationDistanceMeters: 'metroStationDistanceMeters',
   trainStationDistanceMeters: 'trainStationDistanceMeters',
+  noiseRoadLden: 'noiseRoadLden',
+  noiseRailLden: 'noiseRailLden',
+  noiseIndustryLden: 'noiseIndustryLden',
+  noiseAircraftLden: 'noiseAircraftLden',
+  noiseGridMeters: 'noiseGridMeters',
+  noiseSource: 'noiseSource',
+  noiseRetrievedAt: 'noiseRetrievedAt',
+  foundationRiskLevel: 'foundationRiskLevel',
+  foundationRiskAreaShare: 'foundationRiskAreaShare',
+  foundationPre1970Percent: 'foundationPre1970Percent',
+  foundationGroundClass: 'foundationGroundClass',
+  foundationRiskDetail: 'foundationRiskDetail',
+  foundationRiskSource: 'foundationRiskSource',
+  foundationRiskRetrievedAt: 'foundationRiskRetrievedAt',
+  malePercent: 'malePercent',
+  femalePercent: 'femalePercent',
+  averageHouseholdSize: 'averageHouseholdSize',
+  singleHouseholdPercent: 'singleHouseholdPercent',
+  coupleHouseholdPercent: 'coupleHouseholdPercent',
+  familyHouseholdPercent: 'familyHouseholdPercent',
+  educationLowPercent: 'educationLowPercent',
+  educationMediumPercent: 'educationMediumPercent',
+  educationHighPercent: 'educationHighPercent',
+  educationStatisticsYear: 'educationStatisticsYear',
+  demographicsSourceUrl: 'demographicsSourceUrl',
+  demographicsRetrievedAt: 'demographicsRetrievedAt',
   cbsDataset: 'cbsDataset',
   cbsSourceUrl: 'cbsSourceUrl',
   cbsRetrievedAt: 'cbsRetrievedAt',
@@ -389,6 +428,7 @@ export const IdentityVerificationAttemptScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   listingId: 'listingId',
+  transactionId: 'transactionId',
   purpose: 'purpose',
   provider: 'provider',
   providerReference: 'providerReference',
@@ -525,8 +565,21 @@ export const PropertyTransactionScalarFieldEnum = {
   buyerContractConfirmedAt: 'buyerContractConfirmedAt',
   sellerContractConfirmedAt: 'sellerContractConfirmedAt',
   coolingOffEndsAt: 'coolingOffEndsAt',
+  notaryProposal: 'notaryProposal',
+  notaryProposedByUserId: 'notaryProposedByUserId',
+  notaryProposedAt: 'notaryProposedAt',
   notaryDetails: 'notaryDetails',
+  notaryConfirmedByUserId: 'notaryConfirmedByUserId',
+  notaryConfirmedAt: 'notaryConfirmedAt',
   handoverDetails: 'handoverDetails',
+  securityForm: 'securityForm',
+  securityFormChosenAt: 'securityFormChosenAt',
+  securityFormChosenByUserId: 'securityFormChosenByUserId',
+  securityReference: 'securityReference',
+  securityPaidAt: 'securityPaidAt',
+  securityPaidByUserId: 'securityPaidByUserId',
+  securityConfirmedAt: 'securityConfirmedAt',
+  securityConfirmedByUserId: 'securityConfirmedByUserId',
   completedAt: 'completedAt',
   cancelledAt: 'cancelledAt',
   cancellationReason: 'cancellationReason',
@@ -536,6 +589,61 @@ export const PropertyTransactionScalarFieldEnum = {
 } as const
 
 export type PropertyTransactionScalarFieldEnum = (typeof PropertyTransactionScalarFieldEnum)[keyof typeof PropertyTransactionScalarFieldEnum]
+
+
+export const PurchaseAgreementScalarFieldEnum = {
+  id: 'id',
+  transactionId: 'transactionId',
+  version: 'version',
+  status: 'status',
+  sellerCivilStatus: 'sellerCivilStatus',
+  sellerAddress: 'sellerAddress',
+  sellerSpouseName: 'sellerSpouseName',
+  sellerSpouseConsentAt: 'sellerSpouseConsentAt',
+  buyerCivilStatus: 'buyerCivilStatus',
+  buyerAddress: 'buyerAddress',
+  buyerSpouseName: 'buyerSpouseName',
+  buyerSpouseConsentAt: 'buyerSpouseConsentAt',
+  kadastraleOmschrijving: 'kadastraleOmschrijving',
+  movables: 'movables',
+  movablesValueCents: 'movablesValueCents',
+  securityType: 'securityType',
+  securityAmountCents: 'securityAmountCents',
+  securityDueDate: 'securityDueDate',
+  financingCondition: 'financingCondition',
+  financingTermWeeks: 'financingTermWeeks',
+  inspectionCondition: 'inspectionCondition',
+  inspectionTermDays: 'inspectionTermDays',
+  inspectionCostCapCents: 'inspectionCostCapCents',
+  nhgCondition: 'nhgCondition',
+  nhgTermWeeks: 'nhgTermWeeks',
+  foundationCondition: 'foundationCondition',
+  foundationTermWeeks: 'foundationTermWeeks',
+  transferDate: 'transferDate',
+  kadasterRegistration: 'kadasterRegistration',
+  buyerPaysCosts: 'buyerPaysCosts',
+  additionalTerms: 'additionalTerms',
+  coolingOffDays: 'coolingOffDays',
+  financingDeadline: 'financingDeadline',
+  inspectionDeadline: 'inspectionDeadline',
+  nhgDeadline: 'nhgDeadline',
+  foundationDeadline: 'foundationDeadline',
+  coolingOffEndsAt: 'coolingOffEndsAt',
+  sellerSignedAt: 'sellerSignedAt',
+  sellerSignatureMethod: 'sellerSignatureMethod',
+  sellerSignatureEvidence: 'sellerSignatureEvidence',
+  buyerSignedAt: 'buyerSignedAt',
+  buyerSignatureMethod: 'buyerSignatureMethod',
+  buyerSignatureEvidence: 'buyerSignatureEvidence',
+  submittedAt: 'submittedAt',
+  signedAt: 'signedAt',
+  voidedAt: 'voidedAt',
+  voidReason: 'voidReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PurchaseAgreementScalarFieldEnum = (typeof PurchaseAgreementScalarFieldEnum)[keyof typeof PurchaseAgreementScalarFieldEnum]
 
 
 export const TransactionMilestoneScalarFieldEnum = {
@@ -603,6 +711,18 @@ export const PropertyPassportVersionScalarFieldEnum = {
 export type PropertyPassportVersionScalarFieldEnum = (typeof PropertyPassportVersionScalarFieldEnum)[keyof typeof PropertyPassportVersionScalarFieldEnum]
 
 
+export const PropertyPassportDraftScalarFieldEnum = {
+  id: 'id',
+  listingId: 'listingId',
+  fields: 'fields',
+  createdByUserId: 'createdByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PropertyPassportDraftScalarFieldEnum = (typeof PropertyPassportDraftScalarFieldEnum)[keyof typeof PropertyPassportDraftScalarFieldEnum]
+
+
 export const TransactionEventScalarFieldEnum = {
   id: 'id',
   transactionId: 'transactionId',
@@ -615,6 +735,21 @@ export const TransactionEventScalarFieldEnum = {
 } as const
 
 export type TransactionEventScalarFieldEnum = (typeof TransactionEventScalarFieldEnum)[keyof typeof TransactionEventScalarFieldEnum]
+
+
+export const ListingMessageScalarFieldEnum = {
+  id: 'id',
+  listingId: 'listingId',
+  authorUserId: 'authorUserId',
+  seekerUserId: 'seekerUserId',
+  body: 'body',
+  readAt: 'readAt',
+  transferredToTransactionId: 'transferredToTransactionId',
+  transferredAt: 'transferredAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ListingMessageScalarFieldEnum = (typeof ListingMessageScalarFieldEnum)[keyof typeof ListingMessageScalarFieldEnum]
 
 
 export const FavoriteListingScalarFieldEnum = {
@@ -755,6 +890,103 @@ export const AuditEventScalarFieldEnum = {
 } as const
 
 export type AuditEventScalarFieldEnum = (typeof AuditEventScalarFieldEnum)[keyof typeof AuditEventScalarFieldEnum]
+
+
+export const AggregatedListingScalarFieldEnum = {
+  id: 'id',
+  dedupKey: 'dedupKey',
+  postcodeHouseKey: 'postcodeHouseKey',
+  streetHouseKey: 'streetHouseKey',
+  purpose: 'purpose',
+  status: 'status',
+  publicSlug: 'publicSlug',
+  titleNl: 'titleNl',
+  descriptionNl: 'descriptionNl',
+  askingPriceCents: 'askingPriceCents',
+  monthlyRentCents: 'monthlyRentCents',
+  serviceCostsCents: 'serviceCostsCents',
+  postcode: 'postcode',
+  houseNumber: 'houseNumber',
+  houseNumberAddition: 'houseNumberAddition',
+  street: 'street',
+  city: 'city',
+  municipality: 'municipality',
+  province: 'province',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  propertyType: 'propertyType',
+  livingAreaSqm: 'livingAreaSqm',
+  plotAreaSqm: 'plotAreaSqm',
+  volumeCubicMeters: 'volumeCubicMeters',
+  roomCount: 'roomCount',
+  bedroomCount: 'bedroomCount',
+  bathroomCount: 'bathroomCount',
+  constructionYear: 'constructionYear',
+  energyLabel: 'energyLabel',
+  interior: 'interior',
+  amenities: 'amenities',
+  availableFrom: 'availableFrom',
+  summaryHash: 'summaryHash',
+  firstSeenAt: 'firstSeenAt',
+  lastSeenAt: 'lastSeenAt',
+  expiredAt: 'expiredAt',
+  lastSyncAt: 'lastSyncAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AggregatedListingScalarFieldEnum = (typeof AggregatedListingScalarFieldEnum)[keyof typeof AggregatedListingScalarFieldEnum]
+
+
+export const AggregatedPlatformLinkScalarFieldEnum = {
+  id: 'id',
+  listingId: 'listingId',
+  source: 'source',
+  externalId: 'externalId',
+  url: 'url',
+  status: 'status',
+  summaryHash: 'summaryHash',
+  firstSeenAt: 'firstSeenAt',
+  lastSeenAt: 'lastSeenAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AggregatedPlatformLinkScalarFieldEnum = (typeof AggregatedPlatformLinkScalarFieldEnum)[keyof typeof AggregatedPlatformLinkScalarFieldEnum]
+
+
+export const AggregatedListingImageScalarFieldEnum = {
+  id: 'id',
+  listingId: 'listingId',
+  storageKey: 'storageKey',
+  sourceUrl: 'sourceUrl',
+  mimeType: 'mimeType',
+  sha256: 'sha256',
+  width: 'width',
+  height: 'height',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt'
+} as const
+
+export type AggregatedListingImageScalarFieldEnum = (typeof AggregatedListingImageScalarFieldEnum)[keyof typeof AggregatedListingImageScalarFieldEnum]
+
+
+export const RawPayloadScalarFieldEnum = {
+  id: 'id',
+  source: 'source',
+  externalId: 'externalId',
+  kind: 'kind',
+  url: 'url',
+  httpStatus: 'httpStatus',
+  contentType: 'contentType',
+  contentHash: 'contentHash',
+  body: 'body',
+  bytes: 'bytes',
+  listingId: 'listingId',
+  retrievedAt: 'retrievedAt'
+} as const
+
+export type RawPayloadScalarFieldEnum = (typeof RawPayloadScalarFieldEnum)[keyof typeof RawPayloadScalarFieldEnum]
 
 
 export const SortOrder = {

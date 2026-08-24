@@ -19,7 +19,9 @@ import {
     Fingerprint,
     ImagePlus,
     Info,
+    Landmark,
     LoaderCircle,
+    MessageSquare,
     Plus,
     Save,
     Send,
@@ -28,10 +30,13 @@ import {
     Trash2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { OwnerListingMessages } from "@/components/messages/owner-listing-messages";
 import {
+    erfpachtOptions,
     parkingOptions,
     propertyAmenityOptions,
     roofTypeOptions,
+    type ErfpachtType,
     type ParkingOption,
     type PropertyAmenity,
     type RoofType,
@@ -42,6 +47,10 @@ import {
     type QuestionnaireAnswer,
     type QuestionnaireAnswerValue,
 } from "@/features/listings/property-questionnaire";
+import {
+    clearNewListingDraft,
+    type NewListingDraft,
+} from "@/features/listings/create-listing-draft";
 
 type MediaItem = {
     id: string;
@@ -122,6 +131,10 @@ export type ListingView = {
         parkingSpacePriceCents: string | null;
         constructionYear: number | null;
         isMonument: boolean;
+        erfpachtType: ErfpachtType;
+        erfpachtCanonCents: string | null;
+        erfpachtDetails: string | null;
+        erfpachtEndDate: string | null;
         energyLabels: Array<{
             labelClass: string;
             primaryFossilEnergyKwhSqmYear: number | null;
@@ -130,6 +143,7 @@ export type ListingView = {
     media: MediaItem[];
     floorPlans: Array<{ embedUrl: string | null }>;
     identityAttempts: Array<{ status: string }>;
+    identityVerified: boolean;
     publicationOrders: Array<{ id: string; package: string; status: string }>;
     publications: Array<{
         id: string;
@@ -147,9 +161,12 @@ type Section =
     | "estimate"
     | "viewings"
     | "publish"
-    | "bids";
+    | "bids"
+    | "messages";
 type ApiError = { error?: { message?: string } };
 type EditorState = {
+    purpose: "SALE" | "RENT";
+    propertyType: ListingView["property"]["propertyType"];
     titleNl: string;
     titleEn: string;
     descriptionNl: string;
@@ -167,6 +184,10 @@ type EditorState = {
     parkingSpacePrice: string;
     constructionYear: string;
     isMonument: boolean;
+    erfpachtType: ErfpachtType;
+    erfpachtCanon: string;
+    erfpachtDetails: string;
+    erfpachtEndDate: string;
     askingPrice: string;
     monthlyRent: string;
     serviceCosts: string;
@@ -211,19 +232,99 @@ const sections: Array<{ id: Section; label: string; icon: typeof Building2 }> =
         { id: "viewings", label: "Bezichtigingen", icon: CalendarDays },
         { id: "publish", label: "Controleren & publiceren", icon: Send },
         { id: "bids", label: "Biedlogboek", icon: ShieldCheck },
+        { id: "messages", label: "Berichten", icon: MessageSquare },
     ];
+
+function buildSkeletonListing(
+    draft: NewListingDraft | null | undefined,
+): ListingView {
+    const address = draft?.address;
+    const property = draft?.property;
+    return {
+        id: "",
+        purpose: "SALE",
+        status: "DRAFT",
+        version: 1,
+        publicSlug: null,
+        titleNl: null,
+        titleEn: null,
+        descriptionNl: null,
+        descriptionEn: null,
+        askingPriceCents: null,
+        monthlyRentCents: null,
+        serviceCostsCents: null,
+        viewingNotes: null,
+        biddingMethod: "PRIVATE",
+        minimumBidCents: null,
+        bidIncrementCents: null,
+        allowBidConditions: true,
+        bidWindowOpensAt: null,
+        bidWindowClosesAt: null,
+        attributes: null,
+        property: {
+            postcode: address?.postcode ?? "",
+            houseNumber: address ? Number(address.houseNumber) : 0,
+            houseNumberAddition: address?.addition || null,
+            street: address?.street ?? "",
+            city: address?.city ?? "",
+            propertyType: property?.suggestedPropertyType ?? "HOUSE",
+            livingAreaSqm: property?.livingAreaSqm ?? null,
+            officialLandAreaSqm: property?.officialLandAreaSqm ?? null,
+            roomCount: property?.roomCount ?? null,
+            bedroomCount: property?.bedroomCount ?? null,
+            bathroomCount: null,
+            floorCount: null,
+            roofType: null,
+            externalStorageAreaSqm: null,
+            amenities: [],
+            parkingOptions: [],
+            parkingSpacePriceCents: null,
+            constructionYear: property?.constructionYear ?? null,
+            isMonument: false,
+            erfpachtType: "UNKNOWN",
+            erfpachtCanonCents: null,
+            erfpachtDetails: null,
+            erfpachtEndDate: null,
+            energyLabels: property?.energy
+                ? [
+                      {
+                          labelClass: property.energy.labelClass,
+                          primaryFossilEnergyKwhSqmYear:
+                              property.energy.primaryFossilEnergyKwhSqmYear,
+                      },
+                  ]
+                : [],
+        },
+        media: [],
+        floorPlans: [],
+        identityAttempts: [],
+        identityVerified: false,
+        publicationOrders: [],
+        publications: [],
+    };
+}
 
 export function ListingEditor({
     initialListing,
+    draft,
+    messageUnreadCount = 0,
 }: {
-    initialListing: ListingView;
+    initialListing: ListingView | null;
+    draft?: NewListingDraft | null;
+    messageUnreadCount?: number;
 }) {
     const router = useRouter();
     const queryClient = useQueryClient();
-    const [listing, setListing] = useState(initialListing);
+    const isCreate = initialListing === null;
+    const [listing, setListing] = useState<ListingView>(
+        () => initialListing ?? buildSkeletonListing(draft),
+    );
     const [section, setSection] = useState<Section>("details");
+    const [messageUnread, setMessageUnread] = useState(messageUnreadCount);
     const [notice, setNotice] = useState("");
     const [editor, setEditor] = useState<EditorState>({
+        purpose: listing.purpose,
+        propertyType: listing.property.propertyType,
         titleNl: listing.titleNl ?? "",
         titleEn: listing.titleEn ?? "",
         descriptionNl: listing.descriptionNl ?? "",
@@ -243,6 +344,10 @@ export function ListingEditor({
         parkingSpacePrice: euros(listing.property.parkingSpacePriceCents),
         constructionYear: listing.property.constructionYear?.toString() ?? "",
         isMonument: listing.property.isMonument,
+        erfpachtType: listing.property.erfpachtType ?? "UNKNOWN",
+        erfpachtCanon: euros(listing.property.erfpachtCanonCents),
+        erfpachtDetails: listing.property.erfpachtDetails ?? "",
+        erfpachtEndDate: listing.property.erfpachtEndDate?.slice(0, 10) ?? "",
         askingPrice: euros(listing.askingPriceCents),
         monthlyRent: euros(listing.monthlyRentCents),
         serviceCosts: euros(listing.serviceCostsCents),
@@ -258,87 +363,149 @@ export function ListingEditor({
         questionnaireAnswers: listing.attributes?.questionnaireAnswers ?? [],
     });
 
-    const editable = ["DRAFT", "READY_FOR_VERIFICATION"].includes(
-        listing.status,
-    );
-    const verified = listing.identityAttempts.some(
-        (attempt) => attempt.status === "VERIFIED",
-    );
+    const editable =
+        isCreate ||
+        ["DRAFT", "READY_FOR_VERIFICATION"].includes(listing.status);
+    const verified =
+        listing.identityVerified ||
+        listing.identityAttempts.some(
+            (attempt) => attempt.status === "VERIFIED",
+        );
     const paidOrder = listing.publicationOrders.find(
         (order) => order.status === "PAID",
     );
 
     const save = useMutation({
-        mutationFn: () =>
-            requestData<ListingView>(`/api/listings/${listing.id}`, {
+        mutationFn: () => {
+            const payload = {
+                purpose: editor.purpose,
+                propertyType: editor.propertyType,
+                livingAreaSqm: Number(editor.livingAreaSqm) || null,
+                officialLandAreaSqm: editor.officialLandAreaSqm
+                    ? Number(editor.officialLandAreaSqm)
+                    : null,
+                roomCount: Number(editor.roomCount) || null,
+                bedroomCount: editor.bedroomCount
+                    ? Number(editor.bedroomCount)
+                    : null,
+                bathroomCount: editor.bathroomCount
+                    ? Number(editor.bathroomCount)
+                    : null,
+                floorCount: editor.floorCount
+                    ? Number(editor.floorCount)
+                    : null,
+                roofType: editor.roofType || null,
+                externalStorageAreaSqm: editor.externalStorageAreaSqm
+                    ? Number(editor.externalStorageAreaSqm)
+                    : null,
+                amenities: editor.amenities,
+                parkingOptions: editor.parkingOptions,
+                parkingSpacePriceCents: editor.parkingOptions.includes(
+                    "SPACE_FOR_SALE",
+                )
+                    ? toCents(editor.parkingSpacePrice)
+                    : null,
+                constructionYear: editor.constructionYear
+                    ? Number(editor.constructionYear)
+                    : null,
+                isMonument: editor.isMonument,
+                erfpachtType: editor.erfpachtType,
+                erfpachtCanonCents: editor.erfpachtCanon
+                    ? toCents(editor.erfpachtCanon)
+                    : null,
+                erfpachtDetails: editor.erfpachtDetails || null,
+                erfpachtEndDate: editor.erfpachtEndDate
+                    ? new Date(`${editor.erfpachtEndDate}T00:00:00`).toISOString()
+                    : null,
+                titleNl: editor.titleNl || null,
+                titleEn: editor.titleEn || null,
+                descriptionNl: editor.descriptionNl || null,
+                descriptionEn: editor.descriptionEn || null,
+                askingPriceCents: toCents(editor.askingPrice),
+                monthlyRentCents: toCents(editor.monthlyRent),
+                serviceCostsCents: toCents(editor.serviceCosts),
+                biddingMethod: editor.biddingMethod,
+                minimumBidCents: toCents(editor.minimumBid),
+                bidIncrementCents:
+                    editor.biddingMethod === "OPEN"
+                        ? toCents(editor.bidIncrement)
+                        : null,
+                allowBidConditions: editor.allowBidConditions,
+                viewingNotes: editor.viewingNotes || null,
+                floorplannerEmbedUrl: editor.floorplannerEmbedUrl || null,
+                bidWindowOpensAt: editor.bidWindowOpensAt
+                    ? new Date(editor.bidWindowOpensAt).toISOString()
+                    : null,
+                bidWindowClosesAt: editor.bidWindowClosesAt
+                    ? new Date(editor.bidWindowClosesAt).toISOString()
+                    : null,
+                attributes: {
+                    ...listing.attributes,
+                    movableItems: editor.movableItems.filter((item) =>
+                        item.name.trim(),
+                    ),
+                    questionnaireAnswers: editor.questionnaireAnswers,
+                },
+            };
+
+            if (isCreate) {
+                const address = draft?.address;
+                const property = draft?.property;
+                return requestData<{ id: string }>("/api/listings", {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({
+                        postcode:
+                            address?.postcode ?? listing.property.postcode,
+                        houseNumber: Number(
+                            address?.houseNumber ??
+                                listing.property.houseNumber,
+                        ),
+                        houseNumberAddition:
+                            address?.addition ||
+                            listing.property.houseNumberAddition,
+                        street: address?.street ?? listing.property.street,
+                        city: address?.city ?? listing.property.city,
+                        municipality: property?.address.municipality ?? null,
+                        province: property?.address.province ?? null,
+                        bagAddressId: property?.bagAddressId ?? null,
+                        bagBuildingId: property?.bagBuildingId ?? null,
+                        cadastralParcelId: property?.cadastralParcelId ?? null,
+                        latitude: property?.coordinates?.latitude ?? null,
+                        longitude: property?.coordinates?.longitude ?? null,
+                        energyLabel: property?.energy
+                            ? {
+                                  registrationNumber:
+                                      property.energy.registrationNumber,
+                                  labelClass: property.energy.labelClass,
+                                  primaryFossilEnergyKwhSqmYear:
+                                      property.energy
+                                          .primaryFossilEnergyKwhSqmYear,
+                                  registeredAt: property.energy.registeredAt,
+                                  validUntil: property.energy.validUntil,
+                              }
+                            : null,
+                        ...payload,
+                    }),
+                });
+            }
+
+            return requestData<ListingView>(`/api/listings/${listing.id}`, {
                 method: "PATCH",
                 headers: { "content-type": "application/json" },
-                body: JSON.stringify({
-                    version: listing.version,
-                    livingAreaSqm: Number(editor.livingAreaSqm) || null,
-                    officialLandAreaSqm: editor.officialLandAreaSqm
-                        ? Number(editor.officialLandAreaSqm)
-                        : null,
-                    roomCount: Number(editor.roomCount) || null,
-                    bedroomCount: editor.bedroomCount
-                        ? Number(editor.bedroomCount)
-                        : null,
-                    bathroomCount: editor.bathroomCount
-                        ? Number(editor.bathroomCount)
-                        : null,
-                    floorCount: editor.floorCount
-                        ? Number(editor.floorCount)
-                        : null,
-                    roofType: editor.roofType || null,
-                    externalStorageAreaSqm: editor.externalStorageAreaSqm
-                        ? Number(editor.externalStorageAreaSqm)
-                        : null,
-                    amenities: editor.amenities,
-                    parkingOptions: editor.parkingOptions,
-                    parkingSpacePriceCents: editor.parkingOptions.includes(
-                        "SPACE_FOR_SALE",
-                    )
-                        ? toCents(editor.parkingSpacePrice)
-                        : null,
-                    constructionYear: editor.constructionYear
-                        ? Number(editor.constructionYear)
-                        : null,
-                    isMonument: editor.isMonument,
-                    titleNl: editor.titleNl || null,
-                    titleEn: editor.titleEn || null,
-                    descriptionNl: editor.descriptionNl || null,
-                    descriptionEn: editor.descriptionEn || null,
-                    askingPriceCents: toCents(editor.askingPrice),
-                    monthlyRentCents: toCents(editor.monthlyRent),
-                    serviceCostsCents: toCents(editor.serviceCosts),
-                    biddingMethod: editor.biddingMethod,
-                    minimumBidCents: toCents(editor.minimumBid),
-                    bidIncrementCents:
-                        editor.biddingMethod === "OPEN"
-                            ? toCents(editor.bidIncrement)
-                            : null,
-                    allowBidConditions: editor.allowBidConditions,
-                    viewingNotes: editor.viewingNotes || null,
-                    floorplannerEmbedUrl: editor.floorplannerEmbedUrl || null,
-                    bidWindowOpensAt: editor.bidWindowOpensAt
-                        ? new Date(editor.bidWindowOpensAt).toISOString()
-                        : null,
-                    bidWindowClosesAt: editor.bidWindowClosesAt
-                        ? new Date(editor.bidWindowClosesAt).toISOString()
-                        : null,
-                    attributes: {
-                        ...listing.attributes,
-                        movableItems: editor.movableItems.filter((item) =>
-                            item.name.trim(),
-                        ),
-                        questionnaireAnswers: editor.questionnaireAnswers,
-                    },
-                }),
-            }),
+                body: JSON.stringify({ version: listing.version, ...payload }),
+            });
+        },
         onSuccess(data) {
-            setListing(data);
+            if (isCreate) {
+                const id = (data as { id: string }).id;
+                clearNewListingDraft();
+                router.replace(`/dashboard/listings/${id}`);
+                router.refresh();
+                return;
+            }
+            setListing(data as ListingView);
             setNotice("Concept opgeslagen");
-            router.refresh();
         },
     });
 
@@ -349,8 +516,8 @@ export function ListingEditor({
                 headers: { "content-type": "application/json" },
                 body: JSON.stringify({
                     locale: "nl",
-                    purpose: listing.purpose,
-                    propertyType: listing.property.propertyType,
+                    purpose: editor.purpose,
+                    propertyType: editor.propertyType,
                     city: listing.property.city,
                     livingAreaSqm: Number(editor.livingAreaSqm),
                     roomCount: Number(editor.roomCount),
@@ -391,7 +558,7 @@ export function ListingEditor({
                 body: JSON.stringify({
                     postcode: listing.property.postcode,
                     houseNumber: listing.property.houseNumber,
-                    propertyType: listing.property.propertyType,
+                    propertyType: editor.propertyType,
                     livingAreaSqm: Number(editor.livingAreaSqm),
                     roomCount: Number(editor.roomCount),
                     constructionYear: editor.constructionYear
@@ -412,8 +579,8 @@ export function ListingEditor({
                 listing: ListingView;
             }>(`/api/listings/${listing.id}/validate`, { method: "POST" }),
         onSuccess(data) {
+            setListing(data.listing);
             if (data.ready) {
-                setListing(data.listing);
                 setNotice("Advertentie is compleet en klaar voor iDIN");
             }
         },
@@ -506,7 +673,7 @@ export function ListingEditor({
                 <div>
                     <div className="flex items-center gap-2 text-sm font-semibold text-brand">
                         <span>
-                            {listing.purpose === "SALE" ? "Verkoop" : "Verhuur"}
+                            {editor.purpose === "SALE" ? "Verkoop" : "Verhuur"}
                         </span>
                         <ChevronRight size={14} />
                         <span>{statusText(listing.status)}</span>
@@ -529,7 +696,7 @@ export function ListingEditor({
                         ) : (
                             <Save size={17} />
                         )}{" "}
-                        Concept opslaan
+                        {isCreate ? "Concept maken" : "Concept opslaan"}
                     </button>
                 ) : listing.publicSlug ? (
                     <a
@@ -551,32 +718,56 @@ export function ListingEditor({
             ) : null}
 
             <div className="mt-8 grid gap-7 lg:grid-cols-[250px_1fr]">
-                <aside className="h-fit rounded-3xl border border-line bg-white p-2 lg:sticky lg:top-24">
+                <aside className="h-fit rounded-3xl border border-line bg-surface p-2 lg:sticky lg:top-24">
                     {sections.map((item) => {
                         const Icon = item.icon;
+                        const locked = isCreate && item.id !== "details";
                         return (
                             <button
                                 key={item.id}
                                 type="button"
+                                disabled={locked}
+                                title={
+                                    locked
+                                        ? "Sla eerst je concept op"
+                                        : undefined
+                                }
                                 onClick={() => {
+                                    if (locked) return;
                                     setSection(item.id);
                                     if (
                                         item.id === "publish" &&
-                                        listing.status === "DRAFT" &&
+                                        [
+                                            "DRAFT",
+                                            "READY_FOR_VERIFICATION",
+                                        ].includes(listing.status) &&
                                         !validate.isPending
                                     ) {
                                         validate.mutate();
                                     }
                                 }}
-                                className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold transition ${section === item.id ? "bg-brand text-white" : "hover:bg-background"}`}
+                                className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold transition ${section === item.id ? "bg-brand text-white" : "hover:bg-background"} ${locked ? "cursor-not-allowed opacity-50" : ""}`}
                             >
                                 <Icon size={18} /> {item.label}
+                                {item.id === "messages" && messageUnread > 0 ? (
+                                    <span
+                                        className={`ml-auto grid min-w-5 place-items-center rounded-full px-1.5 py-0.5 text-[10px] font-bold ${section === item.id ? "bg-surface text-brand" : "bg-brand text-white"}`}
+                                    >
+                                        {messageUnread}
+                                    </span>
+                                ) : null}
                             </button>
                         );
                     })}
+                    {isCreate ? (
+                        <p className="px-3 pt-3 text-xs leading-5 text-muted">
+                            Sla eerst je concept op om foto&apos;s,
+                            bezichtigingen en publicatie te openen.
+                        </p>
+                    ) : null}
                 </aside>
 
-                <section className="min-w-0 rounded-4xl border border-line bg-white p-6 shadow-sm sm:p-9">
+                <section className="min-w-0 rounded-4xl border border-line bg-surface p-6 shadow-sm sm:p-9">
                     {section === "details" ? (
                         <DetailsSection
                             listing={listing}
@@ -612,7 +803,7 @@ export function ListingEditor({
                     ) : null}
                     {section === "questionnaire" ? (
                         <QuestionnaireSection
-                            propertyType={listing.property.propertyType}
+                            propertyType={editor.propertyType}
                             answers={editor.questionnaireAnswers}
                             setAnswers={(questionnaireAnswers) =>
                                 setEditor((current) => ({
@@ -625,7 +816,6 @@ export function ListingEditor({
                     ) : null}
                     {section === "estimate" ? (
                         <PriceAndBiddingSection
-                            listing={listing}
                             editor={editor}
                             setEditor={setEditor}
                             editable={editable}
@@ -635,7 +825,7 @@ export function ListingEditor({
                     {section === "viewings" ? (
                         <ViewingPlanner
                             listingId={listing.id}
-                            propertyType={listing.property.propertyType}
+                            propertyType={editor.propertyType}
                             listingStatus={listing.status}
                         />
                     ) : null}
@@ -661,6 +851,14 @@ export function ListingEditor({
                                 })
                             }
                         />
+                    ) : null}
+                    {section === "messages" && listing.id ? (
+                        <div className="mx-auto max-w-2xl">
+                            <OwnerListingMessages
+                                listingId={listing.id}
+                                onUnreadChange={() => setMessageUnread(0)}
+                            />
+                        </div>
                     ) : null}
                 </section>
             </div>
@@ -715,6 +913,32 @@ function DetailsSection({
                 disabled={!editable}
                 className="mt-8 grid gap-5 sm:grid-cols-2 disabled:opacity-70"
             >
+                <label className="block text-sm font-semibold">
+                    Ik wil
+                    <select
+                        value={editor.purpose}
+                        onChange={set("purpose")}
+                        className="input mt-2"
+                    >
+                        <option value="SALE">Verkopen</option>
+                        <option value="RENT">Verhuren</option>
+                    </select>
+                </label>
+                <label className="block text-sm font-semibold">
+                    Woningtype
+                    <select
+                        value={editor.propertyType}
+                        onChange={set("propertyType")}
+                        className="input mt-2"
+                    >
+                        <option value="HOUSE">Woonhuis</option>
+                        <option value="APARTMENT">Appartement</option>
+                        <option value="PARKING">Parkeerplaats</option>
+                        <option value="LAND">Grond</option>
+                        <option value="COMMERCIAL">Commercieel</option>
+                        <option value="OTHER">Overig</option>
+                    </select>
+                </label>
                 <Input
                     label="Woonoppervlak (m²)"
                     type="number"
@@ -829,6 +1053,74 @@ function DetailsSection({
                         onChange={set("parkingSpacePrice")}
                     />
                 ) : null}
+                <div className="sm:col-span-2 rounded-2xl border border-line p-5">
+                    <div className="flex items-start gap-3">
+                        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent text-brand-dark">
+                            <Landmark size={18} />
+                        </span>
+                        <div>
+                            <h3 className="font-semibold">Erfpacht</h3>
+                            <p className="mt-1 text-sm leading-6 text-muted">
+                                De grond onder de woning kan in erfpacht zijn.
+                                De jaarlijkse canon wordt naast de vraagprijs
+                                getoond. Is de canon eenmalig afgekocht, kies
+                                dan &quot;Erfpacht afgekocht&quot;.
+                            </p>
+                        </div>
+                    </div>
+                    <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                        <label className="block text-sm font-semibold">
+                            Erfpachtsituatie
+                            <select
+                                value={editor.erfpachtType}
+                                onChange={set("erfpachtType")}
+                                className="input mt-2"
+                            >
+                                {erfpachtOptions.map((option) => (
+                                    <option
+                                        key={option.value}
+                                        value={option.value}
+                                    >
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                        {editor.erfpachtType === "LEASEHOLD" ? (
+                            <Input
+                                label="Canon per jaar (€)"
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={editor.erfpachtCanon}
+                                onChange={set("erfpachtCanon")}
+                                placeholder="Bijv. 1200"
+                            />
+                        ) : (
+                            <div />
+                        )}
+                        {editor.erfpachtType === "LEASEHOLD" ||
+                        editor.erfpachtType === "LEASEHOLD_AFGEKOCHT" ? (
+                            <Input
+                                label="Erfpacht loopt tot (optioneel)"
+                                type="date"
+                                value={editor.erfpachtEndDate}
+                                onChange={set("erfpachtEndDate")}
+                            />
+                        ) : null}
+                        <label className="block text-sm font-semibold sm:col-span-2">
+                            Toelichting (optioneel)
+                            <textarea
+                                value={editor.erfpachtDetails}
+                                onChange={set("erfpachtDetails")}
+                                rows={2}
+                                maxLength={240}
+                                placeholder="Bijv. canon wordt jaarlijks geïndexeerd, erfpacht wordt verlengd in 2035"
+                                className="input mt-2 min-h-16 py-3"
+                            />
+                        </label>
+                    </div>
+                </div>
             </fieldset>
             <EnergyLabelPanel
                 listing={listing}
@@ -1004,7 +1296,14 @@ function EnergyLabelPanel({
                         {energyLabelNames[energy.labelClass] ??
                             energy.labelClass}
                     </span>
-                    <p className="font-semibold">Energielabel gevonden</p>
+                    <div>
+                        <p className="font-semibold">Energielabel gevonden</p>
+                        <p className="mt-1 text-sm text-emerald-800">
+                            {documents.length
+                                ? "Het officiële PDF-document is toegevoegd."
+                                : "Upload ook het officiële PDF-document — dit is verplicht om te publiceren."}
+                        </p>
+                    </div>
                 </div>
             ) : (
                 <div className="mt-5 flex items-start gap-3 bg-amber-50 p-5 text-amber-950">
@@ -1226,7 +1525,7 @@ function QuestionnaireSection({
                                                                             option.value,
                                                                         )
                                                                     }
-                                                                    className={`min-h-10 border px-4 text-sm font-semibold ${currentAnswer?.answer === option.value ? "border-brand bg-brand text-white" : "border-line bg-white text-brand-dark"}`}
+                                                                    className={`min-h-10 border px-4 text-sm font-semibold ${currentAnswer?.answer === option.value ? "border-brand bg-brand text-white" : "border-line bg-surface text-brand-dark"}`}
                                                                 >
                                                                     {
                                                                         option.label
@@ -1390,7 +1689,7 @@ function MovableItemsSection({
             <SectionHeading
                 icon={FileText}
                 title="Lijst van zaken"
-                text="Leg vast welke roerende zaken achterblijven, meegaan of ter overname worden aangeboden. Kopers kunnen de lijst als PDF downloaden."
+                text="Leg vast welke roerende zaken achterblijven, meegaan of ter overname worden aangeboden. Kopers kunnen de lijst van zaken en vragenlijst als PDF downloaden."
             />
             <div className="mt-7 inline-flex border border-line p-1">
                 <button
@@ -1428,7 +1727,7 @@ function MovableItemsSection({
                                         )
                                     }
                                     onClick={() => addItem(suggestion)}
-                                    className="inline-flex items-center gap-1.5 border border-line bg-white px-3 py-2 text-sm font-semibold disabled:opacity-40"
+                                    className="inline-flex items-center gap-1.5 border border-line bg-surface px-3 py-2 text-sm font-semibold disabled:opacity-40"
                                 >
                                     <Plus size={15} /> {suggestion}
                                 </button>
@@ -1818,7 +2117,7 @@ function MediaGrid({
                             type="button"
                             onClick={() => remove(item.id)}
                             aria-label={`${item.fileName} verwijderen`}
-                            className="absolute right-2 top-2 grid size-9 place-items-center rounded-full bg-white text-red-700 shadow"
+                            className="absolute right-2 top-2 grid size-9 place-items-center rounded-full bg-surface text-red-700 shadow"
                         >
                             <Trash2 size={16} />
                         </button>
@@ -1848,13 +2147,11 @@ const biddingMethods = [
 ] as const;
 
 function PriceAndBiddingSection({
-    listing,
     editor,
     setEditor,
     editable,
     estimate,
 }: {
-    listing: ListingView;
     editor: EditorState;
     setEditor: React.Dispatch<React.SetStateAction<EditorState>>;
     editable: boolean;
@@ -1894,7 +2191,7 @@ function PriceAndBiddingSection({
                     <div className="mt-4 grid gap-5 sm:grid-cols-2">
                         <Input
                             label={
-                                listing.purpose === "SALE"
+                                editor.purpose === "SALE"
                                     ? "Vraagprijs (€)"
                                     : "Huurprijs per maand (€)"
                             }
@@ -1902,17 +2199,17 @@ function PriceAndBiddingSection({
                             min="1"
                             step="1"
                             value={
-                                listing.purpose === "SALE"
+                                editor.purpose === "SALE"
                                     ? editor.askingPrice
                                     : editor.monthlyRent
                             }
                             onChange={set(
-                                listing.purpose === "SALE"
+                                editor.purpose === "SALE"
                                     ? "askingPrice"
                                     : "monthlyRent",
                             )}
                         />
-                        {listing.purpose === "RENT" ? (
+                        {editor.purpose === "RENT" ? (
                             <Input
                                 label="Servicekosten per maand (€)"
                                 type="number"
@@ -2270,12 +2567,21 @@ function PublishSection({
     );
 }
 
+type ResolutiveConditions = {
+    financing?: boolean;
+    financingAmountCents?: string | null;
+    buildingInspection?: boolean;
+    inspectionLimitCents?: string | null;
+    saleOfCurrentHome?: boolean;
+    additionalConditions?: string[];
+};
+
 type BidView = {
     id: string;
     bidderPseudonym: string;
     amountCents: string;
     submittedAt: string;
-    resolutiveConditions: unknown;
+    resolutiveConditions: ResolutiveConditions | null;
     events: Array<{ type: string }>;
 };
 function BidsSection({
@@ -2404,13 +2710,9 @@ function BidsSection({
                                         {bid.events.at(-1)?.type ?? "SUBMITTED"}
                                     </span>
                                 </div>
-                                <pre className="mt-4 overflow-auto rounded-xl bg-background p-3 text-xs text-muted">
-                                    {JSON.stringify(
-                                        bid.resolutiveConditions,
-                                        null,
-                                        2,
-                                    )}
-                                </pre>
+                                <ConditionsPanel
+                                    conditions={bid.resolutiveConditions}
+                                />
                                 {!decided && listing.status === "LIVE" ? (
                                     <div className="mt-4 flex gap-2">
                                         <button
@@ -2450,6 +2752,76 @@ function BidsSection({
                     <ShieldCheck size={17} /> Download biedlogboek (PDF)
                 </a>
             ) : null}
+        </div>
+    );
+}
+
+function ConditionsPanel({
+    conditions,
+}: {
+    conditions: ResolutiveConditions | null;
+}) {
+    const hasConditions = Boolean(
+        conditions &&
+        (conditions.financing ||
+            conditions.buildingInspection ||
+            conditions.saleOfCurrentHome ||
+            (conditions.additionalConditions?.length ?? 0) > 0),
+    );
+
+    if (!hasConditions) {
+        return (
+            <div className="mt-4 flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
+                <Check size={16} />
+                Onvoorwaardelijk bod
+            </div>
+        );
+    }
+
+    return (
+        <div className="mt-4 rounded-xl border border-line bg-background p-4">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted">
+                Ontbindende voorwaarden
+            </p>
+            <ul className="mt-3 space-y-2.5 text-sm">
+                {conditions?.financing ? (
+                    <li className="flex items-baseline justify-between gap-4">
+                        <span>Onder voorbehoud van financiering</span>
+                        {conditions.financingAmountCents ? (
+                            <span className="shrink-0 font-semibold">
+                                {money(conditions.financingAmountCents)}
+                            </span>
+                        ) : null}
+                    </li>
+                ) : null}
+                {conditions?.buildingInspection ? (
+                    <li className="flex items-baseline justify-between gap-4">
+                        <span>Onder voorbehoud van bouwkundige keuring</span>
+                        {conditions.inspectionLimitCents ? (
+                            <span className="shrink-0 font-semibold">
+                                Budget {money(conditions.inspectionLimitCents)}
+                            </span>
+                        ) : null}
+                    </li>
+                ) : null}
+                {conditions?.saleOfCurrentHome ? (
+                    <li>Onder voorbehoud van verkoop huidige woning</li>
+                ) : null}
+                {conditions?.additionalConditions?.length ? (
+                    <li>
+                        <span className="font-semibold">
+                            Aanvullende voorwaarden
+                        </span>
+                        <ul className="mt-1 list-disc space-y-1 pl-5">
+                            {conditions.additionalConditions.map(
+                                (text, conditionIndex) => (
+                                    <li key={conditionIndex}>{text}</li>
+                                ),
+                            )}
+                        </ul>
+                    </li>
+                ) : null}
+            </ul>
         </div>
     );
 }

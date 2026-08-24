@@ -64,7 +64,7 @@ export function TwoFactorSettings() {
     }
 
     return (
-        <div className="rounded-4xl border border-line bg-white p-6 shadow-sm sm:p-9">
+        <div className="rounded-4xl border border-line bg-surface p-6 shadow-sm sm:p-9">
             <div className="flex items-start gap-4">
                 <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-accent text-brand-dark">
                     <ShieldCheck size={23} />
@@ -122,7 +122,7 @@ export function TwoFactorSettings() {
 
             {totpUri ? (
                 <div className="mt-8 grid gap-8 lg:grid-cols-[240px_1fr]">
-                    <div className="rounded-3xl border border-line bg-white p-5">
+                    <div className="rounded-3xl border border-line bg-surface p-5">
                         <QRCode value={totpUri} className="h-auto w-full" />
                     </div>
                     <div>
@@ -166,7 +166,7 @@ export function TwoFactorSettings() {
                         {backupCodes.map((code) => (
                             <span
                                 key={code}
-                                className="rounded-lg bg-white px-3 py-2"
+                                className="rounded-lg bg-surface px-3 py-2"
                             >
                                 {code}
                             </span>

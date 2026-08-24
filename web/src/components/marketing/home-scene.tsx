@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+import { useTheme } from "@/components/providers/theme-provider";
 
 type Vector3 = [number, number, number];
 
@@ -96,8 +97,51 @@ function addPlant(
     return meshes;
 }
 
+const palettes = {
+    light: {
+        floor: 0xa98259,
+        wall: 0xf1f0eb,
+        wallSide: 0xe5e8e5,
+        white: 0xf8f8f4,
+        sofa: 0xdce8e8,
+        cushion: 0xf0f4f2,
+        wood: 0xb5793f,
+        darkWood: 0x694933,
+        rug: 0xd8d2c7,
+        metal: 0x263a37,
+        glass: 0xbfe2e9,
+        green: 0x4e7957,
+        terracotta: 0xbb7250,
+        accent: 0xd2a648,
+        screen: 0x253536,
+        glowFloor: 0x8a6239,
+        glowWall: 0x1a221d,
+    },
+    dark: {
+        floor: 0x4a3a29,
+        wall: 0x222b26,
+        wallSide: 0x1d2521,
+        white: 0x2b3731,
+        sofa: 0x2f3d37,
+        cushion: 0x39473f,
+        wood: 0x8a6038,
+        darkWood: 0x49372a,
+        rug: 0x3b4540,
+        metal: 0x18221f,
+        glass: 0x2c4d55,
+        green: 0x41704a,
+        terracotta: 0x9c6043,
+        accent: 0xd2a648,
+        screen: 0x0e1717,
+        glowFloor: 0x3a2e20,
+        glowWall: 0x131a17,
+    },
+} as const;
+
 export function HomeScene({ label }: { label: string }) {
     const containerRef = useRef<HTMLDivElement>(null);
+    const { resolvedTheme } = useTheme();
+    const isDark = resolvedTheme === "dark";
 
     useEffect(() => {
         const container = containerRef.current;
@@ -130,28 +174,29 @@ export function HomeScene({ label }: { label: string }) {
         room.position.y = -0.58;
         scene.add(room);
 
+        const palette = isDark ? palettes.dark : palettes.light;
         const material = (color: number, roughness = 0.72) =>
             new THREE.MeshStandardMaterial({ color, roughness });
-        const floorMaterial = material(0xa98259, 0.82);
-        const wallMaterial = material(0xf1f0eb, 0.92);
-        const wallSideMaterial = material(0xe5e8e5, 0.92);
-        const whiteMaterial = material(0xf8f8f4, 0.55);
-        const sofaMaterial = material(0xdce8e8, 0.82);
-        const cushionMaterial = material(0xf0f4f2, 0.86);
-        const woodMaterial = material(0xb5793f, 0.74);
-        const darkWoodMaterial = material(0x694933, 0.82);
-        const rugMaterial = material(0xd8d2c7, 0.95);
-        const metalMaterial = material(0x263a37, 0.42);
+        const floorMaterial = material(palette.floor, 0.82);
+        const wallMaterial = material(palette.wall, 0.92);
+        const wallSideMaterial = material(palette.wallSide, 0.92);
+        const whiteMaterial = material(palette.white, 0.55);
+        const sofaMaterial = material(palette.sofa, 0.82);
+        const cushionMaterial = material(palette.cushion, 0.86);
+        const woodMaterial = material(palette.wood, 0.74);
+        const darkWoodMaterial = material(palette.darkWood, 0.82);
+        const rugMaterial = material(palette.rug, 0.95);
+        const metalMaterial = material(palette.metal, 0.42);
         const glassMaterial = new THREE.MeshStandardMaterial({
-            color: 0xbfe2e9,
+            color: palette.glass,
             roughness: 0.18,
             transparent: true,
-            opacity: 0.58,
+            opacity: isDark ? 0.52 : 0.58,
         });
-        const greenMaterial = material(0x4e7957, 0.85);
-        const terracottaMaterial = material(0xbb7250, 0.9);
-        const accentMaterial = material(0xd2a648, 0.7);
-        const screenMaterial = material(0x253536, 0.28);
+        const greenMaterial = material(palette.green, 0.85);
+        const terracottaMaterial = material(palette.terracotta, 0.9);
+        const accentMaterial = material(palette.accent, 0.7);
+        const screenMaterial = material(palette.screen, 0.28);
 
         addBox(room, [7.2, 0.18, 5.5], [0, 0, 0], floorMaterial);
         addBox(room, [7.2, 3.8, 0.18], [0, 2, -2.85], wallMaterial);
@@ -361,14 +406,15 @@ export function HomeScene({ label }: { label: string }) {
             0.02,
         ).rotation.y = Math.PI / 2;
 
+        const lightBoost = isDark ? 1.25 : 1;
         const ambientLight = new THREE.HemisphereLight(
             0xffffff,
-            0x9ca79f,
-            2.25,
+            isDark ? 0x35453d : 0x9ca79f,
+            2.25 * lightBoost,
         );
         ambientLight.layers.enable(1);
         scene.add(ambientLight);
-        const sunlight = new THREE.DirectionalLight(0xfff4dc, 4.6);
+        const sunlight = new THREE.DirectionalLight(0xfff4dc, 4.6 * lightBoost);
         sunlight.position.set(-5, 10, 8);
         sunlight.castShadow = true;
         sunlight.shadow.mapSize.set(1024, 1024);
@@ -446,16 +492,16 @@ export function HomeScene({ label }: { label: string }) {
             renderer.dispose();
             renderer.domElement.remove();
         };
-    }, []);
+    }, [isDark]);
 
     return (
         <figure
-            className="relative h-40 w-full overflow-hidden rounded-2xl bg-[#e8e7e3] sm:h-44"
+            className="relative h-40 w-full overflow-hidden rounded-2xl bg-[#e8e7e3] dark:bg-[#18221d] sm:h-44"
             role="img"
             aria-label={label}
         >
             <div ref={containerRef} className="absolute inset-0" />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-linear-to-t from-white/25 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-linear-to-t from-white/25 to-transparent dark:from-black/35" />
         </figure>
     );
 }

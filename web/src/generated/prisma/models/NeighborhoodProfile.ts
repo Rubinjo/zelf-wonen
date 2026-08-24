@@ -57,6 +57,23 @@ export type NeighborhoodProfileAvgAggregateOutputType = {
   tramStopDistanceMeters: number | null
   metroStationDistanceMeters: number | null
   trainStationDistanceMeters: number | null
+  noiseRoadLden: runtime.Decimal | null
+  noiseRailLden: runtime.Decimal | null
+  noiseIndustryLden: runtime.Decimal | null
+  noiseAircraftLden: runtime.Decimal | null
+  noiseGridMeters: number | null
+  foundationRiskAreaShare: runtime.Decimal | null
+  foundationPre1970Percent: runtime.Decimal | null
+  malePercent: runtime.Decimal | null
+  femalePercent: runtime.Decimal | null
+  averageHouseholdSize: runtime.Decimal | null
+  singleHouseholdPercent: runtime.Decimal | null
+  coupleHouseholdPercent: runtime.Decimal | null
+  familyHouseholdPercent: runtime.Decimal | null
+  educationLowPercent: runtime.Decimal | null
+  educationMediumPercent: runtime.Decimal | null
+  educationHighPercent: runtime.Decimal | null
+  educationStatisticsYear: number | null
 }
 
 export type NeighborhoodProfileSumAggregateOutputType = {
@@ -90,6 +107,23 @@ export type NeighborhoodProfileSumAggregateOutputType = {
   tramStopDistanceMeters: number | null
   metroStationDistanceMeters: number | null
   trainStationDistanceMeters: number | null
+  noiseRoadLden: runtime.Decimal | null
+  noiseRailLden: runtime.Decimal | null
+  noiseIndustryLden: runtime.Decimal | null
+  noiseAircraftLden: runtime.Decimal | null
+  noiseGridMeters: number | null
+  foundationRiskAreaShare: runtime.Decimal | null
+  foundationPre1970Percent: runtime.Decimal | null
+  malePercent: runtime.Decimal | null
+  femalePercent: runtime.Decimal | null
+  averageHouseholdSize: runtime.Decimal | null
+  singleHouseholdPercent: runtime.Decimal | null
+  coupleHouseholdPercent: runtime.Decimal | null
+  familyHouseholdPercent: runtime.Decimal | null
+  educationLowPercent: runtime.Decimal | null
+  educationMediumPercent: runtime.Decimal | null
+  educationHighPercent: runtime.Decimal | null
+  educationStatisticsYear: number | null
 }
 
 export type NeighborhoodProfileMinAggregateOutputType = {
@@ -130,6 +164,32 @@ export type NeighborhoodProfileMinAggregateOutputType = {
   tramStopDistanceMeters: number | null
   metroStationDistanceMeters: number | null
   trainStationDistanceMeters: number | null
+  noiseRoadLden: runtime.Decimal | null
+  noiseRailLden: runtime.Decimal | null
+  noiseIndustryLden: runtime.Decimal | null
+  noiseAircraftLden: runtime.Decimal | null
+  noiseGridMeters: number | null
+  noiseSource: string | null
+  noiseRetrievedAt: Date | null
+  foundationRiskLevel: $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare: runtime.Decimal | null
+  foundationPre1970Percent: runtime.Decimal | null
+  foundationGroundClass: string | null
+  foundationRiskDetail: string | null
+  foundationRiskSource: string | null
+  foundationRiskRetrievedAt: Date | null
+  malePercent: runtime.Decimal | null
+  femalePercent: runtime.Decimal | null
+  averageHouseholdSize: runtime.Decimal | null
+  singleHouseholdPercent: runtime.Decimal | null
+  coupleHouseholdPercent: runtime.Decimal | null
+  familyHouseholdPercent: runtime.Decimal | null
+  educationLowPercent: runtime.Decimal | null
+  educationMediumPercent: runtime.Decimal | null
+  educationHighPercent: runtime.Decimal | null
+  educationStatisticsYear: number | null
+  demographicsSourceUrl: string | null
+  demographicsRetrievedAt: Date | null
   cbsDataset: string | null
   cbsSourceUrl: string | null
   cbsRetrievedAt: Date | null
@@ -179,6 +239,32 @@ export type NeighborhoodProfileMaxAggregateOutputType = {
   tramStopDistanceMeters: number | null
   metroStationDistanceMeters: number | null
   trainStationDistanceMeters: number | null
+  noiseRoadLden: runtime.Decimal | null
+  noiseRailLden: runtime.Decimal | null
+  noiseIndustryLden: runtime.Decimal | null
+  noiseAircraftLden: runtime.Decimal | null
+  noiseGridMeters: number | null
+  noiseSource: string | null
+  noiseRetrievedAt: Date | null
+  foundationRiskLevel: $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare: runtime.Decimal | null
+  foundationPre1970Percent: runtime.Decimal | null
+  foundationGroundClass: string | null
+  foundationRiskDetail: string | null
+  foundationRiskSource: string | null
+  foundationRiskRetrievedAt: Date | null
+  malePercent: runtime.Decimal | null
+  femalePercent: runtime.Decimal | null
+  averageHouseholdSize: runtime.Decimal | null
+  singleHouseholdPercent: runtime.Decimal | null
+  coupleHouseholdPercent: runtime.Decimal | null
+  familyHouseholdPercent: runtime.Decimal | null
+  educationLowPercent: runtime.Decimal | null
+  educationMediumPercent: runtime.Decimal | null
+  educationHighPercent: runtime.Decimal | null
+  educationStatisticsYear: number | null
+  demographicsSourceUrl: string | null
+  demographicsRetrievedAt: Date | null
   cbsDataset: string | null
   cbsSourceUrl: string | null
   cbsRetrievedAt: Date | null
@@ -228,6 +314,32 @@ export type NeighborhoodProfileCountAggregateOutputType = {
   tramStopDistanceMeters: number
   metroStationDistanceMeters: number
   trainStationDistanceMeters: number
+  noiseRoadLden: number
+  noiseRailLden: number
+  noiseIndustryLden: number
+  noiseAircraftLden: number
+  noiseGridMeters: number
+  noiseSource: number
+  noiseRetrievedAt: number
+  foundationRiskLevel: number
+  foundationRiskAreaShare: number
+  foundationPre1970Percent: number
+  foundationGroundClass: number
+  foundationRiskDetail: number
+  foundationRiskSource: number
+  foundationRiskRetrievedAt: number
+  malePercent: number
+  femalePercent: number
+  averageHouseholdSize: number
+  singleHouseholdPercent: number
+  coupleHouseholdPercent: number
+  familyHouseholdPercent: number
+  educationLowPercent: number
+  educationMediumPercent: number
+  educationHighPercent: number
+  educationStatisticsYear: number
+  demographicsSourceUrl: number
+  demographicsRetrievedAt: number
   cbsDataset: number
   cbsSourceUrl: number
   cbsRetrievedAt: number
@@ -272,6 +384,23 @@ export type NeighborhoodProfileAvgAggregateInputType = {
   tramStopDistanceMeters?: true
   metroStationDistanceMeters?: true
   trainStationDistanceMeters?: true
+  noiseRoadLden?: true
+  noiseRailLden?: true
+  noiseIndustryLden?: true
+  noiseAircraftLden?: true
+  noiseGridMeters?: true
+  foundationRiskAreaShare?: true
+  foundationPre1970Percent?: true
+  malePercent?: true
+  femalePercent?: true
+  averageHouseholdSize?: true
+  singleHouseholdPercent?: true
+  coupleHouseholdPercent?: true
+  familyHouseholdPercent?: true
+  educationLowPercent?: true
+  educationMediumPercent?: true
+  educationHighPercent?: true
+  educationStatisticsYear?: true
 }
 
 export type NeighborhoodProfileSumAggregateInputType = {
@@ -305,6 +434,23 @@ export type NeighborhoodProfileSumAggregateInputType = {
   tramStopDistanceMeters?: true
   metroStationDistanceMeters?: true
   trainStationDistanceMeters?: true
+  noiseRoadLden?: true
+  noiseRailLden?: true
+  noiseIndustryLden?: true
+  noiseAircraftLden?: true
+  noiseGridMeters?: true
+  foundationRiskAreaShare?: true
+  foundationPre1970Percent?: true
+  malePercent?: true
+  femalePercent?: true
+  averageHouseholdSize?: true
+  singleHouseholdPercent?: true
+  coupleHouseholdPercent?: true
+  familyHouseholdPercent?: true
+  educationLowPercent?: true
+  educationMediumPercent?: true
+  educationHighPercent?: true
+  educationStatisticsYear?: true
 }
 
 export type NeighborhoodProfileMinAggregateInputType = {
@@ -345,6 +491,32 @@ export type NeighborhoodProfileMinAggregateInputType = {
   tramStopDistanceMeters?: true
   metroStationDistanceMeters?: true
   trainStationDistanceMeters?: true
+  noiseRoadLden?: true
+  noiseRailLden?: true
+  noiseIndustryLden?: true
+  noiseAircraftLden?: true
+  noiseGridMeters?: true
+  noiseSource?: true
+  noiseRetrievedAt?: true
+  foundationRiskLevel?: true
+  foundationRiskAreaShare?: true
+  foundationPre1970Percent?: true
+  foundationGroundClass?: true
+  foundationRiskDetail?: true
+  foundationRiskSource?: true
+  foundationRiskRetrievedAt?: true
+  malePercent?: true
+  femalePercent?: true
+  averageHouseholdSize?: true
+  singleHouseholdPercent?: true
+  coupleHouseholdPercent?: true
+  familyHouseholdPercent?: true
+  educationLowPercent?: true
+  educationMediumPercent?: true
+  educationHighPercent?: true
+  educationStatisticsYear?: true
+  demographicsSourceUrl?: true
+  demographicsRetrievedAt?: true
   cbsDataset?: true
   cbsSourceUrl?: true
   cbsRetrievedAt?: true
@@ -394,6 +566,32 @@ export type NeighborhoodProfileMaxAggregateInputType = {
   tramStopDistanceMeters?: true
   metroStationDistanceMeters?: true
   trainStationDistanceMeters?: true
+  noiseRoadLden?: true
+  noiseRailLden?: true
+  noiseIndustryLden?: true
+  noiseAircraftLden?: true
+  noiseGridMeters?: true
+  noiseSource?: true
+  noiseRetrievedAt?: true
+  foundationRiskLevel?: true
+  foundationRiskAreaShare?: true
+  foundationPre1970Percent?: true
+  foundationGroundClass?: true
+  foundationRiskDetail?: true
+  foundationRiskSource?: true
+  foundationRiskRetrievedAt?: true
+  malePercent?: true
+  femalePercent?: true
+  averageHouseholdSize?: true
+  singleHouseholdPercent?: true
+  coupleHouseholdPercent?: true
+  familyHouseholdPercent?: true
+  educationLowPercent?: true
+  educationMediumPercent?: true
+  educationHighPercent?: true
+  educationStatisticsYear?: true
+  demographicsSourceUrl?: true
+  demographicsRetrievedAt?: true
   cbsDataset?: true
   cbsSourceUrl?: true
   cbsRetrievedAt?: true
@@ -443,6 +641,32 @@ export type NeighborhoodProfileCountAggregateInputType = {
   tramStopDistanceMeters?: true
   metroStationDistanceMeters?: true
   trainStationDistanceMeters?: true
+  noiseRoadLden?: true
+  noiseRailLden?: true
+  noiseIndustryLden?: true
+  noiseAircraftLden?: true
+  noiseGridMeters?: true
+  noiseSource?: true
+  noiseRetrievedAt?: true
+  foundationRiskLevel?: true
+  foundationRiskAreaShare?: true
+  foundationPre1970Percent?: true
+  foundationGroundClass?: true
+  foundationRiskDetail?: true
+  foundationRiskSource?: true
+  foundationRiskRetrievedAt?: true
+  malePercent?: true
+  femalePercent?: true
+  averageHouseholdSize?: true
+  singleHouseholdPercent?: true
+  coupleHouseholdPercent?: true
+  familyHouseholdPercent?: true
+  educationLowPercent?: true
+  educationMediumPercent?: true
+  educationHighPercent?: true
+  educationStatisticsYear?: true
+  demographicsSourceUrl?: true
+  demographicsRetrievedAt?: true
   cbsDataset?: true
   cbsSourceUrl?: true
   cbsRetrievedAt?: true
@@ -579,6 +803,32 @@ export type NeighborhoodProfileGroupByOutputType = {
   tramStopDistanceMeters: number | null
   metroStationDistanceMeters: number | null
   trainStationDistanceMeters: number | null
+  noiseRoadLden: runtime.Decimal | null
+  noiseRailLden: runtime.Decimal | null
+  noiseIndustryLden: runtime.Decimal | null
+  noiseAircraftLden: runtime.Decimal | null
+  noiseGridMeters: number | null
+  noiseSource: string | null
+  noiseRetrievedAt: Date | null
+  foundationRiskLevel: $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare: runtime.Decimal | null
+  foundationPre1970Percent: runtime.Decimal | null
+  foundationGroundClass: string | null
+  foundationRiskDetail: string | null
+  foundationRiskSource: string | null
+  foundationRiskRetrievedAt: Date | null
+  malePercent: runtime.Decimal | null
+  femalePercent: runtime.Decimal | null
+  averageHouseholdSize: runtime.Decimal | null
+  singleHouseholdPercent: runtime.Decimal | null
+  coupleHouseholdPercent: runtime.Decimal | null
+  familyHouseholdPercent: runtime.Decimal | null
+  educationLowPercent: runtime.Decimal | null
+  educationMediumPercent: runtime.Decimal | null
+  educationHighPercent: runtime.Decimal | null
+  educationStatisticsYear: number | null
+  demographicsSourceUrl: string | null
+  demographicsRetrievedAt: Date | null
   cbsDataset: string
   cbsSourceUrl: string
   cbsRetrievedAt: Date
@@ -651,6 +901,32 @@ export type NeighborhoodProfileWhereInput = {
   tramStopDistanceMeters?: Prisma.IntNullableFilter<"NeighborhoodProfile"> | number | null
   metroStationDistanceMeters?: Prisma.IntNullableFilter<"NeighborhoodProfile"> | number | null
   trainStationDistanceMeters?: Prisma.IntNullableFilter<"NeighborhoodProfile"> | number | null
+  noiseRoadLden?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: Prisma.IntNullableFilter<"NeighborhoodProfile"> | number | null
+  noiseSource?: Prisma.StringNullableFilter<"NeighborhoodProfile"> | string | null
+  noiseRetrievedAt?: Prisma.DateTimeNullableFilter<"NeighborhoodProfile"> | Date | string | null
+  foundationRiskLevel?: Prisma.EnumFoundationRiskLevelNullableFilter<"NeighborhoodProfile"> | $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: Prisma.StringNullableFilter<"NeighborhoodProfile"> | string | null
+  foundationRiskDetail?: Prisma.StringNullableFilter<"NeighborhoodProfile"> | string | null
+  foundationRiskSource?: Prisma.StringNullableFilter<"NeighborhoodProfile"> | string | null
+  foundationRiskRetrievedAt?: Prisma.DateTimeNullableFilter<"NeighborhoodProfile"> | Date | string | null
+  malePercent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: Prisma.IntNullableFilter<"NeighborhoodProfile"> | number | null
+  demographicsSourceUrl?: Prisma.StringNullableFilter<"NeighborhoodProfile"> | string | null
+  demographicsRetrievedAt?: Prisma.DateTimeNullableFilter<"NeighborhoodProfile"> | Date | string | null
   cbsDataset?: Prisma.StringFilter<"NeighborhoodProfile"> | string
   cbsSourceUrl?: Prisma.StringFilter<"NeighborhoodProfile"> | string
   cbsRetrievedAt?: Prisma.DateTimeFilter<"NeighborhoodProfile"> | Date | string
@@ -701,6 +977,32 @@ export type NeighborhoodProfileOrderByWithRelationInput = {
   tramStopDistanceMeters?: Prisma.SortOrderInput | Prisma.SortOrder
   metroStationDistanceMeters?: Prisma.SortOrderInput | Prisma.SortOrder
   trainStationDistanceMeters?: Prisma.SortOrderInput | Prisma.SortOrder
+  noiseRoadLden?: Prisma.SortOrderInput | Prisma.SortOrder
+  noiseRailLden?: Prisma.SortOrderInput | Prisma.SortOrder
+  noiseIndustryLden?: Prisma.SortOrderInput | Prisma.SortOrder
+  noiseAircraftLden?: Prisma.SortOrderInput | Prisma.SortOrder
+  noiseGridMeters?: Prisma.SortOrderInput | Prisma.SortOrder
+  noiseSource?: Prisma.SortOrderInput | Prisma.SortOrder
+  noiseRetrievedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  foundationRiskLevel?: Prisma.SortOrderInput | Prisma.SortOrder
+  foundationRiskAreaShare?: Prisma.SortOrderInput | Prisma.SortOrder
+  foundationPre1970Percent?: Prisma.SortOrderInput | Prisma.SortOrder
+  foundationGroundClass?: Prisma.SortOrderInput | Prisma.SortOrder
+  foundationRiskDetail?: Prisma.SortOrderInput | Prisma.SortOrder
+  foundationRiskSource?: Prisma.SortOrderInput | Prisma.SortOrder
+  foundationRiskRetrievedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  malePercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  femalePercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  averageHouseholdSize?: Prisma.SortOrderInput | Prisma.SortOrder
+  singleHouseholdPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  coupleHouseholdPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  familyHouseholdPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  educationLowPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  educationMediumPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  educationHighPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  educationStatisticsYear?: Prisma.SortOrderInput | Prisma.SortOrder
+  demographicsSourceUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  demographicsRetrievedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   cbsDataset?: Prisma.SortOrder
   cbsSourceUrl?: Prisma.SortOrder
   cbsRetrievedAt?: Prisma.SortOrder
@@ -754,6 +1056,32 @@ export type NeighborhoodProfileWhereUniqueInput = Prisma.AtLeast<{
   tramStopDistanceMeters?: Prisma.IntNullableFilter<"NeighborhoodProfile"> | number | null
   metroStationDistanceMeters?: Prisma.IntNullableFilter<"NeighborhoodProfile"> | number | null
   trainStationDistanceMeters?: Prisma.IntNullableFilter<"NeighborhoodProfile"> | number | null
+  noiseRoadLden?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: Prisma.IntNullableFilter<"NeighborhoodProfile"> | number | null
+  noiseSource?: Prisma.StringNullableFilter<"NeighborhoodProfile"> | string | null
+  noiseRetrievedAt?: Prisma.DateTimeNullableFilter<"NeighborhoodProfile"> | Date | string | null
+  foundationRiskLevel?: Prisma.EnumFoundationRiskLevelNullableFilter<"NeighborhoodProfile"> | $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: Prisma.StringNullableFilter<"NeighborhoodProfile"> | string | null
+  foundationRiskDetail?: Prisma.StringNullableFilter<"NeighborhoodProfile"> | string | null
+  foundationRiskSource?: Prisma.StringNullableFilter<"NeighborhoodProfile"> | string | null
+  foundationRiskRetrievedAt?: Prisma.DateTimeNullableFilter<"NeighborhoodProfile"> | Date | string | null
+  malePercent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: Prisma.DecimalNullableFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: Prisma.IntNullableFilter<"NeighborhoodProfile"> | number | null
+  demographicsSourceUrl?: Prisma.StringNullableFilter<"NeighborhoodProfile"> | string | null
+  demographicsRetrievedAt?: Prisma.DateTimeNullableFilter<"NeighborhoodProfile"> | Date | string | null
   cbsDataset?: Prisma.StringFilter<"NeighborhoodProfile"> | string
   cbsSourceUrl?: Prisma.StringFilter<"NeighborhoodProfile"> | string
   cbsRetrievedAt?: Prisma.DateTimeFilter<"NeighborhoodProfile"> | Date | string
@@ -804,6 +1132,32 @@ export type NeighborhoodProfileOrderByWithAggregationInput = {
   tramStopDistanceMeters?: Prisma.SortOrderInput | Prisma.SortOrder
   metroStationDistanceMeters?: Prisma.SortOrderInput | Prisma.SortOrder
   trainStationDistanceMeters?: Prisma.SortOrderInput | Prisma.SortOrder
+  noiseRoadLden?: Prisma.SortOrderInput | Prisma.SortOrder
+  noiseRailLden?: Prisma.SortOrderInput | Prisma.SortOrder
+  noiseIndustryLden?: Prisma.SortOrderInput | Prisma.SortOrder
+  noiseAircraftLden?: Prisma.SortOrderInput | Prisma.SortOrder
+  noiseGridMeters?: Prisma.SortOrderInput | Prisma.SortOrder
+  noiseSource?: Prisma.SortOrderInput | Prisma.SortOrder
+  noiseRetrievedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  foundationRiskLevel?: Prisma.SortOrderInput | Prisma.SortOrder
+  foundationRiskAreaShare?: Prisma.SortOrderInput | Prisma.SortOrder
+  foundationPre1970Percent?: Prisma.SortOrderInput | Prisma.SortOrder
+  foundationGroundClass?: Prisma.SortOrderInput | Prisma.SortOrder
+  foundationRiskDetail?: Prisma.SortOrderInput | Prisma.SortOrder
+  foundationRiskSource?: Prisma.SortOrderInput | Prisma.SortOrder
+  foundationRiskRetrievedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  malePercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  femalePercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  averageHouseholdSize?: Prisma.SortOrderInput | Prisma.SortOrder
+  singleHouseholdPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  coupleHouseholdPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  familyHouseholdPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  educationLowPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  educationMediumPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  educationHighPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  educationStatisticsYear?: Prisma.SortOrderInput | Prisma.SortOrder
+  demographicsSourceUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  demographicsRetrievedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   cbsDataset?: Prisma.SortOrder
   cbsSourceUrl?: Prisma.SortOrder
   cbsRetrievedAt?: Prisma.SortOrder
@@ -861,6 +1215,32 @@ export type NeighborhoodProfileScalarWhereWithAggregatesInput = {
   tramStopDistanceMeters?: Prisma.IntNullableWithAggregatesFilter<"NeighborhoodProfile"> | number | null
   metroStationDistanceMeters?: Prisma.IntNullableWithAggregatesFilter<"NeighborhoodProfile"> | number | null
   trainStationDistanceMeters?: Prisma.IntNullableWithAggregatesFilter<"NeighborhoodProfile"> | number | null
+  noiseRoadLden?: Prisma.DecimalNullableWithAggregatesFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: Prisma.DecimalNullableWithAggregatesFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: Prisma.DecimalNullableWithAggregatesFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: Prisma.DecimalNullableWithAggregatesFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: Prisma.IntNullableWithAggregatesFilter<"NeighborhoodProfile"> | number | null
+  noiseSource?: Prisma.StringNullableWithAggregatesFilter<"NeighborhoodProfile"> | string | null
+  noiseRetrievedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"NeighborhoodProfile"> | Date | string | null
+  foundationRiskLevel?: Prisma.EnumFoundationRiskLevelNullableWithAggregatesFilter<"NeighborhoodProfile"> | $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: Prisma.DecimalNullableWithAggregatesFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: Prisma.DecimalNullableWithAggregatesFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: Prisma.StringNullableWithAggregatesFilter<"NeighborhoodProfile"> | string | null
+  foundationRiskDetail?: Prisma.StringNullableWithAggregatesFilter<"NeighborhoodProfile"> | string | null
+  foundationRiskSource?: Prisma.StringNullableWithAggregatesFilter<"NeighborhoodProfile"> | string | null
+  foundationRiskRetrievedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"NeighborhoodProfile"> | Date | string | null
+  malePercent?: Prisma.DecimalNullableWithAggregatesFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: Prisma.DecimalNullableWithAggregatesFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: Prisma.DecimalNullableWithAggregatesFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: Prisma.DecimalNullableWithAggregatesFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: Prisma.DecimalNullableWithAggregatesFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: Prisma.DecimalNullableWithAggregatesFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: Prisma.DecimalNullableWithAggregatesFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: Prisma.DecimalNullableWithAggregatesFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: Prisma.DecimalNullableWithAggregatesFilter<"NeighborhoodProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: Prisma.IntNullableWithAggregatesFilter<"NeighborhoodProfile"> | number | null
+  demographicsSourceUrl?: Prisma.StringNullableWithAggregatesFilter<"NeighborhoodProfile"> | string | null
+  demographicsRetrievedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"NeighborhoodProfile"> | Date | string | null
   cbsDataset?: Prisma.StringWithAggregatesFilter<"NeighborhoodProfile"> | string
   cbsSourceUrl?: Prisma.StringWithAggregatesFilter<"NeighborhoodProfile"> | string
   cbsRetrievedAt?: Prisma.DateTimeWithAggregatesFilter<"NeighborhoodProfile"> | Date | string
@@ -909,6 +1289,32 @@ export type NeighborhoodProfileCreateInput = {
   tramStopDistanceMeters?: number | null
   metroStationDistanceMeters?: number | null
   trainStationDistanceMeters?: number | null
+  noiseRoadLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: number | null
+  noiseSource?: string | null
+  noiseRetrievedAt?: Date | string | null
+  foundationRiskLevel?: $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: string | null
+  foundationRiskDetail?: string | null
+  foundationRiskSource?: string | null
+  foundationRiskRetrievedAt?: Date | string | null
+  malePercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: number | null
+  demographicsSourceUrl?: string | null
+  demographicsRetrievedAt?: Date | string | null
   cbsDataset: string
   cbsSourceUrl: string
   cbsRetrievedAt: Date | string
@@ -959,6 +1365,32 @@ export type NeighborhoodProfileUncheckedCreateInput = {
   tramStopDistanceMeters?: number | null
   metroStationDistanceMeters?: number | null
   trainStationDistanceMeters?: number | null
+  noiseRoadLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: number | null
+  noiseSource?: string | null
+  noiseRetrievedAt?: Date | string | null
+  foundationRiskLevel?: $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: string | null
+  foundationRiskDetail?: string | null
+  foundationRiskSource?: string | null
+  foundationRiskRetrievedAt?: Date | string | null
+  malePercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: number | null
+  demographicsSourceUrl?: string | null
+  demographicsRetrievedAt?: Date | string | null
   cbsDataset: string
   cbsSourceUrl: string
   cbsRetrievedAt: Date | string
@@ -1007,6 +1439,32 @@ export type NeighborhoodProfileUpdateInput = {
   tramStopDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   metroStationDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   trainStationDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  noiseRoadLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  noiseSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  noiseRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  foundationRiskLevel?: Prisma.NullableEnumFoundationRiskLevelFieldUpdateOperationsInput | $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  malePercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  demographicsSourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  demographicsRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cbsDataset?: Prisma.StringFieldUpdateOperationsInput | string
   cbsSourceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   cbsRetrievedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1057,6 +1515,32 @@ export type NeighborhoodProfileUncheckedUpdateInput = {
   tramStopDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   metroStationDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   trainStationDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  noiseRoadLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  noiseSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  noiseRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  foundationRiskLevel?: Prisma.NullableEnumFoundationRiskLevelFieldUpdateOperationsInput | $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  malePercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  demographicsSourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  demographicsRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cbsDataset?: Prisma.StringFieldUpdateOperationsInput | string
   cbsSourceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   cbsRetrievedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1106,6 +1590,32 @@ export type NeighborhoodProfileCreateManyInput = {
   tramStopDistanceMeters?: number | null
   metroStationDistanceMeters?: number | null
   trainStationDistanceMeters?: number | null
+  noiseRoadLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: number | null
+  noiseSource?: string | null
+  noiseRetrievedAt?: Date | string | null
+  foundationRiskLevel?: $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: string | null
+  foundationRiskDetail?: string | null
+  foundationRiskSource?: string | null
+  foundationRiskRetrievedAt?: Date | string | null
+  malePercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: number | null
+  demographicsSourceUrl?: string | null
+  demographicsRetrievedAt?: Date | string | null
   cbsDataset: string
   cbsSourceUrl: string
   cbsRetrievedAt: Date | string
@@ -1154,6 +1664,32 @@ export type NeighborhoodProfileUpdateManyMutationInput = {
   tramStopDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   metroStationDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   trainStationDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  noiseRoadLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  noiseSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  noiseRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  foundationRiskLevel?: Prisma.NullableEnumFoundationRiskLevelFieldUpdateOperationsInput | $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  malePercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  demographicsSourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  demographicsRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cbsDataset?: Prisma.StringFieldUpdateOperationsInput | string
   cbsSourceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   cbsRetrievedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1203,6 +1739,32 @@ export type NeighborhoodProfileUncheckedUpdateManyInput = {
   tramStopDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   metroStationDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   trainStationDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  noiseRoadLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  noiseSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  noiseRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  foundationRiskLevel?: Prisma.NullableEnumFoundationRiskLevelFieldUpdateOperationsInput | $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  malePercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  demographicsSourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  demographicsRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cbsDataset?: Prisma.StringFieldUpdateOperationsInput | string
   cbsSourceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   cbsRetrievedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1257,6 +1819,32 @@ export type NeighborhoodProfileCountOrderByAggregateInput = {
   tramStopDistanceMeters?: Prisma.SortOrder
   metroStationDistanceMeters?: Prisma.SortOrder
   trainStationDistanceMeters?: Prisma.SortOrder
+  noiseRoadLden?: Prisma.SortOrder
+  noiseRailLden?: Prisma.SortOrder
+  noiseIndustryLden?: Prisma.SortOrder
+  noiseAircraftLden?: Prisma.SortOrder
+  noiseGridMeters?: Prisma.SortOrder
+  noiseSource?: Prisma.SortOrder
+  noiseRetrievedAt?: Prisma.SortOrder
+  foundationRiskLevel?: Prisma.SortOrder
+  foundationRiskAreaShare?: Prisma.SortOrder
+  foundationPre1970Percent?: Prisma.SortOrder
+  foundationGroundClass?: Prisma.SortOrder
+  foundationRiskDetail?: Prisma.SortOrder
+  foundationRiskSource?: Prisma.SortOrder
+  foundationRiskRetrievedAt?: Prisma.SortOrder
+  malePercent?: Prisma.SortOrder
+  femalePercent?: Prisma.SortOrder
+  averageHouseholdSize?: Prisma.SortOrder
+  singleHouseholdPercent?: Prisma.SortOrder
+  coupleHouseholdPercent?: Prisma.SortOrder
+  familyHouseholdPercent?: Prisma.SortOrder
+  educationLowPercent?: Prisma.SortOrder
+  educationMediumPercent?: Prisma.SortOrder
+  educationHighPercent?: Prisma.SortOrder
+  educationStatisticsYear?: Prisma.SortOrder
+  demographicsSourceUrl?: Prisma.SortOrder
+  demographicsRetrievedAt?: Prisma.SortOrder
   cbsDataset?: Prisma.SortOrder
   cbsSourceUrl?: Prisma.SortOrder
   cbsRetrievedAt?: Prisma.SortOrder
@@ -1299,6 +1887,23 @@ export type NeighborhoodProfileAvgOrderByAggregateInput = {
   tramStopDistanceMeters?: Prisma.SortOrder
   metroStationDistanceMeters?: Prisma.SortOrder
   trainStationDistanceMeters?: Prisma.SortOrder
+  noiseRoadLden?: Prisma.SortOrder
+  noiseRailLden?: Prisma.SortOrder
+  noiseIndustryLden?: Prisma.SortOrder
+  noiseAircraftLden?: Prisma.SortOrder
+  noiseGridMeters?: Prisma.SortOrder
+  foundationRiskAreaShare?: Prisma.SortOrder
+  foundationPre1970Percent?: Prisma.SortOrder
+  malePercent?: Prisma.SortOrder
+  femalePercent?: Prisma.SortOrder
+  averageHouseholdSize?: Prisma.SortOrder
+  singleHouseholdPercent?: Prisma.SortOrder
+  coupleHouseholdPercent?: Prisma.SortOrder
+  familyHouseholdPercent?: Prisma.SortOrder
+  educationLowPercent?: Prisma.SortOrder
+  educationMediumPercent?: Prisma.SortOrder
+  educationHighPercent?: Prisma.SortOrder
+  educationStatisticsYear?: Prisma.SortOrder
 }
 
 export type NeighborhoodProfileMaxOrderByAggregateInput = {
@@ -1339,6 +1944,32 @@ export type NeighborhoodProfileMaxOrderByAggregateInput = {
   tramStopDistanceMeters?: Prisma.SortOrder
   metroStationDistanceMeters?: Prisma.SortOrder
   trainStationDistanceMeters?: Prisma.SortOrder
+  noiseRoadLden?: Prisma.SortOrder
+  noiseRailLden?: Prisma.SortOrder
+  noiseIndustryLden?: Prisma.SortOrder
+  noiseAircraftLden?: Prisma.SortOrder
+  noiseGridMeters?: Prisma.SortOrder
+  noiseSource?: Prisma.SortOrder
+  noiseRetrievedAt?: Prisma.SortOrder
+  foundationRiskLevel?: Prisma.SortOrder
+  foundationRiskAreaShare?: Prisma.SortOrder
+  foundationPre1970Percent?: Prisma.SortOrder
+  foundationGroundClass?: Prisma.SortOrder
+  foundationRiskDetail?: Prisma.SortOrder
+  foundationRiskSource?: Prisma.SortOrder
+  foundationRiskRetrievedAt?: Prisma.SortOrder
+  malePercent?: Prisma.SortOrder
+  femalePercent?: Prisma.SortOrder
+  averageHouseholdSize?: Prisma.SortOrder
+  singleHouseholdPercent?: Prisma.SortOrder
+  coupleHouseholdPercent?: Prisma.SortOrder
+  familyHouseholdPercent?: Prisma.SortOrder
+  educationLowPercent?: Prisma.SortOrder
+  educationMediumPercent?: Prisma.SortOrder
+  educationHighPercent?: Prisma.SortOrder
+  educationStatisticsYear?: Prisma.SortOrder
+  demographicsSourceUrl?: Prisma.SortOrder
+  demographicsRetrievedAt?: Prisma.SortOrder
   cbsDataset?: Prisma.SortOrder
   cbsSourceUrl?: Prisma.SortOrder
   cbsRetrievedAt?: Prisma.SortOrder
@@ -1388,6 +2019,32 @@ export type NeighborhoodProfileMinOrderByAggregateInput = {
   tramStopDistanceMeters?: Prisma.SortOrder
   metroStationDistanceMeters?: Prisma.SortOrder
   trainStationDistanceMeters?: Prisma.SortOrder
+  noiseRoadLden?: Prisma.SortOrder
+  noiseRailLden?: Prisma.SortOrder
+  noiseIndustryLden?: Prisma.SortOrder
+  noiseAircraftLden?: Prisma.SortOrder
+  noiseGridMeters?: Prisma.SortOrder
+  noiseSource?: Prisma.SortOrder
+  noiseRetrievedAt?: Prisma.SortOrder
+  foundationRiskLevel?: Prisma.SortOrder
+  foundationRiskAreaShare?: Prisma.SortOrder
+  foundationPre1970Percent?: Prisma.SortOrder
+  foundationGroundClass?: Prisma.SortOrder
+  foundationRiskDetail?: Prisma.SortOrder
+  foundationRiskSource?: Prisma.SortOrder
+  foundationRiskRetrievedAt?: Prisma.SortOrder
+  malePercent?: Prisma.SortOrder
+  femalePercent?: Prisma.SortOrder
+  averageHouseholdSize?: Prisma.SortOrder
+  singleHouseholdPercent?: Prisma.SortOrder
+  coupleHouseholdPercent?: Prisma.SortOrder
+  familyHouseholdPercent?: Prisma.SortOrder
+  educationLowPercent?: Prisma.SortOrder
+  educationMediumPercent?: Prisma.SortOrder
+  educationHighPercent?: Prisma.SortOrder
+  educationStatisticsYear?: Prisma.SortOrder
+  demographicsSourceUrl?: Prisma.SortOrder
+  demographicsRetrievedAt?: Prisma.SortOrder
   cbsDataset?: Prisma.SortOrder
   cbsSourceUrl?: Prisma.SortOrder
   cbsRetrievedAt?: Prisma.SortOrder
@@ -1430,6 +2087,23 @@ export type NeighborhoodProfileSumOrderByAggregateInput = {
   tramStopDistanceMeters?: Prisma.SortOrder
   metroStationDistanceMeters?: Prisma.SortOrder
   trainStationDistanceMeters?: Prisma.SortOrder
+  noiseRoadLden?: Prisma.SortOrder
+  noiseRailLden?: Prisma.SortOrder
+  noiseIndustryLden?: Prisma.SortOrder
+  noiseAircraftLden?: Prisma.SortOrder
+  noiseGridMeters?: Prisma.SortOrder
+  foundationRiskAreaShare?: Prisma.SortOrder
+  foundationPre1970Percent?: Prisma.SortOrder
+  malePercent?: Prisma.SortOrder
+  femalePercent?: Prisma.SortOrder
+  averageHouseholdSize?: Prisma.SortOrder
+  singleHouseholdPercent?: Prisma.SortOrder
+  coupleHouseholdPercent?: Prisma.SortOrder
+  familyHouseholdPercent?: Prisma.SortOrder
+  educationLowPercent?: Prisma.SortOrder
+  educationMediumPercent?: Prisma.SortOrder
+  educationHighPercent?: Prisma.SortOrder
+  educationStatisticsYear?: Prisma.SortOrder
 }
 
 export type NeighborhoodProfileCreateNestedOneWithoutPropertyInput = {
@@ -1462,6 +2136,10 @@ export type NeighborhoodProfileUncheckedUpdateOneWithoutPropertyNestedInput = {
   delete?: Prisma.NeighborhoodProfileWhereInput | boolean
   connect?: Prisma.NeighborhoodProfileWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.NeighborhoodProfileUpdateToOneWithWhereWithoutPropertyInput, Prisma.NeighborhoodProfileUpdateWithoutPropertyInput>, Prisma.NeighborhoodProfileUncheckedUpdateWithoutPropertyInput>
+}
+
+export type NullableEnumFoundationRiskLevelFieldUpdateOperationsInput = {
+  set?: $Enums.FoundationRiskLevel | null
 }
 
 export type NeighborhoodProfileCreateWithoutPropertyInput = {
@@ -1501,6 +2179,32 @@ export type NeighborhoodProfileCreateWithoutPropertyInput = {
   tramStopDistanceMeters?: number | null
   metroStationDistanceMeters?: number | null
   trainStationDistanceMeters?: number | null
+  noiseRoadLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: number | null
+  noiseSource?: string | null
+  noiseRetrievedAt?: Date | string | null
+  foundationRiskLevel?: $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: string | null
+  foundationRiskDetail?: string | null
+  foundationRiskSource?: string | null
+  foundationRiskRetrievedAt?: Date | string | null
+  malePercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: number | null
+  demographicsSourceUrl?: string | null
+  demographicsRetrievedAt?: Date | string | null
   cbsDataset: string
   cbsSourceUrl: string
   cbsRetrievedAt: Date | string
@@ -1549,6 +2253,32 @@ export type NeighborhoodProfileUncheckedCreateWithoutPropertyInput = {
   tramStopDistanceMeters?: number | null
   metroStationDistanceMeters?: number | null
   trainStationDistanceMeters?: number | null
+  noiseRoadLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: number | null
+  noiseSource?: string | null
+  noiseRetrievedAt?: Date | string | null
+  foundationRiskLevel?: $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: string | null
+  foundationRiskDetail?: string | null
+  foundationRiskSource?: string | null
+  foundationRiskRetrievedAt?: Date | string | null
+  malePercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: number | null
+  demographicsSourceUrl?: string | null
+  demographicsRetrievedAt?: Date | string | null
   cbsDataset: string
   cbsSourceUrl: string
   cbsRetrievedAt: Date | string
@@ -1613,6 +2343,32 @@ export type NeighborhoodProfileUpdateWithoutPropertyInput = {
   tramStopDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   metroStationDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   trainStationDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  noiseRoadLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  noiseSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  noiseRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  foundationRiskLevel?: Prisma.NullableEnumFoundationRiskLevelFieldUpdateOperationsInput | $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  malePercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  demographicsSourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  demographicsRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cbsDataset?: Prisma.StringFieldUpdateOperationsInput | string
   cbsSourceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   cbsRetrievedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1661,6 +2417,32 @@ export type NeighborhoodProfileUncheckedUpdateWithoutPropertyInput = {
   tramStopDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   metroStationDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   trainStationDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  noiseRoadLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  noiseSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  noiseRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  foundationRiskLevel?: Prisma.NullableEnumFoundationRiskLevelFieldUpdateOperationsInput | $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  malePercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  demographicsSourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  demographicsRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cbsDataset?: Prisma.StringFieldUpdateOperationsInput | string
   cbsSourceUrl?: Prisma.StringFieldUpdateOperationsInput | string
   cbsRetrievedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1712,6 +2494,32 @@ export type NeighborhoodProfileSelect<ExtArgs extends runtime.Types.Extensions.I
   tramStopDistanceMeters?: boolean
   metroStationDistanceMeters?: boolean
   trainStationDistanceMeters?: boolean
+  noiseRoadLden?: boolean
+  noiseRailLden?: boolean
+  noiseIndustryLden?: boolean
+  noiseAircraftLden?: boolean
+  noiseGridMeters?: boolean
+  noiseSource?: boolean
+  noiseRetrievedAt?: boolean
+  foundationRiskLevel?: boolean
+  foundationRiskAreaShare?: boolean
+  foundationPre1970Percent?: boolean
+  foundationGroundClass?: boolean
+  foundationRiskDetail?: boolean
+  foundationRiskSource?: boolean
+  foundationRiskRetrievedAt?: boolean
+  malePercent?: boolean
+  femalePercent?: boolean
+  averageHouseholdSize?: boolean
+  singleHouseholdPercent?: boolean
+  coupleHouseholdPercent?: boolean
+  familyHouseholdPercent?: boolean
+  educationLowPercent?: boolean
+  educationMediumPercent?: boolean
+  educationHighPercent?: boolean
+  educationStatisticsYear?: boolean
+  demographicsSourceUrl?: boolean
+  demographicsRetrievedAt?: boolean
   cbsDataset?: boolean
   cbsSourceUrl?: boolean
   cbsRetrievedAt?: boolean
@@ -1762,6 +2570,32 @@ export type NeighborhoodProfileSelectCreateManyAndReturn<ExtArgs extends runtime
   tramStopDistanceMeters?: boolean
   metroStationDistanceMeters?: boolean
   trainStationDistanceMeters?: boolean
+  noiseRoadLden?: boolean
+  noiseRailLden?: boolean
+  noiseIndustryLden?: boolean
+  noiseAircraftLden?: boolean
+  noiseGridMeters?: boolean
+  noiseSource?: boolean
+  noiseRetrievedAt?: boolean
+  foundationRiskLevel?: boolean
+  foundationRiskAreaShare?: boolean
+  foundationPre1970Percent?: boolean
+  foundationGroundClass?: boolean
+  foundationRiskDetail?: boolean
+  foundationRiskSource?: boolean
+  foundationRiskRetrievedAt?: boolean
+  malePercent?: boolean
+  femalePercent?: boolean
+  averageHouseholdSize?: boolean
+  singleHouseholdPercent?: boolean
+  coupleHouseholdPercent?: boolean
+  familyHouseholdPercent?: boolean
+  educationLowPercent?: boolean
+  educationMediumPercent?: boolean
+  educationHighPercent?: boolean
+  educationStatisticsYear?: boolean
+  demographicsSourceUrl?: boolean
+  demographicsRetrievedAt?: boolean
   cbsDataset?: boolean
   cbsSourceUrl?: boolean
   cbsRetrievedAt?: boolean
@@ -1812,6 +2646,32 @@ export type NeighborhoodProfileSelectUpdateManyAndReturn<ExtArgs extends runtime
   tramStopDistanceMeters?: boolean
   metroStationDistanceMeters?: boolean
   trainStationDistanceMeters?: boolean
+  noiseRoadLden?: boolean
+  noiseRailLden?: boolean
+  noiseIndustryLden?: boolean
+  noiseAircraftLden?: boolean
+  noiseGridMeters?: boolean
+  noiseSource?: boolean
+  noiseRetrievedAt?: boolean
+  foundationRiskLevel?: boolean
+  foundationRiskAreaShare?: boolean
+  foundationPre1970Percent?: boolean
+  foundationGroundClass?: boolean
+  foundationRiskDetail?: boolean
+  foundationRiskSource?: boolean
+  foundationRiskRetrievedAt?: boolean
+  malePercent?: boolean
+  femalePercent?: boolean
+  averageHouseholdSize?: boolean
+  singleHouseholdPercent?: boolean
+  coupleHouseholdPercent?: boolean
+  familyHouseholdPercent?: boolean
+  educationLowPercent?: boolean
+  educationMediumPercent?: boolean
+  educationHighPercent?: boolean
+  educationStatisticsYear?: boolean
+  demographicsSourceUrl?: boolean
+  demographicsRetrievedAt?: boolean
   cbsDataset?: boolean
   cbsSourceUrl?: boolean
   cbsRetrievedAt?: boolean
@@ -1862,6 +2722,32 @@ export type NeighborhoodProfileSelectScalar = {
   tramStopDistanceMeters?: boolean
   metroStationDistanceMeters?: boolean
   trainStationDistanceMeters?: boolean
+  noiseRoadLden?: boolean
+  noiseRailLden?: boolean
+  noiseIndustryLden?: boolean
+  noiseAircraftLden?: boolean
+  noiseGridMeters?: boolean
+  noiseSource?: boolean
+  noiseRetrievedAt?: boolean
+  foundationRiskLevel?: boolean
+  foundationRiskAreaShare?: boolean
+  foundationPre1970Percent?: boolean
+  foundationGroundClass?: boolean
+  foundationRiskDetail?: boolean
+  foundationRiskSource?: boolean
+  foundationRiskRetrievedAt?: boolean
+  malePercent?: boolean
+  femalePercent?: boolean
+  averageHouseholdSize?: boolean
+  singleHouseholdPercent?: boolean
+  coupleHouseholdPercent?: boolean
+  familyHouseholdPercent?: boolean
+  educationLowPercent?: boolean
+  educationMediumPercent?: boolean
+  educationHighPercent?: boolean
+  educationStatisticsYear?: boolean
+  demographicsSourceUrl?: boolean
+  demographicsRetrievedAt?: boolean
   cbsDataset?: boolean
   cbsSourceUrl?: boolean
   cbsRetrievedAt?: boolean
@@ -1873,7 +2759,7 @@ export type NeighborhoodProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type NeighborhoodProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "neighborhoodCode" | "neighborhoodName" | "districtCode" | "districtName" | "municipalityCode" | "statisticsYear" | "population" | "populationDensityPerKm2" | "nationalPopulationDensityPerKm2" | "age0To14Percent" | "age15To24Percent" | "age25To44Percent" | "age45To64Percent" | "age65PlusPercent" | "nationalAge0To14Percent" | "nationalAge15To24Percent" | "nationalAge25To44Percent" | "nationalAge45To64Percent" | "nationalAge65PlusPercent" | "housingCorporationPercent" | "nationalHousingCorporationPercent" | "registeredCrimesPer1000" | "nationalRegisteredCrimesPer1000" | "crimeStatisticsYear" | "supermarketDistanceKm" | "primarySchoolDistanceKm" | "daycareDistanceKm" | "generalPracticeDistanceKm" | "primarySchoolsWithin3Km" | "supermarketsWithin1Km" | "schoolsWithin1Km" | "busStopDistanceMeters" | "tramStopDistanceMeters" | "metroStationDistanceMeters" | "trainStationDistanceMeters" | "cbsDataset" | "cbsSourceUrl" | "cbsRetrievedAt" | "crimeDataset" | "crimeSourceUrl" | "osmSourceUrl" | "osmRetrievedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["neighborhoodProfile"]>
+export type NeighborhoodProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "neighborhoodCode" | "neighborhoodName" | "districtCode" | "districtName" | "municipalityCode" | "statisticsYear" | "population" | "populationDensityPerKm2" | "nationalPopulationDensityPerKm2" | "age0To14Percent" | "age15To24Percent" | "age25To44Percent" | "age45To64Percent" | "age65PlusPercent" | "nationalAge0To14Percent" | "nationalAge15To24Percent" | "nationalAge25To44Percent" | "nationalAge45To64Percent" | "nationalAge65PlusPercent" | "housingCorporationPercent" | "nationalHousingCorporationPercent" | "registeredCrimesPer1000" | "nationalRegisteredCrimesPer1000" | "crimeStatisticsYear" | "supermarketDistanceKm" | "primarySchoolDistanceKm" | "daycareDistanceKm" | "generalPracticeDistanceKm" | "primarySchoolsWithin3Km" | "supermarketsWithin1Km" | "schoolsWithin1Km" | "busStopDistanceMeters" | "tramStopDistanceMeters" | "metroStationDistanceMeters" | "trainStationDistanceMeters" | "noiseRoadLden" | "noiseRailLden" | "noiseIndustryLden" | "noiseAircraftLden" | "noiseGridMeters" | "noiseSource" | "noiseRetrievedAt" | "foundationRiskLevel" | "foundationRiskAreaShare" | "foundationPre1970Percent" | "foundationGroundClass" | "foundationRiskDetail" | "foundationRiskSource" | "foundationRiskRetrievedAt" | "malePercent" | "femalePercent" | "averageHouseholdSize" | "singleHouseholdPercent" | "coupleHouseholdPercent" | "familyHouseholdPercent" | "educationLowPercent" | "educationMediumPercent" | "educationHighPercent" | "educationStatisticsYear" | "demographicsSourceUrl" | "demographicsRetrievedAt" | "cbsDataset" | "cbsSourceUrl" | "cbsRetrievedAt" | "crimeDataset" | "crimeSourceUrl" | "osmSourceUrl" | "osmRetrievedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["neighborhoodProfile"]>
 export type NeighborhoodProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
 }
@@ -1927,6 +2813,32 @@ export type $NeighborhoodProfilePayload<ExtArgs extends runtime.Types.Extensions
     tramStopDistanceMeters: number | null
     metroStationDistanceMeters: number | null
     trainStationDistanceMeters: number | null
+    noiseRoadLden: runtime.Decimal | null
+    noiseRailLden: runtime.Decimal | null
+    noiseIndustryLden: runtime.Decimal | null
+    noiseAircraftLden: runtime.Decimal | null
+    noiseGridMeters: number | null
+    noiseSource: string | null
+    noiseRetrievedAt: Date | null
+    foundationRiskLevel: $Enums.FoundationRiskLevel | null
+    foundationRiskAreaShare: runtime.Decimal | null
+    foundationPre1970Percent: runtime.Decimal | null
+    foundationGroundClass: string | null
+    foundationRiskDetail: string | null
+    foundationRiskSource: string | null
+    foundationRiskRetrievedAt: Date | null
+    malePercent: runtime.Decimal | null
+    femalePercent: runtime.Decimal | null
+    averageHouseholdSize: runtime.Decimal | null
+    singleHouseholdPercent: runtime.Decimal | null
+    coupleHouseholdPercent: runtime.Decimal | null
+    familyHouseholdPercent: runtime.Decimal | null
+    educationLowPercent: runtime.Decimal | null
+    educationMediumPercent: runtime.Decimal | null
+    educationHighPercent: runtime.Decimal | null
+    educationStatisticsYear: number | null
+    demographicsSourceUrl: string | null
+    demographicsRetrievedAt: Date | null
     cbsDataset: string
     cbsSourceUrl: string
     cbsRetrievedAt: Date
@@ -2397,6 +3309,32 @@ export interface NeighborhoodProfileFieldRefs {
   readonly tramStopDistanceMeters: Prisma.FieldRef<"NeighborhoodProfile", 'Int'>
   readonly metroStationDistanceMeters: Prisma.FieldRef<"NeighborhoodProfile", 'Int'>
   readonly trainStationDistanceMeters: Prisma.FieldRef<"NeighborhoodProfile", 'Int'>
+  readonly noiseRoadLden: Prisma.FieldRef<"NeighborhoodProfile", 'Decimal'>
+  readonly noiseRailLden: Prisma.FieldRef<"NeighborhoodProfile", 'Decimal'>
+  readonly noiseIndustryLden: Prisma.FieldRef<"NeighborhoodProfile", 'Decimal'>
+  readonly noiseAircraftLden: Prisma.FieldRef<"NeighborhoodProfile", 'Decimal'>
+  readonly noiseGridMeters: Prisma.FieldRef<"NeighborhoodProfile", 'Int'>
+  readonly noiseSource: Prisma.FieldRef<"NeighborhoodProfile", 'String'>
+  readonly noiseRetrievedAt: Prisma.FieldRef<"NeighborhoodProfile", 'DateTime'>
+  readonly foundationRiskLevel: Prisma.FieldRef<"NeighborhoodProfile", 'FoundationRiskLevel'>
+  readonly foundationRiskAreaShare: Prisma.FieldRef<"NeighborhoodProfile", 'Decimal'>
+  readonly foundationPre1970Percent: Prisma.FieldRef<"NeighborhoodProfile", 'Decimal'>
+  readonly foundationGroundClass: Prisma.FieldRef<"NeighborhoodProfile", 'String'>
+  readonly foundationRiskDetail: Prisma.FieldRef<"NeighborhoodProfile", 'String'>
+  readonly foundationRiskSource: Prisma.FieldRef<"NeighborhoodProfile", 'String'>
+  readonly foundationRiskRetrievedAt: Prisma.FieldRef<"NeighborhoodProfile", 'DateTime'>
+  readonly malePercent: Prisma.FieldRef<"NeighborhoodProfile", 'Decimal'>
+  readonly femalePercent: Prisma.FieldRef<"NeighborhoodProfile", 'Decimal'>
+  readonly averageHouseholdSize: Prisma.FieldRef<"NeighborhoodProfile", 'Decimal'>
+  readonly singleHouseholdPercent: Prisma.FieldRef<"NeighborhoodProfile", 'Decimal'>
+  readonly coupleHouseholdPercent: Prisma.FieldRef<"NeighborhoodProfile", 'Decimal'>
+  readonly familyHouseholdPercent: Prisma.FieldRef<"NeighborhoodProfile", 'Decimal'>
+  readonly educationLowPercent: Prisma.FieldRef<"NeighborhoodProfile", 'Decimal'>
+  readonly educationMediumPercent: Prisma.FieldRef<"NeighborhoodProfile", 'Decimal'>
+  readonly educationHighPercent: Prisma.FieldRef<"NeighborhoodProfile", 'Decimal'>
+  readonly educationStatisticsYear: Prisma.FieldRef<"NeighborhoodProfile", 'Int'>
+  readonly demographicsSourceUrl: Prisma.FieldRef<"NeighborhoodProfile", 'String'>
+  readonly demographicsRetrievedAt: Prisma.FieldRef<"NeighborhoodProfile", 'DateTime'>
   readonly cbsDataset: Prisma.FieldRef<"NeighborhoodProfile", 'String'>
   readonly cbsSourceUrl: Prisma.FieldRef<"NeighborhoodProfile", 'String'>
   readonly cbsRetrievedAt: Prisma.FieldRef<"NeighborhoodProfile", 'DateTime'>

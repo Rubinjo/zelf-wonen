@@ -46,7 +46,7 @@ export default async function PublicShortlistPage({
     );
     return (
         <div className="min-h-screen bg-background">
-            <header className="border-b border-line bg-white">
+            <header className="sticky top-0 z-40 border-b border-line bg-background/92 backdrop-blur-xl">
                 <div className="mx-auto flex h-18 max-w-6xl items-center justify-between px-5">
                     <Link
                         href="/"
@@ -79,7 +79,7 @@ export default async function PublicShortlistPage({
                             notities. De actuele advertentie blijft leidend.
                         </p>
                     </div>
-                    <div className="inline-flex items-center gap-2 border border-line bg-white px-4 py-3 text-sm text-muted">
+                    <div className="inline-flex items-center gap-2 border border-line bg-surface px-4 py-3 text-sm text-muted">
                         <Clock3 size={17} className="text-brand" /> Geldig tot{" "}
                         {share.expiresAt.toLocaleDateString("nl-NL")}
                     </div>
@@ -94,7 +94,7 @@ export default async function PublicShortlistPage({
                         return (
                             <article
                                 key={item.id}
-                                className="overflow-hidden border border-line bg-white"
+                                className="overflow-hidden border border-line bg-surface"
                             >
                                 <Link href={`/woning/${listing.publicSlug}`}>
                                     <div className="relative aspect-4/3 bg-background">
@@ -181,7 +181,7 @@ export default async function PublicShortlistPage({
                         );
                     })}
                     {!items.length && (
-                        <div className="col-span-full grid min-h-72 place-items-center border border-dashed border-brand/25 bg-white p-8 text-center">
+                        <div className="col-span-full grid min-h-72 place-items-center border border-dashed border-brand/25 bg-surface p-8 text-center">
                             <div>
                                 <Heart
                                     className="mx-auto text-brand"

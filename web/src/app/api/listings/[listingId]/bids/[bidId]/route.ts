@@ -13,6 +13,7 @@ import {
     appendTransactionEvent,
     canonicalJson,
     chainedHash,
+    transferListingMessagesToTransaction,
 } from "@/features/transactions/transaction-service";
 import { handleApiError } from "@/lib/api-response";
 import { db } from "@/lib/db";
@@ -364,6 +365,13 @@ export async function PATCH(
                     "PASSPORT_VERSION_CREATED",
                     { version: passportVersion, entryHash: passportHash },
                 );
+                // Berichten van vóór de koop verhuizen naar de transactiechat.
+                await transferListingMessagesToTransaction(tx, {
+                    id: transaction.id,
+                    listingId,
+                    sellerUserId: session.user.id,
+                    buyerUserId: bid.bidderUserId,
+                });
                 return {
                     alreadyDecided: false,
                     event,

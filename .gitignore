@@ -10,11 +10,13 @@
 !/web/.yarn/releases
 !/web/.yarn/versions
 /estimator/.venv/
+/aggregator/.venv/
 
 # testing
 /web/coverage
 /estimator/.coverage
 /estimator/.pytest_cache/
+/aggregator/.pytest_cache/
 
 # next.js
 /web/.next/
@@ -27,6 +29,14 @@
 __pycache__/
 *.py[cod]
 /estimator/.ruff_cache/
+/aggregator/.ruff_cache/
+
+# aggregator runtime data (local re-hosted images land under web/public)
+/aggregator/.data/
+/web/public/aggregated-media/
+
+# web runtime file storage (seeded/generated/uploaded transaction docs & bid logbooks)
+/web/.data/
 
 # misc
 .DS_Store

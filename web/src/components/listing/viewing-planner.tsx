@@ -491,7 +491,7 @@ export function ViewingPlanner({
                                             {slot.bookings.map((booking) => (
                                                 <div
                                                     key={booking.id}
-                                                    className="border border-line bg-white p-3"
+                                                    className="border border-line bg-surface p-3"
                                                 >
                                                     <p className="font-semibold">
                                                         {booking.user.name}

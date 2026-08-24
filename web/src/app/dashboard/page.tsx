@@ -59,7 +59,7 @@ export default async function DashboardPage() {
             </div>
 
             {listings.length === 0 ? (
-                <section className="mt-12 grid min-h-96 place-items-center rounded-4xl border border-dashed border-brand/25 bg-white px-6 text-center">
+                <section className="mt-12 grid min-h-96 place-items-center rounded-4xl border border-dashed border-brand/25 bg-surface px-6 text-center">
                     <div className="max-w-md">
                         <span className="mx-auto grid size-16 place-items-center rounded-3xl bg-accent text-brand-dark">
                             <Building2 size={28} />
@@ -91,7 +91,7 @@ export default async function DashboardPage() {
                             <Link
                                 key={listing.id}
                                 href={`/dashboard/listings/${listing.id}`}
-                                className="group overflow-hidden rounded-3xl border border-line bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                                className="group overflow-hidden rounded-3xl border border-line bg-surface shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
                             >
                                 <div className="relative h-48 bg-brand-dark/8">
                                     {photo ? (
@@ -107,7 +107,7 @@ export default async function DashboardPage() {
                                             <Building2 size={46} />
                                         </div>
                                     )}
-                                    <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold shadow-sm">
+                                    <span className="absolute left-4 top-4 rounded-full bg-background/95 px-3 py-1.5 text-xs font-semibold shadow-sm">
                                         {statusLabel[listing.status] ??
                                             listing.status}
                                     </span>

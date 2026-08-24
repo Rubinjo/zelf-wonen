@@ -1,5 +1,12 @@
 # Initial Next.js App Router structure
 
+The inbound listing aggregator lives in the separate `aggregator/` folder at the
+repository root (Python + uv, isolated from this Next.js application). See
+`aggregator/README.md` for its structure. The aggregator writes into the same
+PostgreSQL database; the web app reads the `aggregated_listings`,
+`aggregated_platform_links`, `aggregated_listing_images` and `raw_payloads`
+tables defined in `prisma/schema.prisma`.
+
 ```text
 web/
 ├─ docs/

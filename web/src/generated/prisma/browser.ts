@@ -123,6 +123,11 @@ export type BidLogbookExport = Prisma.BidLogbookExportModel
  */
 export type PropertyTransaction = Prisma.PropertyTransactionModel
 /**
+ * Model PurchaseAgreement
+ * 
+ */
+export type PurchaseAgreement = Prisma.PurchaseAgreementModel
+/**
  * Model TransactionMilestone
  * 
  */
@@ -143,10 +148,20 @@ export type TransactionDocument = Prisma.TransactionDocumentModel
  */
 export type PropertyPassportVersion = Prisma.PropertyPassportVersionModel
 /**
+ * Model PropertyPassportDraft
+ * 
+ */
+export type PropertyPassportDraft = Prisma.PropertyPassportDraftModel
+/**
  * Model TransactionEvent
  * 
  */
 export type TransactionEvent = Prisma.TransactionEventModel
+/**
+ * Model ListingMessage
+ * 
+ */
+export type ListingMessage = Prisma.ListingMessageModel
 /**
  * Model FavoriteListing
  * 
@@ -192,3 +207,23 @@ export type PostcodePriceStat = Prisma.PostcodePriceStatModel
  * 
  */
 export type AuditEvent = Prisma.AuditEventModel
+/**
+ * Model AggregatedListing
+ * 
+ */
+export type AggregatedListing = Prisma.AggregatedListingModel
+/**
+ * Model AggregatedPlatformLink
+ * 
+ */
+export type AggregatedPlatformLink = Prisma.AggregatedPlatformLinkModel
+/**
+ * Model AggregatedListingImage
+ * 
+ */
+export type AggregatedListingImage = Prisma.AggregatedListingImageModel
+/**
+ * Model RawPayload
+ * 
+ */
+export type RawPayload = Prisma.RawPayloadModel

@@ -124,7 +124,8 @@ export async function GET(request: NextRequest) {
             bedroomCount: null,
             constructionYear:
                 bagData?.constructionYear ?? pdokAddress.constructionYear,
-            energy: liveEnergy ??
+            energy:
+                liveEnergy ??
                 (latestEnergy && labelClass
                     ? {
                           registrationNumber: latestEnergy.registrationNumber,
@@ -141,7 +142,7 @@ export async function GET(request: NextRequest) {
                           validUntil:
                               latestEnergy.validUntil?.toISOString() ?? null,
                       }
-                                        : null),
+                    : null),
             sources: [
                 { provider: "PDOK", retrievedAt: new Date().toISOString() },
                 ...(bagData

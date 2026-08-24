@@ -40,7 +40,7 @@ export default async function TransactionsPage() {
                 <Handshake className="hidden text-brand sm:block" size={42} />
             </div>
             {transactions.length === 0 ? (
-                <section className="mt-10 grid min-h-80 place-items-center border border-dashed border-brand/25 bg-white px-6 text-center">
+                <section className="mt-10 grid min-h-80 place-items-center border border-dashed border-brand/25 bg-surface px-6 text-center">
                     <div className="max-w-md">
                         <Handshake className="mx-auto text-brand" size={36} />
                         <h2 className="mt-5 text-xl font-semibold">
@@ -71,7 +71,7 @@ export default async function TransactionsPage() {
                             <Link
                                 key={transaction.id}
                                 href={`/dashboard/transacties/${transaction.id}`}
-                                className="group border border-line bg-white p-6 transition hover:border-brand/40 hover:shadow-lg"
+                                className="group border border-line bg-surface p-6 transition hover:border-brand/40 hover:shadow-lg"
                             >
                                 <div className="flex items-start justify-between gap-4">
                                     <div>

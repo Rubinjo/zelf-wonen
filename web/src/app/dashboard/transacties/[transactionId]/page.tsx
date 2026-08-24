@@ -9,14 +9,17 @@ import {
 
 export default async function TransactionPage({
     params,
+    searchParams,
 }: {
     params: Promise<{ transactionId: string }>;
+    searchParams: Promise<{ sign?: string }>;
 }) {
     const session = await requireEmailVerifiedUser();
-    const parsed = z
-        .string()
-        .uuid()
-        .safeParse((await params).transactionId);
+    const [{ transactionId }, { sign }] = await Promise.all([
+        params,
+        searchParams,
+    ]);
+    const parsed = z.string().uuid().safeParse(transactionId);
     if (!parsed.success) notFound();
     let initialRoom;
     try {
@@ -34,6 +37,7 @@ export default async function TransactionPage({
         <TransactionRoom
             initialRoom={initialRoom}
             currentUserId={session.user.id}
+            signNotice={sign}
         />
     );
 }

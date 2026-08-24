@@ -35,7 +35,7 @@ export function TwoFactorChallenge() {
 
     return (
         <main className="grid min-h-screen place-items-center bg-brand-dark p-5">
-            <div className="w-full max-w-md rounded-4xl bg-white p-7 shadow-2xl sm:p-9">
+            <div className="w-full max-w-md rounded-4xl bg-surface p-7 shadow-2xl sm:p-9">
                 <div className="flex items-center gap-2.5 font-semibold">
                     <span className="grid size-10 place-items-center rounded-xl bg-brand text-white">
                         <Building2 size={20} />

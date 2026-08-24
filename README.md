@@ -13,14 +13,14 @@ Self-service Dutch real-estate platform for owners who want to sell or rent with
 - AI listing-description route
 - Three-tier estimator orchestration and OpenAPI contract
 - iDIN provider port plus strict publication gate
-- Funda-style publisher adapter with Bronze/Silver/Gold packages
+- Inbound listing aggregator microservice (`aggregator/`, Python + uv) that scrapes, normalizes and deduplicates Funda/Kamernet listings; the legacy push-publisher adapter is deprecated
 - Immutable, hash-chained bid submission and PostgreSQL trigger draft
 - Buyer/seller transaction room with chat, private document exchange, deadlines, agreement confirmations, notary and handover workflow
 - Versioned, hash-chained property passport with completeness score and verifiable PDF export
 
 ## Local setup
 
-Requirements: Node.js 20.9+, npm, and Docker Desktop with Linux containers. Python 3.12 and uv are only required when running the estimator outside Docker.
+Requirements: Node.js 20.9+, npm, and Docker Desktop with Linux containers. Python 3.12 and uv are only required when running the estimator or the inbound aggregator outside Docker.
 
 1. Copy `.env.example` to `.env.local` and replace every required placeholder. A local file is already configured in this workspace.
 2. Install dependencies with `npm install`.
@@ -58,10 +58,30 @@ Do not run a production deployment with the example Better Auth secret, IP salt,
 | `npm run db:studio` | Open Prisma Studio |
 | `npm run validate` | Generate, lint, typecheck, and build |
 
+## Inbound aggregator
+
+A separate Python/uv cron microservice in `aggregator/` scrapes, normalizes and
+deduplicates Funda/Kamernet listings into the same PostgreSQL database. It
+rotates residential proxies and User-Agents, re-hosts images in object storage,
+and never deletes listings that disappear — it marks them `OFFLINE`/`EXPIRED`.
+
+```bash
+cd aggregator
+uv sync --python 3.12
+uv run python -m app.main sync     # one-shot sync
+uv run python -m app.main run      # loop every 6 hours (advisory-locked)
+uv run pytest                      # unit tests
+```
+
+Configure it with `AGGREGATOR_`-prefixed environment variables (see
+`aggregator/README.md`). The optional Docker Compose service is enabled with
+`docker compose --profile aggregator up -d --build`.
+
 ## Documentation
 
 - [Architecture and security decisions](docs/architecture.md)
 - [Next.js directory structure](docs/directory-structure.md)
+- [Inbound aggregator microservice](../aggregator/README.md)
 - [Python estimator REST contract](docs/estimator-openapi.yaml)
 - [Database schema draft](prisma/schema.prisma)
 - [Append-only trigger draft](prisma/immutability.sql)

@@ -11,7 +11,7 @@ const PropertyLocationMap = dynamic(
     {
         ssr: false,
         loading: () => (
-            <div className="grid h-full place-items-center bg-[#e9eee9] text-sm font-semibold text-muted">
+            <div className="grid h-full place-items-center bg-[#e9eee9] text-sm font-semibold text-muted dark:bg-[#17221d]">
                 Kaart laden…
             </div>
         ),
@@ -80,9 +80,10 @@ export function PropertyLocation({
                         latitude={latitude}
                         longitude={longitude}
                         address={address}
+                        language={language}
                     />
                 ) : (
-                    <div className="grid h-full place-items-center bg-[#e9eee9] px-6 text-center text-sm font-medium text-muted">
+                    <div className="grid h-full place-items-center bg-[#e9eee9] px-6 text-center text-sm font-medium text-muted dark:bg-[#17221d]">
                         {text.unavailable}
                     </div>
                 )}

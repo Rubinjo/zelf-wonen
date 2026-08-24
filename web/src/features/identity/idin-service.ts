@@ -6,12 +6,16 @@ import {
 } from "node:crypto";
 import { db } from "@/lib/db";
 import { orderHashChain } from "@/lib/hash-chain";
+import { requireTransactionParticipant } from "@/features/transactions/transaction-service";
 
 export class IdinVerificationError extends Error {
     constructor(
         readonly code:
             | "LISTING_NOT_FOUND"
             | "LISTING_NOT_READY"
+            | "TRANSACTION_NOT_FOUND"
+            | "SIGNING_NOT_AVAILABLE"
+            | "SIGNING_ALREADY_SIGNED"
             | "INVALID_CALLBACK"
             | "VERIFICATION_EXPIRED"
             | "PROVIDER_UNAVAILABLE",
@@ -34,6 +38,42 @@ function simulatedIdinEnabled() {
         environment !== "production" &&
         (process.env.IDIN_MODE ?? "simulated") === "simulated"
     );
+}
+
+/**
+ * Geldigheidsduur van een geslaagde identiteitsverificatie voor
+ * toegangspoorten (bijv. publicatie van een advertentie). E-handtekeningen
+ * (koopovereenkomst) gebruiken deze TTL bewust NIET: die doen altijd een verse
+ * verificatie per handtekening.
+ */
+export const IDENTITY_VERIFICATION_TTL_MS =
+    Number(process.env.IDENTITY_VERIFICATION_TTL_DAYS ?? "365") *
+    24 *
+    60 *
+    60 *
+    1000;
+
+/**
+ * Meest recente geslaagde iDIN-identiteitsverificatie van een gebruiker binnen
+ * de TTL. Gebruikersniveau: onafhankelijk van een specifieke listing of
+ * transactie, zodat één iDIN-voltooiing voor alle toegangspoorten geldt.
+ */
+export async function latestVerifiedIdentity(userId: string) {
+    const cutoff = new Date(Date.now() - IDENTITY_VERIFICATION_TTL_MS);
+    return db.identityVerificationAttempt.findFirst({
+        where: {
+            userId,
+            status: "VERIFIED",
+            completedAt: { not: null, gte: cutoff },
+        },
+        orderBy: { completedAt: "desc" },
+        select: { id: true, completedAt: true, expiresAt: true },
+    });
+}
+
+/** Heeft deze gebruiker een geldige (niet verlopen) iDIN-identiteitsverificatie? */
+export async function hasVerifiedIdentity(userId: string) {
+    return Boolean(await latestVerifiedIdentity(userId));
 }
 
 export async function startIdinVerification(input: {
@@ -65,14 +105,7 @@ export async function startIdinVerification(input: {
         );
     }
 
-    const verified = await db.identityVerificationAttempt.findFirst({
-        where: {
-            listingId: input.listingId,
-            userId: input.userId,
-            status: "VERIFIED",
-            OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
-        },
-    });
+    const verified = await latestVerifiedIdentity(input.userId);
     if (verified)
         return {
             alreadyVerified: true,
@@ -113,6 +146,94 @@ export async function startIdinVerification(input: {
     };
 }
 
+/**
+ * Start iDIN voor het ondertekenen van een koopovereenkomst. Een geslaagde
+ * verificatie levert een geavanceerde elektronische handtekening op
+ * (identiteit via de bank bevestigd, Art 3:15a BW / eIDAS).
+ */
+export async function startAgreementSigningVerification(input: {
+    transactionId: string;
+    userId: string;
+    locale: "nl" | "en";
+}) {
+    const participant = await requireTransactionParticipant(
+        input.transactionId,
+        input.userId,
+    );
+    const transaction = await db.propertyTransaction.findUniqueOrThrow({
+        where: { id: input.transactionId },
+        include: {
+            listing: { select: { purpose: true } },
+            agreement: true,
+        },
+    });
+    if (transaction.listing.purpose !== "SALE" || !transaction.agreement) {
+        throw new IdinVerificationError(
+            "SIGNING_NOT_AVAILABLE",
+            "Er is nog geen koopovereenkomst om te ondertekenen",
+        );
+    }
+    const agreement = transaction.agreement;
+    if (
+        agreement.status !== "AWAITING_SIGNATURES" &&
+        agreement.status !== "PARTIALLY_SIGNED"
+    ) {
+        throw new IdinVerificationError(
+            "SIGNING_NOT_AVAILABLE",
+            "De koopovereenkomst is op dit moment niet te ondertekenen",
+        );
+    }
+    const isSeller = participant.sellerUserId === input.userId;
+    const alreadySigned = isSeller
+        ? Boolean(agreement.sellerSignedAt)
+        : Boolean(agreement.buyerSignedAt);
+    if (alreadySigned) {
+        throw new IdinVerificationError(
+            "SIGNING_ALREADY_SIGNED",
+            "Je hebt de koopovereenkomst al ondertekend",
+        );
+    }
+    if (!simulatedIdinEnabled()) {
+        throw new IdinVerificationError(
+            "PROVIDER_UNAVAILABLE",
+            process.env.IDIN_PROVIDER_BASE_URL
+                ? "The configured iDIN provider adapter has not been enabled"
+                : "iDIN simulation is disabled in this environment",
+        );
+    }
+
+    const state = randomBytes(32).toString("base64url");
+    const providerReference = randomUUID();
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+    await db.identityVerificationAttempt.create({
+        data: {
+            userId: input.userId,
+            transactionId: input.transactionId,
+            purpose: "AGREEMENT_SIGNING",
+            provider: "SIMULATED_IDIN",
+            providerReference,
+            status: "PENDING",
+            expiresAt,
+            attributesMatched: {
+                stateHash: sha256(state),
+                locale: input.locale,
+                agreementVersion: agreement.version,
+                role: isSeller ? "SELLER" : "BUYER",
+            },
+        },
+    });
+
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+    const redirectUrl = new URL("/api/idin/callback", appUrl);
+    redirectUrl.searchParams.set("reference", providerReference);
+    redirectUrl.searchParams.set("state", state);
+    redirectUrl.searchParams.set("result", "success");
+    return {
+        redirectUrl: redirectUrl.toString(),
+        expiresAt,
+    };
+}
+
 export async function completeSimulatedIdinVerification(input: {
     providerReference: string;
     state: string;
@@ -132,7 +253,7 @@ export async function completeSimulatedIdinVerification(input: {
         if (
             !initialAttempt ||
             initialAttempt.provider !== "SIMULATED_IDIN" ||
-            !initialAttempt.listingId
+            (!initialAttempt.listingId && !initialAttempt.transactionId)
         ) {
             throw new IdinVerificationError(
                 "INVALID_CALLBACK",
@@ -143,7 +264,11 @@ export async function completeSimulatedIdinVerification(input: {
         const attempt = await tx.identityVerificationAttempt.findUnique({
             where: { providerReference: input.providerReference },
         });
-        if (!attempt || attempt.status !== "PENDING" || !attempt.listingId) {
+        if (
+            !attempt ||
+            attempt.status !== "PENDING" ||
+            (!attempt.listingId && !attempt.transactionId)
+        ) {
             throw new IdinVerificationError(
                 "INVALID_CALLBACK",
                 "Unknown or completed iDIN transaction",
@@ -172,7 +297,12 @@ export async function completeSimulatedIdinVerification(input: {
                     failureCode: "CALLBACK_EXPIRED",
                 },
             });
-            return { listingId: attempt.listingId, status: "EXPIRED" as const };
+            return {
+                userId: attempt.userId,
+                listingId: attempt.listingId,
+                transactionId: attempt.transactionId,
+                status: "EXPIRED" as const,
+            };
         }
 
         const completedAt = new Date();
@@ -184,6 +314,21 @@ export async function completeSimulatedIdinVerification(input: {
                 completedAt: completedAt.toISOString(),
             }),
         );
+        const signingContext =
+            attempt.purpose === "AGREEMENT_SIGNING"
+                ? {
+                      agreementVersion: (
+                          attempt.attributesMatched as {
+                              agreementVersion?: number;
+                          } | null
+                      )?.agreementVersion,
+                      role: (
+                          attempt.attributesMatched as {
+                              role?: string;
+                          } | null
+                      )?.role,
+                  }
+                : {};
         await tx.identityVerificationAttempt.update({
             where: { id: attempt.id },
             data: {
@@ -198,7 +343,11 @@ export async function completeSimulatedIdinVerification(input: {
                         : null,
                 attributesMatched:
                     status === "VERIFIED"
-                        ? { legalName: true, is18OrOlder: true }
+                        ? {
+                              legalName: true,
+                              is18OrOlder: true,
+                              ...signingContext,
+                          }
                         : undefined,
             },
         });
@@ -218,6 +367,7 @@ export async function completeSimulatedIdinVerification(input: {
         const canonical = JSON.stringify({
             userId: attempt.userId,
             listingId: attempt.listingId,
+            transactionId: attempt.transactionId,
             kind: "IDIN",
             status,
             purpose: attempt.purpose,
@@ -236,13 +386,26 @@ export async function completeSimulatedIdinVerification(input: {
                 purpose: attempt.purpose,
                 provider: attempt.provider,
                 providerReference: attempt.providerReference,
-                metadata: { listingId: attempt.listingId },
+                metadata:
+                    attempt.listingId && attempt.transactionId
+                        ? {
+                              listingId: attempt.listingId,
+                              transactionId: attempt.transactionId,
+                          }
+                        : attempt.listingId
+                          ? { listingId: attempt.listingId }
+                          : { transactionId: attempt.transactionId },
                 occurredAt: completedAt,
                 previousHash: previous?.entryHash,
                 entryHash,
             },
         });
-        return { listingId: attempt.listingId, status };
+        return {
+            userId: attempt.userId,
+            listingId: attempt.listingId,
+            transactionId: attempt.transactionId,
+            status,
+        };
     });
     if (result.status === "EXPIRED") {
         throw new IdinVerificationError(

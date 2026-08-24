@@ -3,6 +3,7 @@ import Image from "next/image";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import {
+    BadgeCheck,
     BedDouble,
     BusFront,
     Building2,
@@ -15,6 +16,7 @@ import {
     FileText,
     GraduationCap,
     Home,
+    KeyRound,
     Landmark,
     Layers3,
     Languages,
@@ -28,7 +30,10 @@ import {
     Zap,
 } from "lucide-react";
 import { BidForm } from "@/components/bidding/bid-form";
+import { ListingMessageLauncher } from "@/components/messages/listing-message-launcher";
+import { ListingMessageThread } from "@/components/messages/listing-message-thread";
 import { PropertyLocation } from "@/components/listing/property-location";
+import { AggregatedListingDetail } from "@/components/listing/aggregated-listing-detail";
 import { ViewingBooking } from "@/components/viewings/viewing-booking";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -109,12 +114,24 @@ const copy = {
     nl: {
         forSale: "Te koop",
         forRent: "Te huur",
+        statusUnderOffer: "Onder bod",
+        statusSold: "Verkocht",
+        statusRented: "Verhuurd",
+        statusBiddingClosed: "Bieding gesloten",
+        soldFor: "Verkocht voor",
+        rentedFor: "Verhuurd voor",
         rooms: "kamers",
         bedrooms: "slaapkamers",
         built: "Bouwjaar",
         living: "Woonoppervlak",
         energy: "Energielabel",
         monument: "Monumentaal pand",
+        leasehold: "Erfpacht",
+        leaseholdAfgekocht: "Erfpacht afgekocht",
+        freehold: "Volle eigendom",
+        leaseholdUnknown: "Erfpacht onbekend",
+        canonPerYear: "canon per jaar",
+        leaseholdEnds: "Erfpacht loopt tot",
         about: "Over deze woning",
         details: "Kenmerken",
         general: "Algemeen",
@@ -139,10 +156,10 @@ const copy = {
         energyRegistered: "Geregistreerd op",
         energyValidUntil: "Geldig tot",
         viewingNotes: "Informatie over bezichtigingen",
-        movableItems: "Lijst van zaken",
+        movableItems: "Lijst van zaken en vragenlijst",
         movableItemsText:
-            "Bekijk welke roerende zaken achterblijven, meegaan of ter overname worden aangeboden.",
-        generatedList: "Download lijst van zaken (PDF)",
+            "Bekijk welke roerende zaken achterblijven, meegaan of ter overname worden aangeboden en welke vragen de verkoper over de woning heeft beantwoord.",
+        generatedList: "Download lijst van zaken en vragenlijst (PDF)",
         uploadedList: "Download roerende-zakenlijst",
         floorplan: "Interactieve plattegrond",
         bid: "Bieden met vertrouwen",
@@ -218,16 +235,68 @@ const copy = {
         cbsSource: "CBS Kerncijfers wijken en buurten",
         crimeSource: "CBS Geregistreerde criminaliteit",
         osmSource: "OpenStreetMap-bijdragers",
+        demographics: "Bewoners en huishoudens",
+        gender: "Geslacht",
+        male: "Man",
+        female: "Vrouw",
+        householdComposition: "Huishoudenssamenstelling",
+        singleHousehold: "Alleenwonend",
+        coupleHousehold: "Stel (zonder kinderen thuis)",
+        familyHousehold: "Met kinderen",
+        averageHouseholdSize: "Gemiddelde huishoudensgrootte",
+        personsPerHousehold: "personen per huishouden",
+        educationLevel: "Opleidingsniveau",
+        educationIntro:
+            "Verdeling van de bevolking van 15 tot 75 jaar naar opleidingsniveau.",
+        educationLow: "Laag",
+        educationMedium: "Middelbaar",
+        educationHigh: "Hoog",
+        demographicsNote:
+            "Buurtcijfers van CBS; percentages zijn afgerond. Huishoudtypes volgen de CBS-indeling: een stel is een huishouden zonder kinderen in het huis, ‘met kinderen’ een huishouden met kinderen thuis.",
+        noise: "Geluid",
+        noiseIntro:
+            "Jaargemiddelde geluidsbelasting (Lden) per geluidsbron; het streepje markeert de wettelijke voorkeursgrenswaarde. Ruwe indicatie op een raster van 10 meter, geen geveltoets.",
+        noiseRoad: "Wegverkeer",
+        noiseRail: "Trein",
+        noiseIndustry: "Industrie",
+        noiseAircraft: "Luchtvaart",
+        noisePreferredLimit: "voorkeursgrenswaarde",
+        noiseDecibel: "dB",
+        noiseNone:
+            "Voor deze woning is geen geluidsbelasting geregistreerd binnen het raster van de bron.",
+        foundationRisk: "Funderingsrisico",
+        foundationRiskIntro:
+            "Indicatie op basis van openbare bronnen, geen bouwkundige keuring. Doe de gratis funderingscheck op",
+        foundationRiskCheckLink: "funderingskaartnederland.nl/check",
+        foundationRiskLevelNone: "Geen aandachtsgebied",
+        foundationRiskLevelLow: "Laag risico",
+        foundationRiskLevelMedium: "Verhoogd risico",
+        foundationRiskLevelHigh: "Hoog risico",
+        foundationAreaShare: "Aandeel bebouwing in aandachtsgebied",
+        foundationPre1970: "Bebouwing vóór 1970",
+        foundationGround: "Ondergrond",
     },
     en: {
         forSale: "For sale",
         forRent: "For rent",
+        statusUnderOffer: "Under offer",
+        statusSold: "Sold",
+        statusRented: "Rented",
+        statusBiddingClosed: "Bidding closed",
+        soldFor: "Sold for",
+        rentedFor: "Rented for",
         rooms: "rooms",
         bedrooms: "bedrooms",
         built: "Built",
         living: "Living area",
         energy: "Energy label",
         monument: "Listed monument",
+        leasehold: "Ground lease",
+        leaseholdAfgekocht: "Ground lease (prepaid)",
+        freehold: "Freehold",
+        leaseholdUnknown: "Ground lease unknown",
+        canonPerYear: "ground rent per year",
+        leaseholdEnds: "Ground lease until",
         about: "About this property",
         details: "Property details",
         general: "General",
@@ -252,10 +321,10 @@ const copy = {
         energyRegistered: "Registered on",
         energyValidUntil: "Valid until",
         viewingNotes: "Viewing information",
-        movableItems: "Movable items list",
+        movableItems: "Movable items list and questionnaire",
         movableItemsText:
-            "See which movable items remain, are removed, or are offered for takeover.",
-        generatedList: "Download movable items list (PDF)",
+            "See which movable items remain, are removed, or are offered for takeover, and the seller's answers about the property.",
+        generatedList: "Download movable items list and questionnaire (PDF)",
         uploadedList: "Download uploaded movable items list",
         floorplan: "Interactive floor plan",
         bid: "Bid with confidence",
@@ -331,6 +400,46 @@ const copy = {
         cbsSource: "Statistics Netherlands neighborhood figures",
         crimeSource: "Statistics Netherlands registered crime",
         osmSource: "OpenStreetMap contributors",
+        demographics: "Residents and households",
+        gender: "Gender",
+        male: "Male",
+        female: "Female",
+        householdComposition: "Household composition",
+        singleHousehold: "Living alone",
+        coupleHousehold: "Couple (no children at home)",
+        familyHousehold: "With children",
+        averageHouseholdSize: "Average household size",
+        personsPerHousehold: "persons per household",
+        educationLevel: "Education level",
+        educationIntro:
+            "Distribution of the population aged 15 to 75 by education level.",
+        educationLow: "Low",
+        educationMedium: "Medium",
+        educationHigh: "High",
+        demographicsNote:
+            "Neighborhood figures from Statistics Netherlands; percentages are rounded. Household types follow the CBS classification: a couple is a household without children living at home, “with children” a household with children at home.",
+        noise: "Noise",
+        noiseIntro:
+            "Annual average noise exposure (Lden) per source; the marker shows the legal preferred limit. Rough indication on a 10-meter grid, not a facade assessment.",
+        noiseRoad: "Road traffic",
+        noiseRail: "Train",
+        noiseIndustry: "Industry",
+        noiseAircraft: "Aviation",
+        noisePreferredLimit: "preferred limit",
+        noiseDecibel: "dB",
+        noiseNone:
+            "No noise exposure is registered for this property within the grid of the source.",
+        foundationRisk: "Foundation risk",
+        foundationRiskIntro:
+            "Indication based on public sources, not a structural survey. Do the free foundation check at",
+        foundationRiskCheckLink: "funderingskaartnederland.nl/check",
+        foundationRiskLevelNone: "No attention area",
+        foundationRiskLevelLow: "Low risk",
+        foundationRiskLevelMedium: "Elevated risk",
+        foundationRiskLevelHigh: "High risk",
+        foundationAreaShare: "Share of buildings in attention area",
+        foundationPre1970: "Buildings before 1970",
+        foundationGround: "Subsoil",
     },
 };
 
@@ -343,6 +452,66 @@ export default async function PublicListingPage({
 }) {
     const language = (await searchParams).lang === "en" ? "en" : "nl";
     const t = copy[language];
+
+    // Aggregated listings (Funda/Kamernet) have their own detail view with
+    // branded outbound links and no platform bidding/viewing flow.
+    const aggregated = await db.aggregatedListing.findUnique({
+        where: { publicSlug: (await params).slug },
+        include: {
+            images: { orderBy: { sortOrder: "asc" } },
+            platformLinks: { orderBy: { source: "asc" } },
+        },
+    });
+    if (aggregated) {
+        return (
+            <AggregatedListingDetail
+                language={language}
+                listing={{
+                    titleNl: aggregated.titleNl,
+                    descriptionNl: aggregated.descriptionNl,
+                    purpose: aggregated.purpose,
+                    status: aggregated.status,
+                    askingPriceCents:
+                        aggregated.askingPriceCents?.toString() ?? null,
+                    monthlyRentCents:
+                        aggregated.monthlyRentCents?.toString() ?? null,
+                    serviceCostsCents:
+                        aggregated.serviceCostsCents?.toString() ?? null,
+                    postcode: aggregated.postcode,
+                    street: aggregated.street,
+                    houseNumber: aggregated.houseNumber,
+                    houseNumberAddition: aggregated.houseNumberAddition,
+                    city: aggregated.city,
+                    municipality: aggregated.municipality,
+                    propertyType: aggregated.propertyType,
+                    livingAreaSqm:
+                        aggregated.livingAreaSqm !== null
+                            ? Number(aggregated.livingAreaSqm)
+                            : null,
+                    plotAreaSqm:
+                        aggregated.plotAreaSqm !== null
+                            ? Number(aggregated.plotAreaSqm)
+                            : null,
+                    roomCount: aggregated.roomCount,
+                    bedroomCount: aggregated.bedroomCount,
+                    bathroomCount: aggregated.bathroomCount,
+                    constructionYear: aggregated.constructionYear,
+                    energyLabel: aggregated.energyLabel,
+                    amenities: aggregated.amenities,
+                    availableFrom:
+                        aggregated.availableFrom?.toISOString() ?? null,
+                    images: aggregated.images,
+                    platformLinks: aggregated.platformLinks.map((link) => ({
+                        id: link.id,
+                        source: link.source,
+                        url: link.url,
+                        status: link.status,
+                    })),
+                }}
+            />
+        );
+    }
+
     const listing = await db.listing.findFirst({
         where: {
             publicSlug: (await params).slug,
@@ -376,6 +545,12 @@ export default async function PublicListingPage({
                 take: 1,
                 select: { amountCents: true },
             },
+            transactions: {
+                where: { status: { not: "CANCELLED" } },
+                orderBy: { createdAt: "desc" },
+                take: 1,
+                select: { purchasePriceCents: true },
+            },
         },
     });
     if (!listing) notFound();
@@ -394,9 +569,14 @@ export default async function PublicListingPage({
         ? parsedAttributes.data.movableItems
         : [];
     const price =
-        listing.purpose === "SALE"
-            ? listing.askingPriceCents
-            : listing.monthlyRentCents;
+        listing.status === "SOLD" || listing.status === "RENTED"
+            ? (listing.transactions[0]?.purchasePriceCents ??
+              (listing.purpose === "SALE"
+                  ? listing.askingPriceCents
+                  : listing.monthlyRentCents))
+            : listing.purpose === "SALE"
+              ? listing.askingPriceCents
+              : listing.monthlyRentCents;
     const description =
         language === "en"
             ? listing.descriptionEn || listing.descriptionNl
@@ -406,6 +586,20 @@ export default async function PublicListingPage({
             ? listing.titleEn || listing.titleNl
             : listing.titleNl;
     const energy = listing.property.energyLabels[0];
+    const locale = language === "nl" ? "nl-NL" : "en-NL";
+    const erfpachtType = listing.property.erfpachtType;
+    const erfpachtCanonCents = listing.property.erfpachtCanonCents;
+    const erfpachtEndDate = listing.property.erfpachtEndDate;
+    const leaseholdSummary =
+        erfpachtType === "LEASEHOLD"
+            ? erfpachtCanonCents
+                ? `${t.leasehold} · ${t.canonPerYear}: ${formatMoney(erfpachtCanonCents, locale)}`
+                : t.leasehold
+            : erfpachtType === "LEASEHOLD_AFGEKOCHT"
+              ? t.leaseholdAfgekocht
+              : erfpachtType === "FREEHOLD"
+                ? t.freehold
+                : null;
     const now = new Date();
     const biddingState =
         listing.status !== "LIVE"
@@ -415,7 +609,6 @@ export default async function PublicListingPage({
               : listing.bidWindowClosesAt && listing.bidWindowClosesAt <= now
                 ? "closed"
                 : "open";
-    const locale = language === "nl" ? "nl-NL" : "en-NL";
     const fullAddress = `${listing.property.street} ${listing.property.houseNumber}${listing.property.houseNumberAddition ? ` ${listing.property.houseNumberAddition}` : ""}, ${listing.property.postcode} ${listing.property.city}`;
     const roofName = listing.property.roofType
         ? language === "en"
@@ -454,6 +647,19 @@ export default async function PublicListingPage({
     const session = await auth.api.getSession({ headers: await headers() });
     const isOwner = session?.user.id === listing.ownerId;
     const canInteract = Boolean(session?.user.emailVerified) && !isOwner;
+    // Heeft deze zoeker al een berichtenlijn met de verkoper? Dan staat het
+    // gesprek direct open; anders toont de zijbalk eerst een start-knop.
+    const hasConversation = canInteract
+        ? Boolean(
+              await db.listingMessage.findFirst({
+                  where: {
+                      listingId: listing.id,
+                      seekerUserId: session!.user.id,
+                  },
+                  select: { id: true },
+              }),
+          )
+        : false;
     const confirmedViewing = canInteract
         ? await db.viewingBooking.findFirst({
               where: {
@@ -466,8 +672,8 @@ export default async function PublicListingPage({
         : null;
 
     return (
-        <div className="min-h-screen bg-white">
-            <header className="border-b border-line bg-white">
+        <div className="min-h-screen bg-background">
+            <header className="sticky top-0 z-40 border-b border-line bg-background/92 backdrop-blur-xl">
                 <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-5 lg:px-8">
                     <Link
                         href="/"
@@ -537,6 +743,37 @@ export default async function PublicListingPage({
                                     ? t.forSale
                                     : t.forRent}
                             </p>
+                            {listing.status !== "LIVE" ||
+                            biddingState === "closed" ? (
+                                <p
+                                    className={`mt-3 inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-semibold ${
+                                        listing.status === "UNDER_OFFER"
+                                            ? "bg-amber-500 text-white"
+                                            : listing.status === "SOLD"
+                                              ? "bg-stone-800 text-white"
+                                              : listing.status === "RENTED"
+                                                ? "bg-sky-700 text-white"
+                                                : "bg-stone-200 text-stone-700 dark:bg-white/10 dark:text-stone-200"
+                                    }`}
+                                >
+                                    {listing.status === "UNDER_OFFER" ? (
+                                        <Clock3 size={16} />
+                                    ) : listing.status === "SOLD" ? (
+                                        <BadgeCheck size={16} />
+                                    ) : listing.status === "RENTED" ? (
+                                        <KeyRound size={16} />
+                                    ) : (
+                                        <Clock3 size={16} />
+                                    )}
+                                    {listing.status === "UNDER_OFFER"
+                                        ? t.statusUnderOffer
+                                        : listing.status === "SOLD"
+                                          ? t.statusSold
+                                          : listing.status === "RENTED"
+                                            ? t.statusRented
+                                            : t.statusBiddingClosed}
+                                </p>
+                            ) : null}
                             {listing.property.isMonument ? (
                                 <p className="mt-3 inline-flex items-center gap-2 rounded-md bg-background px-3 py-1.5 text-sm font-semibold text-brand">
                                     <Landmark size={16} /> {t.monument}
@@ -551,7 +788,22 @@ export default async function PublicListingPage({
                                 {listing.property.postcode}{" "}
                                 {listing.property.city}
                             </p>
-                            <p className="mt-5 text-3xl font-semibold">
+                            {listing.status === "SOLD" ||
+                            listing.status === "RENTED" ? (
+                                <p className="mt-5 text-xs font-semibold uppercase tracking-wider text-muted">
+                                    {listing.status === "SOLD"
+                                        ? t.soldFor
+                                        : t.rentedFor}
+                                </p>
+                            ) : null}
+                            <p
+                                className={`text-3xl font-semibold ${
+                                    listing.status === "SOLD" ||
+                                    listing.status === "RENTED"
+                                        ? "mt-1"
+                                        : "mt-5"
+                                }`}
+                            >
                                 {price
                                     ? new Intl.NumberFormat(
                                           language === "nl" ? "nl-NL" : "en-NL",
@@ -566,6 +818,49 @@ export default async function PublicListingPage({
                                     ? " / maand"
                                     : " k.k."}
                             </p>
+                            {erfpachtType === "LEASEHOLD" ||
+                            erfpachtType === "LEASEHOLD_AFGEKOCHT" ? (
+                                <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
+                                    <Landmark
+                                        size={16}
+                                        className="text-brand"
+                                    />
+                                    <span className="font-semibold text-foreground">
+                                        {erfpachtType === "LEASEHOLD_AFGEKOCHT"
+                                            ? t.leaseholdAfgekocht
+                                            : t.leasehold}
+                                    </span>
+                                    {erfpachtType === "LEASEHOLD" &&
+                                    erfpachtCanonCents ? (
+                                        <span>
+                                            {t.canonPerYear}:{" "}
+                                            <span className="font-semibold text-foreground">
+                                                {formatMoney(
+                                                    erfpachtCanonCents,
+                                                    locale,
+                                                )}
+                                            </span>
+                                        </span>
+                                    ) : null}
+                                    {erfpachtEndDate ? (
+                                        <span>
+                                            {t.leaseholdEnds}{" "}
+                                            {formatDate(
+                                                erfpachtEndDate,
+                                                locale,
+                                            )}
+                                        </span>
+                                    ) : null}
+                                </p>
+                            ) : erfpachtType === "FREEHOLD" ? (
+                                <p className="mt-2 flex items-center gap-2 text-sm text-muted">
+                                    <Landmark
+                                        size={16}
+                                        className="text-brand"
+                                    />
+                                    {t.freehold}
+                                </p>
+                            ) : null}
                             <div className="mt-8 grid grid-cols-2 gap-3 border-y border-line py-6 sm:grid-cols-4">
                                 <PropertyStat
                                     icon={Ruler}
@@ -646,6 +941,14 @@ export default async function PublicListingPage({
                             <div className="mt-4 whitespace-pre-line text-base leading-8 text-foreground/80">
                                 {description}
                             </div>
+                            {canInteract && hasConversation ? (
+                                <section className="mt-10">
+                                    <ListingMessageThread
+                                        listingId={listing.id}
+                                        language={language}
+                                    />
+                                </section>
+                            ) : null}
                             <section className="mt-10">
                                 <h2 className="text-2xl font-semibold">
                                     {t.details}
@@ -681,6 +984,7 @@ export default async function PublicListingPage({
                                                 listing.property
                                                     .cadastralParcelId,
                                             ],
+                                            [t.leasehold, leaseholdSummary],
                                             [
                                                 t.serviceCosts,
                                                 listing.serviceCostsCents
@@ -928,6 +1232,12 @@ export default async function PublicListingPage({
                                     />
                                 </div>
                             ) : null}
+                            {canInteract && !hasConversation ? (
+                                <ListingMessageLauncher
+                                    listingId={listing.id}
+                                    language={language}
+                                />
+                            ) : null}
                             <div className="mb-4 rounded-3xl bg-accent p-6 text-brand-dark">
                                 <ShieldCheck size={24} />
                                 <h2 className="mt-4 text-xl font-semibold">
@@ -1148,6 +1458,32 @@ type NeighborhoodProfileView = {
     tramStopDistanceMeters: number | null;
     metroStationDistanceMeters: number | null;
     trainStationDistanceMeters: number | null;
+    noiseRoadLden: NumericValue;
+    noiseRailLden: NumericValue;
+    noiseIndustryLden: NumericValue;
+    noiseAircraftLden: NumericValue;
+    noiseGridMeters: number | null;
+    noiseSource: string | null;
+    noiseRetrievedAt: Date | null;
+    foundationRiskLevel: "NONE" | "LOW" | "MEDIUM" | "HIGH" | null;
+    foundationRiskAreaShare: NumericValue;
+    foundationPre1970Percent: NumericValue;
+    foundationGroundClass: string | null;
+    foundationRiskDetail: string | null;
+    foundationRiskSource: string | null;
+    foundationRiskRetrievedAt: Date | null;
+    malePercent: NumericValue;
+    femalePercent: NumericValue;
+    averageHouseholdSize: NumericValue;
+    singleHouseholdPercent: NumericValue;
+    coupleHouseholdPercent: NumericValue;
+    familyHouseholdPercent: NumericValue;
+    educationLowPercent: NumericValue;
+    educationMediumPercent: NumericValue;
+    educationHighPercent: NumericValue;
+    educationStatisticsYear: number | null;
+    demographicsSourceUrl: string | null;
+    demographicsRetrievedAt: Date | null;
     cbsSourceUrl: string;
     crimeSourceUrl: string | null;
     osmSourceUrl: string | null;
@@ -1364,7 +1700,11 @@ function NeighborhoodDetails({
                                     </p>
                                     {nationalValue !== null ? (
                                         <p className="mt-1 text-[10px] text-muted">
-                                            NL {formatPercent(nationalValue, locale)}
+                                            NL{" "}
+                                            {formatPercent(
+                                                nationalValue,
+                                                locale,
+                                            )}
                                         </p>
                                     ) : null}
                                 </div>
@@ -1376,6 +1716,7 @@ function NeighborhoodDetails({
                     </p>
                 </div>
             ) : null}
+            <DemographicsDetails profile={profile} language={language} />
             {profile.registeredCrimesPer1000 !== null ? (
                 <div className="mt-8 bg-background p-5">
                     <div className="flex items-start gap-3">
@@ -1404,6 +1745,8 @@ function NeighborhoodDetails({
                     </div>
                 </div>
             ) : null}
+            <NoiseDetails profile={profile} language={language} />
+            <FoundationRiskDetails profile={profile} language={language} />
             {facilities.length > 0 ? (
                 <div className="mt-8">
                     <h3 className="font-semibold">{t.nearbyFacilities}</h3>
@@ -1411,7 +1754,7 @@ function NeighborhoodDetails({
                         {facilities.map((facility) => (
                             <div
                                 key={facility.label}
-                                className="flex items-start gap-3 bg-white p-4"
+                                className="flex items-start gap-3 bg-surface p-4"
                             >
                                 <facility.icon
                                     size={18}
@@ -1455,6 +1798,17 @@ function NeighborhoodDetails({
                         {t.crimeSource} ({profile.crimeStatisticsYear})
                     </a>
                 ) : null}
+                {profile.noiseSource && profile.noiseRetrievedAt ? (
+                    <a
+                        href="https://www.atlasleefomgeving.nl/"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline decoration-line underline-offset-4"
+                    >
+                        RIVM Atlas Leefomgeving (
+                        {formatDate(profile.noiseRetrievedAt, locale)})
+                    </a>
+                ) : null}
                 {profile.osmSourceUrl && profile.osmRetrievedAt ? (
                     <a
                         href={profile.osmSourceUrl}
@@ -1482,10 +1836,11 @@ type Comparison = {
 
 function ComparisonBadge({ comparison }: { comparison: Comparison }) {
     const toneClasses = {
-        good: "bg-emerald-50 text-emerald-800",
-        neutral: "bg-sky-50 text-sky-800",
-        attention: "bg-amber-50 text-amber-900",
-        bad: "bg-red-50 text-red-800",
+        good: "bg-emerald-50 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300",
+        neutral: "bg-sky-50 text-sky-800 dark:bg-sky-500/15 dark:text-sky-300",
+        attention:
+            "bg-amber-50 text-amber-900 dark:bg-amber-500/15 dark:text-amber-200",
+        bad: "bg-red-50 text-red-800 dark:bg-red-500/15 dark:text-red-300",
     };
     return (
         <div
@@ -1493,6 +1848,343 @@ function ComparisonBadge({ comparison }: { comparison: Comparison }) {
         >
             <span className="font-semibold">{comparison.label}</span>
             {comparison.detail ? <span>{comparison.detail}</span> : null}
+        </div>
+    );
+}
+
+// Wettelijke voorkeursgrenswaarde (Lden) per geluidsbron uit het Omgevingsplan;
+// de streepjes in de balken markeren deze waarde.
+const NOISE_PREFERRED_LIMITS: Record<string, number> = {
+    road: 53,
+    rail: 55,
+    industry: 50,
+    aircraft: 58,
+};
+
+function NoiseDetails({
+    profile,
+    language,
+}: {
+    profile: NeighborhoodProfileView;
+    language: "nl" | "en";
+}) {
+    const t = copy[language];
+    const locale = language === "nl" ? "nl-NL" : "en-NL";
+    const sources = [
+        ["road", profile.noiseRoadLden, t.noiseRoad],
+        ["rail", profile.noiseRailLden, t.noiseRail],
+        ["industry", profile.noiseIndustryLden, t.noiseIndustry],
+        ["aircraft", profile.noiseAircraftLden, t.noiseAircraft],
+    ] as const;
+    if (sources.every(([, value]) => value === null)) return null;
+
+    return (
+        <div className="mt-8">
+            <h3 className="font-semibold">{t.noise}</h3>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
+                {t.noiseIntro}
+            </p>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                {sources.map(([key, value, label]) => {
+                    const decibel = value === null ? null : Number(value);
+                    const limit = NOISE_PREFERRED_LIMITS[key];
+                    // Schaal tot 75 dB zodat stedelijke waarden leesbaar blijven.
+                    const scaleMax = 75;
+                    return (
+                        <div key={key}>
+                            <div className="flex items-baseline justify-between gap-3">
+                                <p className="text-sm font-semibold">{label}</p>
+                                <p className="text-sm font-semibold">
+                                    {decibel === null
+                                        ? "—"
+                                        : `${new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(decibel)} ${t.noiseDecibel}`}
+                                </p>
+                            </div>
+                            <div className="relative mt-2 h-2 bg-background">
+                                <div
+                                    className={`h-full ${decibel !== null && decibel > limit ? "bg-red-500" : decibel !== null && decibel > limit - 5 ? "bg-amber-500" : "bg-brand"}`}
+                                    style={{
+                                        width: `${Math.min(100, ((decibel ?? 0) / scaleMax) * 100)}%`,
+                                    }}
+                                />
+                                <span
+                                    title={`${t.noisePreferredLimit} ${limit} ${t.noiseDecibel}`}
+                                    className="absolute -top-1 h-4 w-0.5 bg-stone-800"
+                                    style={{
+                                        left: `${(limit / scaleMax) * 100}%`,
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+            <p className="mt-4 text-xs leading-5 text-muted">
+                {profile.noiseSource}
+                {profile.noiseRetrievedAt
+                    ? ` · ${formatDate(profile.noiseRetrievedAt, locale)}`
+                    : ""}
+            </p>
+        </div>
+    );
+}
+
+function FoundationRiskDetails({
+    profile,
+    language,
+}: {
+    profile: NeighborhoodProfileView;
+    language: "nl" | "en";
+}) {
+    const t = copy[language];
+    const locale = language === "nl" ? "nl-NL" : "en-NL";
+    if (
+        profile.foundationRiskLevel === null &&
+        profile.foundationPre1970Percent === null
+    ) {
+        return null;
+    }
+    const levelNames = {
+        NONE: t.foundationRiskLevelNone,
+        LOW: t.foundationRiskLevelLow,
+        MEDIUM: t.foundationRiskLevelMedium,
+        HIGH: t.foundationRiskLevelHigh,
+    } as const;
+    const level = profile.foundationRiskLevel;
+    const toneClasses = {
+        NONE: "bg-emerald-50 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300",
+        LOW: "bg-emerald-50 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300",
+        MEDIUM: "bg-amber-50 text-amber-900 dark:bg-amber-500/15 dark:text-amber-200",
+        HIGH: "bg-red-50 text-red-800 dark:bg-red-500/15 dark:text-red-300",
+    } as const;
+    const facts = [
+        [
+            t.foundationAreaShare,
+            formatPercent(profile.foundationRiskAreaShare, locale),
+        ],
+        [
+            t.foundationPre1970,
+            formatPercent(profile.foundationPre1970Percent, locale),
+        ],
+        [t.foundationGround, profile.foundationGroundClass],
+    ] as const;
+
+    return (
+        <div className="mt-8 bg-background p-5">
+            <div className="flex items-start gap-3">
+                <Home size={20} className="mt-0.5 shrink-0 text-brand" />
+                <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold">{t.foundationRisk}</h3>
+                    {level ? (
+                        <p
+                            className={`mt-2 inline-flex px-3 py-1.5 text-sm font-semibold ${toneClasses[level]}`}
+                        >
+                            {levelNames[level]}
+                        </p>
+                    ) : null}
+                    <dl className="mt-3 grid gap-x-8 gap-y-3 sm:grid-cols-3">
+                        {facts.map(([label, value]) =>
+                            value === null ? null : (
+                                <div key={label}>
+                                    <dt className="text-xs font-semibold text-muted">
+                                        {label}
+                                    </dt>
+                                    <dd className="mt-1 text-sm font-medium">
+                                        {value}
+                                    </dd>
+                                </div>
+                            ),
+                        )}
+                    </dl>
+                    {profile.foundationRiskDetail ? (
+                        <p className="mt-3 text-xs text-muted">
+                            {profile.foundationRiskDetail}
+                        </p>
+                    ) : null}
+                    <p className="mt-3 text-xs leading-5 text-muted">
+                        {t.foundationRiskIntro}{" "}
+                        <a
+                            href="https://www.funderingskaartnederland.nl/check"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="underline decoration-line underline-offset-4"
+                        >
+                            {t.foundationRiskCheckLink}
+                        </a>
+                        . {profile.foundationRiskSource}
+                        {profile.foundationRiskRetrievedAt
+                            ? ` · ${formatDate(profile.foundationRiskRetrievedAt, locale)}`
+                            : ""}
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function DemographicsDetails({
+    profile,
+    language,
+}: {
+    profile: NeighborhoodProfileView;
+    language: "nl" | "en";
+}) {
+    const t = copy[language];
+    const locale = language === "nl" ? "nl-NL" : "en-NL";
+    const genderRows = [
+        [t.male, profile.malePercent],
+        [t.female, profile.femalePercent],
+    ] as const;
+    const householdRows = [
+        [t.singleHousehold, profile.singleHouseholdPercent],
+        [t.coupleHousehold, profile.coupleHouseholdPercent],
+        [t.familyHousehold, profile.familyHouseholdPercent],
+    ] as const;
+    const educationRows = [
+        [t.educationLow, profile.educationLowPercent],
+        [t.educationMedium, profile.educationMediumPercent],
+        [t.educationHigh, profile.educationHighPercent],
+    ] as const;
+    const hasGender = genderRows.some(([, value]) => value !== null);
+    const hasHousehold =
+        householdRows.some(([, value]) => value !== null) ||
+        profile.averageHouseholdSize !== null;
+    const hasEducation = educationRows.some(([, value]) => value !== null);
+    if (!hasGender && !hasHousehold && !hasEducation) return null;
+
+    return (
+        <div className="mt-8">
+            <h3 className="font-semibold">{t.demographics}</h3>
+            <div className="mt-4 grid gap-6 sm:grid-cols-3">
+                {hasGender ? (
+                    <div>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-muted">
+                            {t.gender}
+                        </p>
+                        <div className="mt-3 space-y-3">
+                            {genderRows.map(([label, value]) => (
+                                <DistributionBar
+                                    key={label}
+                                    label={label}
+                                    value={value}
+                                    locale={locale}
+                                    colorClass="bg-brand"
+                                />
+                            ))}
+                        </div>
+                    </div>
+                ) : null}
+                {hasHousehold ? (
+                    <div>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-muted">
+                            {t.householdComposition}
+                        </p>
+                        <div className="mt-3 space-y-3">
+                            {householdRows.map(([label, value]) => (
+                                <DistributionBar
+                                    key={label}
+                                    label={label}
+                                    value={value}
+                                    locale={locale}
+                                    colorClass="bg-brand"
+                                />
+                            ))}
+                        </div>
+                        {profile.averageHouseholdSize !== null ? (
+                            <p className="mt-3 text-xs text-muted">
+                                {t.averageHouseholdSize}:{" "}
+                                <span className="font-semibold text-foreground">
+                                    {new Intl.NumberFormat(locale, {
+                                        maximumFractionDigits: 1,
+                                    }).format(
+                                        Number(profile.averageHouseholdSize),
+                                    )}{" "}
+                                    {t.personsPerHousehold}
+                                </span>
+                            </p>
+                        ) : null}
+                    </div>
+                ) : null}
+                {hasEducation ? (
+                    <div>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-muted">
+                            {t.educationLevel}
+                        </p>
+                        <p className="mt-1 text-[11px] leading-4 text-muted">
+                            {t.educationIntro}
+                        </p>
+                        <div className="mt-3 space-y-3">
+                            {educationRows.map(([label, value]) => (
+                                <DistributionBar
+                                    key={label}
+                                    label={label}
+                                    value={value}
+                                    locale={locale}
+                                    colorClass={
+                                        label === t.educationHigh
+                                            ? "bg-brand-dark"
+                                            : "bg-brand"
+                                    }
+                                />
+                            ))}
+                        </div>
+                    </div>
+                ) : null}
+            </div>
+            <p className="mt-4 text-xs leading-5 text-muted">
+                {t.demographicsNote}
+                {profile.educationStatisticsYear
+                    ? ` · ${t.educationLevel} ${profile.educationStatisticsYear}`
+                    : ""}
+                {profile.demographicsSourceUrl ? (
+                    <>
+                        {" · "}
+                        <a
+                            href={profile.demographicsSourceUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="underline decoration-line underline-offset-4"
+                        >
+                            CBS
+                        </a>
+                    </>
+                ) : null}
+                {profile.demographicsRetrievedAt
+                    ? ` · ${formatDate(profile.demographicsRetrievedAt, locale)}`
+                    : ""}
+            </p>
+        </div>
+    );
+}
+
+function DistributionBar({
+    label,
+    value,
+    locale,
+    colorClass,
+}: {
+    label: string;
+    value: NumericValue;
+    locale: string;
+    colorClass: string;
+}) {
+    const percentage = value === null ? null : Number(value);
+    return (
+        <div>
+            <div className="flex items-baseline justify-between gap-3">
+                <p className="text-sm">{label}</p>
+                <p className="text-sm font-semibold">
+                    {formatPercent(value, locale) ?? "—"}
+                </p>
+            </div>
+            <div className="mt-1 h-2 bg-background">
+                <div
+                    className={`h-full ${colorClass}`}
+                    style={{
+                        width: `${Math.min(100, percentage ?? 0)}%`,
+                    }}
+                />
+            </div>
         </div>
     );
 }
@@ -1505,7 +2197,16 @@ function getDensityComparison(
 ): Comparison | null {
     if (value === null || !nationalValue) return null;
     const ratio = value / nationalValue;
-    const score = ratio < 0.5 ? 1 : ratio < 0.85 ? 2 : ratio <= 1.15 ? 3 : ratio <= 2 ? 4 : 5;
+    const score =
+        ratio < 0.5
+            ? 1
+            : ratio < 0.85
+              ? 2
+              : ratio <= 1.15
+                ? 3
+                : ratio <= 2
+                  ? 4
+                  : 5;
     const tones = ["good", "good", "neutral", "attention", "bad"] as const;
     return {
         label: `${t.densityScore} ${score}/5 · ${t.densityLevels[score - 1]}`,
@@ -1521,7 +2222,11 @@ function getDifferenceComparison(
     locale: string,
     mode: "percentagePoints" | "percent",
 ): Comparison | null {
-    if (value === null || nationalValue === null || Number(nationalValue) === 0) {
+    if (
+        value === null ||
+        nationalValue === null ||
+        Number(nationalValue) === 0
+    ) {
         return null;
     }
     const local = Number(value);
@@ -1531,7 +2236,8 @@ function getDifferenceComparison(
             ? local - national
             : ((local - national) / national) * 100;
     const absoluteDifference = Math.abs(difference);
-    const isSimilar = absoluteDifference < (mode === "percentagePoints" ? 5 : 15);
+    const isSimilar =
+        absoluteDifference < (mode === "percentagePoints" ? 5 : 15);
     const label = isSimilar
         ? t.aroundNetherlands
         : difference < 0
@@ -1624,7 +2330,7 @@ function BidWindowStatus({
     const relevantDate = state === "upcoming" ? opensAt : closesAt;
 
     return (
-        <div className="rounded-3xl border border-line bg-white p-6 shadow-xl sm:p-7">
+        <div className="rounded-3xl border border-line bg-surface p-6 shadow-xl sm:p-7">
             <span className="grid size-11 place-items-center rounded-2xl bg-background text-brand">
                 <Clock3 size={21} />
             </span>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import {
     Building2,
+    Calculator,
     ChevronLeft,
     ChevronRight,
     Heart,
@@ -11,7 +12,9 @@ import {
     Search,
 } from "lucide-react";
 import { AuthActions } from "@/components/auth/auth-actions";
+import { ErfpachtToggle } from "@/components/marketplace/erfpacht-toggle";
 import { MarketplaceResults } from "@/components/marketplace/marketplace-results";
+import { MonumentToggle } from "@/components/marketplace/monument-toggle";
 import {
     searchMarketplaceListings,
     type MarketplaceSearchParams,
@@ -33,6 +36,15 @@ const propertyTypeOptions = [
     ["PARKING", "Parkeerplaats"],
     ["COMMERCIAL", "Bedrijfsruimte"],
 ] as const;
+function statusOptions(purpose: "SALE" | "RENT") {
+    const options: (readonly [string, string])[] = [
+        ["LIVE", purpose === "SALE" ? "Te koop" : "Te huur"],
+        ["UNDER_OFFER", "Onder bod"],
+    ];
+    if (purpose === "SALE") options.push(["SOLD", "Verkocht"]);
+    else options.push(["RENTED", "Verhuurd"]);
+    return options;
+}
 const amenityOptions = [
     ["SOLAR_PANELS", "Zonnepanelen"],
     ["HEAT_PUMP", "Warmtepomp"],
@@ -40,6 +52,8 @@ const amenityOptions = [
     ["FIBER_OPTIC", "Glasvezel"],
     ["EV_CHARGER", "Laadpaal"],
     ["FIREPLACE", "Open haard"],
+    ["MECHANICAL_VENTILATION", "Mechanische ventilatie"],
+    ["ALARM_SYSTEM", "Alarmsysteem"],
 ] as const;
 const parkingOptions = [
     ["ON_PROPERTY", "Op eigen terrein"],
@@ -47,6 +61,8 @@ const parkingOptions = [
     ["PARKING_PERMIT", "Parkeervergunning"],
     ["PRIVATE_GARAGE", "Eigen garage"],
     ["PUBLIC_GARAGE", "Openbare garage"],
+    ["PAID_STREET", "Betaald parkeren"],
+    ["SPACE_FOR_SALE", "Parkeerplaats te koop"],
 ] as const;
 const energyLabelOptions = [
     ["A_PLUS_PLUS_PLUS_PLUS_PLUS", "A+++++"],
@@ -120,6 +136,12 @@ export default async function SearchPage({
         auth.api.getSession({ headers: await headers() }),
     ]);
     const selectedPropertyTypes = values(params.propertyType);
+    const selectedStatuses = values(params.status);
+    const statusFilterOptions = statusOptions(result.filters.purpose);
+    const activeStatusValues = statusFilterOptions.map(([value]) => value);
+    const visibleSelectedStatuses = selectedStatuses.filter((value) =>
+        activeStatusValues.includes(value),
+    );
     const selectedEnergyLabels = values(params.energyLabel);
     const selectedAmenities = values(params.amenity);
     const selectedParking = values(params.parking);
@@ -128,6 +150,20 @@ export default async function SearchPage({
             result.filters.constructionYearMin !== null ||
                 result.filters.constructionYearMax !== null,
         ) + Number(result.filters.monumentFilter !== "all");
+    const erfpachtFilterCount = Number(result.filters.erfpachtFilter !== "all");
+    const neighborhoodFilterCount =
+        Number(result.filters.populationDensityPerKm2Max !== null) +
+        Number(result.filters.housingCorporationPercentMax !== null) +
+        Number(result.filters.supermarketDistanceKmMax !== null) +
+        Number(result.filters.primarySchoolDistanceKmMax !== null) +
+        Number(result.filters.busStopDistanceMetersMax !== null) +
+        Number(result.filters.trainStationDistanceMetersMax !== null) +
+        Number(result.filters.registeredCrimesPer1000Max !== null) +
+        Number(result.filters.foundationRiskFilter !== "all") +
+        Number(result.filters.noiseRoadLdenMax !== null);
+    const availabilityFilterCount = Number(
+        result.filters.availableFrom !== "any",
+    );
     return (
         <div className="min-h-screen bg-background">
             <header className="border-b border-line bg-background/92 backdrop-blur-xl">
@@ -151,17 +187,23 @@ export default async function SearchPage({
                         >
                             Woning zoeken
                         </Link>
+                        <Link
+                            href="/mortgage-calculator"
+                            className="hidden items-center gap-1.5 px-3 py-2 text-sm font-semibold text-muted transition hover:text-brand lg:inline-flex"
+                        >
+                            <Calculator size={16} /> Hypotheek berekenen
+                        </Link>
                         {session ? (
                             <>
                                 <Link
                                     href="/dashboard/zoeker?tab=favorites"
-                                    className="hidden h-10 items-center gap-2 rounded-full px-3 text-sm font-semibold transition hover:bg-white md:inline-flex"
+                                    className="hidden h-10 items-center gap-2 rounded-full px-3 text-sm font-semibold transition hover:bg-surface md:inline-flex"
                                 >
                                     <Heart size={16} /> Favorieten
                                 </Link>
                                 <Link
                                     href="/dashboard"
-                                    className="inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold transition hover:bg-white sm:w-auto sm:gap-2 sm:px-3"
+                                    className="inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold transition hover:bg-surface sm:w-auto sm:gap-2 sm:px-3"
                                     aria-label="Mijn woningen beheren"
                                     title="Mijn woningen beheren"
                                 >
@@ -216,7 +258,7 @@ export default async function SearchPage({
                             id="purpose"
                             name="purpose"
                             defaultValue={result.filters.purpose}
-                            className="h-13 rounded-md border-0 bg-white px-4 font-semibold text-foreground outline-none ring-brand focus:ring-2"
+                            className="h-13 rounded-md border-0 bg-white px-4 font-semibold text-foreground outline-none ring-brand focus:ring-2 dark:text-brand-dark"
                         >
                             <option value="SALE">Kopen</option>
                             <option value="RENT">Huren</option>
@@ -233,7 +275,7 @@ export default async function SearchPage({
                                 name="q"
                                 defaultValue={result.filters.query}
                                 placeholder="Plaats, buurt, postcode of straat"
-                                className="h-13 w-full rounded-md border-0 bg-white pl-12 pr-4 text-foreground outline-none ring-brand placeholder:text-muted focus:ring-2"
+                                className="h-13 w-full rounded-md border-0 bg-white pl-12 pr-4 text-foreground outline-none ring-brand placeholder:text-muted focus:ring-2 dark:text-brand-dark dark:placeholder:text-brand-dark/60"
                             />
                         </label>
                         <button
@@ -274,7 +316,7 @@ export default async function SearchPage({
 
             <form
                 action="/zoeken"
-                className="sticky top-0 z-900 border-b border-line bg-white"
+                className="sticky top-0 z-900 border-b border-line bg-surface"
             >
                 <input
                     type="hidden"
@@ -343,6 +385,71 @@ export default async function SearchPage({
                         className="group relative shrink-0"
                     >
                         <summary className="marketplace-filter-trigger">
+                            Status
+                            {visibleSelectedStatuses.length
+                                ? ` · ${visibleSelectedStatuses.length}`
+                                : ""}
+                        </summary>
+                        <div className="marketplace-filter-panel w-60">
+                            <FilterChecks
+                                name="status"
+                                options={statusFilterOptions}
+                                selected={visibleSelectedStatuses}
+                            />
+                            <p className="mt-3 text-xs leading-5 text-muted">
+                                {result.filters.purpose === "SALE"
+                                    ? "Toont ook verkochte woningen met de uiteindelijke prijs."
+                                    : "Toont ook verhuurde woningen met de uiteindelijke huurprijs."}
+                            </p>
+                            <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
+                                Toepassen
+                            </button>
+                        </div>
+                    </details>
+                    <details
+                        name="marketplace-filters"
+                        className="group relative shrink-0"
+                    >
+                        <summary className="marketplace-filter-trigger">
+                            Beschikbaarheid
+                            {availabilityFilterCount
+                                ? ` · ${availabilityFilterCount}`
+                                : ""}
+                        </summary>
+                        <div className="marketplace-filter-panel w-64">
+                            <label className="text-xs font-semibold text-muted">
+                                Beschikbaar vanaf
+                                <select
+                                    name="availableFrom"
+                                    defaultValue={
+                                        result.filters.availableFrom === "any"
+                                            ? ""
+                                            : result.filters.availableFrom
+                                    }
+                                    className="marketplace-filter-input mt-1.5"
+                                >
+                                    <option value="">Alle woningen</option>
+                                    <option value="now">
+                                        Direct beschikbaar
+                                    </option>
+                                    <option value="1m">Binnen 1 maand</option>
+                                    <option value="3m">Binnen 3 maanden</option>
+                                </select>
+                            </label>
+                            <p className="mt-3 text-xs leading-5 text-muted">
+                                Handig voor huurwoningen: toont woningen die
+                                binnen de gekozen periode beschikbaar komen.
+                            </p>
+                            <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
+                                Toepassen
+                            </button>
+                        </div>
+                    </details>
+                    <details
+                        name="marketplace-filters"
+                        className="group relative shrink-0"
+                    >
+                        <summary className="marketplace-filter-trigger">
                             Woningtype
                             {selectedPropertyTypes.length
                                 ? ` · ${selectedPropertyTypes.length}`
@@ -367,26 +474,50 @@ export default async function SearchPage({
                             Oppervlakte & kamers
                         </summary>
                         <div className="marketplace-filter-panel grid w-80 gap-3">
-                            <label className="text-xs font-semibold text-muted">
-                                Minimaal woonoppervlak
-                                <select
-                                    name="livingAreaMin"
-                                    defaultValue={
-                                        result.filters.livingAreaMin ?? ""
-                                    }
-                                    className="marketplace-filter-input mt-1.5"
-                                >
-                                    <option value="">Geen voorkeur</option>
-                                    {[50, 75, 100, 125, 150, 200].map(
-                                        (area) => (
-                                            <option key={area} value={area}>
-                                                {area} m² of meer
-                                            </option>
-                                        ),
-                                    )}
-                                </select>
-                            </label>
                             <div className="grid grid-cols-2 gap-3">
+                                <label className="text-xs font-semibold text-muted">
+                                    Minimaal woonoppervlak
+                                    <select
+                                        name="livingAreaMin"
+                                        defaultValue={
+                                            result.filters.livingAreaMin ?? ""
+                                        }
+                                        className="marketplace-filter-input mt-1.5"
+                                    >
+                                        <option value="">Geen voorkeur</option>
+                                        {[50, 75, 100, 125, 150, 200].map(
+                                            (area) => (
+                                                <option key={area} value={area}>
+                                                    {area} m² of meer
+                                                </option>
+                                            ),
+                                        )}
+                                    </select>
+                                </label>
+                                <label className="text-xs font-semibold text-muted">
+                                    Minimaal perceel
+                                    <select
+                                        name="plotAreaMin"
+                                        defaultValue={
+                                            result.filters.plotAreaMin ?? ""
+                                        }
+                                        className="marketplace-filter-input mt-1.5"
+                                    >
+                                        <option value="">Geen voorkeur</option>
+                                        {[100, 250, 500, 1000, 2500].map(
+                                            (area) => (
+                                                <option key={area} value={area}>
+                                                    {area.toLocaleString(
+                                                        "nl-NL",
+                                                    )}{" "}
+                                                    m² of meer
+                                                </option>
+                                            ),
+                                        )}
+                                    </select>
+                                </label>
+                            </div>
+                            <div className="grid grid-cols-3 gap-3">
                                 <label className="text-xs font-semibold text-muted">
                                     Kamers
                                     <select
@@ -415,6 +546,23 @@ export default async function SearchPage({
                                     >
                                         <option value="">Alle</option>
                                         {[1, 2, 3, 4, 5].map((count) => (
+                                            <option key={count} value={count}>
+                                                {count}+
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+                                <label className="text-xs font-semibold text-muted">
+                                    Badkamers
+                                    <select
+                                        name="bathroomsMin"
+                                        defaultValue={
+                                            result.filters.bathroomsMin ?? ""
+                                        }
+                                        className="marketplace-filter-input mt-1.5"
+                                    >
+                                        <option value="">Alle</option>
+                                        {[1, 2, 3, 4].map((count) => (
                                             <option key={count} value={count}>
                                                 {count}+
                                             </option>
@@ -500,7 +648,7 @@ export default async function SearchPage({
                                 ? ` · ${buildingFilterCount}`
                                 : ""}
                         </summary>
-                        <div className="marketplace-filter-panel marketplace-filter-panel-right grid w-60 gap-3">
+                        <div className="marketplace-filter-panel marketplace-filter-panel-right grid w-72 gap-3">
                             <label className="text-xs font-semibold text-muted">
                                 Minimaal bouwjaar
                                 <input
@@ -529,26 +677,190 @@ export default async function SearchPage({
                                     className="marketplace-filter-input mt-1.5"
                                 />
                             </label>
+                            <div>
+                                <p className="text-xs font-semibold text-muted">
+                                    Monumentstatus
+                                </p>
+                                <div className="mt-1.5">
+                                    <MonumentToggle
+                                        value={result.filters.monumentFilter}
+                                    />
+                                </div>
+                            </div>
+                            <button className="h-10 rounded-md bg-brand text-sm font-semibold text-white">
+                                Toepassen
+                            </button>
+                        </div>
+                    </details>
+                    <details
+                        name="marketplace-filters"
+                        className="group relative shrink-0"
+                    >
+                        <summary className="marketplace-filter-trigger">
+                            Buurt
+                            {neighborhoodFilterCount
+                                ? ` · ${neighborhoodFilterCount}`
+                                : ""}
+                        </summary>
+                        <div className="marketplace-filter-panel marketplace-filter-panel-right grid w-80 gap-4">
+                            <div className="grid grid-cols-2 gap-3">
+                                <label className="text-xs font-semibold text-muted">
+                                    Bevolkingsdichtheid
+                                    <select
+                                        name="populationDensityPerKm2Max"
+                                        defaultValue={
+                                            result.filters
+                                                .populationDensityPerKm2Max ??
+                                            ""
+                                        }
+                                        className="marketplace-filter-input mt-1.5"
+                                    >
+                                        <option value="">Geen voorkeur</option>
+                                        <option value="1000">
+                                            Rustig (max 1.000/km²)
+                                        </option>
+                                        <option value="2500">
+                                            Niet te druk (max 2.500/km²)
+                                        </option>
+                                    </select>
+                                </label>
+                                <label className="text-xs font-semibold text-muted">
+                                    Sociale huur
+                                    <select
+                                        name="housingCorporationPercentMax"
+                                        defaultValue={
+                                            result.filters
+                                                .housingCorporationPercentMax ??
+                                            ""
+                                        }
+                                        className="marketplace-filter-input mt-1.5"
+                                    >
+                                        <option value="">Geen voorkeur</option>
+                                        <option value="25">
+                                            Weinig (max 25%)
+                                        </option>
+                                        <option value="50">
+                                            Gematigd (max 50%)
+                                        </option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div>
+                                <p className="text-xs font-semibold text-muted">
+                                    Voorzieningen in de buurt
+                                </p>
+                                <div className="mt-2 grid gap-2.5">
+                                    <label className="flex cursor-pointer items-center gap-3 text-sm">
+                                        <input
+                                            type="checkbox"
+                                            name="supermarketDistanceKmMax"
+                                            value="1"
+                                            defaultChecked={
+                                                result.filters
+                                                    .supermarketDistanceKmMax ===
+                                                1
+                                            }
+                                            className="size-4 accent-brand"
+                                        />
+                                        Supermarkt binnen 1 km
+                                    </label>
+                                    <label className="flex cursor-pointer items-center gap-3 text-sm">
+                                        <input
+                                            type="checkbox"
+                                            name="primarySchoolDistanceKmMax"
+                                            value="1"
+                                            defaultChecked={
+                                                result.filters
+                                                    .primarySchoolDistanceKmMax ===
+                                                1
+                                            }
+                                            className="size-4 accent-brand"
+                                        />
+                                        Basisschool binnen 1 km
+                                    </label>
+                                    <label className="flex cursor-pointer items-center gap-3 text-sm">
+                                        <input
+                                            type="checkbox"
+                                            name="busStopDistanceMetersMax"
+                                            value="500"
+                                            defaultChecked={
+                                                result.filters
+                                                    .busStopDistanceMetersMax ===
+                                                500
+                                            }
+                                            className="size-4 accent-brand"
+                                        />
+                                        Bushalte binnen 500 m
+                                    </label>
+                                    <label className="flex cursor-pointer items-center gap-3 text-sm">
+                                        <input
+                                            type="checkbox"
+                                            name="trainStationDistanceMetersMax"
+                                            value="2000"
+                                            defaultChecked={
+                                                result.filters
+                                                    .trainStationDistanceMetersMax ===
+                                                2000
+                                            }
+                                            className="size-4 accent-brand"
+                                        />
+                                        Treinstation binnen 2 km
+                                    </label>
+                                </div>
+                            </div>
                             <label className="text-xs font-semibold text-muted">
-                                Monumentstatus
+                                Veiligheid
                                 <select
-                                    name="isMonument"
+                                    name="registeredCrimesPer1000Max"
                                     defaultValue={
-                                        result.filters.monumentFilter === "only"
-                                            ? "true"
-                                            : result.filters.monumentFilter ===
-                                                "exclude"
-                                              ? "false"
-                                              : ""
+                                        result.filters
+                                            .registeredCrimesPer1000Max ?? ""
                                     }
                                     className="marketplace-filter-input mt-1.5"
                                 >
-                                    <option value="">Alle panden</option>
-                                    <option value="true">
-                                        Alleen monumentale panden
+                                    <option value="">Geen voorkeur</option>
+                                    <option value="40">
+                                        Weinig misdrijven (max 40/1.000 inw.)
                                     </option>
-                                    <option value="false">
-                                        Monumentale panden uitsluiten
+                                </select>
+                            </label>
+                            <label className="text-xs font-semibold text-muted">
+                                Funderingsrisico
+                                <select
+                                    name="foundationRisk"
+                                    defaultValue={
+                                        result.filters.foundationRiskFilter ===
+                                        "all"
+                                            ? ""
+                                            : result.filters
+                                                  .foundationRiskFilter
+                                    }
+                                    className="marketplace-filter-input mt-1.5"
+                                >
+                                    <option value="">Geen voorkeur</option>
+                                    <option value="low">
+                                        Alleen laag risico
+                                    </option>
+                                    <option value="none_low">
+                                        Geen verhoogd risico
+                                    </option>
+                                </select>
+                            </label>
+                            <label className="text-xs font-semibold text-muted">
+                                Geluid van wegverkeer
+                                <select
+                                    name="noiseRoadLdenMax"
+                                    defaultValue={
+                                        result.filters.noiseRoadLdenMax ?? ""
+                                    }
+                                    className="marketplace-filter-input mt-1.5"
+                                >
+                                    <option value="">Geen voorkeur</option>
+                                    <option value="50">
+                                        Rustig (max 50 dB)
+                                    </option>
+                                    <option value="55">
+                                        Max 55 dB (richtwaarde)
                                     </option>
                                 </select>
                             </label>
@@ -557,11 +869,41 @@ export default async function SearchPage({
                             </button>
                         </div>
                     </details>
+                    <details
+                        name="marketplace-filters"
+                        className="group relative shrink-0"
+                    >
+                        <summary className="marketplace-filter-trigger">
+                            Erfpacht
+                            {erfpachtFilterCount
+                                ? ` · ${erfpachtFilterCount}`
+                                : ""}
+                        </summary>
+                        <div className="marketplace-filter-panel marketplace-filter-panel-right w-64">
+                            <div>
+                                <p className="text-xs font-semibold text-muted">
+                                    Grondsituatie
+                                </p>
+                                <div className="mt-1.5">
+                                    <ErfpachtToggle
+                                        value={result.filters.erfpachtFilter}
+                                    />
+                                </div>
+                            </div>
+                            <p className="mt-4 text-xs leading-5 text-muted">
+                                Erfpacht toont woningen waarvan de grond in
+                                erfpacht is (met of zonder afgekochte canon).
+                            </p>
+                            <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
+                                Toepassen
+                            </button>
+                        </div>
+                    </details>
                 </div>
             </form>
 
             <main>
-                <div className="border-b border-line bg-white">
+                <div className="border-b border-line bg-surface">
                     <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
                         <div>
                             <p className="font-semibold">
@@ -603,7 +945,7 @@ export default async function SearchPage({
                                 <select
                                     name="sort"
                                     defaultValue={result.filters.sort}
-                                    className="h-10 rounded-md border border-line bg-white px-3 font-semibold text-foreground"
+                                    className="h-10 rounded-md border border-line bg-surface px-3 font-semibold text-foreground"
                                 >
                                     <option value="newest">Nieuwste</option>
                                     <option value="price_asc">
@@ -630,7 +972,7 @@ export default async function SearchPage({
                 {result.pagination.pageCount > 1 ? (
                     <nav
                         aria-label="Resultaatpagina's"
-                        className="border-t border-line bg-white px-4 py-7"
+                        className="border-t border-line bg-surface px-4 py-7"
                     >
                         <div className="mx-auto flex max-w-2xl items-center justify-center gap-3">
                             {result.pagination.page > 1 ? (

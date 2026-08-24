@@ -8,6 +8,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     Bell,
     BellRing,
+    Calculator,
     CalendarDays,
     Check,
     CheckCircle2,
@@ -19,13 +20,16 @@ import {
     FileText,
     Heart,
     House,
+    MessageSquare,
     Search,
     Settings2,
     Share2,
+    ShieldCheck,
     Trash2,
     Users,
     X,
 } from "lucide-react";
+import { ListingMessageThread } from "@/components/messages/listing-message-thread";
 
 type Listing = {
     id: string;
@@ -111,6 +115,15 @@ type Share = {
     createdAt: string;
     _count: { items: number };
 };
+type MessageThread = {
+    listingId: string;
+    listing: Listing;
+    lastMessageAt: string;
+    messageCount: number;
+    unreadIncoming: number;
+    hasTransferred: boolean;
+    transaction: { id: string; status: string } | null;
+};
 type DashboardData = {
     favorites: Favorite[];
     searches: SearchItem[];
@@ -120,6 +133,7 @@ type DashboardData = {
     bids: Bid[];
     transactions: Transaction[];
     shares: Share[];
+    messageThreads: MessageThread[];
 };
 type Tab =
     | "overview"
@@ -127,6 +141,7 @@ type Tab =
     | "searches"
     | "viewings"
     | "bids"
+    | "messages"
     | "transactions"
     | "notifications";
 
@@ -136,6 +151,7 @@ const tabs: Array<[Tab, string, typeof Heart]> = [
     ["searches", "Zoekopdrachten", Search],
     ["viewings", "Bezichtigingen", CalendarDays],
     ["bids", "Biedingen", Euro],
+    ["messages", "Berichten", MessageSquare],
     ["transactions", "Transacties", FileText],
     ["notifications", "Meldingen", Bell],
 ];
@@ -220,6 +236,10 @@ export function SeekerDashboard({
     }, [queryClient]);
     const data = dashboard.data;
     const unread = data.notifications.filter((item) => !item.readAt).length;
+    const messageUnread = data.messageThreads.reduce(
+        (total, thread) => total + thread.unreadIncoming,
+        0,
+    );
     return (
         <div className="pb-20">
             <header className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
@@ -234,12 +254,20 @@ export function SeekerDashboard({
                         Je woningen, afspraken en acties op één plek.
                     </p>
                 </div>
-                <Link
-                    href="/zoeken"
-                    className="inline-flex h-12 items-center justify-center gap-2 bg-brand px-6 font-semibold text-white"
-                >
-                    <Search size={18} /> Zoek woningen
-                </Link>
+                <div className="flex flex-wrap items-center gap-3">
+                    <Link
+                        href="/mortgage-calculator"
+                        className="inline-flex h-12 items-center justify-center gap-2 border border-brand px-5 font-semibold text-brand transition hover:bg-brand hover:text-white"
+                    >
+                        <Calculator size={18} /> Maximale hypotheek
+                    </Link>
+                    <Link
+                        href="/zoeken"
+                        className="inline-flex h-12 items-center justify-center gap-2 bg-brand px-6 font-semibold text-white"
+                    >
+                        <Search size={18} /> Zoek woningen
+                    </Link>
+                </div>
             </header>
             <nav
                 className="mt-7 flex gap-1 overflow-x-auto border-b border-line"
@@ -256,6 +284,11 @@ export function SeekerDashboard({
                             {id === "notifications" && unread > 0 && (
                                 <span className="grid min-w-5 place-items-center rounded-full bg-brand px-1 text-[10px] text-white">
                                     {unread}
+                                </span>
+                            )}
+                            {id === "messages" && messageUnread > 0 && (
+                                <span className="grid min-w-5 place-items-center rounded-full bg-brand px-1 text-[10px] text-white">
+                                    {messageUnread}
                                 </span>
                             )}
                         </button>
@@ -288,6 +321,16 @@ export function SeekerDashboard({
                 )}
                 {tab === "viewings" && <Viewings items={data.viewings} />}
                 {tab === "bids" && <Bids items={data.bids} />}
+                {tab === "messages" && (
+                    <Messages
+                        data={data}
+                        refresh={() =>
+                            queryClient.invalidateQueries({
+                                queryKey: ["seeker-dashboard"],
+                            })
+                        }
+                    />
+                )}
                 {tab === "transactions" && (
                     <Transactions items={data.transactions} />
                 )}
@@ -336,7 +379,7 @@ function Overview({
         .sort((a, b) => a.dueAt!.localeCompare(b.dueAt!));
     return (
         <div className="grid gap-5 lg:grid-cols-[1.35fr_0.65fr]">
-            <section className="border border-line bg-white p-6">
+            <section className="border border-line bg-surface p-6">
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="text-xs font-semibold uppercase tracking-wider text-brand">
@@ -404,7 +447,7 @@ function Overview({
                     onClick={() => selectTab("bids")}
                 />
             </section>
-            <section className="border border-line bg-white p-6 lg:col-span-2">
+            <section className="border border-line bg-surface p-6 lg:col-span-2">
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold">Recent bewaard</h2>
                     <button
@@ -447,7 +490,7 @@ function Metric({
     return (
         <button
             onClick={onClick}
-            className="bg-white p-6 text-left hover:bg-background"
+            className="bg-surface p-6 text-left hover:bg-background"
         >
             <span className="text-3xl font-semibold text-brand">{value}</span>
             <span className="mt-1 block text-sm text-muted">{label}</span>
@@ -549,7 +592,7 @@ function Favorites({
                 )}
             </div>
             {shareUrl && (
-                <div className="mt-5 flex flex-col gap-2 border border-brand/25 bg-white p-4 sm:flex-row sm:items-center">
+                <div className="mt-5 flex flex-col gap-2 border border-brand/25 bg-surface p-4 sm:flex-row sm:items-center">
                     <CheckCircle2 className="text-brand" size={19} />
                     <div className="min-w-0 flex-1">
                         <p className="text-sm font-semibold">
@@ -655,13 +698,13 @@ function FavoriteCard({
     );
     return (
         <article
-            className={`overflow-hidden border bg-white ${checked ? "border-brand ring-2 ring-brand/10" : "border-line"}`}
+            className={`overflow-hidden border bg-surface ${checked ? "border-brand ring-2 ring-brand/10" : "border-line"}`}
         >
             <div className="relative aspect-video bg-background">
                 <button
                     onClick={onCheck}
                     aria-label="Selecteer voor shortlist"
-                    className={`absolute left-3 top-3 z-10 grid size-9 place-items-center border shadow-sm ${checked ? "border-brand bg-brand text-white" : "border-line bg-white text-brand"}`}
+                    className={`absolute left-3 top-3 z-10 grid size-9 place-items-center border shadow-sm ${checked ? "border-brand bg-brand text-white" : "border-line bg-surface text-brand"}`}
                 >
                     {checked ? <Check size={17} /> : <Share2 size={16} />}
                 </button>
@@ -728,7 +771,7 @@ function Shares({
                 {shares.map((share) => (
                     <div
                         key={share.id}
-                        className="flex items-center gap-3 border border-line bg-white p-3"
+                        className="flex items-center gap-3 border border-line bg-surface p-3"
                     >
                         <Users className="text-brand" size={18} />
                         <div className="flex-1">
@@ -804,7 +847,7 @@ function Searches({
                 {data.searches.map((search) => (
                     <div
                         key={search.id}
-                        className="flex flex-col gap-4 border border-line bg-white p-5 sm:flex-row sm:items-center"
+                        className="flex flex-col gap-4 border border-line bg-surface p-5 sm:flex-row sm:items-center"
                     >
                         <span className="grid size-11 shrink-0 place-items-center bg-background text-brand">
                             <Search size={19} />
@@ -890,7 +933,7 @@ function Viewings({ items }: { items: Viewing[] }) {
             {items.map((item) => (
                 <div
                     key={item.id}
-                    className="flex flex-col gap-4 border border-line bg-white p-5 sm:flex-row sm:items-center"
+                    className="flex flex-col gap-4 border border-line bg-surface p-5 sm:flex-row sm:items-center"
                 >
                     <DateTile date={item.slot.startsAt} />
                     <div className="flex-1">
@@ -942,7 +985,7 @@ function Bids({ items }: { items: Bid[] }) {
                 return (
                     <div
                         key={bid.id}
-                        className="border border-line bg-white p-5"
+                        className="border border-line bg-surface p-5"
                     >
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                             <div className="flex-1">
@@ -992,6 +1035,76 @@ function Bids({ items }: { items: Bid[] }) {
         </ListSection>
     );
 }
+function Messages({
+    data,
+    refresh,
+}: {
+    data: DashboardData;
+    refresh: () => void;
+}) {
+    const [openListingId, setOpenListingId] = useState<string | null>(null);
+    if (openListingId) {
+        return (
+            <div className="mx-auto max-w-2xl">
+                <ListingMessageThread
+                    listingId={openListingId}
+                    onBack={() => setOpenListingId(null)}
+                    onThreadChange={refresh}
+                />
+            </div>
+        );
+    }
+    return (
+        <ListSection
+            title="Berichten"
+            text="Jouw gesprekken met verkopers, rechtstreeks binnen het platform."
+            empty={
+                <Empty
+                    icon={MessageSquare}
+                    title="Nog geen berichten"
+                    text="Open een woning en stuur een bericht aan de verkoper."
+                    href="/zoeken"
+                />
+            }
+        >
+            {data.messageThreads.map((thread) => (
+                <button
+                    key={thread.listingId}
+                    type="button"
+                    onClick={() => setOpenListingId(thread.listingId)}
+                    className="group flex flex-col gap-4 border border-line bg-surface p-5 text-left transition hover:border-brand/40 sm:flex-row sm:items-center"
+                >
+                    <div className="flex-1">
+                        <ListingHeading listing={thread.listing} />
+                        <p className="mt-2 text-xs text-muted">
+                            {thread.messageCount} bericht
+                            {thread.messageCount === 1 ? "" : "en"} · laatste op{" "}
+                            {new Date(thread.lastMessageAt).toLocaleString(
+                                "nl-NL",
+                                { dateStyle: "medium", timeStyle: "short" },
+                            )}
+                        </p>
+                    </div>
+                    {thread.unreadIncoming > 0 ? (
+                        <span className="grid size-6 shrink-0 place-items-center rounded-full bg-brand text-[11px] font-semibold text-white">
+                            {thread.unreadIncoming}
+                        </span>
+                    ) : null}
+                    {thread.transaction && thread.hasTransferred ? (
+                        <span className="inline-flex shrink-0 items-center gap-1 rounded-md bg-accent px-2 py-1 text-[11px] font-semibold text-brand-dark">
+                            <ShieldCheck size={12} /> Verplaatst naar transactie
+                        </span>
+                    ) : null}
+                    <ChevronRight
+                        className="text-brand transition group-hover:translate-x-1"
+                        size={19}
+                    />
+                </button>
+            ))}
+        </ListSection>
+    );
+}
+
 function Transactions({ items }: { items: Transaction[] }) {
     return (
         <ListSection
@@ -1016,7 +1129,7 @@ function Transactions({ items }: { items: Transaction[] }) {
                     <Link
                         key={transaction.id}
                         href={`/dashboard/transacties/${transaction.id}`}
-                        className="group flex flex-col gap-4 border border-line bg-white p-5 hover:border-brand/40 sm:flex-row sm:items-center"
+                        className="group flex flex-col gap-4 border border-line bg-surface p-5 hover:border-brand/40 sm:flex-row sm:items-center"
                     >
                         <div className="flex-1">
                             <ListingHeading listing={transaction.listing} />
@@ -1090,7 +1203,7 @@ function Notifications({
                         </button>
                     )}
                 </div>
-                <div className="mt-5 divide-y divide-line border border-line bg-white">
+                <div className="mt-5 divide-y divide-line border border-line bg-surface">
                     {data.notifications.map((item) => {
                         const content = (
                             <div
@@ -1149,7 +1262,7 @@ function Notifications({
                     )}
                 </div>
             </section>
-            <section className="h-fit border border-line bg-white p-5">
+            <section className="h-fit border border-line bg-surface p-5">
                 <div className="flex items-center gap-2">
                     <Settings2 className="text-brand" size={19} />
                     <h3 className="font-semibold">Meldingsvoorkeuren</h3>
@@ -1272,12 +1385,12 @@ function ListingCard({
     return listing.slug ? (
         <Link
             href={`/woning/${listing.slug}`}
-            className="group overflow-hidden border border-line bg-white hover:border-brand/40"
+            className="group overflow-hidden border border-line bg-surface hover:border-brand/40"
         >
             {content}
         </Link>
     ) : (
-        <div className="overflow-hidden border border-line bg-white opacity-70">
+        <div className="overflow-hidden border border-line bg-surface opacity-70">
             {content}
         </div>
     );
@@ -1320,7 +1433,7 @@ function Status({
     ].includes(value);
     return (
         <span
-            className={`inline-flex shrink-0 items-center ${compact ? "px-2 py-0.5 text-[10px]" : "px-3 py-1.5 text-xs"} font-semibold ${positive ? "bg-green-50 text-green-800" : "bg-background text-muted"}`}
+            className={`inline-flex shrink-0 items-center ${compact ? "px-2 py-0.5 text-[10px]" : "px-3 py-1.5 text-xs"} font-semibold ${positive ? "bg-green-50 text-green-800 dark:bg-green-500/15 dark:text-green-300" : "bg-background text-muted"}`}
         >
             {statusNames[value] ?? value}
         </span>
@@ -1349,7 +1462,7 @@ function Empty({
     href?: string;
 }) {
     return (
-        <div className="col-span-full grid min-h-56 place-items-center border border-dashed border-brand/25 bg-white p-8 text-center">
+        <div className="col-span-full grid min-h-56 place-items-center border border-dashed border-brand/25 bg-surface p-8 text-center">
             <div className="max-w-md">
                 <Icon className="mx-auto text-brand" size={30} />
                 <h3 className="mt-4 text-lg font-semibold">{title}</h3>

@@ -7,6 +7,13 @@ export const dutchPostcodeSchema = z
         z.string().regex(/^[1-9][0-9]{3}[A-Z]{2}$/, "Invalid Dutch postcode"),
     );
 
+export const erfpachtTypeSchema = z.enum([
+    "UNKNOWN",
+    "FREEHOLD",
+    "LEASEHOLD",
+    "LEASEHOLD_AFGEKOCHT",
+]);
+
 export const addressLookupSchema = z.object({
     postcode: dutchPostcodeSchema,
     houseNumber: z.coerce.number().int().positive(),
@@ -75,3 +82,4 @@ export const propertyDataSchema = z.object({
 
 export type AddressLookup = z.infer<typeof addressLookupSchema>;
 export type PropertyData = z.infer<typeof propertyDataSchema>;
+export type ErfpachtType = z.infer<typeof erfpachtTypeSchema>;

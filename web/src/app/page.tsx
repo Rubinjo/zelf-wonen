@@ -10,7 +10,6 @@ import {
     Check,
     FileCheck2,
     Handshake,
-    Languages,
     LineChart,
     MapPinned,
     Megaphone,
@@ -19,7 +18,12 @@ import {
     Sparkles,
 } from "lucide-react";
 import { AuthActions } from "@/components/auth/auth-actions";
+import {
+    HomeLanguageLink,
+    HomeLanguageSync,
+} from "@/components/marketing/home-language";
 import { HomeScene } from "@/components/marketing/home-scene";
+import { ThemeToggle } from "@/components/platform/theme-toggle";
 
 const copy = {
     nl: {
@@ -478,6 +482,7 @@ export default async function Home({
                     __html: JSON.stringify(structuredData),
                 }}
             />
+            <HomeLanguageSync current={language} />
             <header className="relative z-20 border-b border-brand/10 bg-background/90 backdrop-blur">
                 <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8">
                     <Link
@@ -521,18 +526,11 @@ export default async function Home({
                         </a>
                     </nav>
                     <div className="flex items-center gap-2 sm:gap-3">
-                        <Link
-                            href={`/?lang=${language === "nl" ? "en" : "nl"}`}
-                            className="flex h-10 items-center gap-2 rounded-full px-3 text-sm font-medium text-muted transition hover:bg-white hover:text-brand"
-                            aria-label={
-                                language === "nl"
-                                    ? "Switch to English"
-                                    : "Wissel naar Nederlands"
-                            }
-                        >
-                            <Languages size={17} />{" "}
-                            {language === "nl" ? "EN" : "NL"}
-                        </Link>
+                        <HomeLanguageLink
+                            current={language}
+                            className="flex h-10 items-center gap-2 rounded-full px-3 text-sm font-medium text-muted transition hover:bg-surface hover:text-brand"
+                        />
+                        <ThemeToggle />
                         <AuthActions language={language} />
                     </div>
                 </div>
@@ -543,7 +541,7 @@ export default async function Home({
                     <div className="dot-grid absolute inset-y-0 right-0 -z-10 w-1/2 opacity-60 mask-[linear-gradient(to_left,black,transparent)]" />
                     <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.08fr_.92fr]">
                         <div className="min-w-0">
-                            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-brand/15 bg-white/80 px-3.5 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand shadow-sm">
+                            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-brand/15 bg-surface/80 px-3.5 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand shadow-sm">
                                 <BadgeCheck size={15} /> {t.eyebrow}
                             </div>
                             <h1 className="max-w-4xl text-balance text-4xl leading-[1.02] font-semibold wrap-break-word sm:text-6xl lg:text-7xl">
@@ -561,7 +559,7 @@ export default async function Home({
                                 </a>
                                 <a
                                     href="#werkwijze"
-                                    className="inline-flex h-14 items-center justify-center rounded-full border border-line bg-white px-7 font-semibold transition hover:border-brand/30"
+                                    className="inline-flex h-14 items-center justify-center rounded-full border border-line bg-surface px-7 font-semibold transition hover:border-brand/30"
                                 >
                                     {t.secondary}
                                 </a>
@@ -584,7 +582,7 @@ export default async function Home({
 
                         <div className="relative mx-auto w-full max-w-lg lg:ml-auto">
                             <div className="absolute -inset-4 -z-10 rotate-3 rounded-[2.5rem] bg-accent/55" />
-                            <div className="rounded-4xl border border-brand/10 bg-white p-4 shadow-[0_30px_80px_rgba(16,40,32,.15)] sm:p-5">
+                            <div className="rounded-4xl border border-brand/10 bg-surface p-4 shadow-[0_30px_80px_rgba(16,40,32,.15)] sm:p-5">
                                 <div className="flex items-start justify-between gap-4 pb-4">
                                     <div className="min-w-0">
                                         <p className="text-xs font-semibold uppercase tracking-widest text-brand">
@@ -637,7 +635,7 @@ export default async function Home({
                     </div>
                 </section>
 
-                <section className="border-b border-line bg-white px-5 py-10 lg:px-8">
+                <section className="border-b border-line bg-surface px-5 py-10 lg:px-8">
                     <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 md:flex-row md:items-center">
                         <div className="max-w-2xl">
                             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
@@ -693,7 +691,7 @@ export default async function Home({
                             {t.steps.map(([number, title, description]) => (
                                 <article
                                     key={number}
-                                    className="min-h-64 bg-white p-7 lg:p-8"
+                                    className="min-h-64 bg-surface p-7 lg:p-8"
                                 >
                                     <span className="font-mono text-sm font-semibold text-brand">
                                         {number}
@@ -752,7 +750,7 @@ export default async function Home({
 
                 <section
                     id="pakketten"
-                    className="bg-white px-5 py-24 lg:px-8 lg:py-32"
+                    className="bg-surface px-5 py-24 lg:px-8 lg:py-32"
                 >
                     <div className="mx-auto max-w-7xl">
                         <div className="max-w-3xl">

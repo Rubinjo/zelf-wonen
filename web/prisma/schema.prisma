@@ -27,6 +27,20 @@ enum ListingStatus {
   ARCHIVED
 }
 
+// Inbound aggregator enums. Aggregated listings are an informational discovery
+// layer only: bidding, viewings and transactions always happen off-platform.
+enum ListingSource {
+  FUNDA
+  KAMERNET
+}
+
+enum AggregatedListingStatus {
+  ACTIVE
+  EXPIRED
+  OFFLINE
+  ERROR
+}
+
 enum PropertyType {
   HOUSE
   APARTMENT
@@ -65,6 +79,25 @@ enum ParkingOption {
   PUBLIC_GARAGE
   PRIVATE_GARAGE
   SPACE_FOR_SALE
+}
+
+enum ErfpachtType {
+  // Niet ingevuld / onbekend
+  UNKNOWN
+  // Volle eigendom: geen erfpacht
+  FREEHOLD
+  // Erfpacht met een (jaarlijkse) canon
+  LEASEHOLD
+  // Erfpacht waarvan de canon (eenmalig) is afgekocht
+  LEASEHOLD_AFGEKOCHT
+}
+
+enum FoundationRiskLevel {
+  // Buiten een indicatief aandachtsgebied voor funderingsproblematiek (KCAF)
+  NONE
+  LOW
+  MEDIUM
+  HIGH
 }
 
 enum EnergyLabelClass {
@@ -119,6 +152,7 @@ enum VerificationPurpose {
   ACCOUNT_ACCESS
   LISTING_PUBLICATION
   EXTERNAL_PUBLICATION
+  AGREEMENT_SIGNING
 }
 
 enum PublicationPackage {
@@ -220,8 +254,15 @@ enum TransactionDocumentCategory {
   PROPERTY_PASSPORT
   FINANCING
   BUILDING_INSPECTION
+  SECURITY_DEPOSIT
   NOTARY
   FINAL_INSPECTION
+  // Woningpaspoort-documentcategorieën: leveren input voor de volledigheid
+  // van het woningpaspoort en kunnen automatisch een nieuwe versie triggeren.
+  ENERGY_LABEL
+  FLOOR_PLAN
+  VVE
+  CADASTRAL
   OTHER
 }
 
@@ -234,15 +275,45 @@ enum TransactionDocumentStatus {
 enum TransactionEventType {
   ROOM_CREATED
   MESSAGE_SENT
+  // Berichten van vóór de koop zijn overgezet van de advertentie naar de transactiechat.
+  MESSAGE_IMPORTED
   DOCUMENT_UPLOADED
   DOCUMENT_DOWNLOADED
   MILESTONE_UPDATED
   CONTRACT_CONFIRMED
+  AGREEMENT_UPDATED
+  AGREEMENT_SUBMITTED
+  AGREEMENT_SIGNED
   NOTARY_UPDATED
   HANDOVER_UPDATED
   PASSPORT_VERSION_CREATED
+  SECURITY_FORM_CHOSEN
+  SECURITY_REFERENCE_CREATED
+  SECURITY_PAID
+  SECURITY_CONFIRMED
   TRANSACTION_COMPLETED
   TRANSACTION_CANCELLED
+}
+
+enum PurchaseAgreementStatus {
+  DRAFT
+  AWAITING_SIGNATURES
+  PARTIALLY_SIGNED
+  SIGNED
+  VOID
+}
+
+enum AgreementSecurityType {
+  NONE
+  // Zekerheid is vereist; de KOPER kiest de vorm (waarborgsom of bankgarantie,
+  // Art 7:26 lid 4 BW). Bedrag en termijn worden door de verkoper vastgelegd.
+  REQUIRED
+}
+
+// Keuze van de koper voor de vorm van zekerheid (Art 7:26 lid 4 BW).
+enum TransactionSecurityForm {
+  DEPOSIT
+  BANK_GUARANTEE
 }
 
 enum SeekerNotificationType {
@@ -280,15 +351,22 @@ model User {
   viewingBookings       ViewingBooking[]
   sellingTransactions   PropertyTransaction[] @relation("TransactionSeller")
   buyingTransactions    PropertyTransaction[] @relation("TransactionBuyer")
+  proposedNotaries      PropertyTransaction[] @relation("TransactionNotaryProposer")
+  confirmedNotaries     PropertyTransaction[] @relation("TransactionNotaryConfirmer")
+  securityPayments      PropertyTransaction[] @relation("TransactionSecurityPayer")
+  securityConfirmations PropertyTransaction[] @relation("TransactionSecurityConfirmer")
+  securityFormChoices   PropertyTransaction[] @relation("TransactionSecurityFormChooser")
   transactionMessages   TransactionMessage[]
   transactionDocuments  TransactionDocument[]
   transactionEvents     TransactionEvent[]
   passportVersions      PropertyPassportVersion[]
+  passportDrafts        PropertyPassportDraft[]
   favoriteListings      FavoriteListing[]
   savedSearches         SavedSearch[]
   notificationPreference NotificationPreference?
   seekerNotifications   SeekerNotification[]
   shortlistShares       ShortlistShare[]
+  listingMessages       ListingMessage[]
 
   @@map("users")
 }
@@ -386,6 +464,12 @@ model Property {
   parkingSpacePriceCents BigInt?
   constructionYear       Int?
   isMonument             Boolean           @default(false)
+  erfpachtType           ErfpachtType      @default(UNKNOWN)
+  erfpachtCanonCents     BigInt?
+  erfpachtDetails        String?
+  erfpachtEndDate        DateTime?
+  erfpachtSource         String?
+  erfpachtRetrievedAt    DateTime?
   layout                 Json?
   kadasterSourcePayload  Json?
   kadasterRetrievedAt    DateTime?
@@ -398,6 +482,7 @@ model Property {
 
   @@index([ownerId, bagAddressId])
   @@index([ownerId])
+  @@index([erfpachtType])
   @@index([postcode, houseNumber, houseNumberAddition])
   @@map("properties")
 }
@@ -440,6 +525,35 @@ model NeighborhoodProfile {
   tramStopDistanceMeters       Int?
   metroStationDistanceMeters   Int?
   trainStationDistanceMeters   Int?
+  // ---- Geluid: jaargemiddelde geluidsbelasting (Lden) per bron ----
+  noiseRoadLden                Decimal? @db.Decimal(5, 1)
+  noiseRailLden                Decimal? @db.Decimal(5, 1)
+  noiseIndustryLden            Decimal? @db.Decimal(5, 1)
+  noiseAircraftLden            Decimal? @db.Decimal(5, 1)
+  noiseGridMeters              Int?
+  noiseSource                  String?
+  noiseRetrievedAt             DateTime?
+  // ---- Funderingsrisico (indicatief, KCAF/PDOK + BAG) ----
+  foundationRiskLevel          FoundationRiskLevel?
+  foundationRiskAreaShare      Decimal? @db.Decimal(5, 1)
+  foundationPre1970Percent     Decimal? @db.Decimal(5, 1)
+  foundationGroundClass        String?
+  foundationRiskDetail         String?
+  foundationRiskSource         String?
+  foundationRiskRetrievedAt    DateTime?
+  // ---- Samenstelling: geslacht, huishouden, opleiding ----
+  malePercent                  Decimal? @db.Decimal(5, 2)
+  femalePercent                Decimal? @db.Decimal(5, 2)
+  averageHouseholdSize         Decimal? @db.Decimal(4, 2)
+  singleHouseholdPercent       Decimal? @db.Decimal(5, 2)
+  coupleHouseholdPercent       Decimal? @db.Decimal(5, 2)
+  familyHouseholdPercent       Decimal? @db.Decimal(5, 2)
+  educationLowPercent          Decimal? @db.Decimal(5, 2)
+  educationMediumPercent       Decimal? @db.Decimal(5, 2)
+  educationHighPercent         Decimal? @db.Decimal(5, 2)
+  educationStatisticsYear      Int?
+  demographicsSourceUrl        String?
+  demographicsRetrievedAt      DateTime?
   cbsDataset                   String
   cbsSourceUrl                 String
   cbsRetrievedAt               DateTime
@@ -522,8 +636,10 @@ model Listing {
   viewingSlots           ViewingSlot[]
   transactions           PropertyTransaction[]
   passportVersions       PropertyPassportVersion[]
+  passportDraft          PropertyPassportDraft?
   favoritedBy            FavoriteListing[]
   shortlistItems         ShortlistItem[]
+  listingMessages        ListingMessage[]
 
   @@index([ownerId, status])
   @@index([propertyId])
@@ -607,6 +723,7 @@ model IdentityVerificationAttempt {
   id                   String              @id @default(uuid()) @db.Uuid
   userId               String              @db.Uuid
   listingId            String?             @db.Uuid
+  transactionId        String?             @db.Uuid
   purpose              VerificationPurpose
   provider             String
   providerReference    String              @unique
@@ -620,9 +737,11 @@ model IdentityVerificationAttempt {
   responsePayloadHash  String?             @db.Char(64)
   user                 User                @relation(fields: [userId], references: [id], onDelete: Restrict)
   listing              Listing?            @relation(fields: [listingId], references: [id], onDelete: Restrict)
+  transaction          PropertyTransaction? @relation(fields: [transactionId], references: [id], onDelete: SetNull)
 
   @@index([userId, status, completedAt])
   @@index([listingId, purpose, status])
+  @@index([transactionId, purpose, status])
   @@map("identity_verification_attempts")
 }
 
@@ -762,9 +881,28 @@ model PropertyTransaction {
   buyerContractConfirmedAt  DateTime?
   sellerContractConfirmedAt DateTime?
   coolingOffEndsAt          DateTime?
+  // Notaris: de verkoper mag alleen voorstellen, de koper bevestigt.
+  notaryProposal            Json?
+  notaryProposedByUserId    String?            @db.Uuid
+  notaryProposedAt          DateTime?
   notaryDetails             Json?
+  notaryConfirmedByUserId   String?            @db.Uuid
+  notaryConfirmedAt         DateTime?
   handoverDetails           Json?
-  completedAt               DateTime?
+  // Waarborgsom (Art 7:26 lid 4 BW): beheer zonder zelf geld aan te houden.
+  // De storting loopt via de kwaliteitsrekening van de notaris; het platform
+  // coördineert en registreert uitsluitend de status (geen depot bij platform).
+  // De koper kiest de vorm (waarborgsom of bankgarantie); de verkoper bepaalt
+  // op de koopovereenkomst alleen of zekerheid vereist is (REQUIRED).
+  securityForm               TransactionSecurityForm?
+  securityFormChosenAt       DateTime?
+  securityFormChosenByUserId String?             @db.Uuid
+  securityReference          String?
+  securityPaidAt             DateTime?
+  securityPaidByUserId       String?             @db.Uuid
+  securityConfirmedAt        DateTime?
+  securityConfirmedByUserId  String?             @db.Uuid
+  completedAt                DateTime?
   cancelledAt               DateTime?
   cancellationReason        String?
   version                   Int               @default(1)
@@ -774,15 +912,104 @@ model PropertyTransaction {
   acceptedBid               Bid               @relation(fields: [acceptedBidId], references: [id], onDelete: Restrict)
   seller                    User              @relation("TransactionSeller", fields: [sellerUserId], references: [id], onDelete: Restrict)
   buyer                     User              @relation("TransactionBuyer", fields: [buyerUserId], references: [id], onDelete: Restrict)
+  notaryProposedBy          User?             @relation("TransactionNotaryProposer", fields: [notaryProposedByUserId], references: [id], onDelete: SetNull)
+  notaryConfirmedBy         User?             @relation("TransactionNotaryConfirmer", fields: [notaryConfirmedByUserId], references: [id], onDelete: SetNull)
+  securityPaidBy            User?             @relation("TransactionSecurityPayer", fields: [securityPaidByUserId], references: [id], onDelete: SetNull)
+  securityConfirmedBy       User?             @relation("TransactionSecurityConfirmer", fields: [securityConfirmedByUserId], references: [id], onDelete: SetNull)
+  securityFormChosenBy      User?             @relation("TransactionSecurityFormChooser", fields: [securityFormChosenByUserId], references: [id], onDelete: SetNull)
   milestones                TransactionMilestone[]
   messages                  TransactionMessage[]
   documents                 TransactionDocument[]
   events                    TransactionEvent[]
+  agreement                 PurchaseAgreement?
+  idinAttempts              IdentityVerificationAttempt[]
+  importedListingMessages   ListingMessage[]
 
   @@index([sellerUserId, status, updatedAt])
   @@index([buyerUserId, status, updatedAt])
   @@index([listingId, status])
   @@map("property_transactions")
+}
+
+// Gestructureerde koopovereenkomst (bestaande woning, Art 7:2 BW).
+// Alleen voor SALE-transacties; voor verhuur blijft het bestaande contractTerms-flow bestaan.
+// De termen in "TermWeeks"/"TermDays" lopen vanaf ondertekening; absolute deadlinedatums
+// worden bij ondertekening berekend en op de milestones gekopieerd.
+model PurchaseAgreement {
+  id            String                  @id @default(uuid()) @db.Uuid
+  transactionId String                  @unique @db.Uuid
+  version       Int                     @default(1)
+  status        PurchaseAgreementStatus @default(DRAFT)
+
+  // Partijen (Art 7:2 BW; echtgenoot/partner-instemming Art 1:88 BW)
+  sellerCivilStatus     String?
+  sellerAddress         String?
+  sellerSpouseName      String?
+  sellerSpouseConsentAt DateTime?
+  buyerCivilStatus      String?
+  buyerAddress          String?
+  buyerSpouseName       String?
+  buyerSpouseConsentAt  DateTime?
+
+  // Object en prijs (roerende zaken + toegerekende waarde)
+  kadastraleOmschrijving String?
+  movables               Json?  // [{ description, valueCents }]
+  movablesValueCents     BigInt?
+
+  // Waarborgsom / bankgarantie (max 10% van koopsom, Art 7:26 lid 4 BW).
+  // De koper kiest de vorm (waarborgsom of bankgarantie) na ondertekening.
+  securityType        AgreementSecurityType @default(REQUIRED)
+  securityAmountCents BigInt?
+  securityDueDate     DateTime?
+
+  // Ontbindende voorwaarden (termen vanaf ondertekening)
+  financingCondition     Boolean @default(true)
+  financingTermWeeks     Int     @default(6)
+  inspectionCondition    Boolean @default(false)
+  inspectionTermDays     Int     @default(14)
+  inspectionCostCapCents BigInt?
+  nhgCondition           Boolean @default(false)
+  nhgTermWeeks           Int     @default(8)
+  foundationCondition    Boolean @default(false)
+  foundationTermWeeks    Int     @default(4)
+
+  // Levering en kosten
+  transferDate         DateTime?
+  kadasterRegistration Boolean @default(true)
+  buyerPaysCosts       Boolean @default(true)
+
+  // Overige afspraken (aanvullend op de modelbepalingen)
+  additionalTerms String?
+
+  // Bedenktijd (Art 7:2 lid 2 BW): langer mag, korter niet
+  coolingOffDays Int @default(3)
+
+  // Berekende deadlines (ingevuld bij ondertekening)
+  financingDeadline  DateTime?
+  inspectionDeadline DateTime?
+  nhgDeadline        DateTime?
+  foundationDeadline DateTime?
+  coolingOffEndsAt   DateTime?
+
+  // Ondertekening (uitsluitend via iDIN-geverifieerde handtekening)
+  sellerSignedAt        DateTime?
+  sellerSignatureMethod String?
+  sellerSignatureEvidence Json?
+  buyerSignedAt         DateTime?
+  buyerSignatureMethod  String?
+  buyerSignatureEvidence Json?
+
+  submittedAt DateTime?
+  signedAt    DateTime?
+  voidedAt    DateTime?
+  voidReason  String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  transaction PropertyTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([transactionId, status])
+  @@map("purchase_agreements")
 }
 
 model TransactionMilestone {
@@ -864,6 +1091,23 @@ model PropertyPassportVersion {
   @@map("property_passport_versions")
 }
 
+// Bewerkbare (mutable) werkomgeving van het woningpaspoort per listing.
+// Versies (PropertyPassportVersion) zijn onveranderlijke momentopnamen van
+// deze draft + listing + documenten; de draft kan door de eigenaar worden
+// bewerkt zonder de hash-keten aan te tasten.
+model PropertyPassportDraft {
+  id              String   @id @default(uuid()) @db.Uuid
+  listingId       String   @unique @db.Uuid
+  fields          Json
+  createdByUserId String   @db.Uuid
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  listing         Listing  @relation(fields: [listingId], references: [id], onDelete: Restrict)
+  createdBy       User     @relation(fields: [createdByUserId], references: [id], onDelete: Restrict)
+
+  @@map("property_passport_drafts")
+}
+
 model TransactionEvent {
   id            String               @id @default(uuid()) @db.Uuid
   transactionId String               @db.Uuid
@@ -879,6 +1123,33 @@ model TransactionEvent {
   @@index([transactionId, occurredAt])
   @@index([actorUserId, occurredAt])
   @@map("transaction_events")
+}
+
+// Berichten tussen woningzoekers en eigenaren binnen het platform.
+// Elke woningzoeker heeft een eigen, afgeschermde berichtenlijn met de
+// eigenaar (seekerUserId = de woningzoeker). De eigenaar kan op zijn
+// advertentie meerdere gesprekken tegelijk voeren. Bij acceptatie van een
+// bod worden de berichten van die specifieke zoeker overgezet naar de
+// transactiechat (zie transferListingMessagesToTransaction).
+model ListingMessage {
+  id                         String             @id @default(uuid()) @db.Uuid
+  listingId                  String             @db.Uuid
+  authorUserId               String             @db.Uuid
+  // De woningzoeker voor wie deze berichtenlijn geldt (niet de eigenaar).
+  seekerUserId               String             @db.Uuid
+  body                       String
+  readAt                     DateTime?
+  transferredToTransactionId String?            @db.Uuid
+  transferredAt              DateTime?
+  createdAt                  DateTime           @default(now())
+  listing                    Listing            @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  author                     User               @relation(fields: [authorUserId], references: [id], onDelete: Restrict)
+  transferredToTransaction   PropertyTransaction? @relation(fields: [transferredToTransactionId], references: [id], onDelete: SetNull)
+
+  @@index([listingId, seekerUserId, createdAt])
+  @@index([seekerUserId, createdAt])
+  @@index([transferredToTransactionId])
+  @@map("listing_messages")
 }
 
 model FavoriteListing {
@@ -1038,4 +1309,128 @@ model AuditEvent {
   @@index([aggregateType, aggregateId, occurredAt])
   @@index([listingId, occurredAt])
   @@map("audit_events")
+}
+
+// --- Inbound aggregator ------------------------------------------------------
+// A single master record per property, deduplicated across Funda/Kamernet by
+// address (postcode + house number OR street + house number). Owned by the
+// Python aggregator cron service; the web app only reads these rows.
+
+model AggregatedListing {
+  id                   String                    @id @default(uuid()) @db.Uuid
+  // Canonical dedup key (postcode+house preferred, else street+house).
+  dedupKey             String                    @unique @map("dedup_key")
+  // Secondary lookup keys so a source that only has a street still merges with
+  // a source that only has a postcode.
+  postcodeHouseKey     String?                   @map("postcode_house_key")
+  streetHouseKey       String?                   @map("street_house_key")
+
+  purpose              ListingPurpose
+  status               AggregatedListingStatus   @default(ACTIVE)
+  publicSlug           String                    @unique @map("public_slug")
+  titleNl              String?                   @map("title_nl")
+  descriptionNl        String?                   @map("description_nl")
+
+  askingPriceCents     BigInt?                   @map("asking_price_cents")
+  monthlyRentCents     BigInt?                   @map("monthly_rent_cents")
+  serviceCostsCents    BigInt?                   @map("service_costs_cents")
+
+  postcode             String?                   @db.VarChar(7)
+  houseNumber          Int                       @map("house_number")
+  houseNumberAddition  String?                   @map("house_number_addition")
+  street               String
+  city                 String
+  municipality         String?
+  province             String?
+  latitude             Decimal?                  @db.Decimal(9, 6)
+  longitude            Decimal?                  @db.Decimal(9, 6)
+
+  propertyType         PropertyType              @map("property_type")
+  livingAreaSqm        Decimal?                  @db.Decimal(8, 2) @map("living_area_sqm")
+  plotAreaSqm          Decimal?                  @db.Decimal(10, 2) @map("plot_area_sqm")
+  volumeCubicMeters    Decimal?                  @db.Decimal(10, 2) @map("volume_cubic_meters")
+  roomCount            Int?                      @map("room_count")
+  bedroomCount         Int?                      @map("bedroom_count")
+  bathroomCount        Int?                      @map("bathroom_count")
+  constructionYear     Int?                      @map("construction_year")
+  energyLabel          EnergyLabelClass?         @map("energy_label")
+
+  interior             Json?                     @map("interior")
+  amenities            String[]                  @default([])
+  availableFrom        DateTime?                 @map("available_from")
+
+  summaryHash          String?                   @db.Char(64) @map("summary_hash")
+  firstSeenAt          DateTime                  @default(now()) @map("first_seen_at")
+  lastSeenAt           DateTime                  @map("last_seen_at")
+  expiredAt            DateTime?                 @map("expired_at")
+  lastSyncAt           DateTime                  @default(now()) @map("last_sync_at")
+  createdAt            DateTime                  @default(now()) @map("created_at")
+  updatedAt            DateTime                  @updatedAt @map("updated_at")
+
+  platformLinks        AggregatedPlatformLink[]
+  images               AggregatedListingImage[]
+  rawPayloads          RawPayload[]
+
+  @@index([status, lastSyncAt])
+  @@index([postcodeHouseKey])
+  @@index([streetHouseKey])
+  @@index([city])
+  @@map("aggregated_listings")
+}
+
+model AggregatedPlatformLink {
+  id          String                    @id @default(uuid()) @db.Uuid
+  listingId   String                    @db.Uuid @map("listing_id")
+  source      ListingSource
+  externalId  String                    @map("external_id")
+  url         String
+  status      AggregatedListingStatus   @default(ACTIVE)
+  summaryHash String?                   @db.Char(64) @map("summary_hash")
+  firstSeenAt DateTime                  @default(now()) @map("first_seen_at")
+  lastSeenAt  DateTime                  @map("last_seen_at")
+  createdAt   DateTime                  @default(now()) @map("created_at")
+  updatedAt   DateTime                  @updatedAt @map("updated_at")
+  listing     AggregatedListing         @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([source, externalId])
+  @@index([listingId, source])
+  @@map("aggregated_platform_links")
+}
+
+model AggregatedListingImage {
+  id         String             @id @default(uuid()) @db.Uuid
+  listingId  String             @db.Uuid @map("listing_id")
+  storageKey String             @unique @map("storage_key")
+  sourceUrl  String             @map("source_url")
+  mimeType   String             @map("mime_type")
+  sha256     String             @db.Char(64)
+  width      Int?
+  height     Int?
+  sortOrder  Int                @default(0) @map("sort_order")
+  createdAt  DateTime           @default(now()) @map("created_at")
+  listing    AggregatedListing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([listingId, sortOrder])
+  @@map("aggregated_listing_images")
+}
+
+// Raw HTML/JSON responses kept for debugging. Never pruned automatically.
+model RawPayload {
+  id          String             @id @default(uuid()) @db.Uuid
+  source      ListingSource
+  externalId  String             @map("external_id")
+  kind        String             // summary | detail | sitemap
+  url         String?
+  httpStatus  Int?               @map("http_status")
+  contentType String?            @map("content_type")
+  contentHash String             @db.Char(64) @map("content_hash")
+  body        String             @db.Text
+  bytes       Int?
+  listingId   String?            @db.Uuid @map("listing_id")
+  retrievedAt DateTime           @default(now()) @map("retrieved_at")
+  listing     AggregatedListing? @relation(fields: [listingId], references: [id], onDelete: SetNull)
+
+  @@index([source, externalId, retrievedAt])
+  @@index([listingId])
+  @@map("raw_payloads")
 }
