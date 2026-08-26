@@ -121,6 +121,16 @@ const energyLabelInputSchema = z.object({
     validUntil: z.string().datetime().nullable(),
 });
 
+// Gestructureerde tuininformatie; wordt in de layout-JSON van het pand
+// opgeslagen (Property.layout.garden) en is doorzoekbaar via JSON-filters.
+export const gardenInputSchema = z.object({
+    hasGarden: z.boolean(),
+    orientation: z
+        .enum(["N", "NE", "E", "SE", "S", "SW", "W", "NW"])
+        .nullable()
+        .optional(),
+});
+
 export const createListingSchema = z.object({
     purpose: z.enum(["SALE", "RENT"]),
     propertyType: propertyTypeSchema,
@@ -192,6 +202,7 @@ export const createListingSchema = z.object({
     floorplannerEmbedUrl: z.string().url().max(2_000).nullable().optional(),
     attributes: listingAttributesSchema.nullable().optional(),
     energyLabel: energyLabelInputSchema.nullable().optional(),
+    garden: gardenInputSchema.optional(),
 });
 
 export const updateListingSchema = z
@@ -261,6 +272,7 @@ export const updateListingSchema = z
         bidWindowOpensAt: z.string().datetime().nullable().optional(),
         bidWindowClosesAt: z.string().datetime().nullable().optional(),
         floorplannerEmbedUrl: z.string().url().max(2_000).nullable().optional(),
+        garden: gardenInputSchema.optional(),
     })
     .refine(
         (value) =>
@@ -299,7 +311,21 @@ export const listingDescriptionRequestSchema = z.object({
     livingAreaSqm: z.number().positive(),
     roomCount: z.number().int().positive(),
     highlights: z.array(z.string().max(180)).max(20),
-    existingText: z.string().max(6000).optional(),
+    // Bestaande teksten van de eigenaar dienen als context; het model mag
+    // feiten daaruit hergebruiken maar herschrijft ze tot een nieuw voorstel.
+    existingTitleNl: z.string().max(200).optional(),
+    existingDescriptionNl: z.string().max(6000).optional(),
+    existingTitleEn: z.string().max(200).optional(),
+    existingDescriptionEn: z.string().max(6000).optional(),
+});
+
+// Gestructureerd AI-antwoord: altijd alle vier de velden, zodat de editor
+// elk invoerveld apart kan bijwerken.
+export const listingDescriptionResultSchema = z.object({
+    titleNl: z.string().min(1).max(200),
+    descriptionNl: z.string().min(1).max(6000),
+    titleEn: z.string().min(1).max(200),
+    descriptionEn: z.string().min(1).max(6000),
 });
 
 export type CreateListingInput = z.infer<typeof createListingSchema>;

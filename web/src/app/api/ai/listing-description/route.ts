@@ -1,11 +1,18 @@
-import { generateText } from "ai";
+import { Output } from "ai";
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
 import {
     AuthenticationError,
     requireEmailVerifiedUser,
 } from "@/features/auth/guards";
-import { listingDescriptionRequestSchema } from "@/lib/schemas/listing";
+import {
+    OpenRouterUnavailableError,
+    generateTextWithFreeFallback,
+} from "@/lib/integrations/openrouter";
+import {
+    listingDescriptionRequestSchema,
+    listingDescriptionResultSchema,
+} from "@/lib/schemas/listing";
 
 export async function POST(request: NextRequest) {
     try {
@@ -13,26 +20,41 @@ export async function POST(request: NextRequest) {
         const input = listingDescriptionRequestSchema.parse(
             await request.json(),
         );
-        const { text } = await generateText({
-            model: process.env.AI_WRITER_MODEL ?? "openai/gpt-4.1-mini",
+        const { output } = await generateTextWithFreeFallback({
             temperature: 0.2,
             system: "You write factual Dutch real-estate listings. Never invent features, measurements, legal claims, neighborhood demographics, or energy performance. Avoid discriminatory language. Return plain text only.",
             prompt: [
-                `Language: ${input.locale === "nl" ? "Dutch" : "English"}`,
                 `Transaction: ${input.purpose}`,
                 `Property type: ${input.propertyType}`,
                 `City: ${input.city}`,
                 `Living area: ${input.livingAreaSqm} m2`,
                 `Rooms: ${input.roomCount}`,
                 `Verified highlights: ${input.highlights.join("; ") || "none"}`,
-                input.existingText ? `Owner draft: ${input.existingText}` : "",
-                "Write an inviting title and a concise 3-paragraph description. Clearly separate facts from subjective phrasing.",
+                input.existingTitleNl
+                    ? `Current Dutch title (owner draft): ${input.existingTitleNl}`
+                    : "",
+                input.existingDescriptionNl
+                    ? `Current Dutch description (owner draft): ${input.existingDescriptionNl}`
+                    : "",
+                input.existingTitleEn
+                    ? `Current English title (owner draft): ${input.existingTitleEn}`
+                    : "",
+                input.existingDescriptionEn
+                    ? `Current English description (owner draft): ${input.existingDescriptionEn}`
+                    : "",
+                "Write a proposal for all four fields: an inviting Dutch title, a concise 3-paragraph Dutch description, an English title and an English description. Reuse facts from the owner drafts where present, but rewrite them into fresh proposals. Clearly separate facts from subjective phrasing. Respond in the JSON structure requested of you.",
             ]
                 .filter(Boolean)
                 .join("\n"),
+            output: Output.object({
+                name: "ListingCopy",
+                description:
+                    "Voorstel voor Nederlandse en Engelse titel en omschrijving van de woningadvertentie.",
+                schema: listingDescriptionResultSchema,
+            }),
         });
 
-        return NextResponse.json({ data: { text } });
+        return NextResponse.json({ data: output });
     } catch (error) {
         if (error instanceof AuthenticationError) {
             return NextResponse.json(
@@ -52,6 +74,20 @@ export async function POST(request: NextRequest) {
                     },
                 },
                 { status: 400 },
+            );
+        }
+        if (error instanceof OpenRouterUnavailableError) {
+            return NextResponse.json(
+                {
+                    error: {
+                        code: "AI_UNAVAILABLE",
+                        message:
+                            error.message === "OPENROUTER_NOT_CONFIGURED"
+                                ? "AI is niet geconfigureerd (OPENROUTER_API_KEY ontbreekt)."
+                                : "De schrijfassistent is momenteel onbereikbaar.",
+                    },
+                },
+                { status: 503 },
             );
         }
         console.error("AI description generation failed", error);

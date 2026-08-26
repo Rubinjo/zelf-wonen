@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { NeighborhoodDataClient } from "@/lib/integrations/neighborhood-data-client";
 import { PdokClient } from "@/lib/integrations/property-data/pdok-client";
 import { hasVerifiedIdentity } from "@/features/identity/idin-service";
+import { applyGardenToLayout } from "@/features/listings/garden";
 import {
     getQuestionnaireSections,
     type QuestionnaireAnswer,
@@ -202,13 +203,11 @@ export async function createOwnerListing(
                     ? new Date(input.erfpachtEndDate)
                     : null,
                 erfpachtSource:
-                    input.erfpachtType &&
-                    input.erfpachtType !== "UNKNOWN"
+                    input.erfpachtType && input.erfpachtType !== "UNKNOWN"
                         ? "MANUAL"
                         : null,
                 erfpachtRetrievedAt:
-                    input.erfpachtType &&
-                    input.erfpachtType !== "UNKNOWN"
+                    input.erfpachtType && input.erfpachtType !== "UNKNOWN"
                         ? new Date()
                         : null,
                 parkingSpacePriceCents:
@@ -217,6 +216,12 @@ export async function createOwnerListing(
                     input.parkingSpacePriceCents === null
                         ? null
                         : BigInt(input.parkingSpacePriceCents),
+                layout: input.garden
+                    ? applyGardenToLayout(null, {
+                          hasGarden: input.garden.hasGarden,
+                          orientation: input.garden.orientation ?? null,
+                      })
+                    : undefined,
                 energyLabels: energyData
                     ? {
                           create: energyData,
@@ -389,6 +394,11 @@ export async function updateOwnerListing(
             );
         }
 
+        const currentProperty = await tx.property.findUnique({
+            where: { id: current.propertyId },
+            select: { layout: true },
+        });
+
         await tx.property.update({
             where: { id: current.propertyId },
             data: {
@@ -414,6 +424,13 @@ export async function updateOwnerListing(
                             : BigInt(input.parkingSpacePriceCents),
                 constructionYear: input.constructionYear,
                 isMonument: input.isMonument,
+                layout:
+                    input.garden === undefined
+                        ? undefined
+                        : applyGardenToLayout(currentProperty?.layout, {
+                              hasGarden: input.garden.hasGarden,
+                              orientation: input.garden.orientation ?? null,
+                          }),
                 erfpachtType: input.erfpachtType,
                 erfpachtCanonCents:
                     input.erfpachtCanonCents === undefined

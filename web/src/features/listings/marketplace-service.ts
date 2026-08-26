@@ -15,6 +15,16 @@ export type MarketplaceBounds = {
     west: number;
 };
 
+export type GardenOrientation =
+    | "N"
+    | "NE"
+    | "E"
+    | "SE"
+    | "S"
+    | "SW"
+    | "W"
+    | "NW";
+
 export type MarketplaceStatus = "LIVE" | "UNDER_OFFER" | "SOLD" | "RENTED";
 
 export type MarketplaceListing = {
@@ -54,6 +64,10 @@ export type MarketplaceListing = {
 export type MarketplaceFilters = {
     purpose: "SALE" | "RENT";
     query: string;
+    city: string | null;
+    keywords: string[];
+    hasGarden: boolean | null;
+    gardenOrientation: GardenOrientation | null;
     statuses: MarketplaceStatus[];
     priceMin: number | null;
     priceMax: number | null;
@@ -167,6 +181,42 @@ function allowedValues(
     return selected(value).filter((item) => allowed.includes(item));
 }
 
+const gardenOrientations = [
+    "N",
+    "NE",
+    "E",
+    "SE",
+    "S",
+    "SW",
+    "W",
+    "NW",
+] as const;
+
+function gardenOrientation(value: string | undefined) {
+    return value && (gardenOrientations as readonly string[]).includes(value)
+        ? (value as GardenOrientation)
+        : null;
+}
+
+function cleanKeyword(value: string) {
+    return value.trim().slice(0, 40);
+}
+
+const orientationDutchMap: Record<GardenOrientation, string> = {
+    N: "noorden",
+    NE: "noordoosten",
+    E: "oosten",
+    SE: "zuidoosten",
+    S: "zuiden",
+    SW: "zuidwesten",
+    W: "westen",
+    NW: "noordwesten",
+};
+
+function orientationDutch(orientation: GardenOrientation) {
+    return orientationDutchMap[orientation];
+}
+
 export function parseMarketplaceFilters(
     searchParams: MarketplaceSearchParams,
 ): MarketplaceFilters {
@@ -192,6 +242,18 @@ export function parseMarketplaceFilters(
     return {
         purpose: first(searchParams.purpose) === "RENT" ? "RENT" : "SALE",
         query: first(searchParams.q)?.trim().slice(0, 100) ?? "",
+        city: first(searchParams.city)?.trim().slice(0, 80) || null,
+        keywords: selected(searchParams.keyword)
+            .map(cleanKeyword)
+            .filter(Boolean)
+            .slice(0, 5),
+        hasGarden: (() => {
+            const value = first(searchParams.hasGarden);
+            return value === "true" ? true : value === "false" ? false : null;
+        })(),
+        gardenOrientation: gardenOrientation(
+            first(searchParams.gardenOrientation),
+        ),
         statuses: selectedStatuses.length > 0 ? selectedStatuses : ["LIVE"],
         priceMin: positiveNumber(first(searchParams.priceMin)),
         priceMax: positiveNumber(first(searchParams.priceMax)),
@@ -492,6 +554,125 @@ export async function searchMarketplaceListings(
                 },
             ],
         });
+    }
+    if (filters.city) {
+        andConditions.push({
+            property: {
+                is: { city: { equals: filters.city, mode: "insensitive" } },
+            },
+        });
+    }
+    if (filters.keywords.length > 0) {
+        // Elke term moet voorkomen in titel of omschrijving (NL/EN).
+        andConditions.push(
+            ...filters.keywords.map((keyword) => ({
+                OR: [
+                    {
+                        titleNl: {
+                            contains: keyword,
+                            mode: "insensitive" as const,
+                        },
+                    },
+                    {
+                        descriptionNl: {
+                            contains: keyword,
+                            mode: "insensitive" as const,
+                        },
+                    },
+                    {
+                        titleEn: {
+                            contains: keyword,
+                            mode: "insensitive" as const,
+                        },
+                    },
+                    {
+                        descriptionEn: {
+                            contains: keyword,
+                            mode: "insensitive" as const,
+                        },
+                    },
+                ],
+            })),
+        );
+    }
+    if (filters.hasGarden === true || filters.gardenOrientation !== null) {
+        // Tuinwens: gestructureerd (layout.garden) of tekstueel
+        // ("tuin" in titel/omschrijving).
+        const gardenPresentCondition: Prisma.ListingWhereInput = {
+            OR: [
+                {
+                    // Gestructureerd: layout.garden bestaat (jsonb-pad).
+                    property: {
+                        is: {
+                            layout: {
+                                path: ["garden"],
+                                not: Prisma.DbNull,
+                            },
+                        },
+                    },
+                },
+                { titleNl: { contains: "tuin", mode: "insensitive" as const } },
+                {
+                    descriptionNl: {
+                        contains: "tuin",
+                        mode: "insensitive" as const,
+                    },
+                },
+                {
+                    titleEn: {
+                        contains: "garden",
+                        mode: "insensitive" as const,
+                    },
+                },
+                {
+                    descriptionEn: {
+                        contains: "garden",
+                        mode: "insensitive" as const,
+                    },
+                },
+            ],
+        };
+        if (filters.gardenOrientation !== null) {
+            // Bij een oriëntatie moet de tuin áánwezig zijn én de oriëntatie
+            // expliciet genoemd worden (gestructureerd of in de tekst).
+            andConditions.push({
+                AND: [
+                    gardenPresentCondition,
+                    {
+                        OR: [
+                            {
+                                property: {
+                                    is: {
+                                        layout: {
+                                            path: ["garden", "orientation"],
+                                            // Scalair op een JSON-pad:
+                                            // array_contains doet @>
+                                            // (containment) en werkt hier
+                                            // niet op een stringwaarde.
+                                            equals: filters.gardenOrientation,
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                descriptionNl: {
+                                    contains: `op het ${orientationDutch(filters.gardenOrientation)}`,
+                                    mode: "insensitive" as const,
+                                },
+                            },
+                            {
+                                descriptionNl: {
+                                    contains: `op ${orientationDutch(filters.gardenOrientation)}`,
+                                    mode: "insensitive" as const,
+                                },
+                            },
+                        ],
+                    },
+                ],
+            });
+        } else {
+            andConditions.push(gardenPresentCondition);
+        }
     }
     if (andConditions.length > 0) {
         where.AND = andConditions;

@@ -9,12 +9,14 @@ import {
     Heart,
     House,
     LayoutDashboard,
-    Search,
 } from "lucide-react";
 import { AuthActions } from "@/components/auth/auth-actions";
+import { AiSearchBar } from "@/components/marketplace/ai-search-bar";
 import { ErfpachtToggle } from "@/components/marketplace/erfpacht-toggle";
 import { MarketplaceResults } from "@/components/marketplace/marketplace-results";
 import { MonumentToggle } from "@/components/marketplace/monument-toggle";
+import { PurposeToggle } from "@/components/marketplace/purpose-toggle";
+import { gardenOrientationLabels } from "@/features/listings/garden";
 import {
     searchMarketplaceListings,
     type MarketplaceSearchParams,
@@ -164,6 +166,9 @@ export default async function SearchPage({
     const availabilityFilterCount = Number(
         result.filters.availableFrom !== "any",
     );
+    const gardenFilterCount =
+        Number(result.filters.hasGarden === true) +
+        Number(result.filters.gardenOrientation !== null);
     return (
         <div className="min-h-screen bg-background">
             <header className="border-b border-line bg-background/92 backdrop-blur-xl">
@@ -247,44 +252,7 @@ export default async function SearchPage({
                             </h1>
                         </div>
                     </div>
-                    <form
-                        action="/zoeken"
-                        className="grid gap-2 sm:grid-cols-[160px_1fr_auto]"
-                    >
-                        <label className="sr-only" htmlFor="purpose">
-                            Koop of huur
-                        </label>
-                        <select
-                            id="purpose"
-                            name="purpose"
-                            defaultValue={result.filters.purpose}
-                            className="h-13 rounded-md border-0 bg-white px-4 font-semibold text-foreground outline-none ring-brand focus:ring-2 dark:text-brand-dark"
-                        >
-                            <option value="SALE">Kopen</option>
-                            <option value="RENT">Huren</option>
-                        </select>
-                        <label className="relative">
-                            <span className="sr-only">
-                                Plaats, buurt, postcode of straat
-                            </span>
-                            <Search
-                                size={19}
-                                className="absolute left-4 top-1/2 -translate-y-1/2 text-muted"
-                            />
-                            <input
-                                name="q"
-                                defaultValue={result.filters.query}
-                                placeholder="Plaats, buurt, postcode of straat"
-                                className="h-13 w-full rounded-md border-0 bg-white pl-12 pr-4 text-foreground outline-none ring-brand placeholder:text-muted focus:ring-2 dark:text-brand-dark dark:placeholder:text-brand-dark/60"
-                            />
-                        </label>
-                        <button
-                            type="submit"
-                            className="inline-flex h-13 items-center justify-center gap-2 rounded-md bg-accent px-7 font-semibold text-brand-dark transition hover:bg-white"
-                        >
-                            <Search size={18} /> Zoeken
-                        </button>
-                    </form>
+                    <AiSearchBar />
                     {session ? (
                         <div className="mt-5 flex flex-col gap-3 border-t border-white/20 pt-5 sm:flex-row sm:items-center sm:justify-between">
                             <div className="flex items-start gap-3">
@@ -318,18 +286,7 @@ export default async function SearchPage({
                 action="/zoeken"
                 className="sticky top-0 z-900 border-b border-line bg-surface"
             >
-                <input
-                    type="hidden"
-                    name="purpose"
-                    value={result.filters.purpose}
-                />
-                {result.filters.query ? (
-                    <input
-                        type="hidden"
-                        name="q"
-                        value={result.filters.query}
-                    />
-                ) : null}
+                <input type="hidden" name="q" value={result.filters.query} />
                 {result.filters.bounds
                     ? Object.entries(result.filters.bounds).map(
                           ([key, value]) => (
@@ -343,6 +300,24 @@ export default async function SearchPage({
                       )
                     : null}
                 <div className="mx-auto flex max-w-[1600px] items-center gap-2 overflow-x-auto px-4 py-3 sm:px-6 lg:overflow-visible lg:px-8">
+                    <details
+                        name="marketplace-filters"
+                        className="group relative shrink-0"
+                    >
+                        <summary className="marketplace-filter-trigger">
+                            Koop of huur
+                        </summary>
+                        <div className="marketplace-filter-panel w-56">
+                            <PurposeToggle value={result.filters.purpose} />
+                            <p className="mt-3 text-xs leading-5 text-muted">
+                                Bepaalt of je koop- of huurwoningen zoekt en
+                                welke prijzen worden getoond.
+                            </p>
+                            <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
+                                Toepassen
+                            </button>
+                        </div>
+                    </details>
                     <details
                         name="marketplace-filters"
                         className="group relative shrink-0"
@@ -612,6 +587,57 @@ export default async function SearchPage({
                                 options={amenityOptions}
                                 selected={selectedAmenities}
                             />
+                            <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
+                                Toepassen
+                            </button>
+                        </div>
+                    </details>
+                    <details
+                        name="marketplace-filters"
+                        className="group relative shrink-0"
+                    >
+                        <summary className="marketplace-filter-trigger">
+                            Tuin
+                            {gardenFilterCount ? ` · ${gardenFilterCount}` : ""}
+                        </summary>
+                        <div className="marketplace-filter-panel w-64">
+                            <label className="flex cursor-pointer items-center gap-3 text-sm">
+                                <input
+                                    type="checkbox"
+                                    name="hasGarden"
+                                    value="true"
+                                    defaultChecked={
+                                        result.filters.hasGarden === true
+                                    }
+                                    className="size-4 accent-brand"
+                                />
+                                Alleen woningen met een tuin
+                            </label>
+                            <label className="mt-4 block text-xs font-semibold text-muted">
+                                Tuinoriëntatie
+                                <select
+                                    name="gardenOrientation"
+                                    defaultValue={
+                                        result.filters.gardenOrientation ?? ""
+                                    }
+                                    className="marketplace-filter-input mt-1.5"
+                                >
+                                    <option value="">Geen voorkeur</option>
+                                    {Object.entries(
+                                        gardenOrientationLabels,
+                                    ).map(([value, label]) => (
+                                        <option key={value} value={value}>
+                                            {label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <p className="mt-3 text-xs leading-5 text-muted">
+                                De oriëntatie wordt door de eigenaar opgegeven;
+                                woningen zonder bekende oriëntatie blijven bij
+                                een voorkeur zichtbaar als de tuin elders
+                                expliciet genoemd wordt.
+                            </p>
                             <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
                                 Toepassen
                             </button>

@@ -17,6 +17,7 @@ import {
     FileText,
     FileUp,
     Fingerprint,
+    Flower2,
     ImagePlus,
     Info,
     Landmark,
@@ -47,6 +48,11 @@ import {
     type QuestionnaireAnswer,
     type QuestionnaireAnswerValue,
 } from "@/features/listings/property-questionnaire";
+import {
+    gardenOrientationLabels,
+    parsePropertyLayout,
+    type GardenOrientation,
+} from "@/features/listings/garden";
 import {
     clearNewListingDraft,
     type NewListingDraft,
@@ -135,6 +141,7 @@ export type ListingView = {
         erfpachtCanonCents: string | null;
         erfpachtDetails: string | null;
         erfpachtEndDate: string | null;
+        layout: unknown;
         energyLabels: Array<{
             labelClass: string;
             primaryFossilEnergyKwhSqmYear: number | null;
@@ -201,6 +208,8 @@ type EditorState = {
     bidWindowClosesAt: string;
     movableItems: MovableItem[];
     questionnaireAnswers: QuestionnaireAnswer[];
+    hasGarden: boolean;
+    gardenOrientation: GardenOrientation | "";
 };
 
 async function requestData<T>(url: string, init?: RequestInit): Promise<T> {
@@ -285,6 +294,7 @@ function buildSkeletonListing(
             erfpachtCanonCents: null,
             erfpachtDetails: null,
             erfpachtEndDate: null,
+            layout: null,
             energyLabels: property?.energy
                 ? [
                       {
@@ -361,6 +371,12 @@ export function ListingEditor({
         bidWindowClosesAt: listing.bidWindowClosesAt?.slice(0, 16) ?? "",
         movableItems: listing.attributes?.movableItems ?? [],
         questionnaireAnswers: listing.attributes?.questionnaireAnswers ?? [],
+        hasGarden: Boolean(
+            parsePropertyLayout(listing.property.layout)?.garden,
+        ),
+        gardenOrientation:
+            parsePropertyLayout(listing.property.layout)?.garden?.orientation ??
+            "",
     });
 
     const editable =
@@ -415,7 +431,9 @@ export function ListingEditor({
                     : null,
                 erfpachtDetails: editor.erfpachtDetails || null,
                 erfpachtEndDate: editor.erfpachtEndDate
-                    ? new Date(`${editor.erfpachtEndDate}T00:00:00`).toISOString()
+                    ? new Date(
+                          `${editor.erfpachtEndDate}T00:00:00`,
+                      ).toISOString()
                     : null,
                 titleNl: editor.titleNl || null,
                 titleEn: editor.titleEn || null,
@@ -445,6 +463,12 @@ export function ListingEditor({
                         item.name.trim(),
                     ),
                     questionnaireAnswers: editor.questionnaireAnswers,
+                },
+                garden: {
+                    hasGarden: editor.hasGarden,
+                    orientation: editor.hasGarden
+                        ? editor.gardenOrientation || null
+                        : null,
                 },
             };
 
@@ -511,7 +535,12 @@ export function ListingEditor({
 
     const aiWriter = useMutation({
         mutationFn: () =>
-            requestData<{ text: string }>("/api/ai/listing-description", {
+            requestData<{
+                titleNl: string;
+                descriptionNl: string;
+                titleEn: string;
+                descriptionEn: string;
+            }>("/api/ai/listing-description", {
                 method: "POST",
                 headers: { "content-type": "application/json" },
                 body: JSON.stringify({
@@ -522,11 +551,20 @@ export function ListingEditor({
                     livingAreaSqm: Number(editor.livingAreaSqm),
                     roomCount: Number(editor.roomCount),
                     highlights: [],
-                    existingText: editor.descriptionNl || undefined,
+                    existingTitleNl: editor.titleNl || undefined,
+                    existingDescriptionNl: editor.descriptionNl || undefined,
+                    existingTitleEn: editor.titleEn || undefined,
+                    existingDescriptionEn: editor.descriptionEn || undefined,
                 }),
             }),
         onSuccess(data) {
-            setEditor((current) => ({ ...current, descriptionNl: data.text }));
+            setEditor((current) => ({
+                ...current,
+                titleNl: data.titleNl,
+                descriptionNl: data.descriptionNl,
+                titleEn: data.titleEn,
+                descriptionEn: data.descriptionEn,
+            }));
             setNotice("AI-voorstel gemaakt — controleer de tekst en sla op");
         },
     });
@@ -881,6 +919,12 @@ function DetailsSection({
     editable: boolean;
     aiWriter: { mutate: () => void; isPending: boolean; error: Error | null };
 }) {
+    // Waarom is de AI-knop uitgeschakeld? Wordt als tooltip op de knop getoond.
+    const aiDisabledReason = !editable
+        ? "De advertentie is niet meer aanpasbaar"
+        : !editor.livingAreaSqm || !editor.roomCount
+          ? "Vul eerst het woonoppervlak en aantal kamers in"
+          : null;
     const set =
         (key: string) =>
         (
@@ -1056,6 +1100,60 @@ function DetailsSection({
                 <div className="sm:col-span-2 rounded-2xl border border-line p-5">
                     <div className="flex items-start gap-3">
                         <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent text-brand-dark">
+                            <Flower2 size={18} />
+                        </span>
+                        <div>
+                            <h3 className="font-semibold">Tuin</h3>
+                            <p className="mt-1 text-sm leading-6 text-muted">
+                                Geef aan of de woning een tuin heeft en waar
+                                deze op ligt. Zoekenden kunnen hierop filteren.
+                            </p>
+                        </div>
+                    </div>
+                    <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                        <label className="flex items-center gap-3 self-end rounded-md border border-line px-4 py-3 text-sm font-semibold">
+                            <input
+                                type="checkbox"
+                                checked={editor.hasGarden}
+                                onChange={(event) =>
+                                    setEditor((current) => ({
+                                        ...current,
+                                        hasGarden: event.target.checked,
+                                        gardenOrientation: event.target.checked
+                                            ? current.gardenOrientation
+                                            : "",
+                                    }))
+                                }
+                                className="size-4 accent-brand"
+                            />
+                            De woning heeft een tuin
+                        </label>
+                        {editor.hasGarden ? (
+                            <label className="block text-sm font-semibold">
+                                Tuinoriëntatie (optioneel)
+                                <select
+                                    value={editor.gardenOrientation}
+                                    onChange={set("gardenOrientation")}
+                                    className="input mt-2"
+                                >
+                                    <option value="">Niet opgegeven</option>
+                                    {(
+                                        Object.entries(
+                                            gardenOrientationLabels,
+                                        ) as Array<[GardenOrientation, string]>
+                                    ).map(([value, label]) => (
+                                        <option key={value} value={value}>
+                                            {label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                        ) : null}
+                    </div>
+                </div>
+                <div className="sm:col-span-2 rounded-2xl border border-line p-5">
+                    <div className="flex items-start gap-3">
+                        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent text-brand-dark">
                             <Landmark size={18} />
                         </span>
                         <div>
@@ -1136,14 +1234,15 @@ function DetailsSection({
                 </div>
                 <button
                     type="button"
-                    disabled={
-                        !editable ||
-                        aiWriter.isPending ||
-                        !editor.livingAreaSqm ||
-                        !editor.roomCount
+                    disabled={Boolean(aiDisabledReason) || aiWriter.isPending}
+                    title={
+                        aiDisabledReason ??
+                        (aiWriter.isPending
+                            ? "De AI schrijft een voorstel..."
+                            : "Genereert een voorstel voor titels en omschrijvingen (NL en EN)")
                     }
                     onClick={() => aiWriter.mutate()}
-                    className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-brand-dark disabled:opacity-50"
+                    className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-brand-dark disabled:cursor-not-allowed disabled:opacity-50"
                 >
                     {aiWriter.isPending ? (
                         <LoaderCircle className="animate-spin" size={17} />

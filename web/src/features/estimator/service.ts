@@ -1,7 +1,8 @@
 import { createHash } from "node:crypto";
-import { generateText, Output } from "ai";
+import { Output } from "ai";
 import type { Prisma } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
+import { generateTextWithFreeFallback } from "@/lib/integrations/openrouter";
 import {
     estimateResponseSchema,
     qualitativeFeaturesSchema,
@@ -51,8 +52,7 @@ async function extractQualitativeFeatures(
         "http://localhost:3000";
 
     const seed = Number.parseInt(inputHash.slice(0, 8), 16) & 0x7fffffff;
-    const { output } = await generateText({
-        model: process.env.AI_ESTIMATOR_MODEL ?? "openai/gpt-4.1-mini",
+    const { output } = await generateTextWithFreeFallback({
         temperature: 0,
         seed,
         output: Output.object({
@@ -260,9 +260,7 @@ export async function estimateProperty(
             lowerBoundCents: BigInt(result.lowerBoundCents),
             upperBoundCents: BigInt(result.upperBoundCents),
             confidenceBasisPoints: Math.round(result.confidence * 10_000),
-            llmModelVersion: features
-                ? (process.env.AI_ESTIMATOR_MODEL ?? "openai/gpt-4.1-mini")
-                : null,
+            llmModelVersion: features ? "openrouter/auto" : null,
             mlModelVersion:
                 tier === "POSTCODE_SQM" ? null : result.modelVersion,
             publicDatasetVersion:

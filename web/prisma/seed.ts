@@ -1124,6 +1124,16 @@ async function main() {
                     erfpachtCanonCents?: bigint;
                     erfpachtDetails?: string;
                     erfpachtEndDate?: string;
+                    hasGarden?: boolean;
+                    gardenOrientation?:
+                        | "N"
+                        | "NE"
+                        | "E"
+                        | "SE"
+                        | "S"
+                        | "SW"
+                        | "W"
+                        | "NW";
                 };
                 const propSpecs: PropSpec[] = [
                     {
@@ -1243,6 +1253,8 @@ async function main() {
                         parking: ["ON_PROPERTY", "PRIVATE_GARAGE"],
                         year: 1998,
                         erfpachtType: ErfpachtType.FREEHOLD,
+                        hasGarden: true,
+                        gardenOrientation: "S",
                     },
                     {
                         key: "zuidoost",
@@ -1295,6 +1307,8 @@ async function main() {
                         ],
                         parking: ["ON_PROPERTY"],
                         year: 1995,
+                        hasGarden: true,
+                        gardenOrientation: "SW",
                     },
                     {
                         key: "deuithof_utrecht",
@@ -1369,6 +1383,8 @@ async function main() {
                         amenities: ["MECHANICAL_VENTILATION"],
                         parking: ["FREE_STREET"],
                         year: 1934,
+                        hasGarden: true,
+                        gardenOrientation: "W",
                     },
                     {
                         key: "denhaag_centrum",
@@ -1422,6 +1438,8 @@ async function main() {
                         parking: ["FREE_STREET", "PARKING_PERMIT"],
                         year: 1905,
                         monument: true,
+                        hasGarden: true,
+                        gardenOrientation: "E",
                     },
                     {
                         key: "eindhoven",
@@ -1451,6 +1469,8 @@ async function main() {
                         ],
                         parking: ["ON_PROPERTY", "PRIVATE_GARAGE"],
                         year: 2002,
+                        hasGarden: true,
+                        gardenOrientation: "N",
                     },
                     {
                         key: "parking",
@@ -1534,6 +1554,15 @@ async function main() {
                                     },
                                     { name: "Keuken", floor: 0, areaSqm: 14 },
                                 ],
+                                ...(spec.hasGarden
+                                    ? {
+                                          garden: {
+                                              orientation:
+                                                  spec.gardenOrientation ??
+                                                  null,
+                                          },
+                                      }
+                                    : {}),
                             },
                         },
                     });

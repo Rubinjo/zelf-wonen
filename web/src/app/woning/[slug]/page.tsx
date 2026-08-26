@@ -35,6 +35,10 @@ import { ListingMessageThread } from "@/components/messages/listing-message-thre
 import { PropertyLocation } from "@/components/listing/property-location";
 import { AggregatedListingDetail } from "@/components/listing/aggregated-listing-detail";
 import { ViewingBooking } from "@/components/viewings/viewing-booking";
+import {
+    gardenOrientationLabels,
+    parsePropertyLayout,
+} from "@/features/listings/garden";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import {
@@ -110,6 +114,17 @@ const englishRoofNames: Record<string, string> = {
     OTHER: "Other",
 };
 
+const englishGardenOrientations: Record<string, string> = {
+    N: "North",
+    NE: "Northeast",
+    E: "East",
+    SE: "Southeast",
+    S: "South",
+    SW: "Southwest",
+    W: "West",
+    NW: "Northwest",
+};
+
 const copy = {
     nl: {
         forSale: "Te koop",
@@ -137,6 +152,8 @@ const copy = {
         general: "Algemeen",
         dimensions: "Oppervlakten en inhoud",
         layout: "Indeling",
+        garden: "Tuin",
+        gardenOrientation: "Ligging tuin",
         amenities: "Voorzieningen",
         parking: "Parkeren",
         address: "Adres",
@@ -302,6 +319,8 @@ const copy = {
         general: "General",
         dimensions: "Areas and volume",
         layout: "Layout",
+        garden: "Garden",
+        gardenOrientation: "Garden orientation",
         amenities: "Amenities",
         parking: "Parking",
         address: "Address",
@@ -623,6 +642,16 @@ export default async function PublicListingPage({
             : (propertyAmenityOptions.find((option) => option.value === amenity)
                   ?.label ?? amenity),
     );
+    // Gestructureerde tuininformatie uit de layout-JSON van het pand.
+    const garden = parsePropertyLayout(listing.property.layout)?.garden ?? null;
+    const gardenOrientationName =
+        language === "en"
+            ? garden?.orientation
+                ? englishGardenOrientations[garden.orientation]
+                : null
+            : garden?.orientation
+              ? (gardenOrientationLabels[garden.orientation] ?? null)
+              : null;
     const selectedParkingNames = listing.property.parkingOptions.map(
         (parking) =>
             language === "en"
@@ -1065,6 +1094,20 @@ export default async function PublicListingPage({
                                                 listing.property.floorCount,
                                             ],
                                             [t.roof, roofName],
+                                            // Tuin alleen tonen als de
+                                            // eigenaar deze heeft opgegeven.
+                                            [
+                                                t.garden,
+                                                garden
+                                                    ? language === "en"
+                                                        ? "Yes"
+                                                        : "Ja"
+                                                    : null,
+                                            ],
+                                            [
+                                                t.gardenOrientation,
+                                                gardenOrientationName,
+                                            ],
                                         ]}
                                     />
                                     <DetailTags
