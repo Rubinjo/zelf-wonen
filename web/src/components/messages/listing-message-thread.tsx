@@ -191,7 +191,7 @@ export function ListingMessageThread({
                     <ShieldCheck size={15} className="shrink-0" />
                     <span>{t.transferredBanner}</span>
                     <Link
-                        href={`/dashboard/transacties/${data.transaction.id}`}
+                        href={`/dashboard/transactions/${data.transaction.id}`}
                         className="inline-flex items-center gap-1 font-semibold underline underline-offset-2"
                     >
                         {t.openTransaction} <ArrowRight size={13} />

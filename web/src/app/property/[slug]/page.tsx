@@ -717,7 +717,7 @@ export default async function PublicListingPage({
                     </Link>
                     <div className="flex items-center gap-2">
                         <Link
-                            href="/zoeken"
+                            href="/search"
                             className="hidden rounded-full px-4 py-2 text-sm font-semibold text-brand sm:inline-flex"
                         >
                             {language === "nl"

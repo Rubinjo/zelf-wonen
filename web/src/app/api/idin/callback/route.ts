@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
                 } catch (error) {
                     console.error("AGREEMENT_SIGNING_AFTER_IDIN_FAILED", error);
                     const failed = new URL(
-                        `/dashboard/transacties/${result.transactionId}`,
+                        `/dashboard/transactions/${result.transactionId}`,
                         appUrl,
                     );
                     failed.searchParams.set("sign", "failed");
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
                 }
             }
             const redirect = new URL(
-                `/dashboard/transacties/${result.transactionId}`,
+                `/dashboard/transactions/${result.transactionId}`,
                 appUrl,
             );
             redirect.searchParams.set("sign", signStatus);

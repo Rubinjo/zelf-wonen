@@ -3747,7 +3747,7 @@ async function main() {
                             eventKey: "bid-gracht-thomas-1",
                             title: "Bieding ontvangen",
                             body: "Je bieding op Herengracht 48 is ontvangen en verwerkt.",
-                            href: `/woning/${"grachtpand-op-herengracht-gracht"}`,
+                            href: `/property/${"grachtpand-op-herengracht-gracht"}`,
                             readAt: daysFromNow(-4),
                         },
                         {
@@ -3756,7 +3756,7 @@ async function main() {
                             eventKey: "viewing-gracht-thomas-1",
                             title: "Bezichtiging bevestigd",
                             body: "Je bezichtiging op Herengracht 48 is bevestigd.",
-                            href: `/woning/${"grachtpand-op-herengracht-gracht"}`,
+                            href: `/property/${"grachtpand-op-herengracht-gracht"}`,
                             readAt: null,
                         },
                         {
@@ -3765,7 +3765,7 @@ async function main() {
                             eventKey: "new-watergraafsmeer",
                             title: "Nieuw in de markt",
                             body: "Hugo de Vrieslaan 22 staat nu online.",
-                            href: `/woning/${"ruime-eengezinswoning-nabij-het-park-watergraafsmeer"}`,
+                            href: `/property/${"ruime-eengezinswoning-nabij-het-park-watergraafsmeer"}`,
                         },
                         {
                             userId: users.lisa.id,
@@ -3773,7 +3773,7 @@ async function main() {
                             eventKey: "price-gracht",
                             title: "Prijs gewijzigd",
                             body: "De vraagprijs van Herengracht 48 is bijgesteld.",
-                            href: `/woning/${"grachtpand-op-herengracht-gracht"}`,
+                            href: `/property/${"grachtpand-op-herengracht-gracht"}`,
                         },
                         {
                             userId: users.femke.id,
@@ -3781,7 +3781,7 @@ async function main() {
                             eventKey: "deadline-watergraafsmeer",
                             title: "Biedingsdeadline nadert",
                             body: "Het biedvenster voor Hugo de Vrieslaan 22 sluit binnenkort.",
-                            href: `/woning/${"ruime-eengezinswoning-nabij-het-park-watergraafsmeer"}`,
+                            href: `/property/${"ruime-eengezinswoning-nabij-het-park-watergraafsmeer"}`,
                         },
                         {
                             userId: users.bram.id,
@@ -3789,7 +3789,7 @@ async function main() {
                             eventKey: "new-parking",
                             title: "Nieuw in de markt",
                             body: "Een parkeerplaats in Nieuw-West staat online.",
-                            href: `/woning/${"parkeerplaats-in-eigen-garage-nieuw-west-parking"}`,
+                            href: `/property/${"parkeerplaats-in-eigen-garage-nieuw-west-parking"}`,
                         },
                     ],
                 });

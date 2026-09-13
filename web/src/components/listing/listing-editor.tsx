@@ -738,7 +738,7 @@ export function ListingEditor({
                     </button>
                 ) : listing.publicSlug ? (
                     <a
-                        href={`/woning/${listing.publicSlug}`}
+                        href={`/property/${listing.publicSlug}`}
                         target="_blank"
                         className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-brand px-6 font-semibold text-white"
                     >
@@ -2719,7 +2719,7 @@ function BidsSection({
         onSuccess: (result) => {
             onDecision();
             if (result.transactionId) {
-                router.push(`/dashboard/transacties/${result.transactionId}`);
+                router.push(`/dashboard/transactions/${result.transactionId}`);
             }
         },
     });

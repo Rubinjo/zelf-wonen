@@ -152,10 +152,19 @@ function selected(value: string | string[] | undefined) {
     return values.flatMap((item) => item.split(",")).filter(Boolean);
 }
 
-function positiveNumber(value: string | undefined) {
+// Boven deze grenzen past de waarde niet in de Postgres-kolom en faalt de
+// query met Prisma P2020 ("value out of range"). We negeren zulke invoer,
+// net als andere ongeldige waarden, in plaats van de pagina te laten crashen.
+const POSTGRES_INT_MAX = 2_147_483_647; // int4 (kamers, afstanden, dichtheid)
+// Prijzen worden in centen als bigint (int8) opgeslagen; met marge onder
+// 9.223.372.036.854.775.807 / 100 blijven we veilig bij de *100-conversie.
+const MAX_PRICE_EUROS = 90_000_000_000_000_000;
+
+function positiveNumber(value: string | undefined, max?: number) {
     if (!value) return null;
     const parsed = Number(value);
-    return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
+    if (!Number.isFinite(parsed) || parsed < 0) return null;
+    return max === undefined || parsed <= max ? parsed : null;
 }
 
 function constructionYear(value: string | undefined) {
@@ -255,13 +264,22 @@ export function parseMarketplaceFilters(
             first(searchParams.gardenOrientation),
         ),
         statuses: selectedStatuses.length > 0 ? selectedStatuses : ["LIVE"],
-        priceMin: positiveNumber(first(searchParams.priceMin)),
-        priceMax: positiveNumber(first(searchParams.priceMax)),
+        priceMin: positiveNumber(first(searchParams.priceMin), MAX_PRICE_EUROS),
+        priceMax: positiveNumber(first(searchParams.priceMax), MAX_PRICE_EUROS),
         propertyTypes: allowedValues(searchParams.propertyType, propertyTypes),
         livingAreaMin: positiveNumber(first(searchParams.livingAreaMin)),
-        roomsMin: positiveNumber(first(searchParams.roomsMin)),
-        bedroomsMin: positiveNumber(first(searchParams.bedroomsMin)),
-        bathroomsMin: positiveNumber(first(searchParams.bathroomsMin)),
+        roomsMin: positiveNumber(
+            first(searchParams.roomsMin),
+            POSTGRES_INT_MAX,
+        ),
+        bedroomsMin: positiveNumber(
+            first(searchParams.bedroomsMin),
+            POSTGRES_INT_MAX,
+        ),
+        bathroomsMin: positiveNumber(
+            first(searchParams.bathroomsMin),
+            POSTGRES_INT_MAX,
+        ),
         plotAreaMin: positiveNumber(first(searchParams.plotAreaMin)),
         constructionYearMin: constructionYear(
             first(searchParams.constructionYearMin),
@@ -288,6 +306,7 @@ export function parseMarketplaceFilters(
         parkingOptions: allowedValues(searchParams.parking, parkingOptions),
         populationDensityPerKm2Max: positiveNumber(
             first(searchParams.populationDensityPerKm2Max),
+            POSTGRES_INT_MAX,
         ),
         housingCorporationPercentMin: positiveNumber(
             first(searchParams.housingCorporationPercentMin),
@@ -306,9 +325,11 @@ export function parseMarketplaceFilters(
         ),
         busStopDistanceMetersMax: positiveNumber(
             first(searchParams.busStopDistanceMetersMax),
+            POSTGRES_INT_MAX,
         ),
         trainStationDistanceMetersMax: positiveNumber(
             first(searchParams.trainStationDistanceMetersMax),
+            POSTGRES_INT_MAX,
         ),
         foundationRiskFilter: (() => {
             const value = first(searchParams.foundationRisk);

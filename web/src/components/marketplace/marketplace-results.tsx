@@ -259,7 +259,7 @@ export function MarketplaceResults({
         }
         next.delete("page");
         startTransition(() =>
-            router.push(`/zoeken?${next.toString()}`, { scroll: false }),
+            router.push(`/search?${next.toString()}`, { scroll: false }),
         );
     }
 
@@ -270,7 +270,7 @@ export function MarketplaceResults({
         }
         next.delete("page");
         startTransition(() =>
-            router.push(`/zoeken${next.size ? `?${next.toString()}` : ""}`, {
+            router.push(`/search${next.size ? `?${next.toString()}` : ""}`, {
                 scroll: false,
             }),
         );
@@ -288,7 +288,7 @@ export function MarketplaceResults({
                     woonoppervlak verschijnt vaak meer aanbod.
                 </p>
                 <Link
-                    href="/zoeken"
+                    href="/search"
                     className="mt-7 inline-flex h-11 items-center rounded-full bg-brand px-6 text-sm font-semibold text-white"
                 >
                     Wis alle filters
@@ -375,7 +375,7 @@ export function MarketplaceResults({
                                         ) : null}
                                     </div>
                                     <Link
-                                        href={`/woning/${listing.slug}`}
+                                        href={`/property/${listing.slug}`}
                                         aria-label={`Bekijk ${listing.street} ${listing.houseNumber}`}
                                         className="relative block h-full w-full"
                                     >
@@ -401,7 +401,7 @@ export function MarketplaceResults({
                                     ) : null}
                                 </div>
                                 <Link
-                                    href={`/woning/${listing.slug}`}
+                                    href={`/property/${listing.slug}`}
                                     className="block p-5"
                                 >
                                     <h2 className="truncate text-lg font-semibold group-hover:text-brand">

@@ -3,15 +3,33 @@ import Image from "next/image";
 import { ArrowRight, Building2, Clock3, Plus, ShieldCheck } from "lucide-react";
 import { requireEmailVerifiedUser } from "@/features/auth/guards";
 import { listOwnerListings } from "@/features/listings/listing-service";
+import { getLanguage } from "@/lib/language";
 
-const statusLabel: Record<string, string> = {
-    DRAFT: "Concept",
-    READY_FOR_VERIFICATION: "Klaar voor iDIN",
-    LIVE: "Live",
-    UNDER_OFFER: "Onder bod",
-    SOLD: "Verkocht",
-    RENTED: "Verhuurd",
-};
+const statusLabel = {
+    nl: {
+        DRAFT: "Concept",
+        READY_FOR_VERIFICATION: "Klaar voor iDIN",
+        LIVE: "Live",
+        UNDER_OFFER: "Onder bod",
+        SOLD: "Verkocht",
+        RENTED: "Verhuurd",
+        ARCHIVED: "Gearchiveerd",
+    },
+    en: {
+        DRAFT: "Draft",
+        READY_FOR_VERIFICATION: "Ready for iDIN",
+        LIVE: "Live",
+        UNDER_OFFER: "Under offer",
+        SOLD: "Sold",
+        RENTED: "Rented",
+        ARCHIVED: "Archived",
+    },
+} as const;
+
+const purposeLabel = {
+    nl: { SALE: "Verkoop", RENT: "Verhuur" },
+    en: { SALE: "For sale", RENT: "For rent" },
+} as const;
 
 type DashboardMedia = { kind: string; status: string; storageKey: string };
 type DashboardListing = {
@@ -30,31 +48,45 @@ type DashboardListing = {
 };
 
 export default async function DashboardPage() {
+    const lang = await getLanguage();
     const session = await requireEmailVerifiedUser();
     const listings = (await listOwnerListings(
         session.user.id,
     )) as DashboardListing[];
+    const t = statusLabel[lang];
+    const p = purposeLabel[lang];
+
+    const isEn = lang === "en";
+    const portalTitle = isEn ? "Owner portal" : "Eigenarenportaal";
+    const greeting = isEn ? "Good morning, " : "Goedemorgen, ";
+    const subtitle = isEn
+        ? "Manage your listings, publications and bids in one place."
+        : "Beheer je advertenties, publicaties en biedingen op één plek.";
+    const addListing = isEn ? "Add property" : "Woning toevoegen";
+    const emptyTitle = isEn ? "Start with your first property" : "Start met je eerste woning";
+    const emptyBody = isEn
+        ? "Look up the address, verify the official property data and save a secure draft right away."
+        : "Zoek het adres op, controleer de officiële woningdata en sla direct een veilig concept op.";
+    const bidsLabel = isEn ? "Bids" : "Biedingen";
 
     return (
         <>
             <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
                 <div>
                     <p className="text-sm font-semibold uppercase tracking-[0.16em] text-brand">
-                        Eigenarenportaal
+                        {portalTitle}
                     </p>
                     <h1 className="mt-2 text-4xl font-semibold tracking-[-0.04em]">
-                        Goedemorgen, {session.user.name.split(" ")[0]}
+                        {greeting}
+                        {session.user.name.split(" ")[0]}
                     </h1>
-                    <p className="mt-3 text-muted">
-                        Beheer je advertenties, publicaties en biedingen op één
-                        plek.
-                    </p>
+                    <p className="mt-3 text-muted">{subtitle}</p>
                 </div>
                 <Link
                     href="/dashboard/listings/new"
                     className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-brand px-6 font-semibold text-white hover:bg-brand-dark"
                 >
-                    <Plus size={18} /> Woning toevoegen
+                    <Plus size={18} /> {addListing}
                 </Link>
             </div>
 
@@ -65,17 +97,14 @@ export default async function DashboardPage() {
                             <Building2 size={28} />
                         </span>
                         <h2 className="mt-6 text-2xl font-semibold">
-                            Start met je eerste woning
+                            {emptyTitle}
                         </h2>
-                        <p className="mt-3 leading-7 text-muted">
-                            Zoek het adres op, controleer de officiële
-                            woningdata en sla direct een veilig concept op.
-                        </p>
+                        <p className="mt-3 leading-7 text-muted">{emptyBody}</p>
                         <Link
                             href="/dashboard/listings/new"
                             className="mt-7 inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 font-semibold text-white"
                         >
-                            Woning toevoegen <ArrowRight size={17} />
+                            {addListing} <ArrowRight size={17} />
                         </Link>
                     </div>
                 </section>
@@ -108,15 +137,14 @@ export default async function DashboardPage() {
                                         </div>
                                     )}
                                     <span className="absolute left-4 top-4 rounded-full bg-background/95 px-3 py-1.5 text-xs font-semibold shadow-sm">
-                                        {statusLabel[listing.status] ??
+                                        {t[listing.status as keyof typeof t] ??
                                             listing.status}
                                     </span>
                                 </div>
                                 <div className="p-6">
                                     <p className="text-xs font-semibold uppercase tracking-wider text-brand">
-                                        {listing.purpose === "SALE"
-                                            ? "Verkoop"
-                                            : "Verhuur"}
+                                        {p[listing.purpose as keyof typeof p] ??
+                                            listing.purpose}
                                     </p>
                                     <h2 className="mt-2 text-xl font-semibold">
                                         {listing.property.street}{" "}
@@ -133,14 +161,16 @@ export default async function DashboardPage() {
                                             <Clock3 size={15} />{" "}
                                             {new Date(
                                                 listing.updatedAt,
-                                            ).toLocaleDateString("nl-NL")}
+                                            ).toLocaleDateString(
+                                                isEn ? "en-GB" : "nl-NL",
+                                            )}
                                         </span>
                                         <span className="flex items-center gap-1.5">
                                             <ShieldCheck
                                                 size={15}
                                                 className="text-brand"
                                             />{" "}
-                                            Biedingen
+                                            {bidsLabel}
                                         </span>
                                     </div>
                                 </div>

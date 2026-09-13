@@ -369,7 +369,7 @@ const metadataCopy = {
     },
 } as const;
 
-function getLanguage(lang?: string): "nl" | "en" {
+function resolveLanguage(lang?: string): "nl" | "en" {
     return lang === "en" ? "en" : "nl";
 }
 
@@ -378,7 +378,8 @@ export async function generateMetadata({
 }: {
     searchParams: Promise<{ lang?: string }>;
 }): Promise<Metadata> {
-    const language = getLanguage((await searchParams).lang);
+    const urlLanguage = (await searchParams).lang;
+    const language = urlLanguage === "en" ? "en" : "nl";
     const meta = metadataCopy[language];
 
     return {
@@ -439,7 +440,7 @@ export default async function Home({
 }: {
     searchParams: Promise<{ lang?: string }>;
 }) {
-    const language = getLanguage((await searchParams).lang);
+    const language = resolveLanguage((await searchParams).lang);
     const t = copy[language];
     const progressIcons = [ShieldCheck, PiggyBank, Megaphone];
     const structuredData = {
@@ -499,7 +500,7 @@ export default async function Home({
                     </Link>
                     <nav className="hidden items-center gap-8 text-sm font-medium text-muted md:flex">
                         <Link
-                            href="/zoeken"
+                            href="/search"
                             className="font-semibold text-brand transition hover:text-brand-dark"
                         >
                             {language === "nl"

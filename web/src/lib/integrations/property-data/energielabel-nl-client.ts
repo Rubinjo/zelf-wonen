@@ -62,8 +62,8 @@ function toIsoDate(value?: string | null) {
 
 export class EnergielabelNlClient {
     constructor(
-        private readonly apiUrl =
-            process.env.ENERGIELABEL_NL_API_BASE_URL || DEFAULT_API_URL,
+        private readonly apiUrl = process.env.ENERGIELABEL_NL_API_BASE_URL ||
+            DEFAULT_API_URL,
     ) {}
 
     async lookupAddress(input: AddressLookup) {
@@ -125,7 +125,11 @@ export class EnergielabelNlClient {
             await energyResponse.json(),
         );
         const labelClass = energyLabelClasses[energyData.energyClass];
-        if (!energyData.isResidential || energyData.isTemporary || !labelClass) {
+        if (
+            !energyData.isResidential ||
+            energyData.isTemporary ||
+            !labelClass
+        ) {
             return null;
         }
 

@@ -115,7 +115,7 @@ const SYSTEM_PROMPT = [
     "Zelfstandigheidseisen:",
     "- Gebruik alleen velden die de gebruiker expliciet of impliciet duidelijk heeft gemaakt. Laat alles wat niet gevraagd wordt weg (null/undefined), zodat bestaande filters niet onnodig beperkt worden.",
     "- Prijs: bij KOPEN gaat het om koopprijs (askingPrice), bij HUREN om huurprijs per maand. 'onder de 400k' => priceMax 400000. 'tot en met' is inclusief.",
-    "- Woningtype: appartement/flat => APARTMENT, huis/woning/villa => HOUSE, bouwgrond/kavel => LAND, kantoor/winkel/praktijkruimte => COMMERCIAL, parkeerplaats/garage-box => PARKING.",
+    "- Woningtype: appartement/flat => APARTMENT, huis/property/villa => HOUSE, bouwgrond/kavel => LAND, kantoor/winkel/praktijkruimte => COMMERCIAL, parkeerplaats/garage-box => PARKING.",
     '- Energielabel: \'label A of beter\' => ["A_PLUS", "A", "B", "C", "D", "E", "F", "G"] (alle A-varianten plus lager); \'minimaal label B\' => ["B","C","D","E","F","G"]. Gebruik de exacte enum-waarden.',
     "- Voorzieningen en parkeren: gebruik exact de gegeven enum-waarden.",
     "- Tuin: 'met tuin' => hasGarden true; tuin op het zuiden/oosten enz. => gardenOrientation (S/E/...).",

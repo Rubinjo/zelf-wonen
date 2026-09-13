@@ -262,7 +262,7 @@ export function SeekerDashboard({
                         <Calculator size={18} /> Maximale hypotheek
                     </Link>
                     <Link
-                        href="/zoeken"
+                        href="/search"
                         className="inline-flex h-12 items-center justify-center gap-2 bg-brand px-6 font-semibold text-white"
                     >
                         <Search size={18} /> Zoek woningen
@@ -405,7 +405,7 @@ function Overview({
                             icon={FileText}
                             title="Actieve transactie"
                             text={`${activeTransaction.listing.street} ${activeTransaction.listing.houseNumber} · ${statusNames[activeTransaction.status]}`}
-                            href={`/dashboard/transacties/${activeTransaction.id}`}
+                            href={`/dashboard/transactions/${activeTransaction.id}`}
                         />
                     )}
                     {deadlines[0] && (
@@ -413,7 +413,7 @@ function Overview({
                             icon={Clock3}
                             title="Eerstvolgende deadline"
                             text={`${deadlines[0].title} · ${new Date(deadlines[0].dueAt!).toLocaleDateString("nl-NL")}`}
-                            href={`/dashboard/transacties/${deadlines[0].transactionId}`}
+                            href={`/dashboard/transactions/${deadlines[0].transactionId}`}
                         />
                     )}
                     {!nextViewing &&
@@ -470,7 +470,7 @@ function Overview({
                             icon={Heart}
                             title="Nog geen favorieten"
                             text="Bewaar woningen vanuit de zoekresultaten om ze hier terug te vinden."
-                            href="/zoeken"
+                            href="/search"
                         />
                     )}
                 </div>
@@ -653,7 +653,7 @@ function Favorites({
                         icon={Heart}
                         title="Bewaar je eerste woning"
                         text="Tik in de zoekresultaten op het hart. Je favorieten synchroniseren daarna automatisch tussen apparaten."
-                        href="/zoeken"
+                        href="/search"
                     />
                 )}
             </div>
@@ -688,7 +688,7 @@ function FavoriteCard({
     });
     const listingLink = favorite.listing.slug ? (
         <Link
-            href={`/woning/${favorite.listing.slug}`}
+            href={`/property/${favorite.listing.slug}`}
             className="inline-flex items-center gap-1 text-sm font-semibold text-brand"
         >
             Bekijk woning <ChevronRight size={15} />
@@ -837,7 +837,7 @@ function Searches({
                     </p>
                 </div>
                 <Link
-                    href="/zoeken"
+                    href="/search"
                     className="inline-flex h-11 items-center gap-2 border border-brand px-4 text-sm font-semibold text-brand"
                 >
                     <Search size={16} /> Nieuwe zoekopdracht
@@ -873,7 +873,7 @@ function Searches({
                             Meldingen
                         </label>
                         <Link
-                            href={`/zoeken?${search.queryString}`}
+                            href={`/search?${search.queryString}`}
                             className="inline-flex h-10 items-center justify-center gap-1 border border-line px-3 text-sm font-semibold text-brand"
                         >
                             Open <ExternalLink size={14} />
@@ -892,7 +892,7 @@ function Searches({
                         icon={Search}
                         title="Nog geen zoekopdrachten"
                         text="Stel filters in bij Woning zoeken en kies ‘Bewaar deze zoekopdracht’."
-                        href="/zoeken"
+                        href="/search"
                     />
                 )}
             </div>
@@ -926,7 +926,7 @@ function Viewings({ items }: { items: Viewing[] }) {
                     icon={CalendarDays}
                     title="Geen bezichtigingen"
                     text="Open een woning en kies een beschikbaar tijdslot."
-                    href="/zoeken"
+                    href="/search"
                 />
             }
         >
@@ -954,7 +954,7 @@ function Viewings({ items }: { items: Viewing[] }) {
                     <Link
                         href={
                             item.listing.slug
-                                ? `/woning/${item.listing.slug}`
+                                ? `/property/${item.listing.slug}`
                                 : "#"
                         }
                         className="inline-flex h-10 items-center justify-center border border-line px-3 text-sm font-semibold text-brand"
@@ -976,7 +976,7 @@ function Bids({ items }: { items: Bid[] }) {
                     icon={Euro}
                     title="Nog geen biedingen"
                     text="Na een bevestigde bezichtiging kun je tijdens de biedperiode een bod vastleggen."
-                    href="/zoeken"
+                    href="/search"
                 />
             }
         >
@@ -1003,7 +1003,7 @@ function Bids({ items }: { items: Bid[] }) {
                             <Status value={state} />
                             {bid.transaction ? (
                                 <Link
-                                    href={`/dashboard/transacties/${bid.transaction.id}`}
+                                    href={`/dashboard/transactions/${bid.transaction.id}`}
                                     className="inline-flex h-10 items-center justify-center gap-1 bg-brand px-4 text-sm font-semibold text-white"
                                 >
                                     Transactieruimte <ChevronRight size={14} />
@@ -1012,7 +1012,7 @@ function Bids({ items }: { items: Bid[] }) {
                                 <Link
                                     href={
                                         bid.listing.slug
-                                            ? `/woning/${bid.listing.slug}`
+                                            ? `/property/${bid.listing.slug}`
                                             : "#"
                                     }
                                     className="inline-flex h-10 items-center justify-center border border-line px-4 text-sm font-semibold text-brand"
@@ -1063,7 +1063,7 @@ function Messages({
                     icon={MessageSquare}
                     title="Nog geen berichten"
                     text="Open een woning en stuur een bericht aan de verkoper."
-                    href="/zoeken"
+                    href="/search"
                 />
             }
         >
@@ -1128,7 +1128,7 @@ function Transactions({ items }: { items: Transaction[] }) {
                 return (
                     <Link
                         key={transaction.id}
-                        href={`/dashboard/transacties/${transaction.id}`}
+                        href={`/dashboard/transactions/${transaction.id}`}
                         className="group flex flex-col gap-4 border border-line bg-surface p-5 hover:border-brand/40 sm:flex-row sm:items-center"
                     >
                         <div className="flex-1">
@@ -1384,7 +1384,7 @@ function ListingCard({
     );
     return listing.slug ? (
         <Link
-            href={`/woning/${listing.slug}`}
+            href={`/property/${listing.slug}`}
             className="group overflow-hidden border border-line bg-surface hover:border-brand/40"
         >
             {content}

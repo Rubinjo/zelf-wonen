@@ -19,6 +19,7 @@ import {
     Zap,
 } from "lucide-react";
 import { AuthActions } from "@/components/auth/auth-actions";
+import { useTranslations } from "@/lib/messages/use-translations";
 import {
     ENERGY_LABELS,
     FIXED_TERMS,
@@ -251,9 +252,7 @@ function Toggle({
                     </span>
                 ) : null}
                 <span className="min-w-0 flex-1">
-                    <span className="block text-sm font-semibold">
-                        {label}
-                    </span>
+                    <span className="block text-sm font-semibold">{label}</span>
                     {helper ? (
                         <span className="mt-0.5 block text-xs leading-5 text-muted">
                             {helper}
@@ -343,16 +342,16 @@ const emptyIncome: IncomeState = {
     zzpProfits: ["", "", ""],
 };
 
-const modeOptions = [
-    { value: "gross-yearly", label: "Bruto per jaar" },
-    { value: "gross-monthly", label: "Bruto per maand" },
-    { value: "net-monthly", label: "Netto per maand" },
-] as const;
+const modeOptionsBase = [
+    { value: "gross-yearly" as const, key: "mortgage.grossYearly" },
+    { value: "gross-monthly" as const, key: "mortgage.grossMonthly" },
+    { value: "net-monthly" as const, key: "mortgage.netMonthly" },
+];
 
-const modeLabel: Record<IncomeMode, string> = {
-    "gross-yearly": "Bruto jaarinkomen",
-    "gross-monthly": "Bruto maandinkomen",
-    "net-monthly": "Netto maandinkomen",
+const modeLabelBase: Record<IncomeMode, string> = {
+    "gross-yearly": "mortgage.grossYearlyIncome",
+    "gross-monthly": "mortgage.grossMonthlyIncome",
+    "net-monthly": "mortgage.netMonthlyIncome",
 };
 
 function IncomeFields({
@@ -366,18 +365,23 @@ function IncomeFields({
     idPrefix: string;
     isZzp: boolean;
 }) {
+    const { t } = useTranslations();
+    const modeOptions = modeOptionsBase.map((o) => ({
+        value: o.value,
+        label: t(o.key as any),
+    }));
+    const modeLabel: Record<IncomeMode, string> = {
+        "gross-yearly": t("mortgage.grossYearlyIncome" as any),
+        "gross-monthly": t("mortgage.grossMonthlyIncome" as any),
+        "net-monthly": t("mortgage.netMonthlyIncome" as any),
+    };
     if (isZzp) {
         return (
             <div className="grid gap-4">
-                <InfoBox>
-                    Vul de <strong>nettowinst</strong> per boekjaar in (meest
-                    recente jaar eerst). We middelen de winsten, passen een
-                    brutering toe en rekenen een bestendigheidskorting
-                    afhankelijk van het aantal jaren dat je ondernemer bent.
-                </InfoBox>
+                <InfoBox>{t("mortgage.zzpInfo" as any)}</InfoBox>
                 <div className="grid gap-4 sm:grid-cols-3">
-                    {(["Laatste jaar", "Jaar ervoor", "2 jaar terug"] as const).map(
-                        (label, index) => (
+                    {t("mortgage.zzpProfitLabels" as any).map(
+                        (label: string, index: number) => (
                             <NumberField
                                 key={label}
                                 id={`${idPrefix}-profit-${index}`}
@@ -390,16 +394,13 @@ function IncomeFields({
                                     zzpProfits[index] = profit;
                                     onChange({ ...value, zzpProfits });
                                 }}
-                                suffix="nettowinst"
+                                suffix={t("mortgage.zzpProfitSuffix" as any)}
                             />
                         ),
                     )}
                 </div>
                 <p className="text-xs leading-5 text-muted">
-                    Bij minder dan 3 boekjaren gebruiken we het beschikbare
-                    gemiddelde met een lagere bestendigheidsfactor. Banken
-                    baseren zich uiteindelijk op een inkomensverklaring (bijv.
-                    Verklaring Inkomen Ondernemer).
+                    {t("mortgage.zzpNote" as any)}
                 </p>
             </div>
         );
@@ -409,7 +410,7 @@ function IncomeFields({
         <div className="grid gap-4">
             <div>
                 <p className="text-sm font-semibold">
-                    Hoe wil je je inkomen invullen?
+                    {t("mortgage.incomeModeQuestion" as any)}
                 </p>
                 <Segmented
                     value={value.mode}
@@ -423,15 +424,14 @@ function IncomeFields({
                 value={value.amount}
                 onChange={(amount) => onChange({ ...value, amount })}
                 placeholder="0"
-                suffix={value.mode === "gross-yearly" ? "per jaar" : "per maand"}
+                suffix={
+                    value.mode === "gross-yearly"
+                        ? t("mortgage.grossYearly" as any)
+                        : t("mortgage.grossMonthly" as any)
+                }
                 helper={
                     value.mode === "net-monthly" ? (
-                        <>
-                            We rekenen je netto inkomen indicatief terug naar
-                            bruto, inclusief loonheffingskorting (tarieven
-                            2025). Het bruto jaarinkomen is altijd de meest
-                            betrouwbare invoer.
-                        </>
+                        <>{t("mortgage.netToGrossHelper" as any)}</>
                     ) : undefined
                 }
             />
@@ -440,28 +440,28 @@ function IncomeFields({
                 onChange={(includeHolidayAllowance) =>
                     onChange({ ...value, includeHolidayAllowance })
                 }
-                label="Vakantiegeld (8%) meetellen"
-                helper="Zet dit uit als je bruto jaarinkomen al inclusief vakantiegeld is."
+                label={t("mortgage.holidayAllowance" as any)}
+                helper={t("mortgage.holidayAllowanceHelper" as any)}
             />
             <div className="grid gap-4 sm:grid-cols-2">
                 <NumberField
                     id={`${idPrefix}-fixed-bonus`}
-                    label="13e maand / vaste bonus"
+                    label={t("mortgage.fixedBonus" as any)}
                     value={value.fixedBonusYearly}
                     onChange={(fixedBonusYearly) =>
                         onChange({ ...value, fixedBonusYearly })
                     }
-                    suffix="per jaar"
-                    helper="Telt voor 100% mee als het contractueel is vastgelegd."
+                    suffix={t("mortgage.fixedBonusSuffix" as any)}
+                    helper={t("mortgage.fixedBonusHelper" as any)}
                 />
                 <NumberField
                     id={`${idPrefix}-variable-bonus`}
-                    label="Variabele bonus"
+                    label={t("mortgage.variableBonus" as any)}
                     value={value.variableBonusYearly}
                     onChange={(variableBonusYearly) =>
                         onChange({ ...value, variableBonusYearly })
                     }
-                    suffix="per jaar"
+                    suffix={t("mortgage.variableBonusSuffix" as any)}
                 />
             </div>
             <Toggle
@@ -469,8 +469,8 @@ function IncomeFields({
                 onChange={(variableBonusContractual) =>
                     onChange({ ...value, variableBonusContractual })
                 }
-                label="Variabele bonus is contractueel gegarandeerd"
-                helper="Alleen een gegarandeerde bonus telt mee. Een niet-structurele bonus telt meestal niet mee voor de maximale hypotheek."
+                label={t("mortgage.variableBonusContractual" as any)}
+                helper={t("mortgage.variableBonusHelper" as any)}
             />
         </div>
     );
@@ -528,6 +528,7 @@ function Step({
 }
 
 function Results({ result }: { result: MortgageResult }) {
+    const { t } = useTranslations();
     const affordable =
         result.monthlyPaymentForValue == null
             ? null
@@ -537,7 +538,7 @@ function Results({ result }: { result: MortgageResult }) {
         <div className="grid gap-5">
             <section className="border border-line bg-brand-dark p-6 text-white">
                 <p className="text-xs font-semibold uppercase tracking-wider text-accent">
-                    Maximale hypotheek
+                    {t("mortgage.maxMortgage" as any)}
                 </p>
                 <p className="mt-2 text-4xl font-semibold sm:text-5xl">
                     {money(result.maxMortgage)}
@@ -550,17 +551,18 @@ function Results({ result }: { result: MortgageResult }) {
 
             <section className="border border-line bg-surface p-5">
                 <div className="flex items-center justify-between gap-3">
-                    <h3 className="font-semibold">Hoe is dit opgebouwd?</h3>
+                    <h3 className="font-semibold">
+                        {t("mortgage.resultTitle" as any)}
+                    </h3>
                     <Calculator size={19} className="text-brand" />
                 </div>
                 <ol className="mt-5 grid gap-5">
                     <Step
-                        title="Toetsinkomen"
+                        title={t("mortgage.resultStepIncome" as any)}
                         value={money(result.toetsinkomen)}
                         text={
                             <>
-                                Bruto jaarinkomen(s) na vakantiegeld, vaste
-                                bonussen en ZZP-correcties.{" "}
+                                {t("mortgage.resultStepIncomeText" as any)}{" "}
                                 {result.partnerGross > 0
                                     ? `Aanvrager: ${money(result.applicantGross)}, partner: ${money(result.partnerGross)}.`
                                     : `Aanvrager: ${money(result.applicantGross)}.`}
@@ -568,39 +570,37 @@ function Results({ result }: { result: MortgageResult }) {
                         }
                     />
                     <Step
-                        title="Financieringslast"
+                        title={t("mortgage.resultStepFinancing" as any)}
                         value={`${pct.format(result.financingPercentage)}%`}
                         text={
                             <>
-                                Percentage van het inkomen dat aan bruto
-                                woonlasten besteed mag worden. Maximaal{" "}
+                                {t("mortgage.resultStepFinancingText" as any)}{" "}
                                 {money(result.maxMonthlyHousing)} bruto per
                                 maand.
                             </>
                         }
                     />
                     <Step
-                        title="Leencapaciteit uit inkomen"
+                        title={t("mortgage.resultStepCapacity" as any)}
                         value={money(result.maxMortgageIncome)}
-                        text="Het maximale annuïtaire leenbedrag bij dit inkomen en deze toetsrente."
+                        text={t("mortgage.resultStepCapacityText" as any)}
                     />
                     <Step
-                        title="Energielabel"
+                        title={t("mortgage.resultStepEnergy" as any)}
                         value={`+ ${money(result.energyExtra)}`}
                         tone={result.energyExtra > 0 ? "brand" : "muted"}
-                        text="Bij label A+ of beter mag je extra lenen voor een zuinige woning."
+                        text={t("mortgage.resultStepEnergyText" as any)}
                     />
                     <Step
-                        title="Verplichtingen"
+                        title={t("mortgage.resultStepObligations" as any)}
                         value={`− ${money(result.totalMonthlyObligations * 12)}`}
                         tone="muted"
                         text={
                             <>
-                                Studieschuld {money(result.studentDebtMonthly)}
-                                /mnd, alimentatie {money(result.alimonyMonthly)}
-                                /mnd en overige leningen{" "}
-                                {money(result.otherLoansMonthly)}/mnd verlagen
-                                de ruimte.
+                                {t("mortgage.resultStepObligationsText" as any)}{" "}
+                                {money(result.studentDebtMonthly)}/mnd,{" "}
+                                {money(result.alimonyMonthly)}/mnd,{" "}
+                                {money(result.otherLoansMonthly)}/mnd.
                             </>
                         }
                     />
@@ -608,39 +608,50 @@ function Results({ result }: { result: MortgageResult }) {
             </section>
 
             <section className="border border-line bg-surface p-5">
-                <h3 className="font-semibold">Maandlasten</h3>
+                <h3 className="font-semibold">
+                    {t("mortgage.monthlyTitle" as any)}
+                </h3>
                 <dl className="mt-4 grid gap-3 text-sm">
                     <div className="flex items-center justify-between">
-                        <dt className="text-muted">Bruto per maand (maximaal)</dt>
+                        <dt className="text-muted">
+                            {t("mortgage.monthlyGross" as any)}
+                        </dt>
                         <dd className="font-semibold">
                             {moneyCents(result.monthlyPaymentMax)}
                         </dd>
                     </div>
                     <div className="flex items-center justify-between">
-                        <dt className="text-muted">Netto per maand (indicatief)</dt>
+                        <dt className="text-muted">
+                            {t("mortgage.monthlyNet" as any)}
+                        </dt>
                         <dd className="font-semibold">
                             {moneyCents(result.netMonthlyEstimate)}
                         </dd>
                     </div>
                     <div className="flex items-center justify-between border-t border-line pt-3">
-                        <dt className="text-muted">Verplichtingen</dt>
+                        <dt className="text-muted">
+                            {t("mortgage.monthlyObligations" as any)}
+                        </dt>
                         <dd className="font-semibold">
                             {moneyCents(result.totalMonthlyObligations)}
                         </dd>
                     </div>
                 </dl>
                 <p className="mt-3 text-xs leading-5 text-muted">
-                    De netto maandlast is een indicatie: we schatten het
-                    voordeel van hypotheekrenteaftrek (37% over het rentedeel).
-                    Dit hangt af van je werkelijke rente en belastingsituatie.
+                    {t("mortgage.monthlyNote" as any)}
                 </p>
             </section>
 
             <section className="border border-line bg-surface p-5">
                 <div className="flex items-start gap-3">
-                    <ShieldCheck size={19} className="mt-0.5 shrink-0 text-brand" />
+                    <ShieldCheck
+                        size={19}
+                        className="mt-0.5 shrink-0 text-brand"
+                    />
                     <div>
-                        <h3 className="font-semibold">NHG</h3>
+                        <h3 className="font-semibold">
+                            {t("mortgage.nhgTitle" as any)}
+                        </h3>
                         <p className="mt-1 text-sm leading-6 text-muted">
                             {result.nhgEligible ? (
                                 <>
@@ -651,9 +662,9 @@ function Results({ result }: { result: MortgageResult }) {
                                 </>
                             ) : (
                                 <>
-                                    De woningwaarde ligt boven de NHG-kostengrens
-                                    van {money(result.nhgLimit)} (2026). NHG is
-                                    dan niet mogelijk.
+                                    De woningwaarde ligt boven de
+                                    NHG-kostengrens van {money(result.nhgLimit)}{" "}
+                                    (2026). NHG is dan niet mogelijk.
                                 </>
                             )}
                         </p>
@@ -663,7 +674,7 @@ function Results({ result }: { result: MortgageResult }) {
                     <div className="mt-4 border-t border-line pt-4">
                         <div className="flex items-center justify-between text-sm">
                             <span className="text-muted">
-                                Maximaal voor deze woning (100% van de waarde)
+                                {t("mortgage.ltvMax" as any)}
                             </span>
                             <span className="font-semibold">
                                 {money(result.ltvCappedMaxMortgage)}
@@ -671,7 +682,7 @@ function Results({ result }: { result: MortgageResult }) {
                         </div>
                         <div className="mt-3 flex items-center justify-between text-sm">
                             <span className="text-muted">
-                                Bijbehorende maandlast
+                                {t("mortgage.ltvMonthly" as any)}
                             </span>
                             <span className="font-semibold">
                                 {moneyCents(result.monthlyPaymentForValue ?? 0)}
@@ -681,14 +692,17 @@ function Results({ result }: { result: MortgageResult }) {
                             className={`mt-3 flex items-start gap-2 text-sm ${affordable ? "text-brand" : "text-muted"}`}
                         >
                             {affordable ? (
-                                <PiggyBank size={16} className="mt-0.5 shrink-0" />
+                                <PiggyBank
+                                    size={16}
+                                    className="mt-0.5 shrink-0"
+                                />
                             ) : (
                                 <Info size={16} className="mt-0.5 shrink-0" />
                             )}
                             <span>
                                 {affordable
-                                    ? "Deze woning past binnen je maximale leencapaciteit."
-                                    : "Deze woning is duurder dan je maximale leencapaciteit; je hebt extra eigen geld nodig of een lagere prijs."}
+                                    ? t("mortgage.affordableMessage" as any)
+                                    : t("mortgage.notAffordableMessage" as any)}
                             </span>
                         </div>
                     </div>
@@ -696,11 +710,7 @@ function Results({ result }: { result: MortgageResult }) {
             </section>
 
             <p className="px-1 text-xs leading-5 text-muted">
-                Deze berekening is indicatief en gebaseerd op de publieke
-                Nibud-normen, de NHG-kostengrens 2026 en een
-                annuïteitenhypotheek van 30 jaar. De definitieve maximale
-                hypotheek stelt je geldverstrekker vast. Aan deze berekening
-                kunnen geen rechten worden ontleend.
+                {t("mortgage.footerNote" as any)}
             </p>
         </div>
     );
@@ -710,6 +720,7 @@ function Results({ result }: { result: MortgageResult }) {
 // Hoofdcomponent
 // ---------------------------------------------------------------------------
 export function MortgageCalculator() {
+    const { t, language } = useTranslations();
     const [applicantIsZzp, setApplicantIsZzp] = useState(false);
     const [hasPartner, setHasPartner] = useState(false);
     const [partnerIsZzp, setPartnerIsZzp] = useState(false);
@@ -805,7 +816,7 @@ export function MortgageCalculator() {
                     </Link>
                     <nav className="flex items-center gap-1.5 sm:gap-2">
                         <Link
-                            href="/zoeken"
+                            href="/search"
                             className="hidden px-3 py-2 text-sm font-semibold text-muted transition hover:text-brand lg:block"
                         >
                             Woning zoeken
@@ -817,9 +828,13 @@ export function MortgageCalculator() {
                             Hypotheek berekenen
                         </Link>
                         <AuthActions
-                            language="nl"
-                            dashboardHref="/dashboard/zoeker"
-                            dashboardLabel="Mijn dashboard"
+                            language={language}
+                            dashboardHref="/dashboard/seeker"
+                            dashboardLabel={
+                                language === "en"
+                                    ? "My dashboard"
+                                    : "Mijn dashboard"
+                            }
                         />
                     </nav>
                 </div>
@@ -828,10 +843,10 @@ export function MortgageCalculator() {
             <section className="border-b border-line bg-brand-dark text-white">
                 <div className="mx-auto max-w-[1600px] px-4 py-9 sm:px-6 lg:px-8">
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">
-                        Maximale hypotheek & betaalbaarheid
+                        {t("mortgage.title" as any)}
                     </p>
                     <h1 className="mt-2 max-w-3xl text-2xl font-semibold sm:text-4xl">
-                        Wat kun je maximaal lenen voor je volgende woning?
+                        {t("mortgage.description" as any)}
                     </h1>
                     <p className="mt-3 max-w-3xl text-sm leading-6 text-white/75 sm:text-base">
                         Bereken je leencapaciteit zoals een hypotheekadviseur
@@ -946,8 +961,7 @@ export function MortgageCalculator() {
                                     energyLabel === "A_PLUS_PLUS" ||
                                     energyLabel === "A_PLUS_PLUS_PLUS" ||
                                     energyLabel === "A_PLUS_PLUS_PLUS_PLUS" ||
-                                    energyLabel ===
-                                        "A_PLUS_PLUS_PLUS_PLUS_PLUS"
+                                    energyLabel === "A_PLUS_PLUS_PLUS_PLUS_PLUS"
                                         ? "Deze woning geeft extra leenruimte voor verduurzaming."
                                         : "Dit label geeft geen extra leenruimte. Het label telt wel mee bij je energielasten."}
                                 </p>
@@ -1131,7 +1145,9 @@ export function MortgageCalculator() {
                                                                 {offer.lender}
                                                             </span>
                                                             <span className="block text-xs text-muted">
-                                                                {offer.fixedYears}{" "}
+                                                                {
+                                                                    offer.fixedYears
+                                                                }{" "}
                                                                 jaar rentevast
                                                             </span>
                                                         </span>

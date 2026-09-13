@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 /**
- * Keuze tussen kopen en huren als filter in de filterbalk van /zoeken.
+ * Keuze tussen kopen en huren als filter in de filterbalk van /search.
  * Volgt hetzelfde radiopatroon als MonumentToggle zodat de keuze pas
  * wordt toegepast via de knop "Toepassen" van het filterpaneel.
  */

@@ -8,7 +8,7 @@ import {
 
 /**
  * AI-zoekinterpretatie: zet een natuurlijke-taalvraag om naar URL-parameters
- * voor /zoeken. De client wordt doorgestuurd naar de bestaande zoekpagina,
+ * voor /search. De client wordt doorgestuurd naar de bestaande zoekpagina,
  * zodat alle handmatige filters gewoon blijven werken en de geïnterpreteerde
  * filters zichtbaar zijn in de filterpanelen.
  */
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({
             data: {
-                redirectUrl: `/zoeken?${params.toString()}`,
+                redirectUrl: `/search?${params.toString()}`,
                 interpretation,
             },
         });
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
             if (query) fallback.set("q", query);
             return NextResponse.json({
                 data: {
-                    redirectUrl: `/zoeken?${fallback.toString()}`,
+                    redirectUrl: `/search?${fallback.toString()}`,
                     degraded: true,
                 },
             });
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
         if (query) fallback.set("q", query);
         return NextResponse.json({
             data: {
-                redirectUrl: `/zoeken?${fallback.toString()}`,
+                redirectUrl: `/search?${fallback.toString()}`,
                 degraded: true,
             },
         });

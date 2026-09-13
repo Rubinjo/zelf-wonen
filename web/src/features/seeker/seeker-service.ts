@@ -142,7 +142,7 @@ export async function syncSeekerNotifications(userId: string) {
                 "Prijs gewijzigd",
                 `${favorite.listing.property.street} ${favorite.listing.property.houseNumber} heeft een nieuwe prijs.`,
                 favorite.listing.publicSlug
-                    ? `/woning/${favorite.listing.publicSlug}`
+                    ? `/property/${favorite.listing.publicSlug}`
                     : undefined,
             );
         }
@@ -157,7 +157,7 @@ export async function syncSeekerNotifications(userId: string) {
                 "Status woning gewijzigd",
                 `${favorite.listing.property.street} ${favorite.listing.property.houseNumber} is nu ${favorite.listing.status.toLowerCase().replaceAll("_", " ")}.`,
                 favorite.listing.publicSlug
-                    ? `/woning/${favorite.listing.publicSlug}`
+                    ? `/property/${favorite.listing.publicSlug}`
                     : undefined,
             );
         }
@@ -182,7 +182,7 @@ export async function syncSeekerNotifications(userId: string) {
                 `viewing:${viewing.id}:${viewing.attendanceStatus}:${viewing.slot.startsAt.toISOString()}`,
                 "Bezichtiging",
                 `${viewing.slot.listing.property.street} ${viewing.slot.listing.property.houseNumber}: ${viewing.attendanceStatus.toLowerCase()}.`,
-                "/dashboard/zoeker?tab=viewings",
+                "/dashboard/seeker?tab=viewings",
             );
         }
     if (preferences.bid)
@@ -194,7 +194,7 @@ export async function syncSeekerNotifications(userId: string) {
                 `bid:${bid.id}:${state}`,
                 state === "ACCEPTED" ? "Bod geaccepteerd" : "Status van je bod",
                 `${bid.listing.property.street} ${bid.listing.property.houseNumber}: ${state.toLowerCase()}.`,
-                "/dashboard/zoeker?tab=bids",
+                "/dashboard/seeker?tab=bids",
             );
         }
     if (preferences.transaction)
@@ -205,7 +205,7 @@ export async function syncSeekerNotifications(userId: string) {
                 `transaction:${transaction.id}:${transaction.status}:${transaction.version}`,
                 "Transactie bijgewerkt",
                 `${transaction.listing.property.street} ${transaction.listing.property.houseNumber}: ${transaction.status.toLowerCase().replaceAll("_", " ")}.`,
-                `/dashboard/transacties/${transaction.id}`,
+                `/dashboard/transactions/${transaction.id}`,
             );
             if (preferences.deadline)
                 for (const milestone of transaction.milestones) {
@@ -220,7 +220,7 @@ export async function syncSeekerNotifications(userId: string) {
                             `deadline:${milestone.id}:${dueAt.toISOString()}`,
                             "Deadline nadert",
                             `${milestone.title} verloopt ${days === 0 ? "vandaag" : `over ${days} dagen`}.`,
-                            `/dashboard/transacties/${transaction.id}`,
+                            `/dashboard/transactions/${transaction.id}`,
                         );
                 }
         }
@@ -252,7 +252,7 @@ export async function syncSeekerNotifications(userId: string) {
                     `saved-search:${search.id}:${listing.id}`,
                     "Nieuwe woning voor je zoekopdracht",
                     `${listing.street} ${listing.houseNumber} in ${listing.city} past bij “${search.name}”.`,
-                    `/woning/${listing.slug}`,
+                    `/property/${listing.slug}`,
                 );
             await db.savedSearch.update({
                 where: { id: search.id },

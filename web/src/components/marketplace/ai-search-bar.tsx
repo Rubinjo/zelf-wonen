@@ -21,7 +21,7 @@ const READ_PAUSE_MS = 1900;
 
 /**
  * AI-eerst zoekbalk: elke zoekopdracht wordt in natuurlijke taal
- * serverzijde geïnterpreteerd en omgezet naar filters op /zoeken.
+ * serverzijde geïnterpreteerd en omgezet naar filters op /search.
  * Zolang het veld leeg en niet gefocust is, wordt een voorbeeldvraag
  * teken voor teken getypt, kort gepauzeerd en weer verwijderd; zodra
  * de gebruiker focust of klikt stopt de animatie en is het veld

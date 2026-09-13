@@ -148,7 +148,7 @@ export function OwnerListingMessages({
                         transactiechat.
                     </span>
                     <Link
-                        href={`/dashboard/transacties/${data.transaction.id}`}
+                        href={`/dashboard/transactions/${data.transaction.id}`}
                         className="inline-flex items-center gap-1 font-semibold underline underline-offset-2"
                     >
                         Open de transactiechat <ArrowRight size={13} />

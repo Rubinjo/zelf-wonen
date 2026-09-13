@@ -255,7 +255,7 @@ export function TransactionRoom({
             <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                     <Link
-                        href="/dashboard/transacties"
+                        href="/dashboard/transactions"
                         className="inline-flex items-center gap-2 text-sm font-semibold text-brand"
                     >
                         <ArrowLeft size={16} /> Alle transacties
@@ -901,7 +901,7 @@ function Overview({
                     </div>
                     {room.listing.publicSlug && (
                         <Link
-                            href={`/woning/${room.listing.publicSlug}`}
+                            href={`/property/${room.listing.publicSlug}`}
                             className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand"
                         >
                             Bekijk advertentie <ChevronRight size={15} />

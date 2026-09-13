@@ -14,21 +14,57 @@ import {
 } from "lucide-react";
 import { seekerListingInclude } from "@/features/seeker/seeker-service";
 import { db } from "@/lib/db";
+import { getLanguage } from "@/lib/language";
 
-export const metadata: Metadata = {
-    title: "Gedeelde woning-shortlist",
-    robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+    const lang = await getLanguage();
+    return {
+        title: lang === "en" ? "Shared property shortlist" : "Gedeelde woning-shortlist",
+        robots: { index: false, follow: false },
+    };
+}
+
+function formatDate(date: Date, lang: "nl" | "en") {
+    return date.toLocaleDateString(lang === "en" ? "en-GB" : "nl-NL");
+}
+
+function formatPrice(
+    cents: bigint,
+    purpose: "SALE" | "RENT",
+    lang: "nl" | "en",
+) {
+    const value = new Intl.NumberFormat(lang === "en" ? "en-GB" : "nl-NL", {
+        style: "currency",
+        currency: "EUR",
+        maximumFractionDigits: 0,
+    }).format(Number(cents) / 100);
+    return purpose === "RENT"
+        ? `${value} / ${lang === "en" ? "month" : "maand"}`
+        : value;
+}
+
+function statusLabel(status: string, lang: "nl" | "en"): string {
+    const map: Record<string, Record<"nl" | "en", string>> = {
+        LIVE: { nl: "Beschikbaar", en: "Available" },
+        UNDER_OFFER: { nl: "Onder bod", en: "Under offer" },
+        SOLD: { nl: "Verkocht", en: "Sold" },
+        RENTED: { nl: "Verhuurd", en: "Rented" },
+    };
+    return map[status]?.[lang] ?? status.toLowerCase().replaceAll("_", " ");
+}
 
 export default async function PublicShortlistPage({
     params,
 }: {
     params: Promise<{ token: string }>;
 }) {
+    const lang = await getLanguage();
     const token = (await params).token;
     if (!/^[A-Za-z0-9_-]{40,100}$/.test(token)) notFound();
     const share = await db.shortlistShare.findUnique({
-        where: { tokenHash: createHash("sha256").update(token).digest("hex") },
+        where: {
+            tokenHash: createHash("sha256").update(token).digest("hex"),
+        },
         include: {
             items: {
                 include: { listing: { include: seekerListingInclude } },
@@ -44,6 +80,9 @@ export default async function PublicShortlistPage({
                 item.listing.status,
             ),
     );
+    const defaultTitle =
+        lang === "en" ? "Property shortlist" : "Woning-shortlist";
+    const label = share.label || defaultTitle;
     return (
         <div className="min-h-screen bg-background">
             <header className="sticky top-0 z-40 border-b border-line bg-background/92 backdrop-blur-xl">
@@ -61,7 +100,9 @@ export default async function PublicShortlistPage({
                     </Link>
                     <span className="inline-flex items-center gap-2 text-xs text-muted">
                         <ShieldCheck size={15} className="text-brand" />{" "}
-                        Alleen-lezen shortlist
+                        {lang === "en"
+                            ? "Read-only shortlist"
+                            : "Alleen-lezen shortlist"}
                     </span>
                 </div>
             </header>
@@ -69,19 +110,23 @@ export default async function PublicShortlistPage({
                 <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
                     <div>
                         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-brand">
-                            Gedeeld met jou
+                            {lang === "en"
+                                ? "Shared with you"
+                                : "Gedeeld met jou"}
                         </p>
                         <h1 className="mt-2 text-3xl font-semibold sm:text-4xl">
-                            {share.label || "Woning-shortlist"}
+                            {label}
                         </h1>
                         <p className="mt-3 max-w-xl text-muted">
-                            Bekijk de geselecteerde woningen en de meegestuurde
-                            notities. De actuele advertentie blijft leidend.
+                            {lang === "en"
+                                ? "Browse the selected properties and the notes that came with them. The current listing remains leading."
+                                : "Bekijk de geselecteerde woningen en de meegestuurde notities. De actuele advertentie blijft leidend."}
                         </p>
                     </div>
                     <div className="inline-flex items-center gap-2 border border-line bg-surface px-4 py-3 text-sm text-muted">
-                        <Clock3 size={17} className="text-brand" /> Geldig tot{" "}
-                        {share.expiresAt.toLocaleDateString("nl-NL")}
+                        <Clock3 size={17} className="text-brand" />{" "}
+                        {lang === "en" ? "Valid until " : "Geldig tot "}
+                        {formatDate(share.expiresAt, lang)}
                     </div>
                 </div>
                 <section className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -96,7 +141,9 @@ export default async function PublicShortlistPage({
                                 key={item.id}
                                 className="overflow-hidden border border-line bg-surface"
                             >
-                                <Link href={`/woning/${listing.publicSlug}`}>
+                                <Link
+                                    href={`/property/${listing.publicSlug}`}
+                                >
                                     <div className="relative aspect-4/3 bg-background">
                                         {listing.media[0] ? (
                                             <Image
@@ -112,11 +159,10 @@ export default async function PublicShortlistPage({
                                             </div>
                                         )}
                                         <span className="absolute left-3 top-3 bg-white/95 px-2 py-1 text-xs font-semibold text-brand">
-                                            {listing.status === "LIVE"
-                                                ? "Beschikbaar"
-                                                : listing.status
-                                                      .toLowerCase()
-                                                      .replaceAll("_", " ")}
+                                            {statusLabel(
+                                                listing.status,
+                                                lang,
+                                            )}
                                         </span>
                                     </div>
                                     <div className="p-5">
@@ -135,17 +181,16 @@ export default async function PublicShortlistPage({
                                         </p>
                                         {price && (
                                             <p className="mt-4 text-xl font-semibold">
-                                                {new Intl.NumberFormat(
-                                                    "nl-NL",
-                                                    {
-                                                        style: "currency",
-                                                        currency: "EUR",
-                                                        maximumFractionDigits: 0,
-                                                    },
-                                                ).format(Number(price) / 100)}
+                                                {formatPrice(
+                                                    price,
+                                                    listing.purpose,
+                                                    lang,
+                                                )}
                                                 {listing.purpose === "RENT"
-                                                    ? " / maand"
-                                                    : " k.k."}
+                                                    ? ""
+                                                    : lang === "en"
+                                                      ? " (k.k.)"
+                                                      : " k.k."}
                                             </p>
                                         )}
                                         <div className="mt-4 flex gap-4 border-t border-line pt-3 text-xs text-muted">
@@ -157,7 +202,9 @@ export default async function PublicShortlistPage({
                                             <span>
                                                 {listing.property.roomCount ??
                                                     "—"}{" "}
-                                                kamers
+                                                {lang === "en"
+                                                    ? "rooms"
+                                                    : "kamers"}
                                             </span>
                                             <span className="ml-auto">
                                                 {listing.property.energyLabels[0]?.labelClass?.replaceAll(
@@ -172,7 +219,9 @@ export default async function PublicShortlistPage({
                                             </p>
                                         )}
                                         <span className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-brand">
-                                            Bekijk woning{" "}
+                                            {lang === "en"
+                                                ? "View property"
+                                                : "Bekijk woning"}{" "}
                                             <ChevronRight size={15} />
                                         </span>
                                     </div>
@@ -188,11 +237,14 @@ export default async function PublicShortlistPage({
                                     size={32}
                                 />
                                 <h2 className="mt-4 text-xl font-semibold">
-                                    Geen woningen meer beschikbaar
+                                    {lang === "en"
+                                        ? "No properties left"
+                                        : "Geen woningen meer beschikbaar"}
                                 </h2>
                                 <p className="mt-2 text-sm text-muted">
-                                    De gedeelde woningen zijn verwijderd of niet
-                                    langer openbaar.
+                                    {lang === "en"
+                                        ? "The shared properties were removed or are no longer public."
+                                        : "De gedeelde woningen zijn verwijderd of niet langer openbaar."}
                                 </p>
                             </div>
                         </div>

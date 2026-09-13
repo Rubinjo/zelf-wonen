@@ -5,7 +5,7 @@ Self-service Dutch real-estate platform for owners who want to sell or rent with
 ## What is scaffolded
 
 - Bilingual Dutch/English marketing shell
-- Public sale/rental marketplace at `/zoeken` with shareable filters, sorting, pagination, local favorites, and a synchronized OpenStreetMap view
+- Public sale/rental marketplace at `/search` with shareable filters, sorting, pagination, local favorites, and a synchronized OpenStreetMap view
 - Better Auth with mandatory email verification
 - Server-side verified-email authorization guard
 - Prisma/PostgreSQL draft for users, sessions, properties, labels, listings, media, iDIN attempts, packages, publications, bids, immutable events, exports, estimate cache, and audit events

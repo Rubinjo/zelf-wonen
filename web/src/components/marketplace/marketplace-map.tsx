@@ -266,7 +266,7 @@ export function MarketplaceMap({
                         <Popup minWidth={260} maxWidth={280}>
                             {listing.imageUrl ? (
                                 <Link
-                                    href={`/woning/${listing.slug}`}
+                                    href={`/property/${listing.slug}`}
                                     className="relative mb-3 block h-32 overflow-hidden rounded-md bg-background"
                                 >
                                     <Image
@@ -285,7 +285,7 @@ export function MarketplaceMap({
                                 </Link>
                             ) : null}
                             <Link
-                                href={`/woning/${listing.slug}`}
+                                href={`/property/${listing.slug}`}
                                 className="block text-base font-semibold text-foreground hover:text-brand"
                             >
                                 {listing.street} {listing.houseNumber}

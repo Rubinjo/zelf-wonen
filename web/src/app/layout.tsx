@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { LanguageProvider } from "@/components/providers/language-provider";
+import { getLanguage } from "@/lib/language";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
 
@@ -17,23 +18,40 @@ const geistMono = Geist_Mono({
     subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-    title: {
-        default: "ZelfWonen — Zelf verkopen of verhuren",
-        template: "%s | ZelfWonen",
+const metaCopy = {
+    nl: {
+        title: "ZelfWonen — Zelf verkopen of verhuren",
+        description:
+            "Maak, waardeer en publiceer je woning zelf — met betrouwbare woningdata en een transparant biedlogboek.",
     },
-    description:
-        "Maak, waardeer en publiceer je woning zelf — met betrouwbare woningdata en een transparant biedlogboek.",
-};
+    en: {
+        title: "ZelfWonen — Sell or rent out your own home",
+        description:
+            "Create, value and publish your property yourself — with reliable property data and a transparent bid logbook.",
+    },
+} as const;
 
-export default function RootLayout({
+export async function generateMetadata(): Promise<Metadata> {
+    const lang = await getLanguage();
+    const m = metaCopy[lang];
+    return {
+        title: {
+            default: m.title,
+            template: "%s | ZelfWonen",
+        },
+        description: m.description,
+    };
+}
+
+export default async function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const lang = await getLanguage();
     return (
         <html
-            lang="nl"
+            lang={lang}
             data-scroll-behavior="smooth"
             suppressHydrationWarning
             className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}

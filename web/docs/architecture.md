@@ -192,7 +192,7 @@ Key decisions:
 
 Aggregated properties are an **informational discovery layer only**: bidding,
 viewing appointments and the transaction always happen on the original
-platform. The `/woning/[slug]` page renders aggregated listings with branded
+platform. The `/property/[slug]` page renders aggregated listings with branded
 links back to Funda/Kamernet and no platform bidding/viewing UI.
 
 Scraping Funda and Kamernet is adversarial and may conflict with their terms;
@@ -236,7 +236,7 @@ Development stores transaction documents outside `public/` under `.data/transact
 
 ## Personal seeker dashboard
 
-The verified-user dashboard at `/dashboard/zoeker` combines favorites, saved searches, viewings, bids, transactions and an in-app notification inbox. Marketplace favorites remain usable anonymously in local storage; after sign-in, the client imports and merges them into account-scoped `FavoriteListing` records without discarding newer local choices.
+The verified-user dashboard at `/dashboard/seeker` combines favorites, saved searches, viewings, bids, transactions and an in-app notification inbox. Marketplace favorites remain usable anonymously in local storage; after sign-in, the client imports and merges them into account-scoped `FavoriteListing` records without discarding newer local choices.
 
 Saved searches store only canonical, validated marketplace query parameters and are unique per user and normalized query. Notification generation is deliberately separate from dashboard reads: the client invokes an authenticated sync endpoint once per browser session, while the dashboard GET remains a predictable read. The sync creates idempotent events for new search matches, favorite price/status changes, viewings, bids, transaction changes and upcoming deadlines. A production scheduler may invoke the same service for timely notifications when users are offline.
 

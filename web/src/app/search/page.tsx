@@ -22,50 +22,71 @@ import {
     type MarketplaceSearchParams,
 } from "@/features/listings/marketplace-service";
 import { auth } from "@/lib/auth";
+import { getLanguage } from "@/lib/language";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-    title: "Huizen te koop en te huur",
-    description:
-        "Zoek huizen en appartementen te koop of te huur op ZelfWonen. Filter op prijs, woonoppervlak, kamers, energielabel en voorzieningen.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+    const lang = await getLanguage();
+    return lang === "en"
+        ? {
+              title: "Houses for sale and for rent",
+              description:
+                  "Search houses and apartments for sale or rent on ZelfWonen. Filter by price, living area, rooms, energy label and amenities.",
+          }
+        : {
+              title: "Huizen te koop en te huur",
+              description:
+                  "Zoek huizen en appartementen te koop of te huur op ZelfWonen. Filter op prijs, woonoppervlak, kamers, energielabel en voorzieningen.",
+          };
+}
 
-const propertyTypeOptions = [
-    ["HOUSE", "Huis"],
-    ["APARTMENT", "Appartement"],
-    ["LAND", "Bouwgrond"],
-    ["PARKING", "Parkeerplaats"],
-    ["COMMERCIAL", "Bedrijfsruimte"],
-] as const;
-function statusOptions(purpose: "SALE" | "RENT") {
+const propertyTypeOptions = (lang: "nl" | "en") =>
+    ([
+        ["HOUSE", lang === "en" ? "House" : "Huis"],
+        ["APARTMENT", lang === "en" ? "Apartment" : "Appartement"],
+        ["LAND", lang === "en" ? "Land" : "Bouwgrond"],
+        ["PARKING", lang === "en" ? "Parking" : "Parkeerplaats"],
+        ["COMMERCIAL", lang === "en" ? "Commercial" : "Bedrijfsruimte"],
+    ] as const);
+function statusOptions(purpose: "SALE" | "RENT", lang: "nl" | "en") {
+    const isEn = lang === "en";
     const options: (readonly [string, string])[] = [
-        ["LIVE", purpose === "SALE" ? "Te koop" : "Te huur"],
-        ["UNDER_OFFER", "Onder bod"],
+        ["LIVE", isEn ? (purpose === "SALE" ? "For sale" : "For rent") : purpose === "SALE" ? "Te koop" : "Te huur"],
+        ["UNDER_OFFER", isEn ? "Under offer" : "Onder bod"],
     ];
-    if (purpose === "SALE") options.push(["SOLD", "Verkocht"]);
-    else options.push(["RENTED", "Verhuurd"]);
+    if (purpose === "SALE")
+        options.push(["SOLD", isEn ? "Sold" : "Verkocht"]);
+    else options.push(["RENTED", isEn ? "Rented" : "Verhuurd"]);
     return options;
 }
-const amenityOptions = [
-    ["SOLAR_PANELS", "Zonnepanelen"],
-    ["HEAT_PUMP", "Warmtepomp"],
-    ["AIR_CONDITIONING", "Airconditioning"],
-    ["FIBER_OPTIC", "Glasvezel"],
-    ["EV_CHARGER", "Laadpaal"],
-    ["FIREPLACE", "Open haard"],
-    ["MECHANICAL_VENTILATION", "Mechanische ventilatie"],
-    ["ALARM_SYSTEM", "Alarmsysteem"],
-] as const;
-const parkingOptions = [
-    ["ON_PROPERTY", "Op eigen terrein"],
-    ["FREE_STREET", "Gratis parkeren"],
-    ["PARKING_PERMIT", "Parkeervergunning"],
-    ["PRIVATE_GARAGE", "Eigen garage"],
-    ["PUBLIC_GARAGE", "Openbare garage"],
-    ["PAID_STREET", "Betaald parkeren"],
-    ["SPACE_FOR_SALE", "Parkeerplaats te koop"],
-] as const;
+const amenityOptions = (lang: "nl" | "en") =>
+    ([
+        ["SOLAR_PANELS", lang === "en" ? "Solar panels" : "Zonnepanelen"],
+        ["HEAT_PUMP", lang === "en" ? "Heat pump" : "Warmtepomp"],
+        ["AIR_CONDITIONING", lang === "en" ? "Air conditioning" : "Airconditioning"],
+        ["FIBER_OPTIC", lang === "en" ? "Fibre optic" : "Glasvezel"],
+        ["EV_CHARGER", lang === "en" ? "EV charger" : "Laadpaal"],
+        ["FIREPLACE", lang === "en" ? "Fireplace" : "Open haard"],
+        [
+            "MECHANICAL_VENTILATION",
+            lang === "en" ? "Mechanical ventilation" : "Mechanische ventilatie",
+        ],
+        ["ALARM_SYSTEM", lang === "en" ? "Alarm system" : "Alarmsysteem"],
+    ] as const);
+const parkingOptions = (lang: "nl" | "en") =>
+    ([
+        ["ON_PROPERTY", lang === "en" ? "On property" : "Op eigen terrein"],
+        ["FREE_STREET", lang === "en" ? "Free street parking" : "Gratis parkeren"],
+        ["PARKING_PERMIT", lang === "en" ? "Parking permit" : "Parkeervergunning"],
+        ["PRIVATE_GARAGE", lang === "en" ? "Private garage" : "Eigen garage"],
+        ["PUBLIC_GARAGE", lang === "en" ? "Public garage" : "Openbare garage"],
+        ["PAID_STREET", lang === "en" ? "Paid street parking" : "Betaald parkeren"],
+        [
+            "SPACE_FOR_SALE",
+            lang === "en" ? "Parking for sale" : "Parkeerplaats te koop",
+        ],
+    ] as const);
 const energyLabelOptions = [
     ["A_PLUS_PLUS_PLUS_PLUS_PLUS", "A+++++"],
     ["A_PLUS_PLUS_PLUS_PLUS", "A++++"],
@@ -94,7 +115,7 @@ function pageHref(searchParams: MarketplaceSearchParams, page: number) {
         }
     }
     if (page > 1) query.set("page", String(page));
-    return `/zoeken${query.size ? `?${query.toString()}` : ""}`;
+    return `/search${query.size ? `?${query.toString()}` : ""}`;
 }
 
 function FilterChecks({
@@ -133,13 +154,104 @@ export default async function SearchPage({
     searchParams: Promise<MarketplaceSearchParams>;
 }) {
     const params = await searchParams;
+    const language = await getLanguage();
+    const isEn = language === "en";
+    const ui = isEn
+        ? {
+              navSearch: "Find a home",
+              mortgageCalc: "Mortgage calculator",
+              favorites: "Favorites",
+              myHomes: "My homes",
+              offerProperty: "List a property",
+              eyebrow: "Listings from private owners",
+              h1: "Find a place that fits you",
+              welcomeBack: "Welcome back, ",
+              welcomeBody:
+                  "Your favorites, searches, viewings and bids are in My search.",
+              openMySearch: "Open My search",
+              apply: "Apply",
+              propertyType: "Property type",
+              price: "Price",
+              status: "Status",
+              availability: "Availability",
+              areaRooms: "Area & rooms",
+              energyLabel: "Energy label",
+              amenities: "Amenities",
+              garden: "Garden",
+              neighborhood: "Neighborhood",
+              erfpacht: "Ground lease",
+              noPreference: "No preference",
+              anyHome: "Any home",
+              from: "From",
+              to: "To",
+              noMax: "No maximum",
+              saleOrRent: "Sale or rent",
+              immediate: "Immediately available",
+              within1m: "Within 1 month",
+              within3m: "Within 3 months",
+              minLivingArea: "Minimum living area",
+              minPlot: "Minimum plot",
+              rooms: "Rooms",
+              bedrooms: "Bedrooms",
+              bathrooms: "Bathrooms",
+              gardenOrientation: "Garden orientation",
+              monumentStatus: "Monument status",
+              availableFrom: "Available from",
+              neighborhoodFacilities: "Neighborhood facilities",
+              sale: "For sale",
+              rent: "For rent",
+          }
+        : {
+              navSearch: "Woning zoeken",
+              mortgageCalc: "Hypotheek berekenen",
+              favorites: "Favorieten",
+              myHomes: "Mijn woningen",
+              offerProperty: "Woning aanbieden",
+              eyebrow: "Aanbod van particuliere verkopers",
+              h1: "Vind een plek die bij je past",
+              welcomeBack: "Welkom terug, ",
+              welcomeBody:
+                  "Je favorieten, zoekopdrachten, bezichtigingen en biedingen staan bij Mijn zoektocht.",
+              openMySearch: "Open Mijn zoektocht",
+              apply: "Toepassen",
+              propertyType: "Woningtype",
+              price: "Prijs",
+              status: "Status",
+              availability: "Beschikbaarheid",
+              areaRooms: "Oppervlakte & kamers",
+              energyLabel: "Energielabel",
+              amenities: "Voorzieningen",
+              garden: "Tuin",
+              neighborhood: "Buurt",
+              erfpacht: "Erfpacht",
+              noPreference: "Geen voorkeur",
+              anyHome: "Alle woningen",
+              from: "Van",
+              to: "Tot",
+              noMax: "Geen maximum",
+              saleOrRent: "Koop of huur",
+              immediate: "Direct beschikbaar",
+              within1m: "Binnen 1 maand",
+              within3m: "Binnen 3 maanden",
+              minLivingArea: "Minimaal woonoppervlak",
+              minPlot: "Minimaal perceel",
+              rooms: "Kamers",
+              bedrooms: "Slaapkamers",
+              bathrooms: "Badkamers",
+              gardenOrientation: "Tuinoorientatie",
+              monumentStatus: "Monumentstatus",
+              availableFrom: "Beschikbaar vanaf",
+              neighborhoodFacilities: "Voorzieningen in de buurt",
+              sale: "Te koop",
+              rent: "Te huur",
+          };
     const [result, session] = await Promise.all([
         searchMarketplaceListings(params),
         auth.api.getSession({ headers: await headers() }),
     ]);
     const selectedPropertyTypes = values(params.propertyType);
     const selectedStatuses = values(params.status);
-    const statusFilterOptions = statusOptions(result.filters.purpose);
+    const statusFilterOptions = statusOptions(result.filters.purpose, language);
     const activeStatusValues = statusFilterOptions.map(([value]) => value);
     const visibleSelectedStatuses = selectedStatuses.filter((value) =>
         activeStatusValues.includes(value),
@@ -187,34 +299,34 @@ export default async function SearchPage({
                     </Link>
                     <nav className="flex items-center gap-1.5 sm:gap-2">
                         <Link
-                            href="/zoeken"
+                            href="/search"
                             className="hidden px-3 py-2 text-sm font-semibold text-brand lg:block"
                         >
-                            Woning zoeken
+                            {ui.navSearch}
                         </Link>
                         <Link
                             href="/mortgage-calculator"
                             className="hidden items-center gap-1.5 px-3 py-2 text-sm font-semibold text-muted transition hover:text-brand lg:inline-flex"
                         >
-                            <Calculator size={16} /> Hypotheek berekenen
+                            <Calculator size={16} /> {ui.mortgageCalc}
                         </Link>
                         {session ? (
                             <>
                                 <Link
-                                    href="/dashboard/zoeker?tab=favorites"
+                                    href="/dashboard/seeker?tab=favorites"
                                     className="hidden h-10 items-center gap-2 rounded-full px-3 text-sm font-semibold transition hover:bg-surface md:inline-flex"
                                 >
-                                    <Heart size={16} /> Favorieten
+                                    <Heart size={16} /> {ui.favorites}
                                 </Link>
                                 <Link
                                     href="/dashboard"
                                     className="inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold transition hover:bg-surface sm:w-auto sm:gap-2 sm:px-3"
-                                    aria-label="Mijn woningen beheren"
-                                    title="Mijn woningen beheren"
+                                    aria-label={isEn ? "Manage my homes" : "Mijn woningen beheren"}
+                                    title={isEn ? "Manage my homes" : "Mijn woningen beheren"}
                                 >
                                     <House size={16} />
                                     <span className="hidden sm:inline">
-                                        Mijn woningen
+                                        {ui.myHomes}
                                     </span>
                                 </Link>
                             </>
@@ -222,19 +334,21 @@ export default async function SearchPage({
                             <Link
                                 href="/#start"
                                 className="inline-flex size-10 items-center justify-center rounded-full border border-brand text-brand transition hover:bg-brand hover:text-white sm:size-auto sm:px-4 sm:py-2"
-                                aria-label="Woning aanbieden"
-                                title="Woning aanbieden"
+                                aria-label={isEn ? "List a property" : "Woning aanbieden"}
+                                title={isEn ? "List a property" : "Woning aanbieden"}
                             >
                                 <House size={17} className="sm:hidden" />
                                 <span className="hidden text-sm font-semibold sm:inline">
-                                    Woning aanbieden
+                                    {ui.offerProperty}
                                 </span>
                             </Link>
                         )}
                         <AuthActions
-                            language="nl"
-                            dashboardHref="/dashboard/zoeker"
-                            dashboardLabel="Mijn dashboard"
+                            language={language}
+                            dashboardHref="/dashboard/seeker"
+                            dashboardLabel={
+                                language === "en" ? "My dashboard" : "Mijn dashboard"
+                            }
                         />
                     </nav>
                 </div>
@@ -245,10 +359,10 @@ export default async function SearchPage({
                     <div className="mb-5">
                         <div>
                             <p className="text-xs font-semibold uppercase text-accent">
-                                Aanbod van particuliere verkopers
+                                {ui.eyebrow}
                             </p>
                             <h1 className="mt-2 text-2xl font-semibold sm:text-3xl">
-                                Vind een plek die bij je past
+                                {ui.h1}
                             </h1>
                         </div>
                     </div>
@@ -261,21 +375,19 @@ export default async function SearchPage({
                                 </span>
                                 <div>
                                     <p className="font-semibold">
-                                        Welkom terug,{" "}
+                                        {ui.welcomeBack}{" "}
                                         {session.user.name.split(" ")[0]}
                                     </p>
                                     <p className="mt-0.5 text-sm text-white/75">
-                                        Je favorieten, zoekopdrachten,
-                                        bezichtigingen en biedingen staan bij
-                                        Mijn zoektocht.
+                                        {ui.welcomeBody}
                                     </p>
                                 </div>
                             </div>
                             <Link
-                                href="/dashboard/zoeker"
+                                href="/dashboard/seeker"
                                 className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-md bg-white px-4 text-sm font-semibold text-brand-dark transition hover:bg-accent"
                             >
-                                <Heart size={16} /> Open Mijn zoektocht
+                                <Heart size={16} /> {ui.openMySearch}
                             </Link>
                         </div>
                     ) : null}
@@ -283,7 +395,7 @@ export default async function SearchPage({
             </section>
 
             <form
-                action="/zoeken"
+                action="/search"
                 className="sticky top-0 z-900 border-b border-line bg-surface"
             >
                 <input type="hidden" name="q" value={result.filters.query} />
@@ -334,7 +446,7 @@ export default async function SearchPage({
                                     min="0"
                                     step="25000"
                                     defaultValue={result.filters.priceMin ?? ""}
-                                    placeholder="€ 0"
+                                    placeholder={isEn ? "€0" : "€ 0"}
                                     className="marketplace-filter-input mt-1.5"
                                 />
                             </label>
@@ -346,7 +458,7 @@ export default async function SearchPage({
                                     min="0"
                                     step="25000"
                                     defaultValue={result.filters.priceMax ?? ""}
-                                    placeholder="Geen maximum"
+                                    placeholder={ui.noMax}
                                     className="marketplace-filter-input mt-1.5"
                                 />
                             </label>
@@ -373,8 +485,8 @@ export default async function SearchPage({
                             />
                             <p className="mt-3 text-xs leading-5 text-muted">
                                 {result.filters.purpose === "SALE"
-                                    ? "Toont ook verkochte woningen met de uiteindelijke prijs."
-                                    : "Toont ook verhuurde woningen met de uiteindelijke huurprijs."}
+                                    ? "{isEn ? \"Also shows sold homes with their final price.\" : \"Toont ook verkochte woningen met de uiteindelijke prijs.\"}"
+                                    : "{isEn ? \"Also shows rented homes with their final rent.\" : \"Toont ook verhuurde woningen met de uiteindelijke huurprijs.\"}"}
                             </p>
                             <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
                                 Toepassen
@@ -403,12 +515,12 @@ export default async function SearchPage({
                                     }
                                     className="marketplace-filter-input mt-1.5"
                                 >
-                                    <option value="">Alle woningen</option>
+                                    <option value="">{ui.anyHome}</option>
                                     <option value="now">
                                         Direct beschikbaar
                                     </option>
-                                    <option value="1m">Binnen 1 maand</option>
-                                    <option value="3m">Binnen 3 maanden</option>
+                                    <option value="1m">{ui.within1m}</option>
+                                    <option value="3m">{ui.within3m}</option>
                                 </select>
                             </label>
                             <p className="mt-3 text-xs leading-5 text-muted">
@@ -433,7 +545,7 @@ export default async function SearchPage({
                         <div className="marketplace-filter-panel w-60">
                             <FilterChecks
                                 name="propertyType"
-                                options={propertyTypeOptions}
+                                options={propertyTypeOptions(language)}
                                 selected={selectedPropertyTypes}
                             />
                             <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
@@ -459,7 +571,7 @@ export default async function SearchPage({
                                         }
                                         className="marketplace-filter-input mt-1.5"
                                     >
-                                        <option value="">Geen voorkeur</option>
+                                        <option value="">{ui.noPreference}</option>
                                         {[50, 75, 100, 125, 150, 200].map(
                                             (area) => (
                                                 <option key={area} value={area}>
@@ -478,7 +590,7 @@ export default async function SearchPage({
                                         }
                                         className="marketplace-filter-input mt-1.5"
                                     >
-                                        <option value="">Geen voorkeur</option>
+                                        <option value="">{ui.noPreference}</option>
                                         {[100, 250, 500, 1000, 2500].map(
                                             (area) => (
                                                 <option key={area} value={area}>
@@ -502,7 +614,7 @@ export default async function SearchPage({
                                         }
                                         className="marketplace-filter-input mt-1.5"
                                     >
-                                        <option value="">Alle</option>
+                                        <option value="">{isEn ? "Any" : "Alle"}</option>
                                         {[1, 2, 3, 4, 5].map((count) => (
                                             <option key={count} value={count}>
                                                 {count}+
@@ -519,7 +631,7 @@ export default async function SearchPage({
                                         }
                                         className="marketplace-filter-input mt-1.5"
                                     >
-                                        <option value="">Alle</option>
+                                        <option value="">{isEn ? "Any" : "Alle"}</option>
                                         {[1, 2, 3, 4, 5].map((count) => (
                                             <option key={count} value={count}>
                                                 {count}+
@@ -536,7 +648,7 @@ export default async function SearchPage({
                                         }
                                         className="marketplace-filter-input mt-1.5"
                                     >
-                                        <option value="">Alle</option>
+                                        <option value="">{isEn ? "Any" : "Alle"}</option>
                                         {[1, 2, 3, 4].map((count) => (
                                             <option key={count} value={count}>
                                                 {count}+
@@ -584,7 +696,7 @@ export default async function SearchPage({
                         <div className="marketplace-filter-panel w-60">
                             <FilterChecks
                                 name="amenity"
-                                options={amenityOptions}
+                                options={amenityOptions(language)}
                                 selected={selectedAmenities}
                             />
                             <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
@@ -622,7 +734,7 @@ export default async function SearchPage({
                                     }
                                     className="marketplace-filter-input mt-1.5"
                                 >
-                                    <option value="">Geen voorkeur</option>
+                                    <option value="">{ui.noPreference}</option>
                                     {Object.entries(
                                         gardenOrientationLabels,
                                     ).map(([value, label]) => (
@@ -656,7 +768,7 @@ export default async function SearchPage({
                         <div className="marketplace-filter-panel marketplace-filter-panel-right w-64">
                             <FilterChecks
                                 name="parking"
-                                options={parkingOptions}
+                                options={parkingOptions(language)}
                                 selected={selectedParking}
                             />
                             <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
@@ -741,7 +853,7 @@ export default async function SearchPage({
                                         }
                                         className="marketplace-filter-input mt-1.5"
                                     >
-                                        <option value="">Geen voorkeur</option>
+                                        <option value="">{ui.noPreference}</option>
                                         <option value="1000">
                                             Rustig (max 1.000/km²)
                                         </option>
@@ -761,7 +873,7 @@ export default async function SearchPage({
                                         }
                                         className="marketplace-filter-input mt-1.5"
                                     >
-                                        <option value="">Geen voorkeur</option>
+                                        <option value="">{ui.noPreference}</option>
                                         <option value="25">
                                             Weinig (max 25%)
                                         </option>
@@ -844,7 +956,7 @@ export default async function SearchPage({
                                     }
                                     className="marketplace-filter-input mt-1.5"
                                 >
-                                    <option value="">Geen voorkeur</option>
+                                    <option value="">{ui.noPreference}</option>
                                     <option value="40">
                                         Weinig misdrijven (max 40/1.000 inw.)
                                     </option>
@@ -863,7 +975,7 @@ export default async function SearchPage({
                                     }
                                     className="marketplace-filter-input mt-1.5"
                                 >
-                                    <option value="">Geen voorkeur</option>
+                                    <option value="">{ui.noPreference}</option>
                                     <option value="low">
                                         Alleen laag risico
                                     </option>
@@ -881,7 +993,7 @@ export default async function SearchPage({
                                     }
                                     className="marketplace-filter-input mt-1.5"
                                 >
-                                    <option value="">Geen voorkeur</option>
+                                    <option value="">{ui.noPreference}</option>
                                     <option value="50">
                                         Rustig (max 50 dB)
                                     </option>
@@ -946,7 +1058,7 @@ export default async function SearchPage({
                                 </p>
                             ) : null}
                         </div>
-                        <form action="/zoeken">
+                        <form action="/search">
                             {Object.entries(params).flatMap(([key, value]) =>
                                 key === "sort" || key === "page"
                                     ? []

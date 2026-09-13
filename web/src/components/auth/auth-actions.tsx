@@ -49,7 +49,7 @@ const copy = {
     },
     en: {
         signIn: "Sign in",
-        signUp: "Free account",
+        signUp: "Sign up",
         signOut: "Sign out",
         account: "Your account",
         titleSignIn: "Welcome back",

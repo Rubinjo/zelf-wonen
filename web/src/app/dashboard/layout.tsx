@@ -76,7 +76,7 @@ export default async function DashboardLayout({
                             <Home size={16} /> {t.homes}
                         </Link>
                         <Link
-                            href="/dashboard/zoeker"
+                            href="/dashboard/seeker"
                             className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold hover:bg-surface"
                         >
                             <Heart size={16} /> {t.search}
@@ -88,7 +88,7 @@ export default async function DashboardLayout({
                             <Plus size={16} /> {t.newListing}
                         </Link>
                         <Link
-                            href="/dashboard/transacties"
+                            href="/dashboard/transactions"
                             className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold hover:bg-surface"
                         >
                             <Handshake size={16} /> {t.transactions}
@@ -121,7 +121,7 @@ export default async function DashboardLayout({
                     <Home size={18} /> {t.homes}
                 </Link>
                 <Link
-                    href="/dashboard/zoeker"
+                    href="/dashboard/seeker"
                     className="grid min-w-20 place-items-center gap-1 p-2 text-xs font-semibold"
                 >
                     <Heart size={18} /> {t.mobileSearch}
@@ -133,7 +133,7 @@ export default async function DashboardLayout({
                     <Plus size={18} /> {t.mobileNew}
                 </Link>
                 <Link
-                    href="/dashboard/transacties"
+                    href="/dashboard/transactions"
                     className="grid min-w-20 place-items-center gap-1 p-2 text-xs font-semibold"
                 >
                     <Handshake size={18} /> {t.transactions}
