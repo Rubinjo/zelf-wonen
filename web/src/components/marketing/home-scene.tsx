@@ -103,11 +103,11 @@ const palettes = {
         wall: 0xf1f0eb,
         wallSide: 0xe5e8e5,
         white: 0xf8f8f4,
-        sofa: 0xdce8e8,
-        cushion: 0xf0f4f2,
+        sofa: 0x91aaa0,
+        cushion: 0xe7dfce,
         wood: 0xb5793f,
         darkWood: 0x694933,
-        rug: 0xd8d2c7,
+        rug: 0xe3d9c5,
         metal: 0x263a37,
         glass: 0xbfe2e9,
         green: 0x4e7957,
@@ -122,8 +122,8 @@ const palettes = {
         wall: 0x222b26,
         wallSide: 0x1d2521,
         white: 0x2b3731,
-        sofa: 0x2f3d37,
-        cushion: 0x39473f,
+        sofa: 0x526d61,
+        cushion: 0x8a8a72,
         wood: 0x8a6038,
         darkWood: 0x49372a,
         rug: 0x3b4540,
@@ -138,7 +138,13 @@ const palettes = {
     },
 } as const;
 
-export function HomeScene({ label }: { label: string }) {
+export function HomeScene({
+    label,
+    className,
+}: {
+    label: string;
+    className?: string;
+}) {
     const containerRef = useRef<HTMLDivElement>(null);
     const { resolvedTheme } = useTheme();
     const isDark = resolvedTheme === "dark";
@@ -152,16 +158,21 @@ export function HomeScene({ label }: { label: string }) {
         camera.position.set(9, 7.5, 10);
         camera.lookAt(0, 1.25, 0);
 
-        const renderer = new THREE.WebGLRenderer({
-            alpha: true,
-            antialias: true,
-            powerPreference: "high-performance",
-            preserveDrawingBuffer: true,
-        });
+        let renderer: THREE.WebGLRenderer;
+        try {
+            renderer = new THREE.WebGLRenderer({
+                alpha: true,
+                antialias: true,
+                powerPreference: "high-performance",
+            });
+        } catch {
+            // Keep the labelled illustration area usable when WebGL is unavailable.
+            return;
+        }
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.15;
+        renderer.toneMappingExposure = 1.05;
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFShadowMap;
         renderer.domElement.setAttribute("aria-hidden", "true");
@@ -198,14 +209,16 @@ export function HomeScene({ label }: { label: string }) {
         const accentMaterial = material(palette.accent, 0.7);
         const screenMaterial = material(palette.screen, 0.28);
 
-        addBox(room, [7.2, 0.18, 5.5], [0, 0, 0], floorMaterial);
+        addBox(room, [7.2, 0.22, 5.5], [0, -0.02, 0], floorMaterial, 0.06);
         addBox(room, [7.2, 3.8, 0.18], [0, 2, -2.85], wallMaterial);
         addBox(room, [0.18, 3.8, 5.5], [-3.7, 2, 0], wallSideMaterial);
+        addBox(room, [7.2, 0.14, 0.06], [0, 0.17, -2.72], whiteMaterial, 0.015);
+        addBox(room, [0.06, 0.14, 5.5], [-3.58, 0.17, 0], whiteMaterial, 0.015);
 
         for (let index = 0; index < 10; index += 1) {
             addBox(
                 room,
-                [0.025, 0.012, 5.25],
+                [0.012, 0.004, 5.25],
                 [-3.15 + index * 0.7, 0.104, 0],
                 darkWoodMaterial,
             );
@@ -244,48 +257,104 @@ export function HomeScene({ label }: { label: string }) {
         addBox(sofa, [3.15, 1.05, 0.3], [0, 1.02, -0.38], sofaMaterial, 0.14);
         addBox(sofa, [0.28, 0.68, 1.08], [-1.47, 0.67, 0], sofaMaterial, 0.12);
         addBox(sofa, [0.28, 0.68, 1.08], [1.47, 0.67, 0], sofaMaterial, 0.12);
+        // Separate upholstered seats and warm accent pillows soften the silhouette.
+        [-0.67, 0.67].forEach((x) => {
+            addBox(sofa, [1.27, 0.22, 0.78], [x, 0.77, 0.1], sofaMaterial, 0.1);
+            addBox(
+                sofa,
+                [1.25, 0.57, 0.23],
+                [x, 1.13, -0.2],
+                sofaMaterial,
+                0.1,
+            ).rotation.x = -0.1;
+        });
         addBox(
             sofa,
-            [0.82, 0.18, 0.72],
-            [-0.73, 0.75, 0.08],
-            cushionMaterial,
-            0.08,
-        );
-        addBox(
-            sofa,
-            [0.82, 0.18, 0.72],
-            [0.23, 0.75, 0.08],
-            cushionMaterial,
-            0.08,
-        );
-        addBox(
-            sofa,
-            [0.58, 0.62, 0.16],
-            [0.85, 1.03, -0.12],
+            [0.5, 0.5, 0.2],
+            [-1.02, 1.01, 0.04],
             cushionMaterial,
             0.09,
-        ).rotation.z = -0.12;
-
-        addBox(room, [3.55, 0.08, 2.25], [0.85, 0.14, 0.78], rugMaterial, 0.08);
-
-        addBox(room, [1.9, 0.2, 1.05], [0.75, 0.95, 0.8], woodMaterial, 0.08);
-        [-0.02, 1.52].forEach((x) => {
-            [-0.38, 0.38].forEach((z) =>
-                addBox(
-                    room,
-                    [0.11, 0.76, 0.11],
-                    [x, 0.54, 0.8 + z],
-                    darkWoodMaterial,
-                ),
+        ).rotation.z = 0.18;
+        addBox(
+            sofa,
+            [0.46, 0.48, 0.2],
+            [1.02, 1.01, 0.04],
+            terracottaMaterial,
+            0.09,
+        ).rotation.z = -0.2;
+        [-1.22, 1.22].forEach((x) => {
+            [-0.32, 0.32].forEach((z) =>
+                addCylinder(sofa, 0.055, 0.2, [x, 0.12, z], darkWoodMaterial),
             );
         });
-        addCylinder(room, 0.08, 0.35, [0.75, 1.25, 0.8], whiteMaterial);
-        const flower = new THREE.Mesh(
-            new THREE.SphereGeometry(0.17, 16, 10),
-            accentMaterial,
+
+        addBox(room, [3.7, 0.045, 2.45], [0.85, 0.13, 0.78], rugMaterial, 0.02);
+        for (const z of [-0.28, 1.84]) {
+            addBox(
+                room,
+                [3.45, 0.004, 0.025],
+                [0.85, 0.155, z],
+                cushionMaterial,
+            );
+        }
+
+        const coffeeTable = new THREE.Group();
+        coffeeTable.position.set(0.75, 0, 0.8);
+        room.add(coffeeTable);
+        const tabletop = addCylinder(
+            coffeeTable,
+            0.72,
+            0.12,
+            [0, 0.68, 0],
+            woodMaterial,
         );
-        flower.position.set(0.75, 1.5, 0.8);
-        room.add(flower);
+        tabletop.scale.set(1.35, 1, 0.82);
+        [-0.58, 0.58].forEach((x) => {
+            const leg = addCylinder(
+                coffeeTable,
+                0.12,
+                0.52,
+                [x, 0.37, 0],
+                darkWoodMaterial,
+            );
+            leg.rotation.z = x * -0.12;
+        });
+        addBox(
+            coffeeTable,
+            [0.42, 0.055, 0.3],
+            [-0.38, 0.768, 0.04],
+            greenMaterial,
+            0.015,
+        ).rotation.y = -0.15;
+        addBox(
+            coffeeTable,
+            [0.36, 0.04, 0.27],
+            [-0.36, 0.815, 0.02],
+            cushionMaterial,
+            0.01,
+        ).rotation.y = 0.08;
+        const vase = new THREE.Mesh(
+            new THREE.SphereGeometry(0.15, 24, 16),
+            terracottaMaterial,
+        );
+        vase.scale.set(1, 1.3, 1);
+        vase.position.set(0.3, 0.9, -0.06);
+        vase.castShadow = true;
+        coffeeTable.add(vase);
+        addCylinder(
+            coffeeTable,
+            0.055,
+            0.16,
+            [0.3, 1.08, -0.06],
+            terracottaMaterial,
+        );
+        addCylinder(
+            coffeeTable,
+            0.085,
+            0.035,
+            [0.25, 0.76, 0.3],
+            whiteMaterial,
+        );
 
         const desk = new THREE.Group();
         desk.position.set(-3.02, 0.1, 0.15);
@@ -360,14 +429,13 @@ export function HomeScene({ label }: { label: string }) {
         [-0.06, 0.06].forEach((x) =>
             addCylinder(cabinet, 0.025, 0.16, [x, 0.48, 0.29], metalMaterial),
         );
-        const couchPlant = addPlant(
+        addPlant(
             room,
-            [2.9, 0.1, -1.85],
+            [3.12, 0.1, -0.72],
             terracottaMaterial,
             greenMaterial,
             1.1,
         );
-        couchPlant.forEach((mesh) => mesh.layers.set(1));
         addPlant(room, [-3.08, 0.1, 1.85], whiteMaterial, greenMaterial, 0.85);
         addPlant(
             room,
@@ -406,15 +474,30 @@ export function HomeScene({ label }: { label: string }) {
             0.02,
         ).rotation.y = Math.PI / 2;
 
+        // Small objects give the shelving depth without relying on textures.
+        [1.14, 1.64].forEach((y, row) => {
+            [greenMaterial, cushionMaterial, terracottaMaterial].forEach(
+                (cover, index) => {
+                    addBox(
+                        cabinet,
+                        [0.12, 0.31 + index * 0.035, 0.19],
+                        [-0.3 + index * 0.14, y + 0.16, 0.22],
+                        cover,
+                        0.008,
+                    ).rotation.z = row === 1 ? -0.08 : 0;
+                },
+            );
+        });
+        addCylinder(cabinet, 0.12, 0.2, [0.2, 2.22, 0.2], terracottaMaterial);
+
         const lightBoost = isDark ? 1.25 : 1;
         const ambientLight = new THREE.HemisphereLight(
             0xffffff,
             isDark ? 0x35453d : 0x9ca79f,
             2.25 * lightBoost,
         );
-        ambientLight.layers.enable(1);
         scene.add(ambientLight);
-        const sunlight = new THREE.DirectionalLight(0xfff4dc, 4.6 * lightBoost);
+        const sunlight = new THREE.DirectionalLight(0xfff4dc, 3.2 * lightBoost);
         sunlight.position.set(-5, 10, 8);
         sunlight.castShadow = true;
         sunlight.shadow.mapSize.set(1024, 1024);
@@ -423,7 +506,6 @@ export function HomeScene({ label }: { label: string }) {
         sunlight.shadow.camera.top = 8;
         sunlight.shadow.camera.bottom = -8;
         sunlight.shadow.bias = -0.0008;
-        sunlight.layers.enable(1);
         scene.add(sunlight);
 
         let pointerTarget = 0;
@@ -432,30 +514,58 @@ export function HomeScene({ label }: { label: string }) {
             "(prefers-reduced-motion: reduce)",
         ).matches;
 
+        // Fit the visible geometry in camera space, including both ends of the
+        // pointer rotation, so walls and floor retain breathing room at any ratio.
+        camera.updateMatrixWorld();
+        const framingBounds = new THREE.Box3();
+        const corner = new THREE.Vector3();
+        for (const rotation of [-0.035, 0.035]) {
+            room.rotation.y = rotation;
+            room.updateMatrixWorld(true);
+            room.traverse((object) => {
+                if (!(object instanceof THREE.Mesh)) return;
+                object.geometry.computeBoundingBox();
+                const bounds = object.geometry.boundingBox;
+                if (!bounds) return;
+                for (const x of [bounds.min.x, bounds.max.x]) {
+                    for (const y of [bounds.min.y, bounds.max.y]) {
+                        for (const z of [bounds.min.z, bounds.max.z]) {
+                            corner
+                                .set(x, y, z)
+                                .applyMatrix4(object.matrixWorld)
+                                .applyMatrix4(camera.matrixWorldInverse);
+                            framingBounds.expandByPoint(corner);
+                        }
+                    }
+                }
+            });
+        }
+        room.rotation.y = 0;
+        const frameCenter = framingBounds.getCenter(new THREE.Vector3());
+        const frameSize = framingBounds.getSize(new THREE.Vector3());
+
         function resize() {
-            const width = container?.clientWidth ?? 1;
-            const height = container?.clientHeight ?? 1;
+            const width = Math.max(container?.clientWidth ?? 1, 1);
+            const height = Math.max(container?.clientHeight ?? 1, 1);
             const aspect = width / height;
-            const viewHeight = 6.25;
-            camera.left = (-viewHeight * aspect) / 2;
-            camera.right = (viewHeight * aspect) / 2;
-            camera.top = viewHeight / 2;
-            camera.bottom = -viewHeight / 2;
+            const viewHeight =
+                Math.max(frameSize.y, frameSize.x / aspect) * 1.16;
+            const viewWidth = viewHeight * aspect;
+            camera.left = frameCenter.x - viewWidth / 2;
+            camera.right = frameCenter.x + viewWidth / 2;
+            camera.top = frameCenter.y + viewHeight / 2;
+            camera.bottom = frameCenter.y - viewHeight / 2;
             camera.updateProjectionMatrix();
             renderer.setSize(width, height, false);
+            if (reducedMotion) render();
         }
 
         function render() {
             if (!reducedMotion)
                 room.rotation.y += (pointerTarget - room.rotation.y) * 0.035;
-            camera.layers.set(0);
             renderer.render(scene, camera);
-            renderer.autoClear = false;
-            renderer.clearDepth();
-            camera.layers.set(1);
-            renderer.render(scene, camera);
-            renderer.autoClear = true;
-            animationFrame = window.requestAnimationFrame(render);
+            if (!reducedMotion)
+                animationFrame = window.requestAnimationFrame(render);
         }
 
         function handlePointerMove(event: PointerEvent) {
@@ -496,12 +606,14 @@ export function HomeScene({ label }: { label: string }) {
 
     return (
         <figure
-            className="relative h-40 w-full overflow-hidden rounded-2xl bg-[#e8e7e3] dark:bg-[#18221d] sm:h-44"
+            className={
+                className ??
+                "relative h-40 w-full overflow-hidden rounded-2xl bg-[#e8e7e3] dark:bg-[#18221d] sm:h-44"
+            }
             role="img"
             aria-label={label}
         >
             <div ref={containerRef} className="absolute inset-0" />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-linear-to-t from-white/25 to-transparent dark:from-black/35" />
         </figure>
     );
 }

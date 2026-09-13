@@ -92,11 +92,13 @@ export function AuthActions({
     placement = "header",
     dashboardHref = "/dashboard",
     dashboardLabel = "Dashboard",
+    ctaLabel,
 }: {
     language: Language;
     placement?: "header" | "cta";
     dashboardHref?: string;
     dashboardLabel?: string;
+    ctaLabel?: string;
 }) {
     const t = copy[language];
     const router = useRouter();
@@ -203,11 +205,11 @@ export function AuthActions({
         if (placement === "cta") {
             return (
                 <Link
-                    href="/dashboard"
+                    href={dashboardHref}
                     className="mt-8 inline-flex items-center gap-3 rounded-full bg-white/70 px-5 py-3 text-sm font-semibold text-brand-dark transition hover:bg-white"
                 >
                     <BadgeCheck className="text-brand" size={19} />
-                    Naar je dashboard <ArrowRight size={17} />
+                    {ctaLabel ?? dashboardLabel} <ArrowRight size={17} />
                 </Link>
             );
         }
@@ -285,7 +287,7 @@ export function AuthActions({
                     onClick={() => open("sign-up")}
                     className="mt-8 inline-flex h-14 items-center gap-2 rounded-full bg-brand-dark px-7 font-semibold text-white transition hover:-translate-y-0.5 hover:bg-brand"
                 >
-                    {t.signUp} <ArrowRight size={18} />
+                    {ctaLabel ?? t.signUp} <ArrowRight size={18} />
                 </button>
             )}
 
