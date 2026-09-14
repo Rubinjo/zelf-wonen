@@ -5,7 +5,6 @@ import {
     ArrowDown,
     ArrowRight,
     ArrowUpRight,
-    Building2,
     Calculator,
     Check,
     ChevronDown,
@@ -22,6 +21,7 @@ import {
 } from "@/components/marketing/home-language";
 import { HomeScene } from "@/components/marketing/home-scene";
 import { HomeSearch } from "@/components/marketing/home-search";
+import { BrandLogo } from "@/components/platform/brand-logo";
 import { ThemeToggle } from "@/components/platform/theme-toggle";
 
 const copy = {
@@ -260,15 +260,10 @@ export default async function Home({ searchParams }: PageProps) {
                 <div className="home-shell flex flex-wrap items-center justify-between gap-x-4 gap-y-3 py-4">
                     <Link
                         href={language === "en" ? "/?lang=en" : "/"}
-                        className="flex items-center gap-2 text-xl font-semibold tracking-tight"
+                        className="flex items-center"
                         aria-label="ZelfWonen"
                     >
-                        <span className="grid size-9 place-items-center rounded-xl bg-brand-dark text-accent">
-                            <Building2 size={20} aria-hidden="true" />
-                        </span>
-                        <span>
-                            Zelf<span className="text-brand">Wonen</span>
-                        </span>
+                        <BrandLogo className="h-9 w-auto" priority />
                     </Link>
                     <nav
                         aria-label={
@@ -432,18 +427,7 @@ export default async function Home({ searchParams }: PageProps) {
                                     className="h-7 w-25 object-contain"
                                 />
                             </span>
-                            <span
-                                className="flex items-center gap-2 text-xl font-semibold tracking-tight"
-                                aria-label="ZelfWonen"
-                            >
-                                <span className="grid size-9 place-items-center rounded-xl bg-brand-dark text-accent">
-                                    <Building2 size={20} aria-hidden="true" />
-                                </span>
-                                <span>
-                                    Zelf
-                                    <span className="text-brand">Wonen</span>
-                                </span>
-                            </span>
+                            <BrandLogo className="h-9 w-auto" />
                         </div>
                     </div>
                 </section>

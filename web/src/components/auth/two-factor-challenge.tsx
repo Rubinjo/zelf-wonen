@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Building2, LoaderCircle, ShieldCheck } from "lucide-react";
+import { LoaderCircle, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { BrandLogo } from "@/components/platform/brand-logo";
 import { authClient } from "@/lib/auth-client";
 
 export function TwoFactorChallenge() {
@@ -36,13 +37,8 @@ export function TwoFactorChallenge() {
     return (
         <main className="grid min-h-screen place-items-center bg-brand-dark p-5">
             <div className="w-full max-w-md rounded-4xl bg-surface p-7 shadow-2xl sm:p-9">
-                <div className="flex items-center gap-2.5 font-semibold">
-                    <span className="grid size-10 place-items-center rounded-xl bg-brand text-white">
-                        <Building2 size={20} />
-                    </span>
-                    <span className="text-xl">
-                        Zelf<span className="text-brand">Wonen</span>
-                    </span>
+                <div className="flex items-center">
+                    <BrandLogo className="h-10 w-auto" />
                 </div>
                 <span className="mt-9 grid size-12 place-items-center rounded-2xl bg-accent text-brand-dark">
                     <ShieldCheck size={23} />

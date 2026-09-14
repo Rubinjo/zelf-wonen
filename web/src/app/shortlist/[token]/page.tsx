@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-    Building2,
     ChevronRight,
     Clock3,
     Heart,
@@ -12,6 +11,7 @@ import {
     MapPin,
     ShieldCheck,
 } from "lucide-react";
+import { BrandLogo } from "@/components/platform/brand-logo";
 import { seekerListingInclude } from "@/features/seeker/seeker-service";
 import { db } from "@/lib/db";
 import { getLanguage } from "@/lib/language";
@@ -19,7 +19,10 @@ import { getLanguage } from "@/lib/language";
 export async function generateMetadata(): Promise<Metadata> {
     const lang = await getLanguage();
     return {
-        title: lang === "en" ? "Shared property shortlist" : "Gedeelde woning-shortlist",
+        title:
+            lang === "en"
+                ? "Shared property shortlist"
+                : "Gedeelde woning-shortlist",
         robots: { index: false, follow: false },
     };
 }
@@ -87,16 +90,8 @@ export default async function PublicShortlistPage({
         <div className="min-h-screen bg-background">
             <header className="sticky top-0 z-40 border-b border-line bg-background/92 backdrop-blur-xl">
                 <div className="mx-auto flex h-18 max-w-6xl items-center justify-between px-5">
-                    <Link
-                        href="/"
-                        className="flex items-center gap-2.5 font-semibold"
-                    >
-                        <span className="grid size-9 place-items-center bg-brand text-white">
-                            <Building2 size={19} />
-                        </span>
-                        <span className="text-lg">
-                            Zelf<span className="text-brand">Wonen</span>
-                        </span>
+                    <Link href="/" className="flex items-center">
+                        <BrandLogo className="h-9 w-auto" />
                     </Link>
                     <span className="inline-flex items-center gap-2 text-xs text-muted">
                         <ShieldCheck size={15} className="text-brand" />{" "}
@@ -141,9 +136,7 @@ export default async function PublicShortlistPage({
                                 key={item.id}
                                 className="overflow-hidden border border-line bg-surface"
                             >
-                                <Link
-                                    href={`/property/${listing.publicSlug}`}
-                                >
+                                <Link href={`/property/${listing.publicSlug}`}>
                                     <div className="relative aspect-4/3 bg-background">
                                         {listing.media[0] ? (
                                             <Image
@@ -159,10 +152,7 @@ export default async function PublicShortlistPage({
                                             </div>
                                         )}
                                         <span className="absolute left-3 top-3 bg-white/95 px-2 py-1 text-xs font-semibold text-brand">
-                                            {statusLabel(
-                                                listing.status,
-                                                lang,
-                                            )}
+                                            {statusLabel(listing.status, lang)}
                                         </span>
                                     </div>
                                     <div className="p-5">

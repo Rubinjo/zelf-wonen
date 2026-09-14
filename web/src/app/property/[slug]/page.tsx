@@ -34,6 +34,7 @@ import { ListingMessageLauncher } from "@/components/messages/listing-message-la
 import { ListingMessageThread } from "@/components/messages/listing-message-thread";
 import { PropertyLocation } from "@/components/listing/property-location";
 import { AggregatedListingDetail } from "@/components/listing/aggregated-listing-detail";
+import { BrandLogo } from "@/components/platform/brand-logo";
 import { ViewingBooking } from "@/components/viewings/viewing-booking";
 import {
     gardenOrientationLabels,
@@ -704,16 +705,8 @@ export default async function PublicListingPage({
         <div className="min-h-screen bg-background">
             <header className="sticky top-0 z-40 border-b border-line bg-background/92 backdrop-blur-xl">
                 <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-5 lg:px-8">
-                    <Link
-                        href="/"
-                        className="flex items-center gap-2.5 font-semibold"
-                    >
-                        <span className="grid size-9 place-items-center rounded-xl bg-brand text-white">
-                            <Building2 size={19} />
-                        </span>
-                        <span className="text-lg">
-                            Zelf<span className="text-brand">Wonen</span>
-                        </span>
+                    <Link href="/" className="flex items-center">
+                        <BrandLogo className="h-9 w-auto" />
                     </Link>
                     <div className="flex items-center gap-2">
                         <Link

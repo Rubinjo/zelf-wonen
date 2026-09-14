@@ -5,7 +5,6 @@ import Link from "next/link";
 import {
     Banknote,
     Briefcase,
-    Building2,
     Calculator,
     Home,
     Info,
@@ -19,6 +18,7 @@ import {
     Zap,
 } from "lucide-react";
 import { AuthActions } from "@/components/auth/auth-actions";
+import { BrandLogo } from "@/components/platform/brand-logo";
 import { useTranslations } from "@/lib/messages/use-translations";
 import {
     ENERGY_LABELS,
@@ -804,15 +804,10 @@ export function MortgageCalculator() {
                 <div className="mx-auto flex h-18 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:px-8">
                     <Link
                         href="/"
-                        className="flex items-center gap-2.5 font-semibold"
+                        className="flex items-center"
                         aria-label="ZelfWonen home"
                     >
-                        <span className="grid size-9 place-items-center rounded-lg bg-brand text-white">
-                            <Building2 size={19} />
-                        </span>
-                        <span className="text-lg sm:text-xl">
-                            Zelf<span className="text-brand">Wonen</span>
-                        </span>
+                        <BrandLogo className="h-9 w-auto" />
                     </Link>
                     <nav className="flex items-center gap-1.5 sm:gap-2">
                         <Link

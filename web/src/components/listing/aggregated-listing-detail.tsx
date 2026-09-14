@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
     BadgeCheck,
     BedDouble,
-    Building2,
     Calendar,
     Clock3,
     DoorOpen,
@@ -12,6 +11,7 @@ import {
     MapPin,
     Ruler,
 } from "lucide-react";
+import { BrandLogo } from "@/components/platform/brand-logo";
 
 const energyNames: Record<string, string> = {
     A_PLUS_PLUS_PLUS_PLUS_PLUS: "A+++++",
@@ -192,16 +192,8 @@ export function AggregatedListingDetail({
         <div className="min-h-screen bg-background">
             <header className="sticky top-0 z-40 border-b border-line bg-background/92 backdrop-blur-xl">
                 <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-5 lg:px-8">
-                    <Link
-                        href="/"
-                        className="flex items-center gap-2.5 font-semibold"
-                    >
-                        <span className="grid size-9 place-items-center rounded-xl bg-brand text-white">
-                            <Building2 size={19} />
-                        </span>
-                        <span className="text-lg">
-                            Zelf<span className="text-brand">Wonen</span>
-                        </span>
+                    <Link href="/" className="flex items-center">
+                        <BrandLogo className="h-9 w-auto" />
                     </Link>
                     <div className="flex items-center gap-2">
                         <Link

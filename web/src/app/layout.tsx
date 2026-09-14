@@ -40,6 +40,9 @@ export async function generateMetadata(): Promise<Metadata> {
             template: "%s | ZelfWonen",
         },
         description: m.description,
+        icons: {
+            icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+        },
     };
 }
 

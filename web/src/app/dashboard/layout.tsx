@@ -1,6 +1,5 @@
 import Link from "next/link";
 import {
-    Building2,
     Handshake,
     Heart,
     Home,
@@ -9,6 +8,7 @@ import {
     ShieldCheck,
 } from "lucide-react";
 import { redirect } from "next/navigation";
+import { BrandLogo } from "@/components/platform/brand-logo";
 import { PlatformSignOut } from "@/components/platform/platform-sign-out";
 import { ThemeToggle } from "@/components/platform/theme-toggle";
 import { requireEmailVerifiedUser } from "@/features/auth/guards";
@@ -54,16 +54,8 @@ export default async function DashboardLayout({
         <div className="min-h-screen bg-background">
             <header className="sticky top-0 z-40 border-b border-line bg-background/92 backdrop-blur-xl">
                 <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-5 lg:px-8">
-                    <Link
-                        href="/dashboard"
-                        className="flex items-center gap-2.5 font-semibold tracking-tight"
-                    >
-                        <span className="grid size-9 place-items-center rounded-xl bg-brand text-white">
-                            <Building2 size={19} />
-                        </span>
-                        <span className="text-lg">
-                            Zelf<span className="text-brand">Wonen</span>
-                        </span>
+                    <Link href="/dashboard" className="flex items-center">
+                        <BrandLogo className="h-9 w-auto" />
                     </Link>
                     <nav
                         className="hidden items-center gap-2 md:flex"
