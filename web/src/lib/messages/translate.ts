@@ -1,8 +1,14 @@
 import { en } from "@/lib/messages/en";
 import { nl } from "@/lib/messages/nl";
-import type { Messages } from "@/lib/messages/types";
+import type {
+    MessageKey,
+    MessageValue,
+    Messages,
+} from "@/lib/messages/types";
 
-const dictionaries: Record<"nl" | "en", Messages> = { nl, en };
+type Language = "nl" | "en";
+
+const dictionaries: Record<Language, Messages> = { nl, en };
 
 /**
  * Synchronous translation lookup for a given language.
@@ -14,8 +20,16 @@ const dictionaries: Record<"nl" | "en", Messages> = { nl, en };
  * `errors.notFound.title`. Falls back to the Dutch source string when the key
  * is missing in the active language so unfinished translations never break
  * the UI. Missing keys in the Dutch source return an empty string.
+ *
+ * Known keys resolve to the exact type declared in `Messages` (a string, or a
+ * string array); dynamically built keys resolve to `string`.
  */
-export function tSync(lang: "nl" | "en", key: string): string {
+export function tSync<K extends MessageKey>(
+    lang: Language,
+    key: K,
+): MessageValue<K>;
+export function tSync(lang: Language, key: string): string;
+export function tSync(lang: Language, key: string): string | string[] {
     return (
         resolveKey(dictionaries[lang], key) ??
         resolveKey(dictionaries.nl, key) ??
@@ -23,13 +37,16 @@ export function tSync(lang: "nl" | "en", key: string): string {
     );
 }
 
-function resolveKey(dict: Messages, key: string): string | undefined {
+type MessageEntry = string | string[];
+
+function resolveKey(dict: Messages, key: string): MessageEntry | undefined {
     const path = key.split(".");
     let current: unknown = dict;
     for (const segment of path) {
         if (
             current &&
             typeof current === "object" &&
+            !Array.isArray(current) &&
             segment in (current as Record<string, unknown>)
         ) {
             current = (current as Record<string, unknown>)[segment];
@@ -37,5 +54,6 @@ function resolveKey(dict: Messages, key: string): string | undefined {
             return undefined;
         }
     }
-    return typeof current === "string" ? current : undefined;
+    if (typeof current === "string") return current;
+    return Array.isArray(current) ? (current as string[]) : undefined;
 }

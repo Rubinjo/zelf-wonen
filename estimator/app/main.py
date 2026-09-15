@@ -3,17 +3,18 @@ import os
 
 from fastapi import Depends, FastAPI, Header, HTTPException, status
 
-from .model import DeterministicSpatialRegressor
+from .model import ComparableSalesModel, InsufficientData
 from .schemas import EstimateRequest, EstimateResponse
 
 app = FastAPI(
     title="ZelfWonen deterministic property estimator",
     version="1.0.0",
-    docs_url=(
-        "/docs" if os.getenv("ENVIRONMENT", "development") != "production" else None
-    ),
+    docs_url=("/docs" if os.getenv("ENVIRONMENT", "development") != "production" else None),
 )
-model = DeterministicSpatialRegressor()
+try:
+    model = ComparableSalesModel.from_files()
+except (OSError, ValueError, KeyError):
+    model = None
 
 
 def authorize(authorization: str | None = Header(default=None)) -> None:
@@ -29,11 +30,17 @@ def authorize(authorization: str | None = Header(default=None)) -> None:
 
 @app.get("/health")
 def health() -> dict[str, str]:
-    return {"status": "ok", "modelVersion": model.model_version}
+    return {
+        "status": "ok" if model else "data_unavailable",
+        "modelVersion": model.model_version if model else "unavailable",
+    }
 
 
-@app.post(
-    "/v1/estimate", response_model=EstimateResponse, dependencies=[Depends(authorize)]
-)
+@app.post("/v1/estimate", response_model=EstimateResponse, dependencies=[Depends(authorize)])
 def estimate(request: EstimateRequest) -> EstimateResponse:
-    return model.predict(request)
+    if model is None:
+        raise HTTPException(status_code=503, detail="Validated completed-sales dataset unavailable")
+    try:
+        return model.predict(request)
+    except InsufficientData as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error

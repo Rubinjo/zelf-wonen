@@ -53,7 +53,7 @@ flowchart TB
   LLM --> ML[Python REST service\nPydantic + deterministic model]
   ML --> Estimate
   Estimate -. tier 2 .-> ML
-  Estimate -. tier 3 .-> Stats[(Postcode price/m² table)]
+  ML --> Sales[(Licensed completed sales + CBS index)]
 
   Bidding --> PDF[Anonymized PDF generator]
   PDF --> Object
@@ -115,13 +115,14 @@ Callbacks must validate provider signatures, issuer, audience, expiry, nonce, an
 
 ### Hybrid estimator
 
-The canonical input is normalized and SHA-256 hashed from postcode, house number, property type, area, rooms, construction year, owner text, and sorted image hashes. A cache hit bypasses both AI and ML.
+Normalized property fields, owner text, sorted image hashes, the condition rubric version and current model/data version determine the cache key. A valid 24-hour cache hit bypasses vision and prediction after checking model readiness. Response metadata is stored alongside normalized input in the existing JSON column.
 
-- **Tier 1:** private uploaded media is resolved server-side; the Vercel AI SDK extracts only fixed 1–5 rubric values with temperature `0` and a hash-derived seed; the Python model returns euro-cent integers and a range.
-- **Tier 2:** the Python model receives quantitative inputs with `qualitativeFeatures: null`.
-- **Tier 3:** PostgreSQL returns the newest public-data average price/m² for the four-digit postcode sector and property type, then multiplies it by area. A national emergency baseline exists only to avoid an empty UI and must be monitored.
+- Authorized uploaded photos are assessed on the fixed 1–5 rubric. Unseen dimensions are null. Vision failure falls back to quantitative inputs.
+- Python selects 5–20 similar local completed sales using postcode sector, property type, floor area, rooms, construction year and recency. A CBS monthly index adjusts sale prices to a common valuation month; a weighted median produces the base price.
+- Visible-condition adjustments are confidence-weighted and bounded at ±4%. They are explicit heuristics, not learned renovation returns, and cannot increase reported confidence.
+- Missing sales artifacts or insufficient local evidence produce an unavailable estimate. The postcode-statistic and emergency-price fallbacks have been removed.
 
-Outputs are indicative, not a certified valuation (`taxatierapport`). Model/dataset versions, confidence, fallback tier, and input hash are persisted.
+Outputs include euro cents, heuristic bounds, comparable count, valuation month, image adjustment and version. They are indicative, not a certified valuation. The public CBS index is bundled; a licensed Dutch completed-sales artifact still needs to be imported. See [estimator setup and limitations](../../estimator/README.md).
 
 ## Data/integration decisions
 

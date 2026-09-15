@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { dutchPostcodeSchema } from "./property";
 
-const rubricScore = z.number().int().min(1).max(5);
+const rubricScore = z.number().int().min(1).max(5).nullable();
 
 export const qualitativeFeaturesSchema = z.object({
     kitchenCondition: rubricScore.describe(
@@ -60,6 +60,10 @@ export const estimateResponseSchema = z.object({
     confidence: z.number().min(0).max(1),
     qualitativeFeatures: qualitativeFeaturesSchema.nullable(),
     disclaimer: z.string(),
+    modelVersion: z.string(),
+    comparableCount: z.number().int().min(5),
+    valuationMonth: z.string().regex(/^20[0-9]{2}-(0[1-9]|1[0-2])$/),
+    conditionAdjustmentPercent: z.number().min(-4).max(4),
 });
 
 export const pythonEstimateRequestSchema = estimateRequestSchema
@@ -72,6 +76,9 @@ export const pythonEstimateResponseSchema = z.object({
     upperBoundCents: z.number().int().nonnegative(),
     confidence: z.number().min(0).max(1),
     modelVersion: z.string(),
+    comparableCount: z.number().int().min(5),
+    valuationMonth: z.string().regex(/^20[0-9]{2}-(0[1-9]|1[0-2])$/),
+    conditionAdjustmentPercent: z.number().min(-4).max(4),
 });
 
 export type EstimateRequest = z.infer<typeof estimateRequestSchema>;

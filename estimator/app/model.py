@@ -1,78 +1,138 @@
-from dataclasses import dataclass
+"""Local comparable sales, normalized to the most recent available CBS index month."""
 
+import math
+import os
+from datetime import date
+from pathlib import Path
+
+from .data import Sale, load_index, load_sales
 from .schemas import EstimateRequest, EstimateResponse
 
-MODEL_VERSION = "spatial-hedonic-nl-2026.07.1"
-
-# Euro-cent baselines are deliberately versioned with the service. In production,
-# load signed, licensed training artifacts and postcode-sector features at startup.
-BASE_PRICE_PER_SQM_CENTS = {
-    "HOUSE": 470_000,
-    "APARTMENT": 515_000,
-    "PARKING": 110_000,
-    "LAND": 175_000,
-    "COMMERCIAL": 285_000,
-    "OTHER": 350_000,
-}
+DATA_DIR = Path(__file__).resolve().parents[1] / "data"
+MODEL_VERSION = "nl-comparables-v1"
+CONDITION_FIELDS = (
+    "kitchenCondition",
+    "bathroomCondition",
+    "interiorFinish",
+    "naturalLight",
+    "exteriorCondition",
+)
 
 
-@dataclass(frozen=True)
-class DeterministicSpatialRegressor:
-    model_version: str = MODEL_VERSION
+class InsufficientData(ValueError):
+    pass
 
-    def predict(self, request: EstimateRequest) -> EstimateResponse:
-        base = BASE_PRICE_PER_SQM_CENTS[request.propertyType]
-        postcode_number = int(request.postcode[:4])
 
-        # Deterministic spatial proxy. It intentionally has no random state and is
-        # replaceable by a fitted spatial/XGBoost artifact behind this same port.
-        spatial_factor = 0.84 + ((postcode_number * 2654435761) % 10_000) / 100_000
-        size_factor = max(
-            0.82, min(1.12, 1.08 - max(request.livingAreaSqm - 80, 0) * 0.0012)
+def weighted_quantile(values: list[tuple[float, float]], quantile: float) -> float:
+    ordered = sorted(values)
+    threshold = sum(weight for _, weight in ordered) * quantile
+    accumulated = 0.0
+    for value, weight in ordered:
+        accumulated += weight
+        if accumulated >= threshold:
+            return value
+    return ordered[-1][0]
+
+
+class ComparableSalesModel:
+    def __init__(self, sales: list[Sale], index: dict[str, float], version: str):
+        self.sales = sales
+        self.index = index
+        self.model_version = version
+
+    @classmethod
+    def from_files(cls) -> "ComparableSalesModel":
+        dataset, sales_hash = load_sales(
+            Path(os.getenv("ESTIMATOR_SALES_PATH", str(DATA_DIR / "sales.json")))
         )
-        expected_rooms = max(1.0, request.livingAreaSqm / 28)
-        room_factor = max(
-            0.94, min(1.06, 1 + (request.roomCount - expected_rooms) * 0.012)
+        index, index_hash = load_index(DATA_DIR / "cbs-index.json")
+        return cls(dataset.sales, index, f"{MODEL_VERSION}-{sales_hash}-{index_hash}")
+
+    def predict(self, request: EstimateRequest, *, as_of: date | None = None) -> EstimateResponse:
+        as_of = as_of or date.today()
+        if request.propertyType not in ("HOUSE", "APARTMENT"):
+            raise InsufficientData("Only existing houses and apartments are supported")
+        if request.constructionYear and request.constructionYear > as_of.year:
+            raise InsufficientData("New construction is outside the historical-sales model")
+        months = [month for month in self.index if month < as_of.strftime("%Y-%m")]
+        if not months:
+            raise InsufficientData("No historical price index available")
+        target_month = max(months)
+        if (as_of - date.fromisoformat(target_month + "-01")).days > 180:
+            raise InsufficientData("CBS price index is stale; refresh it before estimating")
+        # One observation per property avoids repeat sales dominating the neighborhood.
+        candidates: dict[str, tuple[float, Sale]] = {}
+        for sale in self.sales:
+            age = (as_of - sale.saleDate).days
+            ratio = sale.livingAreaSqm / request.livingAreaSqm
+            month = sale.saleDate.strftime("%Y-%m")
+            if (
+                not 0 < age <= 3 * 365
+                or month > target_month
+                or month not in self.index
+                or sale.postcode[:4] != request.postcode[:4]
+                or sale.propertyType != request.propertyType
+                or (sale.postcode == request.postcode and sale.houseNumber == request.houseNumber)
+                or not 0.75 <= ratio <= 1.33
+                or abs(sale.roomCount - request.roomCount) > 2
+            ):
+                continue
+            year_distance = (
+                abs(sale.constructionYear - request.constructionYear)
+                if request.constructionYear
+                else 20
+            )
+            if year_distance > 30:
+                continue
+            distance = (
+                abs(math.log(ratio)) / 0.25
+                + abs(sale.roomCount - request.roomCount) / 2
+                + year_distance / 30
+                + age / 1095
+            )
+            previous = candidates.get(sale.propertyId)
+            if previous is None or sale.saleDate > previous[1].saleDate:
+                candidates[sale.propertyId] = (distance, sale)
+        nearest = sorted(candidates.values(), key=lambda item: (item[0], item[1].transactionId))[
+            :20
+        ]
+        if len(nearest) < 5:
+            raise InsufficientData("At least five similar local completed sales are required")
+        values = [
+            (
+                sale.salePriceCents
+                / sale.livingAreaSqm
+                * request.livingAreaSqm
+                * self.index[target_month]
+                / self.index[sale.saleDate.strftime("%Y-%m")],
+                1 / (1 + distance),
+            )
+            for distance, sale in nearest
+        ]
+        base = weighted_quantile(values, 0.5)
+        # This conservative prior is not a fitted renovation return. Unknown dimensions
+        # stay neutral, and limited coverage reduces the adjustment automatically.
+        adjustment = 0.0
+        features = request.qualitativeFeatures
+        if features and features.evidence and features.confidence >= 0.5:
+            adjustment = (
+                sum((getattr(features, key) or 3) - 3 for key in CONDITION_FIELDS)
+                / 5
+                * 0.02
+                * features.confidence
+            )
+        estimate = round(base * (1 + adjustment))
+        spread = max(
+            0.15, (weighted_quantile(values, 0.9) - weighted_quantile(values, 0.1)) / (2 * base)
         )
-
-        year_factor = 1.0
-        if request.constructionYear:
-            if request.constructionYear >= 2015:
-                year_factor = 1.08
-            elif request.constructionYear >= 1995:
-                year_factor = 1.035
-            elif request.constructionYear < 1945:
-                year_factor = 1.025
-
-        qualitative_factor = 1.0
-        confidence = 0.56
-        uncertainty = 0.17
-        if request.qualitativeFeatures:
-            features = request.qualitativeFeatures
-            score = (
-                features.kitchenCondition
-                + features.bathroomCondition
-                + features.interiorFinish
-                + features.naturalLight
-                + features.exteriorCondition
-            ) / 5
-            qualitative_factor = 1 + (score - 3) * 0.035
-            confidence = min(0.84, 0.66 + features.confidence * 0.16)
-            uncertainty = 0.11
-
-        estimate = round(
-            base
-            * request.livingAreaSqm
-            * spatial_factor
-            * size_factor
-            * room_factor
-            * year_factor
-            * qualitative_factor
-        )
+        spread = min(0.6, spread + 0.1 / math.sqrt(len(values)) + abs(adjustment))
         return EstimateResponse(
             estimatedValueCents=estimate,
-            lowerBoundCents=round(estimate * (1 - uncertainty)),
-            upperBoundCents=round(estimate * (1 + uncertainty)),
-            confidence=confidence,
+            lowerBoundCents=round(estimate * (1 - spread)),
+            upperBoundCents=round(estimate * (1 + spread)),
+            confidence=round(min(0.75, len(values) / 30) * (1 - spread), 3),
             modelVersion=self.model_version,
+            comparableCount=len(values),
+            valuationMonth=target_month,
+            conditionAdjustmentPercent=round(adjustment * 100, 2),
         )

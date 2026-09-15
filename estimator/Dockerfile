@@ -10,6 +10,7 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 
 COPY app ./app
+COPY data/cbs-index.json ./data/cbs-index.json
 
 FROM python:3.12 AS runtime
 

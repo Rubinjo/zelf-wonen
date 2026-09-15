@@ -11,14 +11,14 @@ paths:
       operationId: health
       responses:
         "200":
-          description: Service and model are ready
+          description: Process health; status indicates whether historical sales loaded
           content:
             application/json:
               schema:
                 type: object
                 required: [status, modelVersion]
                 properties:
-                  status: { const: ok }
+                  status: { type: string, enum: [ok, data_unavailable] }
                   modelVersion: { type: string }
   /v1/estimate:
     post:
@@ -39,9 +39,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/EstimateResponse"
         "422":
-          description: Pydantic validation error
+          description: Invalid input or insufficient comparable sales
         "503":
-          description: Model unavailable
+          description: Validated completed-sales dataset unavailable
 components:
   securitySchemes:
     bearerAuth:
@@ -60,11 +60,11 @@ components:
         - confidence
         - evidence
       properties:
-        kitchenCondition: { type: integer, minimum: 1, maximum: 5 }
-        bathroomCondition: { type: integer, minimum: 1, maximum: 5 }
-        interiorFinish: { type: integer, minimum: 1, maximum: 5 }
-        naturalLight: { type: integer, minimum: 1, maximum: 5 }
-        exteriorCondition: { type: integer, minimum: 1, maximum: 5 }
+        kitchenCondition: { type: [integer, "null"], minimum: 1, maximum: 5 }
+        bathroomCondition: { type: [integer, "null"], minimum: 1, maximum: 5 }
+        interiorFinish: { type: [integer, "null"], minimum: 1, maximum: 5 }
+        naturalLight: { type: [integer, "null"], minimum: 1, maximum: 5 }
+        exteriorCondition: { type: [integer, "null"], minimum: 1, maximum: 5 }
         confidence: { type: number, minimum: 0, maximum: 1 }
         evidence:
           type: array
@@ -104,9 +104,15 @@ components:
         - upperBoundCents
         - confidence
         - modelVersion
+        - comparableCount
+        - valuationMonth
+        - conditionAdjustmentPercent
       properties:
         estimatedValueCents: { type: integer, minimum: 0 }
         lowerBoundCents: { type: integer, minimum: 0 }
         upperBoundCents: { type: integer, minimum: 0 }
         confidence: { type: number, minimum: 0, maximum: 1 }
         modelVersion: { type: string, minLength: 1 }
+        comparableCount: { type: integer, minimum: 5 }
+        valuationMonth: { type: string, description: Latest available completed CBS index month (YYYY-MM) }
+        conditionAdjustmentPercent: { type: number, minimum: -4, maximum: 4 }

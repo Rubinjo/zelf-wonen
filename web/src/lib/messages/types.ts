@@ -203,6 +203,51 @@ export interface Messages {
         notAffordable: string;
         nhgEligible: string;
         calculate: string;
+        grossYearly: string;
+        grossMonthly: string;
+        netMonthly: string;
+        grossYearlyIncome: string;
+        grossMonthlyIncome: string;
+        netMonthlyIncome: string;
+        zzpInfo: string;
+        zzpProfitLabels: string[];
+        zzpProfitSuffix: string;
+        zzpNote: string;
+        incomeModeQuestion: string;
+        holidayAllowance: string;
+        holidayAllowanceHelper: string;
+        fixedBonus: string;
+        fixedBonusSuffix: string;
+        fixedBonusHelper: string;
+        variableBonus: string;
+        variableBonusSuffix: string;
+        variableBonusContractual: string;
+        variableBonusHelper: string;
+        netToGrossHelper: string;
+        resultTitle: string;
+        resultStepIncome: string;
+        resultStepIncomeText: string;
+        resultStepFinancing: string;
+        resultStepFinancingText: string;
+        resultStepCapacity: string;
+        resultStepCapacityText: string;
+        resultStepEnergy: string;
+        resultStepEnergyText: string;
+        resultStepObligations: string;
+        resultStepObligationsText: string;
+        monthlyTitle: string;
+        monthlyGross: string;
+        monthlyNet: string;
+        monthlyObligations: string;
+        monthlyNote: string;
+        nhgTitle: string;
+        nhgPossible: string;
+        nhgNotPossible: string;
+        ltvMax: string;
+        ltvMonthly: string;
+        affordableMessage: string;
+        notAffordableMessage: string;
+        footerNote: string;
     };
     dashboard: {
         ownerPortal: string;
@@ -283,3 +328,31 @@ export interface Messages {
         tryAgain: string;
     };
 }
+
+/**
+ * Dot-notation paths to every translatable entry, e.g. `nav.home` or
+ * `mortgage.zzpProfitLabels`.
+ */
+type MessagePaths<T> = {
+    [K in keyof T & string]: T[K] extends string
+        ? K
+        : T[K] extends readonly string[]
+          ? K
+          : T[K] extends object
+            ? `${K}.${MessagePaths<T[K]>}`
+            : never;
+}[keyof T & string];
+
+/** Every valid translation key. */
+export type MessageKey = MessagePaths<Messages>;
+
+type ValueAt<T, P extends string> = P extends `${infer Head}.${infer Rest}`
+    ? Head extends keyof T
+        ? ValueAt<T[Head], Rest>
+        : never
+    : P extends keyof T
+      ? T[P]
+      : never;
+
+/** The value type (string or string[]) belonging to a translation key. */
+export type MessageValue<K extends MessageKey> = ValueAt<Messages, K>;

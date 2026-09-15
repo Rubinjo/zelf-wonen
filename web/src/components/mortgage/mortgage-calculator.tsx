@@ -20,6 +20,7 @@ import {
 import { AuthActions } from "@/components/auth/auth-actions";
 import { BrandLogo } from "@/components/platform/brand-logo";
 import { useTranslations } from "@/lib/messages/use-translations";
+import type { MessageKey } from "@/lib/messages/types";
 import {
     ENERGY_LABELS,
     FIXED_TERMS,
@@ -343,16 +344,10 @@ const emptyIncome: IncomeState = {
 };
 
 const modeOptionsBase = [
-    { value: "gross-yearly" as const, key: "mortgage.grossYearly" },
-    { value: "gross-monthly" as const, key: "mortgage.grossMonthly" },
-    { value: "net-monthly" as const, key: "mortgage.netMonthly" },
-];
-
-const modeLabelBase: Record<IncomeMode, string> = {
-    "gross-yearly": "mortgage.grossYearlyIncome",
-    "gross-monthly": "mortgage.grossMonthlyIncome",
-    "net-monthly": "mortgage.netMonthlyIncome",
-};
+    { value: "gross-yearly", key: "mortgage.grossYearly" },
+    { value: "gross-monthly", key: "mortgage.grossMonthly" },
+    { value: "net-monthly", key: "mortgage.netMonthly" },
+] as const satisfies readonly { value: IncomeMode; key: MessageKey }[];
 
 function IncomeFields({
     value,
@@ -368,19 +363,19 @@ function IncomeFields({
     const { t } = useTranslations();
     const modeOptions = modeOptionsBase.map((o) => ({
         value: o.value,
-        label: t(o.key as any),
+        label: t(o.key),
     }));
     const modeLabel: Record<IncomeMode, string> = {
-        "gross-yearly": t("mortgage.grossYearlyIncome" as any),
-        "gross-monthly": t("mortgage.grossMonthlyIncome" as any),
-        "net-monthly": t("mortgage.netMonthlyIncome" as any),
+        "gross-yearly": t("mortgage.grossYearlyIncome"),
+        "gross-monthly": t("mortgage.grossMonthlyIncome"),
+        "net-monthly": t("mortgage.netMonthlyIncome"),
     };
     if (isZzp) {
         return (
             <div className="grid gap-4">
-                <InfoBox>{t("mortgage.zzpInfo" as any)}</InfoBox>
+                <InfoBox>{t("mortgage.zzpInfo")}</InfoBox>
                 <div className="grid gap-4 sm:grid-cols-3">
-                    {t("mortgage.zzpProfitLabels" as any).map(
+                    {t("mortgage.zzpProfitLabels").map(
                         (label: string, index: number) => (
                             <NumberField
                                 key={label}
@@ -394,13 +389,13 @@ function IncomeFields({
                                     zzpProfits[index] = profit;
                                     onChange({ ...value, zzpProfits });
                                 }}
-                                suffix={t("mortgage.zzpProfitSuffix" as any)}
+                                suffix={t("mortgage.zzpProfitSuffix")}
                             />
                         ),
                     )}
                 </div>
                 <p className="text-xs leading-5 text-muted">
-                    {t("mortgage.zzpNote" as any)}
+                    {t("mortgage.zzpNote")}
                 </p>
             </div>
         );
@@ -410,7 +405,7 @@ function IncomeFields({
         <div className="grid gap-4">
             <div>
                 <p className="text-sm font-semibold">
-                    {t("mortgage.incomeModeQuestion" as any)}
+                    {t("mortgage.incomeModeQuestion")}
                 </p>
                 <Segmented
                     value={value.mode}
@@ -426,12 +421,12 @@ function IncomeFields({
                 placeholder="0"
                 suffix={
                     value.mode === "gross-yearly"
-                        ? t("mortgage.grossYearly" as any)
-                        : t("mortgage.grossMonthly" as any)
+                        ? t("mortgage.grossYearly")
+                        : t("mortgage.grossMonthly")
                 }
                 helper={
                     value.mode === "net-monthly" ? (
-                        <>{t("mortgage.netToGrossHelper" as any)}</>
+                        <>{t("mortgage.netToGrossHelper")}</>
                     ) : undefined
                 }
             />
@@ -440,28 +435,28 @@ function IncomeFields({
                 onChange={(includeHolidayAllowance) =>
                     onChange({ ...value, includeHolidayAllowance })
                 }
-                label={t("mortgage.holidayAllowance" as any)}
-                helper={t("mortgage.holidayAllowanceHelper" as any)}
+                label={t("mortgage.holidayAllowance")}
+                helper={t("mortgage.holidayAllowanceHelper")}
             />
             <div className="grid gap-4 sm:grid-cols-2">
                 <NumberField
                     id={`${idPrefix}-fixed-bonus`}
-                    label={t("mortgage.fixedBonus" as any)}
+                    label={t("mortgage.fixedBonus")}
                     value={value.fixedBonusYearly}
                     onChange={(fixedBonusYearly) =>
                         onChange({ ...value, fixedBonusYearly })
                     }
-                    suffix={t("mortgage.fixedBonusSuffix" as any)}
-                    helper={t("mortgage.fixedBonusHelper" as any)}
+                    suffix={t("mortgage.fixedBonusSuffix")}
+                    helper={t("mortgage.fixedBonusHelper")}
                 />
                 <NumberField
                     id={`${idPrefix}-variable-bonus`}
-                    label={t("mortgage.variableBonus" as any)}
+                    label={t("mortgage.variableBonus")}
                     value={value.variableBonusYearly}
                     onChange={(variableBonusYearly) =>
                         onChange({ ...value, variableBonusYearly })
                     }
-                    suffix={t("mortgage.variableBonusSuffix" as any)}
+                    suffix={t("mortgage.variableBonusSuffix")}
                 />
             </div>
             <Toggle
@@ -469,8 +464,8 @@ function IncomeFields({
                 onChange={(variableBonusContractual) =>
                     onChange({ ...value, variableBonusContractual })
                 }
-                label={t("mortgage.variableBonusContractual" as any)}
-                helper={t("mortgage.variableBonusHelper" as any)}
+                label={t("mortgage.variableBonusContractual")}
+                helper={t("mortgage.variableBonusHelper")}
             />
         </div>
     );
@@ -538,7 +533,7 @@ function Results({ result }: { result: MortgageResult }) {
         <div className="grid gap-5">
             <section className="border border-line bg-brand-dark p-6 text-white">
                 <p className="text-xs font-semibold uppercase tracking-wider text-accent">
-                    {t("mortgage.maxMortgage" as any)}
+                    {t("mortgage.maxMortgage")}
                 </p>
                 <p className="mt-2 text-4xl font-semibold sm:text-5xl">
                     {money(result.maxMortgage)}
@@ -552,17 +547,17 @@ function Results({ result }: { result: MortgageResult }) {
             <section className="border border-line bg-surface p-5">
                 <div className="flex items-center justify-between gap-3">
                     <h3 className="font-semibold">
-                        {t("mortgage.resultTitle" as any)}
+                        {t("mortgage.resultTitle")}
                     </h3>
                     <Calculator size={19} className="text-brand" />
                 </div>
                 <ol className="mt-5 grid gap-5">
                     <Step
-                        title={t("mortgage.resultStepIncome" as any)}
+                        title={t("mortgage.resultStepIncome")}
                         value={money(result.toetsinkomen)}
                         text={
                             <>
-                                {t("mortgage.resultStepIncomeText" as any)}{" "}
+                                {t("mortgage.resultStepIncomeText")}{" "}
                                 {result.partnerGross > 0
                                     ? `Aanvrager: ${money(result.applicantGross)}, partner: ${money(result.partnerGross)}.`
                                     : `Aanvrager: ${money(result.applicantGross)}.`}
@@ -570,34 +565,34 @@ function Results({ result }: { result: MortgageResult }) {
                         }
                     />
                     <Step
-                        title={t("mortgage.resultStepFinancing" as any)}
+                        title={t("mortgage.resultStepFinancing")}
                         value={`${pct.format(result.financingPercentage)}%`}
                         text={
                             <>
-                                {t("mortgage.resultStepFinancingText" as any)}{" "}
+                                {t("mortgage.resultStepFinancingText")}{" "}
                                 {money(result.maxMonthlyHousing)} bruto per
                                 maand.
                             </>
                         }
                     />
                     <Step
-                        title={t("mortgage.resultStepCapacity" as any)}
+                        title={t("mortgage.resultStepCapacity")}
                         value={money(result.maxMortgageIncome)}
-                        text={t("mortgage.resultStepCapacityText" as any)}
+                        text={t("mortgage.resultStepCapacityText")}
                     />
                     <Step
-                        title={t("mortgage.resultStepEnergy" as any)}
+                        title={t("mortgage.resultStepEnergy")}
                         value={`+ ${money(result.energyExtra)}`}
                         tone={result.energyExtra > 0 ? "brand" : "muted"}
-                        text={t("mortgage.resultStepEnergyText" as any)}
+                        text={t("mortgage.resultStepEnergyText")}
                     />
                     <Step
-                        title={t("mortgage.resultStepObligations" as any)}
+                        title={t("mortgage.resultStepObligations")}
                         value={`− ${money(result.totalMonthlyObligations * 12)}`}
                         tone="muted"
                         text={
                             <>
-                                {t("mortgage.resultStepObligationsText" as any)}{" "}
+                                {t("mortgage.resultStepObligationsText")}{" "}
                                 {money(result.studentDebtMonthly)}/mnd,{" "}
                                 {money(result.alimonyMonthly)}/mnd,{" "}
                                 {money(result.otherLoansMonthly)}/mnd.
@@ -609,12 +604,12 @@ function Results({ result }: { result: MortgageResult }) {
 
             <section className="border border-line bg-surface p-5">
                 <h3 className="font-semibold">
-                    {t("mortgage.monthlyTitle" as any)}
+                    {t("mortgage.monthlyTitle")}
                 </h3>
                 <dl className="mt-4 grid gap-3 text-sm">
                     <div className="flex items-center justify-between">
                         <dt className="text-muted">
-                            {t("mortgage.monthlyGross" as any)}
+                            {t("mortgage.monthlyGross")}
                         </dt>
                         <dd className="font-semibold">
                             {moneyCents(result.monthlyPaymentMax)}
@@ -622,7 +617,7 @@ function Results({ result }: { result: MortgageResult }) {
                     </div>
                     <div className="flex items-center justify-between">
                         <dt className="text-muted">
-                            {t("mortgage.monthlyNet" as any)}
+                            {t("mortgage.monthlyNet")}
                         </dt>
                         <dd className="font-semibold">
                             {moneyCents(result.netMonthlyEstimate)}
@@ -630,7 +625,7 @@ function Results({ result }: { result: MortgageResult }) {
                     </div>
                     <div className="flex items-center justify-between border-t border-line pt-3">
                         <dt className="text-muted">
-                            {t("mortgage.monthlyObligations" as any)}
+                            {t("mortgage.monthlyObligations")}
                         </dt>
                         <dd className="font-semibold">
                             {moneyCents(result.totalMonthlyObligations)}
@@ -638,7 +633,7 @@ function Results({ result }: { result: MortgageResult }) {
                     </div>
                 </dl>
                 <p className="mt-3 text-xs leading-5 text-muted">
-                    {t("mortgage.monthlyNote" as any)}
+                    {t("mortgage.monthlyNote")}
                 </p>
             </section>
 
@@ -650,7 +645,7 @@ function Results({ result }: { result: MortgageResult }) {
                     />
                     <div>
                         <h3 className="font-semibold">
-                            {t("mortgage.nhgTitle" as any)}
+                            {t("mortgage.nhgTitle")}
                         </h3>
                         <p className="mt-1 text-sm leading-6 text-muted">
                             {result.nhgEligible ? (
@@ -674,7 +669,7 @@ function Results({ result }: { result: MortgageResult }) {
                     <div className="mt-4 border-t border-line pt-4">
                         <div className="flex items-center justify-between text-sm">
                             <span className="text-muted">
-                                {t("mortgage.ltvMax" as any)}
+                                {t("mortgage.ltvMax")}
                             </span>
                             <span className="font-semibold">
                                 {money(result.ltvCappedMaxMortgage)}
@@ -682,7 +677,7 @@ function Results({ result }: { result: MortgageResult }) {
                         </div>
                         <div className="mt-3 flex items-center justify-between text-sm">
                             <span className="text-muted">
-                                {t("mortgage.ltvMonthly" as any)}
+                                {t("mortgage.ltvMonthly")}
                             </span>
                             <span className="font-semibold">
                                 {moneyCents(result.monthlyPaymentForValue ?? 0)}
@@ -701,8 +696,8 @@ function Results({ result }: { result: MortgageResult }) {
                             )}
                             <span>
                                 {affordable
-                                    ? t("mortgage.affordableMessage" as any)
-                                    : t("mortgage.notAffordableMessage" as any)}
+                                    ? t("mortgage.affordableMessage")
+                                    : t("mortgage.notAffordableMessage")}
                             </span>
                         </div>
                     </div>
@@ -710,7 +705,7 @@ function Results({ result }: { result: MortgageResult }) {
             </section>
 
             <p className="px-1 text-xs leading-5 text-muted">
-                {t("mortgage.footerNote" as any)}
+                {t("mortgage.footerNote")}
             </p>
         </div>
     );
@@ -838,10 +833,10 @@ export function MortgageCalculator() {
             <section className="border-b border-line bg-brand-dark text-white">
                 <div className="mx-auto max-w-[1600px] px-4 py-9 sm:px-6 lg:px-8">
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">
-                        {t("mortgage.title" as any)}
+                        {t("mortgage.title")}
                     </p>
                     <h1 className="mt-2 max-w-3xl text-2xl font-semibold sm:text-4xl">
-                        {t("mortgage.description" as any)}
+                        {t("mortgage.description")}
                     </h1>
                     <p className="mt-3 max-w-3xl text-sm leading-6 text-white/75 sm:text-base">
                         Bereken je leencapaciteit zoals een hypotheekadviseur
