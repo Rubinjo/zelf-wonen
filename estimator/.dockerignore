@@ -7,3 +7,9 @@ tests
 .git
 .gitignore
 *.py[cod]
+
+# Licensed sales artifacts are mounted at runtime, never sent to the builder.
+data/sales.json
+data/*.csv
+data/*.tmp
+.env*

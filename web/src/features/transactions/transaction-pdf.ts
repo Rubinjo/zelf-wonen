@@ -1,6 +1,4 @@
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import type {
     Prisma,
@@ -21,6 +19,7 @@ import {
     type LoadedPassportListing,
 } from "@/features/transactions/passport-service";
 import { db } from "@/lib/db";
+import { deleteStoredFile, readStoredFile, storeFile } from "@/lib/storage";
 
 function safeText(value: unknown) {
     return String(value ?? "")
@@ -103,15 +102,7 @@ async function persistGeneratedDocument(
 ) {
     const id = randomUUID();
     const storageKey = `${transactionId}/${id}.pdf`;
-    const directory = path.join(
-        process.cwd(),
-        ".data",
-        "transaction-documents",
-        transactionId,
-    );
-    const target = path.join(directory, `${id}.pdf`);
-    await mkdir(directory, { recursive: true });
-    await writeFile(target, bytes, { flag: "wx" });
+    await storeFile("transaction-documents", storageKey, bytes);
     try {
         return await db.$transaction(async (tx) => {
             const previousCount = await tx.transactionDocument.count({
@@ -153,7 +144,7 @@ async function persistGeneratedDocument(
             return document;
         });
     } catch (error) {
-        await unlink(target).catch(() => undefined);
+        await deleteStoredFile("transaction-documents", storageKey).catch(() => undefined);
         throw error;
     }
 }
@@ -354,9 +345,7 @@ async function readMediaBytes(
 ): Promise<Uint8Array | null> {
     if (!storageKey) return null;
     try {
-        return await readFile(
-            path.join(process.cwd(), "public", storageKey.replace(/^\/+/, "")),
-        );
+        return await readStoredFile("listing-media", storageKey);
     } catch {
         return null;
     }

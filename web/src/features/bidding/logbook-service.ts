@@ -1,12 +1,11 @@
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, unlink, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import {
     computeBidEntryHash,
     computeBidEventEntryHash,
 } from "@/features/bidding/bid-integrity";
 import { db } from "@/lib/db";
+import { deleteStoredFile, storeFile } from "@/lib/storage";
 import { orderHashChain } from "@/lib/hash-chain";
 
 export class LogbookError extends Error {
@@ -235,9 +234,7 @@ export async function generateBidLogbook(listingId: string, userId: string) {
     const documentSha256 = createHash("sha256").update(bytes).digest("hex");
     const exportId = randomUUID();
     const relativeKey = `logbooks/${listingId}/${exportId}.pdf`;
-    const target = path.join(process.cwd(), ".data", relativeKey);
-    await mkdir(path.dirname(target), { recursive: true });
-    await writeFile(target, bytes, { flag: "wx" });
+    await storeFile("logbooks", relativeKey, bytes);
     await db.bidLogbookExport
         .create({
             data: {
@@ -252,7 +249,7 @@ export async function generateBidLogbook(listingId: string, userId: string) {
             },
         })
         .catch(async (error) => {
-            await unlink(target).catch(() => undefined);
+            await deleteStoredFile("logbooks", relativeKey).catch(() => undefined);
             throw error;
         });
     return {

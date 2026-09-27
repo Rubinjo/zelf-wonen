@@ -1,6 +1,10 @@
 "use client";
 
+import { useListingCopy } from "@/lib/messages/use-listing-copy";
+import { translateListingIssue } from "@/lib/messages/listing-copy";
+
 import { useState, type ChangeEvent } from "react";
+import type { EstimateResponse } from "@/lib/schemas/estimator";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import {
@@ -30,7 +34,7 @@ import {
     Sparkles,
     Trash2,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { OwnerListingMessages } from "@/components/messages/owner-listing-messages";
 import {
     erfpachtOptions,
@@ -151,7 +155,6 @@ export type ListingView = {
     floorPlans: Array<{ embedUrl: string | null }>;
     identityAttempts: Array<{ status: string }>;
     identityVerified: boolean;
-    publicationOrders: Array<{ id: string; package: string; status: string }>;
     publications: Array<{
         id: string;
         channel: string;
@@ -309,7 +312,6 @@ function buildSkeletonListing(
         floorPlans: [],
         identityAttempts: [],
         identityVerified: false,
-        publicationOrders: [],
         publications: [],
     };
 }
@@ -323,6 +325,7 @@ export function ListingEditor({
     draft?: NewListingDraft | null;
     messageUnreadCount?: number;
 }) {
+    const { t } = useListingCopy();
     const router = useRouter();
     const queryClient = useQueryClient();
     const isCreate = initialListing === null;
@@ -332,6 +335,9 @@ export function ListingEditor({
     const [section, setSection] = useState<Section>("details");
     const [messageUnread, setMessageUnread] = useState(messageUnreadCount);
     const [notice, setNotice] = useState("");
+    const [verificationError, setVerificationError] = useState<string | null>(null);
+    const searchParams = useSearchParams();
+    const [woz, setWoz] = useState({ amount: "", year: "" });
     const [editor, setEditor] = useState<EditorState>({
         purpose: listing.purpose,
         propertyType: listing.property.propertyType,
@@ -382,14 +388,14 @@ export function ListingEditor({
     const editable =
         isCreate ||
         ["DRAFT", "READY_FOR_VERIFICATION"].includes(listing.status);
-    const verified =
-        listing.identityVerified ||
-        listing.identityAttempts.some(
-            (attempt) => attempt.status === "VERIFIED",
-        );
-    const paidOrder = listing.publicationOrders.find(
-        (order) => order.status === "PAID",
-    );
+    const identity = useQuery({
+        queryKey: ["listing-identity", listing.id],
+        queryFn: () => requestData<{ verified: boolean; status: string | null }>(`/api/listings/${listing.id}/identity`),
+        enabled: !isCreate,
+        refetchInterval: (query) => searchParams.has("verification") && query.state.dataUpdateCount < 20 &&
+            (!query.state.data || ["INITIATED", "PENDING"].includes(query.state.data.status ?? "")) ? 3000 : false,
+    });
+    const verified = identity.data?.verified ?? listing.identityVerified;
 
     const save = useMutation({
         mutationFn: () => {
@@ -529,7 +535,7 @@ export function ListingEditor({
                 return;
             }
             setListing(data as ListingView);
-            setNotice("Concept opgeslagen");
+            setNotice(t("Concept opgeslagen"));
         },
     });
 
@@ -565,7 +571,7 @@ export function ListingEditor({
                 titleEn: data.titleEn,
                 descriptionEn: data.descriptionEn,
             }));
-            setNotice("AI-voorstel gemaakt — controleer de tekst en sla op");
+            setNotice(t("AI-voorstel gemaakt — controleer de tekst en sla op"));
         },
     });
 
@@ -583,19 +589,15 @@ export function ListingEditor({
                     sha256: item.sha256,
                     mimeType: item.mimeType,
                 }));
-            return requestData<{
-                estimatedValueCents: string;
-                lowerBoundCents: string;
-                upperBoundCents: string;
-                confidence: number;
-                tier: string;
-                cached: boolean;
-            }>("/api/estimates", {
+            return requestData<EstimateResponse>("/api/estimates", {
                 method: "POST",
                 headers: { "content-type": "application/json" },
                 body: JSON.stringify({
                     postcode: listing.property.postcode,
                     houseNumber: listing.property.houseNumber,
+                    addition: listing.property.houseNumberAddition ?? undefined,
+                    wozValueCents: woz.amount ? Math.round(Number(woz.amount) * 100) : undefined,
+                    wozAssessmentYear: woz.year ? Number(woz.year) : undefined,
                     propertyType: editor.propertyType,
                     livingAreaSqm: Number(editor.livingAreaSqm),
                     roomCount: Number(editor.roomCount),
@@ -619,24 +621,28 @@ export function ListingEditor({
         onSuccess(data) {
             setListing(data.listing);
             if (data.ready) {
-                setNotice("Advertentie is compleet en klaar voor iDIN");
+                setNotice(t("Advertentie is compleet en klaar voor identiteitsverificatie"));
             }
         },
     });
 
-    const startIdin = useMutation({
+    const startIdentity = useMutation({
+        retry: false,
+        onMutate() { setVerificationError(null); },
+        onError(error: Error) { setVerificationError(error.message); },
         mutationFn: () =>
             requestData<{
                 alreadyVerified: boolean;
                 redirectUrl: string | null;
-            }>(`/api/listings/${listing.id}/idin/start`, {
+            }>(`/api/listings/${listing.id}/identity/start`, {
                 method: "POST",
                 headers: { "content-type": "application/json" },
                 body: JSON.stringify({ locale: "nl" }),
             }),
         onSuccess(data) {
             if (data.alreadyVerified) {
-                setNotice("iDIN is al voltooid");
+                setNotice(t("Je identiteit is al geverifieerd"));
+                void queryClient.invalidateQueries({ queryKey: ["listing-identity", listing.id] });
                 router.refresh();
             } else if (data.redirectUrl) {
                 window.location.assign(data.redirectUrl);
@@ -644,48 +650,19 @@ export function ListingEditor({
         },
     });
 
-    const checkout = useMutation({
-        mutationFn: (packageName: "BRONZE" | "SILVER" | "GOLD") =>
-            requestData<{ simulated: boolean; checkoutUrl: string | null }>(
-                `/api/listings/${listing.id}/publication-orders`,
-                {
-                    method: "POST",
-                    headers: { "content-type": "application/json" },
-                    body: JSON.stringify({
-                        package: packageName,
-                        idempotencyKey: crypto.randomUUID(),
-                    }),
-                },
-            ),
-        onSuccess(data) {
-            if (data.checkoutUrl) window.location.assign(data.checkoutUrl);
-            else {
-                setNotice(
-                    data.simulated
-                        ? "Testbetaling geslaagd"
-                        : "Betaling gestart",
-                );
-                router.refresh();
-                window.location.reload();
-            }
-        },
-    });
-
     const publish = useMutation({
-        mutationFn: (packageName: "BRONZE" | "SILVER" | "GOLD") =>
+        mutationFn: () =>
             requestData<{
                 publications: Array<{ channel: string; status: string }>;
             }>(`/api/listings/${listing.id}/publish`, {
                 method: "POST",
                 headers: { "content-type": "application/json" },
                 body: JSON.stringify({
-                    package: packageName,
-                    channels: ["PLATFORM", "FUNDA"],
                     idempotencyKey: crypto.randomUUID(),
                 }),
             }),
         onSuccess() {
-            setNotice("Publicatie is gestart");
+            setNotice(t("Publicatie is gestart"));
             router.refresh();
             window.location.reload();
         },
@@ -711,10 +688,10 @@ export function ListingEditor({
                 <div>
                     <div className="flex items-center gap-2 text-sm font-semibold text-brand">
                         <span>
-                            {editor.purpose === "SALE" ? "Verkoop" : "Verhuur"}
+                            {editor.purpose === "SALE" ? t("Verkoop") : t("Verhuur")}
                         </span>
                         <ChevronRight size={14} />
-                        <span>{statusText(listing.status)}</span>
+                        <span>{t(statusText(listing.status))}</span>
                     </div>
                     <h1 className="mt-2 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
                         {address}
@@ -734,7 +711,7 @@ export function ListingEditor({
                         ) : (
                             <Save size={17} />
                         )}{" "}
-                        {isCreate ? "Concept maken" : "Concept opslaan"}
+                        {isCreate ? t("Concept maken") : t("Concept opslaan")}
                     </button>
                 ) : listing.publicSlug ? (
                     <a
@@ -742,7 +719,7 @@ export function ListingEditor({
                         target="_blank"
                         className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-brand px-6 font-semibold text-white"
                     >
-                        Bekijk advertentie <ChevronRight size={17} />
+                        {t("Bekijk advertentie")}<ChevronRight size={17} />
                     </a>
                 ) : null}
             </div>
@@ -751,8 +728,24 @@ export function ListingEditor({
                 <div
                     className={`mt-6 rounded-2xl px-5 py-4 text-sm ${save.error ? "bg-red-50 text-red-700" : "bg-brand/8 text-brand-dark"}`}
                 >
-                    {save.error?.message ?? notice}
+                    {t(save.error?.message ?? notice)}
                 </div>
+            ) : null}
+
+            {verificationError ? (
+                <div role="alert" aria-live="assertive" className="fixed bottom-6 right-6 z-50 flex max-w-sm items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-800 shadow-lg">
+                    <CircleAlert size={20} className="shrink-0" />
+                    <p>{t(verificationError)}</p>
+                    <button type="button" aria-label={t("Melding sluiten")} onClick={() => setVerificationError(null)} className="ml-2 font-semibold">×</button>
+                </div>
+            ) : null}
+            {searchParams.has("verification") ? (
+                <p role="status" className="mt-6 rounded-2xl bg-brand/8 px-5 py-4 text-sm">
+                    {verified ? t("Je identiteit is geverifieerd. Je kunt je woning gratis publiceren.")
+                        : identity.data && ["FAILED", "EXPIRED", "CANCELLED"].includes(identity.data.status ?? "")
+                          ? t("Je identiteit is niet geverifieerd. Start de controle opnieuw via Controleren & publiceren.")
+                          : t("Je verificatie wordt verwerkt. Wacht even of vernieuw deze pagina om het resultaat te bekijken.")}
+                </p>
             ) : null}
 
             <div className="mt-8 grid gap-7 lg:grid-cols-[250px_1fr]">
@@ -767,7 +760,7 @@ export function ListingEditor({
                                 disabled={locked}
                                 title={
                                     locked
-                                        ? "Sla eerst je concept op"
+                                        ? t("Sla eerst je concept op")
                                         : undefined
                                 }
                                 onClick={() => {
@@ -786,7 +779,7 @@ export function ListingEditor({
                                 }}
                                 className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold transition ${section === item.id ? "bg-brand text-white" : "hover:bg-background"} ${locked ? "cursor-not-allowed opacity-50" : ""}`}
                             >
-                                <Icon size={18} /> {item.label}
+                                <Icon size={18} /> {t(item.label)}
                                 {item.id === "messages" && messageUnread > 0 ? (
                                     <span
                                         className={`ml-auto grid min-w-5 place-items-center rounded-full px-1.5 py-0.5 text-[10px] font-bold ${section === item.id ? "bg-surface text-brand" : "bg-brand text-white"}`}
@@ -799,8 +792,7 @@ export function ListingEditor({
                     })}
                     {isCreate ? (
                         <p className="px-3 pt-3 text-xs leading-5 text-muted">
-                            Sla eerst je concept op om foto&apos;s,
-                            bezichtigingen en publicatie te openen.
+                            {t("Sla eerst je concept op om foto's, bezichtigingen en publicatie te openen.")}
                         </p>
                     ) : null}
                 </aside>
@@ -854,6 +846,8 @@ export function ListingEditor({
                     ) : null}
                     {section === "estimate" ? (
                         <PriceAndBiddingSection
+                            woz={woz}
+                            setWoz={setWoz}
                             editor={editor}
                             setEditor={setEditor}
                             editable={editable}
@@ -871,10 +865,8 @@ export function ListingEditor({
                         <PublishSection
                             listing={listing}
                             verified={verified}
-                            paidOrder={paidOrder}
                             validate={validate}
-                            startIdin={startIdin}
-                            checkout={checkout}
+                            startIdentity={startIdentity}
                             publish={publish}
                         />
                     ) : null}
@@ -919,11 +911,12 @@ function DetailsSection({
     editable: boolean;
     aiWriter: { mutate: () => void; isPending: boolean; error: Error | null };
 }) {
+    const { t } = useListingCopy();
     // Waarom is de AI-knop uitgeschakeld? Wordt als tooltip op de knop getoond.
     const aiDisabledReason = !editable
-        ? "De advertentie is niet meer aanpasbaar"
+        ? t("De advertentie is niet meer aanpasbaar")
         : !editor.livingAreaSqm || !editor.roomCount
-          ? "Vul eerst het woonoppervlak en aantal kamers in"
+          ? t("Vul eerst het woonoppervlak en aantal kamers in")
           : null;
     const set =
         (key: string) =>
@@ -950,47 +943,45 @@ function DetailsSection({
         <div>
             <SectionHeading
                 icon={Building2}
-                title="Woninggegevens"
-                text="Vul de feiten zorgvuldig in. Deze gegevens worden gebruikt voor validatie, waardeschatting en publicatie."
+                title={t("Woninggegevens")}
+                text={t("Vul de feiten zorgvuldig in. Deze gegevens worden gebruikt voor validatie, waardeschatting en publicatie.")}
             />
             <fieldset
                 disabled={!editable}
                 className="mt-8 grid gap-5 sm:grid-cols-2 disabled:opacity-70"
             >
                 <label className="block text-sm font-semibold">
-                    Ik wil
-                    <select
+                    {t("Ik wil")}<select
                         value={editor.purpose}
                         onChange={set("purpose")}
                         className="input mt-2"
                     >
-                        <option value="SALE">Verkopen</option>
-                        <option value="RENT">Verhuren</option>
+                        <option value="SALE">{t("Verkopen")}</option>
+                        <option value="RENT">{t("Verhuren")}</option>
                     </select>
                 </label>
                 <label className="block text-sm font-semibold">
-                    Woningtype
-                    <select
+                    {t("Woningtype")}<select
                         value={editor.propertyType}
                         onChange={set("propertyType")}
                         className="input mt-2"
                     >
-                        <option value="HOUSE">Woonhuis</option>
-                        <option value="APARTMENT">Appartement</option>
-                        <option value="PARKING">Parkeerplaats</option>
-                        <option value="LAND">Grond</option>
-                        <option value="COMMERCIAL">Commercieel</option>
-                        <option value="OTHER">Overig</option>
+                        <option value="HOUSE">{t("Woonhuis")}</option>
+                        <option value="APARTMENT">{t("Appartement")}</option>
+                        <option value="PARKING">{t("Parkeerplaats")}</option>
+                        <option value="LAND">{t("Grond")}</option>
+                        <option value="COMMERCIAL">{t("Commercieel")}</option>
+                        <option value="OTHER">{t("Overig")}</option>
                     </select>
                 </label>
                 <Input
-                    label="Woonoppervlak (m²)"
+                    label={t("Woonoppervlak (m²)")}
                     type="number"
                     value={editor.livingAreaSqm}
                     onChange={set("livingAreaSqm")}
                 />
                 <Input
-                    label="Perceeloppervlak (m²)"
+                    label={t("Perceeloppervlak (m²)")}
                     type="number"
                     min="0"
                     step="0.1"
@@ -998,7 +989,7 @@ function DetailsSection({
                     onChange={set("officialLandAreaSqm")}
                 />
                 <Input
-                    label="Externe bergruimte (m²)"
+                    label={t("Externe bergruimte (m²)")}
                     type="number"
                     min="0"
                     max="10000"
@@ -1007,19 +998,19 @@ function DetailsSection({
                     onChange={set("externalStorageAreaSqm")}
                 />
                 <Input
-                    label="Aantal kamers"
+                    label={t("Aantal kamers")}
                     type="number"
                     value={editor.roomCount}
                     onChange={set("roomCount")}
                 />
                 <Input
-                    label="Aantal slaapkamers"
+                    label={t("Aantal slaapkamers")}
                     type="number"
                     value={editor.bedroomCount}
                     onChange={set("bedroomCount")}
                 />
                 <Input
-                    label="Aantal badkamers"
+                    label={t("Aantal badkamers")}
                     type="number"
                     min="0"
                     max="100"
@@ -1027,7 +1018,7 @@ function DetailsSection({
                     onChange={set("bathroomCount")}
                 />
                 <Input
-                    label="Bouwjaar"
+                    label={t("Bouwjaar")}
                     type="number"
                     value={editor.constructionYear}
                     onChange={set("constructionYear")}
@@ -1044,10 +1035,10 @@ function DetailsSection({
                         }
                         className="size-4 accent-brand"
                     />
-                    Monumentaal pand
+                    {t("Monumentaal pand")}
                 </label>
                 <Input
-                    label="Aantal woonlagen"
+                    label={t("Aantal woonlagen")}
                     type="number"
                     min="1"
                     max="100"
@@ -1055,23 +1046,22 @@ function DetailsSection({
                     onChange={set("floorCount")}
                 />
                 <label className="block text-sm font-semibold">
-                    Daktype
-                    <select
+                    {t("Daktype")}<select
                         value={editor.roofType}
                         onChange={set("roofType")}
                         className="input mt-2"
                     >
-                        <option value="">Niet opgegeven</option>
+                        <option value="">{t("Niet opgegeven")}</option>
                         {roofTypeOptions.map((option) => (
                             <option key={option.value} value={option.value}>
-                                {option.label}
+                                {t(option.label)}
                             </option>
                         ))}
                     </select>
                 </label>
                 <div className="sm:col-span-2">
                     <OptionCheckboxes
-                        title="Voorzieningen"
+                        title={t("Voorzieningen")}
                         options={propertyAmenityOptions}
                         values={editor.amenities}
                         onToggle={(value) => toggleOption("amenities", value)}
@@ -1079,7 +1069,7 @@ function DetailsSection({
                 </div>
                 <div className="sm:col-span-2">
                     <OptionCheckboxes
-                        title="Parkeren"
+                        title={t("Parkeren")}
                         options={parkingOptions}
                         values={editor.parkingOptions}
                         onToggle={(value) =>
@@ -1089,7 +1079,7 @@ function DetailsSection({
                 </div>
                 {editor.parkingOptions.includes("SPACE_FOR_SALE") ? (
                     <Input
-                        label="Prijs parkeerplaats apart te koop (€)"
+                        label={t("Prijs parkeerplaats apart te koop (€)")}
                         type="number"
                         min="0"
                         step="0.01"
@@ -1103,10 +1093,9 @@ function DetailsSection({
                             <Flower2 size={18} />
                         </span>
                         <div>
-                            <h3 className="font-semibold">Tuin</h3>
+                            <h3 className="font-semibold">{t("Tuin")}</h3>
                             <p className="mt-1 text-sm leading-6 text-muted">
-                                Geef aan of de woning een tuin heeft en waar
-                                deze op ligt. Zoekenden kunnen hierop filteren.
+                                {t("Geef aan of de woning een tuin heeft en waar deze op ligt. Zoekenden kunnen hierop filteren.")}
                             </p>
                         </div>
                     </div>
@@ -1126,24 +1115,23 @@ function DetailsSection({
                                 }
                                 className="size-4 accent-brand"
                             />
-                            De woning heeft een tuin
+                            {t("De woning heeft een tuin")}
                         </label>
                         {editor.hasGarden ? (
                             <label className="block text-sm font-semibold">
-                                Tuinoriëntatie (optioneel)
-                                <select
+                                {t("Tuinoriëntatie (optioneel)")}<select
                                     value={editor.gardenOrientation}
                                     onChange={set("gardenOrientation")}
                                     className="input mt-2"
                                 >
-                                    <option value="">Niet opgegeven</option>
+                                    <option value="">{t("Niet opgegeven")}</option>
                                     {(
                                         Object.entries(
                                             gardenOrientationLabels,
                                         ) as Array<[GardenOrientation, string]>
                                     ).map(([value, label]) => (
                                         <option key={value} value={value}>
-                                            {label}
+                                            {t(label)}
                                         </option>
                                     ))}
                                 </select>
@@ -1157,19 +1145,15 @@ function DetailsSection({
                             <Landmark size={18} />
                         </span>
                         <div>
-                            <h3 className="font-semibold">Erfpacht</h3>
+                            <h3 className="font-semibold">{t("Erfpacht")}</h3>
                             <p className="mt-1 text-sm leading-6 text-muted">
-                                De grond onder de woning kan in erfpacht zijn.
-                                De jaarlijkse canon wordt naast de vraagprijs
-                                getoond. Is de canon eenmalig afgekocht, kies
-                                dan &quot;Erfpacht afgekocht&quot;.
+                                {t("De grond onder de woning kan in erfpacht zijn. De jaarlijkse canon wordt naast de vraagprijs getoond. Is de canon eenmalig afgekocht, kies dan \"Erfpacht afgekocht\".")}
                             </p>
                         </div>
                     </div>
                     <div className="mt-4 grid gap-4 sm:grid-cols-2">
                         <label className="block text-sm font-semibold">
-                            Erfpachtsituatie
-                            <select
+                            {t("Erfpachtsituatie")}<select
                                 value={editor.erfpachtType}
                                 onChange={set("erfpachtType")}
                                 className="input mt-2"
@@ -1179,20 +1163,20 @@ function DetailsSection({
                                         key={option.value}
                                         value={option.value}
                                     >
-                                        {option.label}
+                                        {t(option.label)}
                                     </option>
                                 ))}
                             </select>
                         </label>
                         {editor.erfpachtType === "LEASEHOLD" ? (
                             <Input
-                                label="Canon per jaar (€)"
+                                label={t("Canon per jaar (€)")}
                                 type="number"
                                 min="0"
                                 step="0.01"
                                 value={editor.erfpachtCanon}
                                 onChange={set("erfpachtCanon")}
-                                placeholder="Bijv. 1200"
+                                placeholder={t("Bijv. 1200")}
                             />
                         ) : (
                             <div />
@@ -1200,20 +1184,19 @@ function DetailsSection({
                         {editor.erfpachtType === "LEASEHOLD" ||
                         editor.erfpachtType === "LEASEHOLD_AFGEKOCHT" ? (
                             <Input
-                                label="Erfpacht loopt tot (optioneel)"
+                                label={t("Erfpacht loopt tot (optioneel)")}
                                 type="date"
                                 value={editor.erfpachtEndDate}
                                 onChange={set("erfpachtEndDate")}
                             />
                         ) : null}
                         <label className="block text-sm font-semibold sm:col-span-2">
-                            Toelichting (optioneel)
-                            <textarea
+                            {t("Toelichting (optioneel)")}<textarea
                                 value={editor.erfpachtDetails}
                                 onChange={set("erfpachtDetails")}
                                 rows={2}
                                 maxLength={240}
-                                placeholder="Bijv. canon wordt jaarlijks geïndexeerd, erfpacht wordt verlengd in 2035"
+                                placeholder={t("Bijv. canon wordt jaarlijks geïndexeerd, erfpacht wordt verlengd in 2035")}
                                 className="input mt-2 min-h-16 py-3"
                             />
                         </label>
@@ -1227,9 +1210,9 @@ function DetailsSection({
             />
             <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-8">
                 <div>
-                    <h3 className="text-xl font-semibold">Advertentietekst</h3>
+                    <h3 className="text-xl font-semibold">{t("Advertentietekst")}</h3>
                     <p className="mt-1 text-sm text-muted">
-                        Schrijf zelf of gebruik een feitelijk AI-voorstel.
+                        {t("Schrijf zelf of gebruik een feitelijk AI-voorstel.")}
                     </p>
                 </div>
                 <button
@@ -1238,8 +1221,8 @@ function DetailsSection({
                     title={
                         aiDisabledReason ??
                         (aiWriter.isPending
-                            ? "De AI schrijft een voorstel..."
-                            : "Genereert een voorstel voor titels en omschrijvingen (NL en EN)")
+                            ? t("De AI schrijft een voorstel...")
+                            : t("Genereert een voorstel voor titels en omschrijvingen (NL en EN)"))
                     }
                     onClick={() => aiWriter.mutate()}
                     className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-brand-dark disabled:cursor-not-allowed disabled:opacity-50"
@@ -1249,12 +1232,12 @@ function DetailsSection({
                     ) : (
                         <Bot size={17} />
                     )}{" "}
-                    Schrijf met AI
+                    {t("Schrijf met AI")}
                 </button>
             </div>
             {aiWriter.error ? (
                 <p className="mt-4 rounded-2xl bg-red-50 p-4 text-sm text-red-700">
-                    {aiWriter.error.message}
+                    {t(aiWriter.error.message)}
                 </p>
             ) : null}
             <fieldset
@@ -1262,12 +1245,12 @@ function DetailsSection({
                 className="mt-6 space-y-5 disabled:opacity-70"
             >
                 <Input
-                    label="Nederlandse titel"
+                    label={t("Nederlandse titel")}
                     value={editor.titleNl}
                     onChange={set("titleNl")}
                 />
                 <TextArea
-                    label="Nederlandse omschrijving"
+                    label={t("Nederlandse omschrijving")}
                     value={editor.descriptionNl}
                     onChange={set("descriptionNl")}
                     rows={8}
@@ -1284,7 +1267,7 @@ function DetailsSection({
                     rows={6}
                 />
                 <TextArea
-                    label="Notities voor bezichtigingen"
+                    label={t("Notities voor bezichtigingen")}
                     value={editor.viewingNotes}
                     onChange={set("viewingNotes")}
                     rows={3}
@@ -1305,6 +1288,7 @@ function OptionCheckboxes<Option extends string>({
     values: Option[];
     onToggle: (value: Option) => void;
 }) {
+    const { t } = useListingCopy();
     return (
         <fieldset className="border-t border-line pt-6">
             <legend className="font-semibold">{title}</legend>
@@ -1320,7 +1304,7 @@ function OptionCheckboxes<Option extends string>({
                             onChange={() => onToggle(option.value)}
                             className="size-4 accent-brand"
                         />
-                        {option.label}
+                        {t(option.label)}
                     </label>
                 ))}
             </div>
@@ -1345,6 +1329,7 @@ function EnergyLabelPanel({
     setListing: React.Dispatch<React.SetStateAction<ListingView>>;
     editable: boolean;
 }) {
+    const { t } = useListingCopy();
     const energy = listing.property.energyLabels[0];
     const documents = listing.media.filter(
         (item) =>
@@ -1361,7 +1346,7 @@ function EnergyLabelPanel({
             });
             const payload = await response.json();
             if (!response.ok)
-                throw new Error(payload.error?.message ?? "Upload mislukt");
+                throw new Error(payload.error?.message ?? t("Upload mislukt"));
             return payload.data as UploadedMedia;
         },
         onSuccess(uploaded) {
@@ -1381,10 +1366,9 @@ function EnergyLabelPanel({
                     <FileUp size={18} />
                 </span>
                 <div>
-                    <h3 className="text-xl font-semibold">Energielabel</h3>
+                    <h3 className="text-xl font-semibold">{t("Energielabel")}</h3>
                     <p className="mt-1 text-sm leading-6 text-muted">
-                        Bekijk het gevonden label en bewaar het officiële
-                        document bij je concept.
+                        {t("Bekijk het gevonden label en bewaar het officiële document bij je concept.")}
                     </p>
                 </div>
             </div>
@@ -1396,11 +1380,11 @@ function EnergyLabelPanel({
                             energy.labelClass}
                     </span>
                     <div>
-                        <p className="font-semibold">Energielabel gevonden</p>
+                        <p className="font-semibold">{t("Energielabel gevonden")}</p>
                         <p className="mt-1 text-sm text-emerald-800">
                             {documents.length
-                                ? "Het officiële PDF-document is toegevoegd."
-                                : "Upload ook het officiële PDF-document — dit is verplicht om te publiceren."}
+                                ? t("Het officiële PDF-document is toegevoegd.")
+                                : t("Upload ook het officiële PDF-document — dit is verplicht om te publiceren.")}
                         </p>
                     </div>
                 </div>
@@ -1409,11 +1393,10 @@ function EnergyLabelPanel({
                     <CircleAlert className="mt-0.5 shrink-0" size={19} />
                     <div>
                         <p className="font-semibold">
-                            Geen energielabel gevonden
+                            {t("Geen energielabel gevonden")}
                         </p>
                         <p className="mt-1 text-sm leading-6">
-                            Voeg het officiële PDF-document toe zodra je dit
-                            hebt ontvangen.
+                            {t("Voeg het officiële PDF-document toe zodra je dit hebt ontvangen.")}
                         </p>
                     </div>
                 </div>
@@ -1444,7 +1427,7 @@ function EnergyLabelPanel({
                 ) : (
                     <FileUp size={16} />
                 )}
-                {documents.length ? "Nog een PDF toevoegen" : "PDF toevoegen"}
+                {documents.length ? t("Nog een PDF toevoegen") : t("PDF toevoegen")}
                 <input
                     type="file"
                     accept="application/pdf"
@@ -1459,7 +1442,7 @@ function EnergyLabelPanel({
             </label>
             {upload.error ? (
                 <p className="mt-3 text-sm text-red-700">
-                    {upload.error.message}
+                    {t(upload.error.message)}
                 </p>
             ) : null}
         </section>
@@ -1487,6 +1470,7 @@ function QuestionnaireSection({
     setAnswers: (answers: QuestionnaireAnswer[]) => void;
     editable: boolean;
 }) {
+    const { t } = useListingCopy();
     const questionnaireSections = getQuestionnaireSections(propertyType);
     const questionCount = questionnaireSections.reduce(
         (total, questionnaireSection) =>
@@ -1534,15 +1518,14 @@ function QuestionnaireSection({
         <div>
             <SectionHeading
                 icon={ClipboardList}
-                title="Vragenlijst over de woning"
-                text="Deel wat u weet over de juridische en technische staat van de woning. De antwoorden zijn informatief en helpen kopers om zich goed voor te bereiden. Licht bijzonderheden zo concreet mogelijk toe."
+                title={t("Vragenlijst over de woning")}
+                text={t("Deel wat u weet over de juridische en technische staat van de woning. De antwoorden zijn informatief en helpen kopers om zich goed voor te bereiden. Licht bijzonderheden zo concreet mogelijk toe.")}
             />
             <div className="mt-7 border-y border-line py-4">
                 <div className="flex items-center justify-between gap-4 text-sm">
-                    <span className="font-semibold">Voortgang</span>
+                    <span className="font-semibold">{t("Voortgang")}</span>
                     <span className="text-muted">
-                        {answeredCount} van {questionCount} beantwoord
-                    </span>
+                        {answeredCount} {t("van")}{" "}{" "}{questionCount} {t("beantwoord")}</span>
                 </div>
                 <div className="mt-3 h-2 overflow-hidden rounded-full bg-background">
                     <div
@@ -1571,10 +1554,10 @@ function QuestionnaireSection({
                                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5">
                                     <div>
                                         <h3 className="font-semibold">
-                                            {questionnaireSection.title}
+                                            {t(questionnaireSection.title)}
                                         </h3>
                                         <p className="mt-1 text-sm leading-6 text-muted">
-                                            {questionnaireSection.description}
+                                            {t(questionnaireSection.description)}
                                         </p>
                                     </div>
                                     <span className="shrink-0 text-sm font-semibold text-muted">
@@ -1599,11 +1582,11 @@ function QuestionnaireSection({
                                                     className={`py-6 ${questionIndex ? "border-t border-line" : ""}`}
                                                 >
                                                     <p className="max-w-3xl font-semibold leading-6">
-                                                        {question.text}
+                                                        {t(question.text)}
                                                     </p>
                                                     {question.hint ? (
                                                         <p className="mt-1 max-w-3xl text-sm leading-6 text-muted">
-                                                            {question.hint}
+                                                            {t(question.hint)}
                                                         </p>
                                                     ) : null}
                                                     <div className="mt-4 flex flex-wrap gap-2">
@@ -1627,7 +1610,7 @@ function QuestionnaireSection({
                                                                     className={`min-h-10 border px-4 text-sm font-semibold ${currentAnswer?.answer === option.value ? "border-brand bg-brand text-white" : "border-line bg-surface text-brand-dark"}`}
                                                                 >
                                                                     {
-                                                                        option.label
+                                                                        t(option.label)
                                                                     }
                                                                 </button>
                                                             ),
@@ -1635,9 +1618,7 @@ function QuestionnaireSection({
                                                     </div>
                                                     {currentAnswer ? (
                                                         <label className="mt-4 block max-w-3xl text-sm font-semibold">
-                                                            Toelichting
-                                                            (optioneel)
-                                                            <textarea
+                                                            {t("Toelichting (optioneel)")}<textarea
                                                                 value={
                                                                     currentAnswer.details
                                                                 }
@@ -1655,7 +1636,7 @@ function QuestionnaireSection({
                                                                             .value,
                                                                     )
                                                                 }
-                                                                placeholder="Beschrijf wat er speelt, waar dit zich bevindt en wat er eventueel al aan is gedaan."
+                                                                placeholder={t("Beschrijf wat er speelt, waar dit zich bevindt en wat er eventueel al aan is gedaan.")}
                                                                 className="input mt-2 py-3"
                                                             />
                                                         </label>
@@ -1671,9 +1652,7 @@ function QuestionnaireSection({
                 )}
             </div>
             <p className="mt-5 text-sm leading-6 text-muted">
-                Sla het concept op om uw antwoorden te bewaren. Twijfelt u over
-                een antwoord, kies dan &quot;Niet bekend&quot; en voeg waar
-                nodig een toelichting toe.
+                {t("Sla het concept op om uw antwoorden te bewaren. Twijfelt u over een antwoord, kies dan \"Niet bekend\" en voeg waar nodig een toelichting toe.")}
             </p>
         </div>
     );
@@ -1718,6 +1697,7 @@ function MovableItemsSection({
     setItems: (items: MovableItem[]) => void;
     editable: boolean;
 }) {
+    const { t } = useListingCopy();
     const uploadedDocuments = listing.media.filter(
         (item) =>
             item.kind === "DOCUMENT" && item.altTextNl === "Lijst van zaken",
@@ -1737,7 +1717,7 @@ function MovableItemsSection({
             });
             const payload = await response.json();
             if (!response.ok)
-                throw new Error(payload.error?.message ?? "Upload mislukt");
+                throw new Error(payload.error?.message ?? t("Upload mislukt"));
             return payload.data as UploadedMedia;
         },
         onSuccess(uploaded) {
@@ -1755,7 +1735,7 @@ function MovableItemsSection({
                 `/api/listings/${listing.id}/media/${mediaId}`,
                 { method: "DELETE" },
             );
-            if (!response.ok) throw new Error("Verwijderen mislukt");
+            if (!response.ok) throw new Error(t("Verwijderen mislukt"));
             return mediaId;
         },
         onSuccess(mediaId) {
@@ -1787,8 +1767,8 @@ function MovableItemsSection({
         <div>
             <SectionHeading
                 icon={FileText}
-                title="Lijst van zaken"
-                text="Leg vast welke roerende zaken achterblijven, meegaan of ter overname worden aangeboden. Kopers kunnen de lijst van zaken en vragenlijst als PDF downloaden."
+                title={t("Lijst van zaken")}
+                text={t("Leg vast welke roerende zaken achterblijven, meegaan of ter overname worden aangeboden. Kopers kunnen de lijst van zaken en vragenlijst als PDF downloaden.")}
             />
             <div className="mt-7 inline-flex border border-line p-1">
                 <button
@@ -1796,23 +1776,23 @@ function MovableItemsSection({
                     onClick={() => setMode("create")}
                     className={`px-4 py-2 text-sm font-semibold ${mode === "create" ? "bg-brand text-white" : "text-muted"}`}
                 >
-                    Zelf maken
+                    {t("Zelf maken")}
                 </button>
                 <button
                     type="button"
                     onClick={() => setMode("upload")}
                     className={`px-4 py-2 text-sm font-semibold ${mode === "upload" ? "bg-brand text-white" : "text-muted"}`}
                 >
-                    PDF uploaden
+                    {t("PDF uploaden")}
                 </button>
             </div>
 
             {mode === "create" ? (
                 <div className="mt-7">
                     <div className="border border-line bg-background p-5">
-                        <h3 className="font-semibold">Veelvoorkomende zaken</h3>
+                        <h3 className="font-semibold">{t("Veelvoorkomende zaken")}</h3>
                         <p className="mt-1 text-sm text-muted">
-                            Voeg relevante voorbeelden toe en pas ze daarna aan.
+                            {t("Voeg relevante voorbeelden toe en pas ze daarna aan.")}
                         </p>
                         <div className="mt-4 flex flex-wrap gap-2">
                             {movableItemSuggestions.map((suggestion) => (
@@ -1822,13 +1802,13 @@ function MovableItemsSection({
                                     disabled={
                                         !editable ||
                                         items.some(
-                                            (item) => item.name === suggestion,
+                                            (item) => item.name === suggestion || item.name === t(suggestion),
                                         )
                                     }
-                                    onClick={() => addItem(suggestion)}
+                                    onClick={() => addItem(t(suggestion))}
                                     className="inline-flex items-center gap-1.5 border border-line bg-surface px-3 py-2 text-sm font-semibold disabled:opacity-40"
                                 >
-                                    <Plus size={15} /> {suggestion}
+                                    <Plus size={15} /> {t(suggestion)}
                                 </button>
                             ))}
                         </div>
@@ -1840,7 +1820,7 @@ function MovableItemsSection({
                                 className="grid gap-3 border border-line p-4 md:grid-cols-[1.2fr_0.8fr_1fr_auto] md:items-end"
                             >
                                 <Input
-                                    label="Zaak"
+                                    label={t("Zaak")}
                                     value={item.name}
                                     disabled={!editable}
                                     maxLength={120}
@@ -1851,8 +1831,7 @@ function MovableItemsSection({
                                     }
                                 />
                                 <label className="block text-sm font-semibold">
-                                    Categorie
-                                    <select
+                                    {t("Categorie")}<select
                                         value={item.category}
                                         disabled={!editable}
                                         onChange={(event) =>
@@ -1869,14 +1848,14 @@ function MovableItemsSection({
                                                     key={category.value}
                                                     value={category.value}
                                                 >
-                                                    {category.label}
+                                                    {t(category.label)}
                                                 </option>
                                             ),
                                         )}
                                     </select>
                                 </label>
                                 <Input
-                                    label="Toelichting (optioneel)"
+                                    label={t("Toelichting (optioneel)")}
                                     value={item.notes}
                                     disabled={!editable}
                                     maxLength={240}
@@ -1888,7 +1867,7 @@ function MovableItemsSection({
                                 />
                                 <button
                                     type="button"
-                                    title="Zaak verwijderen"
+                                    title={t("Zaak verwijderen")}
                                     disabled={!editable}
                                     onClick={() =>
                                         setItems(
@@ -1911,20 +1890,17 @@ function MovableItemsSection({
                         onClick={() => addItem()}
                         className="mt-4 inline-flex items-center gap-2 rounded-full border border-line px-4 py-2.5 text-sm font-semibold disabled:opacity-40"
                     >
-                        <Plus size={16} /> Eigen zaak toevoegen
-                    </button>
+                        <Plus size={16} /> {t("Eigen zaak toevoegen")}</button>
                     {items.length ? (
                         <p className="mt-4 text-sm text-muted">
-                            Sla het concept op om de downloadbare PDF bij te
-                            werken.
+                            {t("Sla het concept op om de downloadbare PDF bij te werken.")}
                         </p>
                     ) : null}
                 </div>
             ) : (
                 <div className="mt-7">
                     <p className="text-sm leading-6 text-muted">
-                        Upload een bestaande roerende-zakenlijst als PDF van
-                        maximaal 20 MB.
+                        {t("Upload een bestaande roerende-zakenlijst als PDF van maximaal 20 MB.")}
                     </p>
                     <label className="mt-4 inline-flex h-11 cursor-pointer items-center gap-2 rounded-full bg-brand px-5 text-sm font-semibold text-white">
                         {upload.isPending ? (
@@ -1932,8 +1908,7 @@ function MovableItemsSection({
                         ) : (
                             <FileUp size={16} />
                         )}
-                        PDF kiezen
-                        <input
+                        {t("PDF kiezen")}<input
                             type="file"
                             accept="application/pdf"
                             className="sr-only"
@@ -1964,7 +1939,7 @@ function MovableItemsSection({
                                 </a>
                                 <button
                                     type="button"
-                                    title="PDF verwijderen"
+                                    title={t("PDF verwijderen")}
                                     disabled={!editable || remove.isPending}
                                     onClick={() => remove.mutate(document.id)}
                                     className="grid size-9 shrink-0 place-items-center text-red-700 disabled:opacity-40"
@@ -1998,6 +1973,7 @@ function MediaSection({
     editor: EditorState;
     setEditor: React.Dispatch<React.SetStateAction<EditorState>>;
 }) {
+    const { t } = useListingCopy();
     const upload = useMutation({
         mutationFn: async ({
             files,
@@ -2021,7 +1997,7 @@ function MediaSection({
                 );
                 const payload = await response.json();
                 if (!response.ok)
-                    throw new Error(payload.error?.message ?? "Upload mislukt");
+                    throw new Error(payload.error?.message ?? t("Upload mislukt"));
                 const { listingVersion: nextListingVersion, ...media } =
                     payload.data as UploadedMedia;
                 listingVersion = nextListingVersion;
@@ -2043,7 +2019,7 @@ function MediaSection({
                 `/api/listings/${listing.id}/media/${mediaId}`,
                 { method: "DELETE" },
             );
-            if (!response.ok) throw new Error("Verwijderen mislukt");
+            if (!response.ok) throw new Error(t("Verwijderen mislukt"));
             return mediaId;
         },
         onSuccess(mediaId) {
@@ -2057,13 +2033,13 @@ function MediaSection({
         <div>
             <SectionHeading
                 icon={FileImage}
-                title="Foto's & plattegronden"
-                text="Voeg woningfoto's en plattegronden afzonderlijk toe. Per bestand geldt een maximum van 20 MB."
+                title={t("Foto's & plattegronden")}
+                text={t("Voeg woningfoto's en plattegronden afzonderlijk toe. Per bestand geldt een maximum van 20 MB.")}
             />
             <section className="mt-8">
-                <h3 className="text-xl font-semibold">{"Woningfoto's"}</h3>
+                <h3 className="text-xl font-semibold">{t("Woningfoto's")}</h3>
                 <p className="mt-1 text-sm leading-6 text-muted">
-                    {"Selecteer meerdere JPG-, PNG- of WebP-foto's tegelijk."}
+                    {t("Selecteer meerdere JPG-, PNG- of WebP-foto's tegelijk.")}
                 </p>
                 <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-semibold text-white">
                     {upload.isPending ? (
@@ -2071,7 +2047,7 @@ function MediaSection({
                     ) : (
                         <ImagePlus size={17} />
                     )}{" "}
-                    {"Woningfoto's kiezen"}
+                    {t("Woningfoto's kiezen")}
                     <input
                         type="file"
                         multiple
@@ -2092,19 +2068,18 @@ function MediaSection({
                     )}
                     editable={editable}
                     remove={(mediaId) => remove.mutate(mediaId)}
-                    label="Foto"
+                    label={t("Foto")}
                 />
             </section>
             {upload.error ? (
                 <p className="mt-4 text-sm text-red-700">
-                    {upload.error.message}
+                    {t(upload.error.message)}
                 </p>
             ) : null}
             <section className="mt-9 border-t border-line pt-7">
-                <h3 className="text-xl font-semibold">Plattegronden</h3>
+                <h3 className="text-xl font-semibold">{t("Plattegronden")}</h3>
                 <p className="mt-1 text-sm leading-6 text-muted">
-                    Upload meerdere afbeeldingen of PDF-bestanden, of voeg een
-                    interactieve Floorplanner-link toe.
+                    {t("Upload meerdere afbeeldingen of PDF-bestanden, of voeg een interactieve Floorplanner-link toe.")}
                 </p>
                 <label className="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-full border border-line px-5 py-3 text-sm font-semibold text-brand">
                     {upload.isPending ? (
@@ -2112,8 +2087,7 @@ function MediaSection({
                     ) : (
                         <FileUp size={17} />
                     )}{" "}
-                    Plattegronden kiezen
-                    <input
+                    {t("Plattegronden kiezen")}<input
                         type="file"
                         multiple
                         className="sr-only"
@@ -2136,11 +2110,11 @@ function MediaSection({
                     )}
                     editable={editable}
                     remove={(mediaId) => remove.mutate(mediaId)}
-                    label="Plattegrond"
+                    label={t("Plattegrond")}
                 />
                 <div className="mt-7 border-t border-line pt-6">
                     <Input
-                        label="Floorplanner embed-URL"
+                        label={t("Floorplanner embed-URL")}
                         type="url"
                         disabled={!editable}
                         value={editor.floorplannerEmbedUrl}
@@ -2153,17 +2127,14 @@ function MediaSection({
                         placeholder="https://floorplanner.com/..."
                     />
                     <p className="mt-2 text-xs leading-5 text-muted">
-                        Gebruik de Viewer- of Spaceplanner-link van een openbaar
-                        Level 3-project. De interactieve plattegrond wordt na
-                        opslaan aan de advertentie gekoppeld.{" "}
+                        {t("Gebruik de Viewer- of Spaceplanner-link van een openbaar Level 3-project. De interactieve plattegrond wordt na opslaan aan de advertentie gekoppeld.")}{" "}{" "}
                         <a
                             href="https://floorplanner.readme.io/reference/viewer-spaceplanner"
                             target="_blank"
                             rel="noreferrer"
                             className="inline-flex items-center gap-1 font-semibold text-brand underline underline-offset-2"
                         >
-                            Zo vind je de embed-URL
-                            <ExternalLink size={12} />
+                            {t("Zo vind je de embed-URL")}<ExternalLink size={12} />
                         </a>
                     </p>
                 </div>
@@ -2183,6 +2154,7 @@ function MediaGrid({
     remove: (mediaId: string) => void;
     label: string;
 }) {
+    const { t } = useListingCopy();
     if (!media.length) return null;
 
     return (
@@ -2209,13 +2181,13 @@ function MediaGrid({
                         <p className="truncate text-xs font-semibold">
                             {item.fileName}
                         </p>
-                        <p className="mt-1 text-[11px] text-muted">{label}</p>
+                        <p className="mt-1 text-[11px] text-muted">{t(label)}</p>
                     </div>
                     {editable ? (
                         <button
                             type="button"
                             onClick={() => remove(item.id)}
-                            aria-label={`${item.fileName} verwijderen`}
+                        aria-label={`${t("Verwijderen")}: ${item.fileName}`}
                             className="absolute right-2 top-2 grid size-9 place-items-center rounded-full bg-surface text-red-700 shadow"
                         >
                             <Trash2 size={16} />
@@ -2246,28 +2218,26 @@ const biddingMethods = [
 ] as const;
 
 function PriceAndBiddingSection({
+    woz,
+    setWoz,
     editor,
     setEditor,
     editable,
     estimate,
 }: {
+    woz: { amount: string; year: string };
+    setWoz: React.Dispatch<React.SetStateAction<{ amount: string; year: string }>>;
     editor: EditorState;
     setEditor: React.Dispatch<React.SetStateAction<EditorState>>;
     editable: boolean;
     estimate: {
         mutate: () => void;
         isPending: boolean;
-        data?: {
-            estimatedValueCents: string;
-            lowerBoundCents: string;
-            upperBoundCents: string;
-            confidence: number;
-            tier: string;
-            cached: boolean;
-        };
+        data?: EstimateResponse;
         error: Error | null;
     };
 }) {
+    const { t, locale } = useListingCopy();
     const value = estimate.data;
     const set = (key: string) => (event: ChangeEvent<HTMLInputElement>) =>
         setEditor((current) => ({
@@ -2278,21 +2248,21 @@ function PriceAndBiddingSection({
         <div>
             <SectionHeading
                 icon={BadgeEuro}
-                title="Prijs & bieden"
-                text="Bepaal de prijsstrategie en leg vast hoe, wanneer en onder welke voorwaarden geïnteresseerden kunnen bieden."
+                title={t("Prijs & bieden")}
+                text={t("Bepaal de prijsstrategie en leg vast hoe, wanneer en onder welke voorwaarden geïnteresseerden kunnen bieden.")}
             />
             <fieldset
                 disabled={!editable}
                 className="mt-9 space-y-9 disabled:opacity-70"
             >
                 <div>
-                    <h3 className="text-lg font-semibold">Prijsstelling</h3>
+                    <h3 className="text-lg font-semibold">{t("Prijsstelling")}</h3>
                     <div className="mt-4 grid gap-5 sm:grid-cols-2">
                         <Input
                             label={
                                 editor.purpose === "SALE"
-                                    ? "Vraagprijs (€)"
-                                    : "Huurprijs per maand (€)"
+                                    ? t("Vraagprijs (€)")
+                                    : t("Huurprijs per maand (€)")
                             }
                             type="number"
                             min="1"
@@ -2310,7 +2280,7 @@ function PriceAndBiddingSection({
                         />
                         {editor.purpose === "RENT" ? (
                             <Input
-                                label="Servicekosten per maand (€)"
+                                label={t("Servicekosten per maand (€)")}
                                 type="number"
                                 min="0"
                                 step="0.01"
@@ -2320,7 +2290,7 @@ function PriceAndBiddingSection({
                         ) : (
                             <div>
                                 <Input
-                                    label="Minimaal bod (€)"
+                                    label={t("Minimaal bod (€)")}
                                     type="number"
                                     min="1"
                                     step="1"
@@ -2328,8 +2298,7 @@ function PriceAndBiddingSection({
                                     onChange={set("minimumBid")}
                                 />
                                 <p className="mt-2 text-xs leading-5 text-muted">
-                                    Dit bedrag is niet zichtbaar op de
-                                    advertentie.
+                                    {t("Dit bedrag is niet zichtbaar op de advertentie.")}
                                 </p>
                             </div>
                         )}
@@ -2337,7 +2306,7 @@ function PriceAndBiddingSection({
                 </div>
 
                 <div className="border-t border-line pt-8">
-                    <h3 className="text-lg font-semibold">Manier van bieden</h3>
+                    <h3 className="text-lg font-semibold">{t("Manier van bieden")}</h3>
                     <div className="mt-4 grid gap-3 lg:grid-cols-3">
                         {biddingMethods.map((method) => (
                             <label
@@ -2362,11 +2331,11 @@ function PriceAndBiddingSection({
                                         className="size-4 accent-brand"
                                     />
                                     <span className="font-semibold">
-                                        {method.title}
+                                        {t(method.title)}
                                     </span>
                                 </span>
                                 <span className="mt-3 block text-xs leading-5 text-muted">
-                                    {method.text}
+                                    {t(method.text)}
                                 </span>
                             </label>
                         ))}
@@ -2375,7 +2344,7 @@ function PriceAndBiddingSection({
 
                 <div className="grid gap-5 border-t border-line pt-8 sm:grid-cols-2">
                     <Input
-                        label="Bieden mogelijk vanaf"
+                        label={t("Bieden mogelijk vanaf")}
                         type="datetime-local"
                         value={editor.bidWindowOpensAt}
                         onChange={set("bidWindowOpensAt")}
@@ -2383,8 +2352,8 @@ function PriceAndBiddingSection({
                     <Input
                         label={
                             editor.biddingMethod === "SEALED"
-                                ? "Inschrijving sluit"
-                                : "Bieden mogelijk tot"
+                                ? t("Inschrijving sluit")
+                                : t("Bieden mogelijk tot")
                         }
                         type="datetime-local"
                         value={editor.bidWindowClosesAt}
@@ -2392,7 +2361,7 @@ function PriceAndBiddingSection({
                     />
                     {editor.biddingMethod === "OPEN" ? (
                         <Input
-                            label="Minimale biedstap (€)"
+                            label={t("Minimale biedstap (€)")}
                             type="number"
                             min="1"
                             step="1"
@@ -2412,21 +2381,26 @@ function PriceAndBiddingSection({
                             }
                             className="size-4 accent-brand"
                         />
-                        Biedingen met voorwaarden toestaan
+                        {t("Biedingen met voorwaarden toestaan")}
                     </label>
                 </div>
             </fieldset>
 
             <div className="mt-10 border-t border-line pt-8">
+                <div className="mb-6 grid gap-4 sm:grid-cols-2">
+                    <Input label={t("WOZ-waarde (€, optioneel)")} type="number" min="10000"
+                        value={woz.amount} onChange={(event) => setWoz((current) => ({ ...current, amount: event.target.value }))} />
+                    <Input label={t("WOZ-beschikkingsjaar (bijv. 2026)")} type="number" min="2000" max={new Date().getFullYear()}
+                        value={woz.year} onChange={(event) => setWoz((current) => ({ ...current, year: event.target.value }))} />
+                </div>
+                <p className="mb-5 text-sm text-muted">{t("Gebruik het jaar op de beschikking; de waardepeildatum ligt één jaar eerder. De WOZ-waarde wordt gebruikt als voldoende lokale verkopen ontbreken.")}</p>
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <div>
                         <h3 className="flex items-center gap-2 text-lg font-semibold">
                             <Sparkles size={18} className="text-brand" />
-                            Waardeschatting
-                        </h3>
+                            {t("Waardeschatting")}</h3>
                         <p className="mt-1 max-w-xl text-sm leading-6 text-muted">
-                            Gebruik woningkenmerken en foto&apos;s voor een
-                            indicatieve marktwaarde en bandbreedte.
+                            {t("Gebruik woningkenmerken en foto's voor een indicatieve marktwaarde en bandbreedte.")}
                         </p>
                     </div>
                     <button
@@ -2439,41 +2413,46 @@ function PriceAndBiddingSection({
                         ) : (
                             <BadgeEuro size={18} />
                         )}{" "}
-                        Bereken indicatie
+                        {t("Bereken indicatie")}
                     </button>
                 </div>
             </div>
             {estimate.error ? (
                 <p className="mt-5 rounded-2xl bg-red-50 p-4 text-sm text-red-700">
-                    {estimate.error.message}
+                    {t(estimate.error.message)}
                 </p>
             ) : null}
             {value ? (
                 <div className="mt-8 overflow-hidden rounded-3xl bg-brand-dark p-7 text-white sm:p-9">
                     <p className="text-sm font-semibold uppercase tracking-wider text-accent">
-                        Geschatte marktwaarde
+                        {t("Geschatte marktwaarde")}
                     </p>
                     <p className="mt-3 text-4xl font-semibold">
-                        {money(value.estimatedValueCents)}
+                        {money(value.estimatedValueCents, locale)}
                     </p>
                     <p className="mt-3 text-white/65">
-                        Bandbreedte {money(value.lowerBoundCents)} –{" "}
-                        {money(value.upperBoundCents)}
+                        {t("Bandbreedte")}{" "}{" "}{money(value.lowerBoundCents, locale)} –{" "}
+                        {money(value.upperBoundCents, locale)}
                     </p>
                     <div className="mt-7 grid gap-3 sm:grid-cols-3">
-                        <Stat label="Modeltier" value={value.tier} />
+                        <Stat label={t("Methode")} value={value.method === "COMPARABLE_SALES" ? t("Vergelijkbare verkopen") : value.method === "PROPERTY_WOZ" ? t("Eigen WOZ-waarde") : t("Gemeentelijke WOZ")} />
                         <Stat
-                            label="Zekerheid"
-                            value={`${Math.round(value.confidence * 100)}%`}
+                            label={t("Onderbouwing")}
+                            value={value.method === "COMPARABLE_SALES" ? `${value.comparableCount} ${t("verkopen")}` : t("Beperkt; statistische indicatie")}
                         />
                         <Stat
-                            label="Resultaat"
-                            value={value.cached ? "Uit cache" : "Nieuw"}
+                            label={t("Resultaat")}
+                            value={value.cached ? t("Uit cache") : t("Nieuw")}
                         />
                     </div>
+                    <p className="mt-4 text-sm text-white/70">{t("Prijsniveau:")}{" "}{" "}{value.valuationMonth}{value.referenceMonth ? ` · ${t("WOZ-peildatum")}: ${value.referenceMonth}` : ""}</p>
+                    <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-white/70">
+                        {value.warnings.map((warning) => <li key={warning}>{warning}</li>)}
+                    </ul>
+                    <a href={value.sourceUrl} target="_blank" rel="noreferrer" className="mt-4 inline-block text-sm underline">{t("Brongegevens")}</a>
+                    {value.askingSourceUrl ? <a href={value.askingSourceUrl} target="_blank" rel="noreferrer" className="ml-4 text-sm underline">{t("Vraagprijscontrole: Residentievinder")}</a> : null}
                     <p className="mt-6 text-xs leading-5 text-white/55">
-                        Dit is een geautomatiseerde indicatie, geen
-                        taxatierapport of financieel advies.
+                        {t("Dit is een geautomatiseerde indicatie, geen taxatierapport of financieel advies.")}
                     </p>
                 </div>
             ) : null}
@@ -2484,15 +2463,12 @@ function PriceAndBiddingSection({
 function PublishSection({
     listing,
     verified,
-    paidOrder,
     validate,
-    startIdin,
-    checkout,
+    startIdentity,
     publish,
 }: {
     listing: ListingView;
     verified: boolean;
-    paidOrder?: { package: string; status: string };
     validate: {
         mutate: () => void;
         isPending: boolean;
@@ -2502,77 +2478,60 @@ function PublishSection({
         };
         error: Error | null;
     };
-    startIdin: { mutate: () => void; isPending: boolean; error: Error | null };
-    checkout: {
-        mutate: (value: "BRONZE" | "SILVER" | "GOLD") => void;
-        isPending: boolean;
-        error: Error | null;
-    };
+    startIdentity: { mutate: () => void; isPending: boolean; error: Error | null };
     publish: {
-        mutate: (value: "BRONZE" | "SILVER" | "GOLD") => void;
+        mutate: () => void;
         isPending: boolean;
         error: Error | null;
     };
 }) {
-    const [selectedPackage, setSelectedPackage] = useState<
-        "BRONZE" | "SILVER" | "GOLD"
-    >((paidOrder?.package as "BRONZE" | "SILVER" | "GOLD") ?? "SILVER");
+    const { t, language } = useListingCopy();
     const ready = ["READY_FOR_VERIFICATION", "LIVE"].includes(listing.status);
     return (
         <div>
             <SectionHeading
                 icon={Send}
-                title="Controleren & publiceren"
-                text="iDIN wordt pas hier verplicht. De betaalde pakketkeuze geldt voor deze advertentie en wordt één keer verbruikt."
+                title={t("Controleren & publiceren")}
+                text={t("Publiceer je woning gratis op ZelfWonen na e-mail- en identiteitsverificatie.")}
             />
             <div className="mt-8 space-y-3">
                 <GateRow
                     done={ready}
                     icon={Check}
-                    title="Advertentie compleet"
+                    title={t("Advertentie compleet")}
                     text={
                         validate.isPending
-                            ? "Advertentie wordt gecontroleerd..."
-                            : "Verplichte velden en minimaal één foto"
+                            ? t("Advertentie wordt gecontroleerd...")
+                            : t("Verplichte velden en minimaal vijf foto's")
                     }
                 />
                 <GateRow
                     done={verified}
                     icon={Fingerprint}
-                    title="Identiteit via iDIN"
-                    text="Alleen vereist voor Live of externe publicatie"
+                    title={t("Identiteit via Didit")}
+                    text={t("Verifieer je identiteit met je identiteitsbewijs en een selfie om te publiceren.")}
                     action={
                         ready && !verified ? (
                             <button
-                                onClick={() => startIdin.mutate()}
-                                disabled={startIdin.isPending}
+                                onClick={() => startIdentity.mutate()}
+                                disabled={startIdentity.isPending}
                                 className="action-button"
                             >
-                                Start iDIN
+                                {t("Start verificatie")}
                             </button>
                         ) : null
-                    }
-                />
-                <GateRow
-                    done={Boolean(paidOrder)}
-                    icon={BadgeEuro}
-                    title="Publicatiepakket"
-                    text={
-                        paidOrder
-                            ? `${paidOrder.package} betaald`
-                            : "Kies hieronder een pakket"
                     }
                 />
             </div>
             {!validate.isPending && validate.data && !validate.data.ready ? (
                 <div className="mt-5 rounded-2xl bg-amber-50 p-5">
                     <p className="font-semibold text-amber-900">
-                        Vul minimaal het volgende aan
+                        {t("Vul minimaal het volgende aan")}
                     </p>
                     <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-amber-900">
                         {validate.data.issues.map((issue) => (
                             <li key={`${issue.field}-${issue.message}`}>
-                                {issue.message}
+                                {translateListingIssue(language, issue.message)}
                             </li>
                         ))}
                     </ul>
@@ -2580,82 +2539,40 @@ function PublishSection({
             ) : null}
             {[
                 validate.error,
-                startIdin.error,
-                checkout.error,
+                startIdentity.error,
                 publish.error,
             ].find(Boolean) ? (
                 <p className="mt-5 rounded-2xl bg-red-50 p-4 text-sm text-red-700">
                     {
                         [
                             validate.error,
-                            startIdin.error,
-                            checkout.error,
+                            startIdentity.error,
                             publish.error,
                         ].find(Boolean)?.message
                     }
                 </p>
             ) : null}
-            <div className="mt-9 grid gap-4 md:grid-cols-3">
-                {(
-                    [
-                        ["BRONZE", "€ 99", "Platformpublicatie"],
-                        ["SILVER", "€ 199", "Platform + Funda"],
-                        ["GOLD", "€ 299", "Extra zichtbaarheid"],
-                    ] as const
-                ).map(([name, price, text]) => (
-                    <button
-                        type="button"
-                        key={name}
-                        onClick={() => setSelectedPackage(name)}
-                        className={`rounded-3xl border p-5 text-left transition ${selectedPackage === name ? "border-brand bg-brand/5 ring-2 ring-brand/10" : "border-line"}`}
-                    >
-                        <p className="text-xs font-semibold text-brand">
-                            {name}
-                        </p>
-                        <p className="mt-2 text-2xl font-semibold">{price}</p>
-                        <p className="mt-2 text-sm text-muted">{text}</p>
-                    </button>
-                ))}
-            </div>
             <div className="mt-7 flex flex-wrap gap-3">
-                {!paidOrder ? (
-                    <button
-                        type="button"
-                        disabled={!ready || !verified || checkout.isPending}
-                        onClick={() => checkout.mutate(selectedPackage)}
-                        className="inline-flex h-12 items-center gap-2 rounded-full bg-brand px-6 font-semibold text-white disabled:opacity-40"
-                    >
-                        <BadgeEuro size={17} /> Pakket betalen
-                    </button>
-                ) : null}
-                {paidOrder && listing.status !== "LIVE" ? (
+                {listing.status !== "LIVE" ? (
                     <button
                         type="button"
                         disabled={!ready || !verified || publish.isPending}
-                        onClick={() =>
-                            publish.mutate(
-                                paidOrder.package as
-                                    | "BRONZE"
-                                    | "SILVER"
-                                    | "GOLD",
-                            )
-                        }
+                        onClick={() => publish.mutate()}
                         className="inline-flex h-12 items-center gap-2 rounded-full bg-accent px-6 font-semibold text-brand-dark disabled:opacity-40"
                     >
-                        <Send size={17} /> Nu publiceren
-                    </button>
+                        <Send size={17} /> {t("Gratis publiceren")}</button>
                 ) : null}
             </div>
             {listing.publications.length > 0 ? (
                 <div className="mt-8 border-t border-line pt-6">
-                    <h3 className="font-semibold">Publicatiestatus</h3>
+                    <h3 className="font-semibold">{t("Publicatiestatus")}</h3>
                     <div className="mt-3 space-y-2">
-                        {listing.publications.map((item) => (
+                        {listing.publications.filter((item) => item.channel === "PLATFORM").map((item) => (
                             <div
                                 key={item.id}
                                 className="flex justify-between rounded-xl bg-background px-4 py-3 text-sm"
                             >
-                                <span>{item.channel}</span>
+                                <span>ZelfWonen</span>
                                 <strong>{item.status}</strong>
                             </div>
                         ))}
@@ -2694,6 +2611,7 @@ function BidsSection({
     loading: boolean;
     onDecision: () => void;
 }) {
+    const { t, locale } = useListingCopy();
     const router = useRouter();
     const [showNtaInfo, setShowNtaInfo] = useState(false);
     const confidential =
@@ -2727,33 +2645,32 @@ function BidsSection({
         <div>
             <SectionHeading
                 icon={ShieldCheck}
-                title="Onveranderbaar biedlogboek"
+                title={t("Onveranderbaar biedlogboek")}
                 text={
                     confidential
-                        ? "Tijdens deze biedingsronde zijn bedragen, voorwaarden en bieders ook voor jou verborgen. Na de sluiting kun je de biedingen vergelijken."
-                        : "Alle biedingen staan chronologisch met bedrag, tijdstip en ontbindende voorwaarden. Identiteiten zijn gepseudonimiseerd."
+                        ? t("Tijdens deze biedingsronde zijn bedragen, voorwaarden en bieders ook voor jou verborgen. Na de sluiting kun je de biedingen vergelijken.")
+                        : t("Alle biedingen staan chronologisch met bedrag, tijdstip en ontbindende voorwaarden. Identiteiten zijn gepseudonimiseerd.")
                 }
             />
             {confidential ? (
                 <div className="mt-8 border border-line bg-background p-6 text-muted">
                     <div className="flex items-start gap-2">
                         <p>
-                            Biedingen worden beschikbaar na de sluiting
-                            {listing.bidWindowClosesAt
-                                ? ` op ${new Date(listing.bidWindowClosesAt).toLocaleString("nl-NL")}`
+                            {t("Biedingen worden beschikbaar na de sluiting")}{" "}{" "}{listing.bidWindowClosesAt
+                                ? ` ${t("op")} ${new Date(listing.bidWindowClosesAt).toLocaleString(locale)}`
                                 : " van de biedingsronde"}
                             .
                         </p>
                         <button
                             type="button"
-                            aria-label="Meer informatie over NTA 8061 en eerlijk bieden"
+                            aria-label={t("Meer informatie over NTA 8061 en eerlijk bieden")}
                             aria-expanded={showNtaInfo}
                             aria-controls="nta-8061-bidding-info"
                             onClick={() =>
                                 setShowNtaInfo((current) => !current)
                             }
                             className="grid size-7 shrink-0 place-items-center text-brand"
-                            title="NTA 8061 en eerlijk bieden"
+                            title={t("NTA 8061 en eerlijk bieden")}
                         >
                             <Info size={17} />
                         </button>
@@ -2763,10 +2680,7 @@ function BidsSection({
                             id="nta-8061-bidding-info"
                             className="mt-3 border-t border-line pt-3 text-sm leading-6"
                         >
-                            Deze werkwijze volgt NTA 8061: biedingen die voor
-                            kandidaat-kopers verborgen zijn, blijven tot de
-                            sluiting ook verborgen voor de verkoper. Zo krijgt
-                            iedere bieder een eerlijke kans.
+                            {t("Deze werkwijze volgt NTA 8061: biedingen die voor kandidaat-kopers verborgen zijn, blijven tot de sluiting ook verborgen voor de verkoper. Zo krijgt iedere bieder een eerlijke kans.")}
                         </p>
                     ) : null}
                 </div>
@@ -2774,7 +2688,7 @@ function BidsSection({
                 <LoaderCircle className="mt-8 animate-spin text-brand" />
             ) : bids.length === 0 ? (
                 <p className="mt-8 rounded-2xl bg-background p-6 text-muted">
-                    Er zijn nog geen biedingen ontvangen.
+                    {t("Er zijn nog geen biedingen ontvangen.")}
                 </p>
             ) : (
                 <div className="mt-8 space-y-4">
@@ -2796,13 +2710,13 @@ function BidsSection({
                                             {String(index + 1).padStart(2, "0")}
                                         </p>
                                         <h3 className="mt-1 text-xl font-semibold">
-                                            {money(bid.amountCents)}
+                                            {money(bid.amountCents, locale)}
                                         </h3>
                                         <p className="mt-1 text-sm text-muted">
                                             {bid.bidderPseudonym} ·{" "}
                                             {new Date(
                                                 bid.submittedAt,
-                                            ).toLocaleString("nl-NL")}
+                                            ).toLocaleString(locale)}
                                         </p>
                                     </div>
                                     <span className="rounded-full bg-background px-3 py-1 text-xs font-semibold">
@@ -2823,7 +2737,7 @@ function BidsSection({
                                             }
                                             className="action-button"
                                         >
-                                            Accepteren
+                                            {t("Accepteren")}
                                         </button>
                                         <button
                                             onClick={() =>
@@ -2834,7 +2748,7 @@ function BidsSection({
                                             }
                                             className="action-button"
                                         >
-                                            Afwijzen
+                                            {t("Afwijzen")}
                                         </button>
                                     </div>
                                 ) : null}
@@ -2848,8 +2762,7 @@ function BidsSection({
                     href={`/api/listings/${listing.id}/bid-logbook`}
                     className="mt-7 inline-flex h-12 items-center gap-2 rounded-full bg-brand px-6 font-semibold text-white"
                 >
-                    <ShieldCheck size={17} /> Download biedlogboek (PDF)
-                </a>
+                    <ShieldCheck size={17} /> {t("Download biedlogboek (PDF)")}</a>
             ) : null}
         </div>
     );
@@ -2860,6 +2773,7 @@ function ConditionsPanel({
 }: {
     conditions: ResolutiveConditions | null;
 }) {
+    const { t, locale } = useListingCopy();
     const hasConditions = Boolean(
         conditions &&
         (conditions.financing ||
@@ -2872,7 +2786,7 @@ function ConditionsPanel({
         return (
             <div className="mt-4 flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
                 <Check size={16} />
-                Onvoorwaardelijk bod
+                {t("Onvoorwaardelijk bod")}
             </div>
         );
     }
@@ -2880,36 +2794,36 @@ function ConditionsPanel({
     return (
         <div className="mt-4 rounded-xl border border-line bg-background p-4">
             <p className="text-xs font-semibold uppercase tracking-wider text-muted">
-                Ontbindende voorwaarden
+                {t("Ontbindende voorwaarden")}
             </p>
             <ul className="mt-3 space-y-2.5 text-sm">
                 {conditions?.financing ? (
                     <li className="flex items-baseline justify-between gap-4">
-                        <span>Onder voorbehoud van financiering</span>
+                        <span>{t("Onder voorbehoud van financiering")}</span>
                         {conditions.financingAmountCents ? (
                             <span className="shrink-0 font-semibold">
-                                {money(conditions.financingAmountCents)}
+                                {money(conditions.financingAmountCents, locale)}
                             </span>
                         ) : null}
                     </li>
                 ) : null}
                 {conditions?.buildingInspection ? (
                     <li className="flex items-baseline justify-between gap-4">
-                        <span>Onder voorbehoud van bouwkundige keuring</span>
+                        <span>{t("Onder voorbehoud van bouwkundige keuring")}</span>
                         {conditions.inspectionLimitCents ? (
                             <span className="shrink-0 font-semibold">
-                                Budget {money(conditions.inspectionLimitCents)}
+                                Budget {money(conditions.inspectionLimitCents, locale)}
                             </span>
                         ) : null}
                     </li>
                 ) : null}
                 {conditions?.saleOfCurrentHome ? (
-                    <li>Onder voorbehoud van verkoop huidige woning</li>
+                    <li>{t("Onder voorbehoud van verkoop huidige woning")}</li>
                 ) : null}
                 {conditions?.additionalConditions?.length ? (
                     <li>
                         <span className="font-semibold">
-                            Aanvullende voorwaarden
+                            {t("Aanvullende voorwaarden")}
                         </span>
                         <ul className="mt-1 list-disc space-y-1 pl-5">
                             {conditions.additionalConditions.map(
@@ -2934,6 +2848,7 @@ function SectionHeading({
     title: string;
     text: string;
 }) {
+
     return (
         <div className="flex items-start gap-4">
             <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-accent text-brand-dark">
@@ -2983,6 +2898,7 @@ function GateRow({
     text: string;
     action?: React.ReactNode;
 }) {
+
     return (
         <div className="flex items-center gap-4 rounded-2xl border border-line p-4">
             <span
@@ -3006,8 +2922,8 @@ function Stat({ label, value }: { label: string; value: string }) {
         </div>
     );
 }
-function money(cents: string) {
-    return new Intl.NumberFormat("nl-NL", {
+function money(cents: string, locale: string) {
+    return new Intl.NumberFormat(locale, {
         style: "currency",
         currency: "EUR",
         maximumFractionDigits: 0,

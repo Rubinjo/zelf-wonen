@@ -3,6 +3,7 @@ from app.normalizer import (
     normalize_availability,
     normalize_energy_label,
     normalize_house_number,
+    normalize_house_number_addition,
     normalize_postcode,
     normalize_price_cents,
     normalize_property_type,
@@ -54,3 +55,9 @@ def test_normalize_purpose():
     assert normalize_purpose("huur") is ListingPurpose.RENT
     assert normalize_purpose("koop") is ListingPurpose.SALE
     assert normalize_purpose("buy") is ListingPurpose.SALE
+
+
+def test_house_number_suffix_does_not_split_plain_numbers():
+    assert normalize_house_number_addition("42") is None
+    assert normalize_house_number_addition("Kalverstraat 42A") == "A"
+    assert normalize_house_number_addition("42-2") == "2"

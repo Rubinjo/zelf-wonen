@@ -15,18 +15,23 @@ class Sale(BaseModel):
     transactionId: str = Field(min_length=1)
     propertyId: str = Field(min_length=1)
     postcode: str = Field(pattern=r"^[1-9][0-9]{3}[A-Z]{2}$")
-    houseNumber: int = Field(gt=0)
+    # Public research data anonymizes house numbers; its row ID is not an address.
+    houseNumber: int | None = Field(gt=0)
     propertyType: Literal["HOUSE", "APARTMENT"]
     livingAreaSqm: float = Field(ge=15, le=1000)
     roomCount: int = Field(ge=1, le=30)
     constructionYear: int = Field(ge=1000, le=2200)
     saleDate: date
     salePriceCents: int = Field(ge=1_000_000, le=2_000_000_000)
+    latitude: float | None = Field(default=None, ge=50, le=54)
+    longitude: float | None = Field(default=None, ge=3, le=8)
 
     @model_validator(mode="after")
     def valid_date(self) -> "Sale":
         if self.saleDate > date.today() or self.constructionYear > self.saleDate.year:
             raise ValueError("Sale date must be historical and after construction")
+        if (self.latitude is None) != (self.longitude is None):
+            raise ValueError("Both geographic coordinates are required together")
         return self
 
 
@@ -36,6 +41,10 @@ class SalesDataset(BaseModel):
     source: str = Field(min_length=1)
     license: str = Field(min_length=1)
     priceBasis: Literal["completed-sale"]
+    attribution: str | None = None
+    sourceSha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
+    sourceVersion: str | None = None
+    licenseUrl: str | None = None
     sales: list[Sale] = Field(min_length=5)
 
     @model_validator(mode="after")

@@ -26,6 +26,9 @@ export const qualitativeFeaturesSchema = z.object({
 export const estimateRequestSchema = z.object({
     postcode: dutchPostcodeSchema,
     houseNumber: z.number().int().positive(),
+    addition: z.string().trim().max(12).optional(),
+    wozValueCents: z.number().int().min(1000000).max(2000000000).optional(),
+    wozAssessmentYear: z.number().int().min(2000).max(2200).optional(),
     propertyType: z.enum([
         "HOUSE",
         "APARTMENT",
@@ -50,7 +53,18 @@ export const estimateRequestSchema = z.object({
         .default([]),
 });
 
+const evidenceShape = {
+    method: z.enum(["COMPARABLE_SALES", "PROPERTY_WOZ", "MUNICIPAL_WOZ"]),
+    warnings: z.array(z.string()),
+    sourceUrl: z.string().url(),
+    referenceMonth: z.string().nullable(),
+    calibrated: z.literal(false),
+    askingBenchmarkCents: z.number().int().positive().nullable(),
+    askingSourceUrl: z.string().url().nullable(),
+};
+
 export const estimateResponseSchema = z.object({
+    ...evidenceShape,
     inputHash: z.string().regex(/^[a-f0-9]{64}$/),
     cached: z.boolean(),
     tier: z.enum(["MULTIMODAL_ML", "BASIC_ML", "POSTCODE_SQM"]),
@@ -61,22 +75,27 @@ export const estimateResponseSchema = z.object({
     qualitativeFeatures: qualitativeFeaturesSchema.nullable(),
     disclaimer: z.string(),
     modelVersion: z.string(),
-    comparableCount: z.number().int().min(5),
+    comparableCount: z.number().int().min(0),
     valuationMonth: z.string().regex(/^20[0-9]{2}-(0[1-9]|1[0-2])$/),
     conditionAdjustmentPercent: z.number().min(-4).max(4),
 });
 
 export const pythonEstimateRequestSchema = estimateRequestSchema
     .omit({ images: true, userText: true })
-    .extend({ qualitativeFeatures: qualitativeFeaturesSchema.nullable() });
+    .extend({ qualitativeFeatures: qualitativeFeaturesSchema.nullable(),
+        municipalityCode: z.string().regex(/^GM[0-9]{4}$/).optional(),
+        provinceCode: z.string().regex(/^PV(2[0-9]|3[01])$/).optional(),
+        latitude: z.number().min(50).max(54).optional(),
+        longitude: z.number().min(3).max(8).optional() });
 
 export const pythonEstimateResponseSchema = z.object({
+    ...evidenceShape,
     estimatedValueCents: z.number().int().nonnegative(),
     lowerBoundCents: z.number().int().nonnegative(),
     upperBoundCents: z.number().int().nonnegative(),
     confidence: z.number().min(0).max(1),
     modelVersion: z.string(),
-    comparableCount: z.number().int().min(5),
+    comparableCount: z.number().int().min(0),
     valuationMonth: z.string().regex(/^20[0-9]{2}-(0[1-9]|1[0-2])$/),
     conditionAdjustmentPercent: z.number().min(-4).max(4),
 });

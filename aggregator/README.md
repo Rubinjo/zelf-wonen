@@ -1,12 +1,11 @@
 # ZelfWonen inbound aggregator
 
-A standalone Python/uv cron microservice that scrapes, parses, normalizes and
-deduplicates rental/sale listings from **Funda** and **Kamernet** into a single
-master record per property. More sources are added through a pluggable adapter
+A standalone Python/uv worker that scrapes, parses and normalizes rental/sale
+listings from **Funda** and **Kamernet**. More sources are added through a pluggable adapter
 pattern without touching the pipeline.
 
 This service is intentionally isolated from the Next.js web application. It only
-reads/writes PostgreSQL (the same database the web app uses) and object storage.
+reads/writes PostgreSQL (the same database the web app uses) and image storage.
 
 ## Principles
 
@@ -16,17 +15,32 @@ reads/writes PostgreSQL (the same database the web app uses) and object storage.
 - **Extreme normalization** — chaotic HTML/JSON from each source is mapped onto
   one strict internal schema (`app/models.py`).
 - **Image hosting** — source images are downloaded and re-hosted in
-  platform-controlled object storage (S3/R2) or a local directory in dev. The
+  a persistent local volume on the VM (or optionally S3/R2). The
   UI never hotlinks source images.
-- **Locked cron** — a PostgreSQL advisory lock guarantees a scrape that runs
-  longer than the 6-hour interval never overlaps with itself.
-- **Intelligent dedup** — the same property listed on Funda and Kamernet with
-  different IDs merges into one master record by `postcode + house number` OR
-  `street + house number`. `platform_links` keeps every direct link.
-- **Incremental + expiry** — detail pages are only fetched when a listing is new
-  or its summary (price/status/title) changed. Raw responses are kept in
-  `raw_payloads`. Listings that 404 or disappear from a sitemap are marked
-  `OFFLINE`/`EXPIRED`, never deleted.
+- **Scheduled one-shot runs** — production uses a host systemd timer, daily at
+  04:20 Europe/Amsterdam with up to ten minutes of jitter and missed-run catch-up.
+  A PostgreSQL advisory lock prevents overlapping imports; a host lock coordinates
+  imports with VM backups. The continuous loop remains available for development.
+- **Conservative identity** — existing source links retain their master record.
+  New Funda records may match a postcode, positive house number and suffix;
+  other records use source + external ID. No street-only matching across cities
+  and no merging different Kamernet rooms at the same address. Existing mistaken
+  merges require a separate data review; this change does not split old records.
+- **Full detail refresh + guarded expiry** — every discovered listing is refreshed
+  on each run. Raw responses are kept in `raw_payloads`. Confirmed detail 404/410
+  responses mark records offline; absence-based expiry is disabled by default.
+  Even when enabled, empty discovery, pagination/cap failures and listing errors
+  prevent absence-based expiry. HTTP block/challenge pages fail the run.
+- **Observable failures** — either source failing results in a nonzero exit code,
+  after attempting both. Per-source counts and last-success timestamps are written
+  atomically to a private status file. systemd retains logs and emits local alerts.
+
+Deployment commands, bounded live validation, timer installation and monitoring
+are in [the VM deployment guide](../web/docs/deployment.md#scheduled-listing-imports-systemd).
+The endpoints and parsers still require validation against the live sites from
+the VM. Unit tests do not certify access or source coverage. Discovery limits are
+failure thresholds, not a way to gradually cover all listings. An absent listing
+stays in its previous state when absence-based expiry is disabled.
 
 ## Local development
 
@@ -45,13 +59,17 @@ Set the environment via `AGGREGATOR_`-prefixed variables (or a `.env` file):
 | --- | --- | --- |
 | `AGGREGATOR_DATABASE_URL` | `postgresql://houser:houser_dev_password@localhost:5432/houser` | Postgres DSN |
 | `AGGREGATOR_SYNC_INTERVAL_SECONDS` | `21600` | cron cadence |
+| `AGGREGATOR_STATUS_FILE` | `.state/status.json` | private per-source run results; `/app/state/status.json` in production |
+| `AGGREGATOR_EXPIRE_MISSING` | `false` | opt in only after verifying exhaustive discovery |
+| `AGGREGATOR_MAX_LISTINGS_PER_SOURCE` | `10000` | fail safely if a source exceeds this limit |
+| `AGGREGATOR_POLITE_DELAY_SECONDS` | `0.5` (production: `1`) | delay between outbound requests |
 | `AGGREGATOR_PROXY_URLS` | *(empty)* | comma-separated residential proxy URLs |
 | `AGGREGATOR_USER_AGENTS` | built-in list | `\|`-separated User-Agents |
 | `AGGREGATOR_ENABLED_SOURCES` | `FUNDA,KAMERNET` | enabled adapters |
 | `AGGREGATOR_FUNDA_SITEMAP_URL` | `https://www.funda.nl/sitemap/v1/huizen.xml` | discovery feed |
 | `AGGREGATOR_KAMERNET_SEARCH_URL` | `https://kamernet.nl/api/listing/search` | discovery feed |
 | `AGGREGATOR_IMAGE_STORAGE_MODE` | `local` | `local` or `s3` |
-| `AGGREGATOR_LOCAL_MEDIA_DIR` | `../web/public/aggregated-media` | dev image dir |
+| `AGGREGATOR_LOCAL_MEDIA_DIR` | `../web/public/aggregated-media` | local image directory; `/app/media` volume in Docker |
 | `AGGREGATOR_OBJECT_STORAGE_*` | — | S3/R2 endpoint, bucket, region, keys |
 
 For object storage, configure `AGGREGATOR_OBJECT_STORAGE_ENDPOINT_URL`,
@@ -64,7 +82,14 @@ In local mode the default `AGGREGATOR_LOCAL_MEDIA_DIR` points at
 `web/public/aggregated-media`, so the Next.js app serves the re-hosted images
 directly at `/aggregated-media/*` (matching the web app's
 `AGGREGATED_MEDIA_BASE_URL`). When running inside Docker in local mode, mount
-that same folder into the container or switch to `s3`.
+that same folder into the container. The production Compose stack already shares
+the persistent `aggregated_media` volume with Caddy. Downloads are limited to
+20 MiB, checked for supported image signatures, named by content hash, and
+published atomically. HTML/error responses are not saved as photos.
+
+For S3, also set the web app's `AGGREGATED_MEDIA_BASE_URL` to the bucket's public
+serving URL. The aggregator only writes objects; it does not configure bucket
+access policies. `OBJECT_STORAGE_MEDIA_BASE_URL` is not used.
 
 ## Adding a new source
 

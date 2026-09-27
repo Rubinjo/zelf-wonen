@@ -44,13 +44,13 @@ export const nl: Messages = {
     home: {
         eyebrow: "Zelf je huis verkopen of verhuren",
         title: "Jouw huis verkopen. Zonder verkoopmakelaar.",
-        intro: "Maak zelf een overtuigende woningadvertentie, bepaal een slimme vraagprijs en bereik woningzoekers via ZelfWonen, Funda en Kamernet. Jij houdt de regie én bespaart op makelaarskosten.",
+        intro: "Maak zelf een overtuigende woningadvertentie, bepaal een slimme vraagprijs en bereik woningzoekers gratis via ZelfWonen.",
         primary: "Start met je woning",
         secondary: "Bekijk hoe het werkt",
-        channelsEyebrow: "Eén advertentie, groter bereik",
-        channelsTitle: "Zichtbaar waar woningzoekers al zoeken",
+        channelsEyebrow: "Gratis je woning aanbieden",
+        channelsTitle: "Bereik woningzoekers op ZelfWonen",
         channelsText:
-            "Beheer je woning op één plek en kies Funda voor verkoop of verhuur. Voor verhuur kun je ook kiezen voor Kamernet. Beschikbaarheid en kanaalkosten hangen af van je pakket.",
+            "Beheer en publiceer je woning gratis op ZelfWonen. Je houdt zelf de regie over verkoop of verhuur.",
         processEyebrow: "Verkopen zonder makelaar",
         processTitle: "Van eerste idee naar bezichtiging",
         processIntro:
@@ -66,16 +66,16 @@ export const nl: Messages = {
         comparisonHighlight:
             "Bespaar op makelaarskosten en houd zelf de regie over de verkoop van je woning.",
         comparisonNote:
-            "Indicatieve vergelijking, geen offerte. Makelaarstarieven en kanaalkosten verschillen per aanbieder, regio, woning en pakket. Controleer vóór betaling altijd welke externe plaatsingen zijn inbegrepen.",
+            "ZelfWonen is gratis. Eventuele kosten voor externe adviseurs, notarissen of andere diensten staan hier los van.",
         faqEyebrow: "Veelgestelde vragen",
         faqTitle: "Zelf verkopen, helder uitgelegd",
         ctaTitle: "Jouw woning. Jouw proces. Jouw resultaat.",
         ctaText:
             "Maak gratis een account en ontdek hoe eenvoudig zelf verkopen of verhuren kan zijn.",
         footer: "© 2026 ZelfWonen. Voor de Nederlandse woningmarkt.",
-        trustPackages: "Pakketten vanaf €99",
+        trustPackages: "Volledig gratis",
         trustSaleRent: "Voor verkoop én verhuur",
-        trustChannels: "Publiceren op Funda & Kamernet",
+        trustChannels: "Publiceren op ZelfWonen",
     },
     footer: {
         privacy: "Privacy",
@@ -299,7 +299,7 @@ export const nl: Messages = {
         noListings: "Je hebt nog geen woningen aangemaakt.",
         noListingsAction: "Begin met je eerste advertentie",
         statusDraft: "Concept",
-        statusReadyForVerification: "Klaar voor iDIN",
+        statusReadyForVerification: "Klaar voor verificatie",
         statusLive: "Live",
         statusUnderOffer: "Onder bod",
         statusSold: "Verkocht",

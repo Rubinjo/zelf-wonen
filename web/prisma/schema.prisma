@@ -136,6 +136,7 @@ enum FloorPlanMode {
 
 enum VerificationKind {
   EMAIL
+  // Deprecated; retained only for historical audit rows. New verification uses AuditEvent.
   IDIN
 }
 
@@ -326,7 +327,7 @@ enum SeekerNotificationType {
   DEADLINE_APPROACHING
 }
 
-// Better Auth core model. Never store BSN or raw iDIN assertions on this record.
+// Better Auth core model. Never store BSN or raw identity assertions on this record.
 model User {
   id               String   @id @default(uuid()) @db.Uuid
   name             String
@@ -763,6 +764,7 @@ model VerificationAuditLog {
   @@map("verification_audit_logs")
 }
 
+// Historical paid orders only; free publication never creates or consumes orders.
 model PublicationOrder {
   id               String               @id @default(uuid()) @db.Uuid
   listingId        String               @db.Uuid
@@ -922,6 +924,7 @@ model PropertyTransaction {
   documents                 TransactionDocument[]
   events                    TransactionEvent[]
   agreement                 PurchaseAgreement?
+  // Deprecated relation name retained for compatibility with historical records.
   idinAttempts              IdentityVerificationAttempt[]
   importedListingMessages   ListingMessage[]
 
@@ -991,7 +994,7 @@ model PurchaseAgreement {
   foundationDeadline DateTime?
   coolingOffEndsAt   DateTime?
 
-  // Ondertekening (uitsluitend via iDIN-geverifieerde handtekening)
+  // Historical signature evidence; new signing is disabled pending a signing provider.
   sellerSignedAt        DateTime?
   sellerSignatureMethod String?
   sellerSignatureEvidence Json?

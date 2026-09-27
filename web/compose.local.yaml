@@ -1,0 +1,82 @@
+# Explicit local-development stack; never merged into the production file.
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: houser-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: houser
+      POSTGRES_USER: houser
+      POSTGRES_PASSWORD: houser_dev_password
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - houser_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U houser -d houser"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  estimator:
+    build:
+      context: ../estimator
+      dockerfile: Dockerfile
+    image: houser-estimator:local
+    container_name: houser-estimator
+    restart: unless-stopped
+    init: true
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      ML_ESTIMATOR_TOKEN: ${ML_ESTIMATOR_TOKEN:-}
+    volumes:
+      - ../estimator/data:/app/data:ro
+    ports:
+      - "127.0.0.1:${ESTIMATOR_PORT:-8000}:8000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import json, urllib.request; assert json.load(urllib.request.urlopen('http://localhost:8000/health', timeout=2))['status'] == 'ok'",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  # Inbound aggregator cron service. Runs under the `aggregator` profile so it
+  # does not start with the default `docker compose up`.
+  aggregator:
+    build:
+      context: ../aggregator
+      dockerfile: Dockerfile
+    image: houser-aggregator:local
+    container_name: houser-aggregator
+    command: ["run"]
+    restart: unless-stopped
+    init: true
+    profiles: ["aggregator"]
+    environment:
+      AGGREGATOR_DATABASE_URL: postgresql://houser:houser_dev_password@postgres:5432/houser
+      AGGREGATOR_SYNC_INTERVAL_SECONDS: ${AGGREGATOR_SYNC_INTERVAL_SECONDS:-21600}
+      AGGREGATOR_PROXY_URLS: ${AGGREGATOR_PROXY_URLS:-}
+      AGGREGATOR_ENABLED_SOURCES: ${AGGREGATOR_ENABLED_SOURCES:-FUNDA,KAMERNET}
+      AGGREGATOR_IMAGE_STORAGE_MODE: ${AGGREGATOR_IMAGE_STORAGE_MODE:-local}
+      AGGREGATOR_LOCAL_MEDIA_DIR: ${AGGREGATOR_LOCAL_MEDIA_DIR:-/app/media}
+      AGGREGATOR_OBJECT_STORAGE_ENDPOINT_URL: ${AGGREGATOR_OBJECT_STORAGE_ENDPOINT_URL:-}
+      AGGREGATOR_OBJECT_STORAGE_BUCKET: ${AGGREGATOR_OBJECT_STORAGE_BUCKET:-zelfwonen-listings}
+      AGGREGATOR_OBJECT_STORAGE_REGION: ${AGGREGATOR_OBJECT_STORAGE_REGION:-auto}
+      AGGREGATOR_OBJECT_STORAGE_ACCESS_KEY_ID: ${AGGREGATOR_OBJECT_STORAGE_ACCESS_KEY_ID:-}
+      AGGREGATOR_OBJECT_STORAGE_SECRET_ACCESS_KEY: ${AGGREGATOR_OBJECT_STORAGE_SECRET_ACCESS_KEY:-}
+    volumes:
+      # Local-mode images land in web/public so Next.js can serve them.
+      - ./public/aggregated-media:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  houser_postgres_data:

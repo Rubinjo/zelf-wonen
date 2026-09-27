@@ -209,11 +209,9 @@ async function api<T>(url: string, init?: RequestInit): Promise<T> {
 export function TransactionRoom({
     initialRoom,
     currentUserId,
-    signNotice,
 }: {
     initialRoom: Room;
     currentUserId: string;
-    signNotice?: string;
 }) {
     const queryClient = useQueryClient();
     const [tab, setTab] = useState<(typeof tabs)[number][0]>("overview");
@@ -355,7 +353,6 @@ export function TransactionRoom({
                             isSeller={isSeller}
                             closed={closed}
                             refresh={refresh}
-                            signNotice={signNotice}
                         />
                     ) : (
                         <Contract

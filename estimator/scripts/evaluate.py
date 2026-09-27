@@ -30,6 +30,7 @@ def main() -> None:
                     "constructionYear",
                 }
             )
+            | {"houseNumber": sale.houseNumber or 1}
         )
         try:
             result = model.predict(request, as_of=sale.saleDate)
@@ -44,10 +45,15 @@ def main() -> None:
                 "cutoff": args.cutoff.isoformat(),
                 "holdoutCount": len(holdout),
                 "estimatedCount": len(errors),
+                "estimationCoverage": len(errors) / len(holdout) if holdout else None,
                 "medianAbsolutePercentageError": median(errors) if errors else None,
                 "meanAbsolutePercentageError": sum(errors) / len(errors) if errors else None,
                 "intervalCoverage": covered / len(errors) if errors else None,
-                "limitation": "Revised CBS index vintage; not a point-in-time publication backtest.",
+                "limitation": (
+                    "Revised CBS index vintage; not a point-in-time publication backtest. "
+                    "Anonymized addresses exclude the entire subject postcode. "
+                    "Sparse local research sample; results do not establish national accuracy."
+                ),
             },
             indent=2,
         )

@@ -1,5 +1,3 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { requireEmailVerifiedUser } from "@/features/auth/guards";
@@ -10,6 +8,7 @@ import {
 } from "@/features/transactions/transaction-service";
 import { handleApiError } from "@/lib/api-response";
 import { db } from "@/lib/db";
+import { readStoredFile } from "@/lib/storage";
 
 export async function GET(
     _request: NextRequest,
@@ -40,13 +39,7 @@ export async function GET(
             document.storageKey.includes("..")
         )
             throw new Error("Invalid document storage key");
-        const absolutePath = path.join(
-            process.cwd(),
-            ".data",
-            "transaction-documents",
-            document.storageKey,
-        );
-        const bytes = await readFile(absolutePath);
+        const bytes = await readStoredFile("transaction-documents", document.storageKey);
         if (process.env.NODE_ENV !== "development") {
             await db.$transaction(async (tx) => {
                 await appendTransactionEvent(

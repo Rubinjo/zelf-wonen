@@ -1,7 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-import { languageStore, type Language } from "@/lib/language-store";
+import { useLanguage } from "@/components/providers/language-provider";
 import { tSync } from "@/lib/messages/translate";
 import type { MessageKey, MessageValue } from "@/lib/messages/types";
 
@@ -11,11 +10,7 @@ import type { MessageKey, MessageValue } from "@/lib/messages/types";
  * message dictionary, so typos are caught at compile time.
  */
 export function useTranslations() {
-    const language = useSyncExternalStore<Language>(
-        languageStore.subscribe,
-        languageStore.getSnapshot,
-        languageStore.getServerSnapshot,
-    );
+    const { language } = useLanguage();
 
     return {
         language,

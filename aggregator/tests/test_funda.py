@@ -1,6 +1,6 @@
 from app.adapters import DetailPayload
 from app.adapters.funda import FundaAdapter
-from app.models import ListingPurpose
+from app.models import ListingAvailability, ListingPurpose
 
 FUNDA_HTML = """
 <html>
@@ -64,3 +64,25 @@ def test_funda_normalize_from_summary_only():
     listing = adapter.normalize(summary)
     assert listing.purpose is ListingPurpose.RENT
     assert listing.house_number == 0  # unknown until detail fetched
+
+
+def test_numeric_price_is_euros_and_house_suffix_is_preserved():
+    listing = FundaAdapter().normalize(
+        {
+            "external_id": "1",
+            "price_raw": 450000,
+            "house_number": "42A",
+        }
+    )
+    assert listing.asking_price_cents == 45_000_000
+    assert listing.house_number == 42
+    assert listing.house_number_addition == "A"
+
+
+def test_nested_offer_sold_status():
+    html = FUNDA_HTML.replace(
+        '"priceCurrency": "EUR"', '"availability": "https://schema.org/SoldOut"'
+    )
+    adapter = FundaAdapter()
+    parsed = adapter.parse_detail({}, DetailPayload("https://example.org", "text/html", html))
+    assert adapter.normalize(parsed).availability == ListingAvailability.EXPIRED

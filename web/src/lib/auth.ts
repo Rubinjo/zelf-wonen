@@ -5,47 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { twoFactor } from "better-auth/plugins";
 import { db } from "@/lib/db";
 import { orderHashChain } from "@/lib/hash-chain";
-
-async function deliverVerificationEmail(input: {
-    email: string;
-    name: string;
-    url: string;
-}) {
-    const endpoint = process.env.EMAIL_DELIVERY_WEBHOOK_URL;
-    if (!endpoint) {
-        if (process.env.NODE_ENV === "production") {
-            throw new Error("EMAIL_DELIVERY_WEBHOOK_URL is not configured");
-        }
-
-        console.info(
-            `[ZelfWonen] Verification link for ${input.email}: ${input.url}`,
-        );
-        return;
-    }
-
-    const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-            "content-type": "application/json",
-            ...(process.env.EMAIL_DELIVERY_TOKEN
-                ? {
-                      authorization: `Bearer ${process.env.EMAIL_DELIVERY_TOKEN}`,
-                  }
-                : {}),
-        },
-        body: JSON.stringify({
-            template: "verify-email",
-            to: input.email,
-            variables: { name: input.name, verificationUrl: input.url },
-        }),
-    });
-
-    if (!response.ok) {
-        throw new Error(
-            `Verification email provider returned ${response.status}`,
-        );
-    }
-}
+import { deliverVerificationEmail } from "@/lib/verification-email";
 
 async function appendEmailVerificationAudit(userId: string) {
     await db.$transaction(async (tx) => {

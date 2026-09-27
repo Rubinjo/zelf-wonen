@@ -2,10 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { requireEmailVerifiedUser } from "@/features/auth/guards";
 import {
-    IdinVerificationError,
-    startAgreementSigningVerification,
-} from "@/features/identity/idin-service";
-import {
     AgreementError,
     getAgreementForUser,
     saveAgreementDraft,
@@ -124,17 +120,7 @@ export async function POST(
             .parse((await context.params).transactionId);
         const input = actionSchema.parse(await request.json());
         if (input.action === "SIGN_IDIN") {
-            const signing = await startAgreementSigningVerification({
-                transactionId,
-                userId: session.user.id,
-                locale: "nl",
-            });
-            return NextResponse.json({
-                data: {
-                    redirectUrl: signing.redirectUrl,
-                    expiresAt: signing.expiresAt,
-                },
-            });
+            return NextResponse.json({ error: { code: "SIGNING_UNAVAILABLE", message: "Digitale ondertekening is niet beschikbaar. Didit verifieert alleen je identiteit." } }, { status: 410 });
         }
         let agreement;
         if (input.action === "SUBMIT") {
@@ -148,18 +134,6 @@ export async function POST(
         }
         return NextResponse.json({ data: serialize(agreement) });
     } catch (error) {
-        if (error instanceof IdinVerificationError) {
-            const status =
-                error.code === "PROVIDER_UNAVAILABLE"
-                    ? 503
-                    : error.code === "SIGNING_ALREADY_SIGNED"
-                      ? 409
-                      : 409;
-            return NextResponse.json(
-                { error: { code: error.code, message: error.message } },
-                { status },
-            );
-        }
         if (error instanceof AgreementError)
             return agreementErrorResponse(error);
         if (error instanceof TransactionAccessError)

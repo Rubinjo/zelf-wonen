@@ -8,7 +8,7 @@ import { getLanguage } from "@/lib/language";
 const statusLabel = {
     nl: {
         DRAFT: "Concept",
-        READY_FOR_VERIFICATION: "Klaar voor iDIN",
+        READY_FOR_VERIFICATION: "Klaar voor verificatie",
         LIVE: "Live",
         UNDER_OFFER: "Onder bod",
         SOLD: "Verkocht",
@@ -17,7 +17,7 @@ const statusLabel = {
     },
     en: {
         DRAFT: "Draft",
-        READY_FOR_VERIFICATION: "Ready for iDIN",
+        READY_FOR_VERIFICATION: "Ready for verification",
         LIVE: "Live",
         UNDER_OFFER: "Under offer",
         SOLD: "Sold",

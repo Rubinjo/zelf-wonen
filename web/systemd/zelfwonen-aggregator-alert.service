@@ -1,0 +1,6 @@
+[Unit]
+Description=Report a failed listing refresh
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/logger -p daemon.err -t zelfwonen-aggregator "Listing refresh failed. Inspect journalctl -u zelfwonen-aggregator.service and /app/state/status.json in the aggregator state volume."

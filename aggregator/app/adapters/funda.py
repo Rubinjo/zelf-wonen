@@ -14,13 +14,14 @@ from collections.abc import AsyncIterator
 from typing import Any
 
 from ..config import Settings
-from ..http_client import ScraperClient
+from ..http_client import ScrapeError, ScraperClient
 from ..models import ListingPurpose, ListingSource, NormalizedListing
 from ..normalizer import (
     clean_text,
     normalize_availability,
     normalize_energy_label,
     normalize_house_number,
+    normalize_house_number_addition,
     normalize_images,
     normalize_postcode,
     normalize_price_cents,
@@ -44,27 +45,41 @@ class FundaAdapter(SourceAdapter):
         self.settings = settings or Settings()
 
     async def discover(self, client: ScraperClient) -> AsyncIterator[dict[str, Any]]:
-        sitemap_url = self.settings.funda_sitemap_url
-        if not sitemap_url:
-            return
-        response = await client.fetch(sitemap_url)
-        try:
-            root = ET.fromstring(response.text)
-        except ET.ParseError:
-            return
+        pending = [self.settings.funda_sitemap_url]
+        visited: set[str] = set()
+        seen: set[str] = set()
         count = 0
-        for loc in root.iter("{http://www.sitemaps.org/schemas/sitemap/0.9}loc"):
-            url = (loc.text or "").strip()
-            if not _LISTING_URL.search(url):
+        ns = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
+        while pending:
+            sitemap_url = pending.pop()
+            if not sitemap_url or sitemap_url in visited:
+                raise ScrapeError("empty or cyclic Funda sitemap")
+            visited.add(sitemap_url)
+            if len(visited) > 1000:
+                raise ScrapeError("Funda sitemap traversal limit exceeded")
+            response = await client.fetch(sitemap_url)
+            try:
+                root = ET.fromstring(response.text)
+            except ET.ParseError as exc:
+                raise ScrapeError("invalid Funda sitemap XML") from exc
+            if root.tag == f"{ns}sitemapindex":
+                pending.extend((loc.text or "").strip() for loc in root.iter(f"{ns}loc"))
                 continue
-            count += 1
-            if count > self.settings.max_listings_per_source:
-                break
-            yield {
-                "external_id": self._external_id(url),
-                "url": url,
-                "purpose_raw": "rent" if "/huur/" in url else "buy",
-            }
+            if root.tag != f"{ns}urlset":
+                raise ScrapeError("unexpected Funda sitemap format")
+            for loc in root.iter(f"{ns}loc"):
+                url = (loc.text or "").strip()
+                if not _LISTING_URL.search(url) or url in seen:
+                    continue
+                seen.add(url)
+                count += 1
+                if count > self.settings.max_listings_per_source:
+                    raise ScrapeError("Funda listing limit reached; discovery incomplete")
+                yield {
+                    "external_id": self._external_id(url),
+                    "url": url,
+                    "purpose_raw": "rent" if "/huur/" in url else "buy",
+                }
 
     async def fetch_detail(self, client: ScraperClient, summary: dict[str, Any]) -> DetailPayload:
         response = await client.fetch(summary["url"], referer=self.settings.funda_base_url)
@@ -101,6 +116,10 @@ class FundaAdapter(SourceAdapter):
             or _house_number_from_meta(meta)
             or _house_number_from_text(result.get("street"))
         )
+        result["house_number_addition"] = address.get("houseNumberAddition") or (
+            normalize_house_number_addition(address.get("houseNumber"))
+            or normalize_house_number_addition(result.get("street"))
+        )
         result["images"] = _images(offer, meta)
         result["latitude"] = _geo(offer, meta, "latitude")
         result["longitude"] = _geo(offer, meta, "longitude")
@@ -112,7 +131,14 @@ class FundaAdapter(SourceAdapter):
 
         # Prices: JSON-LD nests prices under `offers`; keep raw for normalizer.
         result["price_raw"] = _price(offer) or meta.get("product:price:amount")
-        result["status_raw"] = offer.get("availability") or meta.get("og:status")
+        nested_offer = offer.get("offers") or {}
+        if isinstance(nested_offer, list):
+            nested_offer = nested_offer[0] if nested_offer else {}
+        result["status_raw"] = (
+            offer.get("availability")
+            or (nested_offer.get("availability") if isinstance(nested_offer, dict) else None)
+            or meta.get("og:status")
+        )
 
         # --- Fall back to embedded state / regex on raw HTML -----------------
         if not result.get("street") or not result.get("postcode"):
@@ -126,7 +152,9 @@ class FundaAdapter(SourceAdapter):
         house_number = normalize_house_number(merged.get("house_number")) or 0
         street = clean_text(merged.get("street") or _split_address(merged, {}) or "Onbekend")
         city = clean_text(merged.get("city") or "Onbekend")
-        price_cents = normalize_price_cents(merged.get("price_raw") or merged.get("price"))
+        price_cents = normalize_price_cents(
+            str(merged.get("price_raw") or merged.get("price") or "")
+        )
         availability = normalize_availability(merged.get("status_raw") or merged.get("status"))
 
         return NormalizedListing(
@@ -141,6 +169,11 @@ class FundaAdapter(SourceAdapter):
             monthly_rent_cents=price_cents if purpose == ListingPurpose.RENT else None,
             street=street,
             house_number=house_number,
+            house_number_addition=merged.get("house_number_addition")
+            or (
+                normalize_house_number_addition(merged.get("house_number"))
+                or normalize_house_number_addition(street)
+            ),
             postcode=postcode,
             city=city,
             municipality=clean_text(merged.get("municipality")) or None,

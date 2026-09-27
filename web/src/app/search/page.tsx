@@ -1,21 +1,18 @@
+import { PublicHeader } from "@/components/platform/public-header";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { headers } from "next/headers";
 import {
-    Calculator,
     ChevronLeft,
     ChevronRight,
     Heart,
-    House,
     LayoutDashboard,
 } from "lucide-react";
-import { AuthActions } from "@/components/auth/auth-actions";
 import { AiSearchBar } from "@/components/marketplace/ai-search-bar";
 import { ErfpachtToggle } from "@/components/marketplace/erfpacht-toggle";
 import { MarketplaceResults } from "@/components/marketplace/marketplace-results";
 import { MonumentToggle } from "@/components/marketplace/monument-toggle";
 import { PurposeToggle } from "@/components/marketplace/purpose-toggle";
-import { BrandLogo } from "@/components/platform/brand-logo";
 import { gardenOrientationLabels } from "@/features/listings/garden";
 import {
     searchMarketplaceListings,
@@ -303,89 +300,7 @@ export default async function SearchPage({
         Number(result.filters.gardenOrientation !== null);
     return (
         <div className="min-h-screen bg-background">
-            <header className="border-b border-line bg-background/92 backdrop-blur-xl">
-                <div className="mx-auto flex h-18 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:px-8">
-                    <Link
-                        href="/"
-                        className="flex items-center"
-                        aria-label="ZelfWonen home"
-                    >
-                        <BrandLogo className="h-9 w-auto" priority />
-                    </Link>
-                    <nav className="flex items-center gap-1.5 sm:gap-2">
-                        <Link
-                            href="/search"
-                            className="hidden px-3 py-2 text-sm font-semibold text-brand lg:block"
-                        >
-                            {ui.navSearch}
-                        </Link>
-                        <Link
-                            href="/mortgage-calculator"
-                            className="hidden items-center gap-1.5 px-3 py-2 text-sm font-semibold text-muted transition hover:text-brand lg:inline-flex"
-                        >
-                            <Calculator size={16} /> {ui.mortgageCalc}
-                        </Link>
-                        {session ? (
-                            <>
-                                <Link
-                                    href="/dashboard/seeker?tab=favorites"
-                                    className="hidden h-10 items-center gap-2 rounded-full px-3 text-sm font-semibold transition hover:bg-surface md:inline-flex"
-                                >
-                                    <Heart size={16} /> {ui.favorites}
-                                </Link>
-                                <Link
-                                    href="/dashboard"
-                                    className="inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold transition hover:bg-surface sm:w-auto sm:gap-2 sm:px-3"
-                                    aria-label={
-                                        isEn
-                                            ? "Manage my homes"
-                                            : "Mijn woningen beheren"
-                                    }
-                                    title={
-                                        isEn
-                                            ? "Manage my homes"
-                                            : "Mijn woningen beheren"
-                                    }
-                                >
-                                    <House size={16} />
-                                    <span className="hidden sm:inline">
-                                        {ui.myHomes}
-                                    </span>
-                                </Link>
-                            </>
-                        ) : (
-                            <Link
-                                href="/#start"
-                                className="inline-flex size-10 items-center justify-center rounded-full border border-brand text-brand transition hover:bg-brand hover:text-white sm:size-auto sm:px-4 sm:py-2"
-                                aria-label={
-                                    isEn
-                                        ? "List a property"
-                                        : "Woning aanbieden"
-                                }
-                                title={
-                                    isEn
-                                        ? "List a property"
-                                        : "Woning aanbieden"
-                                }
-                            >
-                                <House size={17} className="sm:hidden" />
-                                <span className="hidden text-sm font-semibold sm:inline">
-                                    {ui.offerProperty}
-                                </span>
-                            </Link>
-                        )}
-                        <AuthActions
-                            language={language}
-                            dashboardHref="/dashboard/seeker"
-                            dashboardLabel={
-                                language === "en"
-                                    ? "My dashboard"
-                                    : "Mijn dashboard"
-                            }
-                        />
-                    </nav>
-                </div>
-            </header>
+            <PublicHeader language={language} />
 
             <section className="border-b border-line bg-brand-dark text-white">
                 <div className="mx-auto max-w-[1600px] px-4 py-7 sm:px-6 lg:px-8">

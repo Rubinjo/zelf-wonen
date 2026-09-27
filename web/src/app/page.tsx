@@ -1,3 +1,5 @@
+import { getLanguage } from "@/lib/language";
+import { PublicHeader } from "@/components/platform/public-header";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,14 +17,9 @@ import {
     Sparkles,
 } from "lucide-react";
 import { AuthActions } from "@/components/auth/auth-actions";
-import {
-    HomeLanguageLink,
-    HomeLanguageSync,
-} from "@/components/marketing/home-language";
 import { HomeScene } from "@/components/marketing/home-scene";
 import { HomeSearch } from "@/components/marketing/home-search";
 import { BrandLogo } from "@/components/platform/brand-logo";
-import { ThemeToggle } from "@/components/platform/theme-toggle";
 
 const copy = {
     nl: {
@@ -226,7 +223,10 @@ type PageProps = { searchParams: Promise<{ lang?: string }> };
 export async function generateMetadata({
     searchParams,
 }: PageProps): Promise<Metadata> {
-    const language = (await searchParams).lang === "en" ? "en" : "nl";
+    const requestedLanguage = (await searchParams).lang;
+    const language = requestedLanguage === "en" || requestedLanguage === "nl"
+        ? requestedLanguage
+        : await getLanguage();
     const t = copy[language];
     return {
         title: t.metaTitle,
@@ -245,60 +245,20 @@ export async function generateMetadata({
 }
 
 export default async function Home({ searchParams }: PageProps) {
-    const language = (await searchParams).lang === "en" ? "en" : "nl";
+    const requestedLanguage = (await searchParams).lang;
+    const language = requestedLanguage === "en" || requestedLanguage === "nl"
+        ? requestedLanguage
+        : await getLanguage();
     const t = copy[language];
     return (
         <div className="home-page min-h-screen bg-background" lang={language}>
-            <HomeLanguageSync current={language} />
             <a
                 href="#main-content"
                 className="sr-only z-50 rounded-lg bg-surface p-4 focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
             >
                 {t.skip}
             </a>
-            <header className="border-b border-line">
-                <div className="home-shell flex flex-wrap items-center justify-between gap-x-4 gap-y-3 py-4">
-                    <Link
-                        href={language === "en" ? "/?lang=en" : "/"}
-                        className="flex items-center"
-                        aria-label="ZelfWonen"
-                    >
-                        <BrandLogo className="h-9 w-auto" priority />
-                    </Link>
-                    <nav
-                        aria-label={
-                            language === "nl"
-                                ? "Hoofdnavigatie"
-                                : "Main navigation"
-                        }
-                        className="order-3 flex w-full items-center justify-between gap-4 border-t border-line pt-3 text-sm font-medium lg:order-none lg:w-auto lg:justify-center lg:gap-7 lg:border-0 lg:pt-0"
-                    >
-                        <Link href="/search" className="text-brand">
-                            {t.search}
-                        </Link>
-                        <a
-                            href="#ai-search"
-                            className="text-muted hover:text-brand"
-                        >
-                            {t.about}
-                        </a>
-                        <Link
-                            href="#start"
-                            className="text-muted hover:text-brand"
-                        >
-                            {t.sell}
-                        </Link>
-                    </nav>
-                    <div className="flex items-center gap-1 sm:gap-2">
-                        <HomeLanguageLink
-                            current={language}
-                            className="flex min-h-10 items-center gap-1 rounded-full px-2 text-xs font-semibold text-muted hover:text-brand"
-                        />
-                        <ThemeToggle />
-                        <AuthActions language={language} />
-                    </div>
-                </div>
-            </header>
+            <PublicHeader language={language} />
             <main id="main-content">
                 <section
                     className="home-shell grid items-center gap-10 pb-12 pt-12 sm:pt-16 lg:grid-cols-[1.08fr_1fr] lg:gap-14 lg:pb-16 lg:pt-20"

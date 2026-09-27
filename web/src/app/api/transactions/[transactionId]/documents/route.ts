@@ -1,6 +1,4 @@
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, unlink, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import type { TransactionMilestoneType } from "@/generated/prisma/client";
@@ -12,6 +10,7 @@ import {
 } from "@/features/transactions/transaction-service";
 import { handleApiError } from "@/lib/api-response";
 import { db } from "@/lib/db";
+import { deleteStoredFile, storeFile } from "@/lib/storage";
 import { reconcileMilestones } from "@/features/transactions/milestone-engine";
 import {
     isPassportDocumentCategory,
@@ -151,15 +150,8 @@ export async function POST(
         const id = randomUUID();
         const extension = allowedTypes[file.type as keyof typeof allowedTypes];
         const storageKey = `${transactionId}/${id}${extension}`;
-        const directory = path.join(
-            process.cwd(),
-            ".data",
-            "transaction-documents",
-            transactionId,
-        );
-        await mkdir(directory, { recursive: true });
-        target = path.join(directory, `${id}${extension}`);
-        await writeFile(target, bytes, { flag: "wx" });
+        await storeFile("transaction-documents", storageKey, bytes);
+        target = storageKey;
         const document = await db.$transaction(async (tx) => {
             const created = await tx.transactionDocument.create({
                 data: {
@@ -245,7 +237,7 @@ export async function POST(
             { status: 201 },
         );
     } catch (error) {
-        if (target) await unlink(target).catch(() => undefined);
+        if (target) await deleteStoredFile("transaction-documents", target).catch(() => undefined);
         if (error instanceof TransactionAccessError)
             return NextResponse.json(
                 { error: { code: error.code, message: error.message } },

@@ -11,16 +11,17 @@ from __future__ import annotations
 import json
 from collections.abc import AsyncIterator
 from typing import Any
-from urllib.parse import quote
+from urllib.parse import urljoin
 
 from ..config import Settings
-from ..http_client import ScraperClient
+from ..http_client import ScrapeError, ScraperClient
 from ..models import ListingPurpose, ListingSource, NormalizedListing
 from ..normalizer import (
     clean_text,
     normalize_availability,
     normalize_energy_label,
     normalize_house_number,
+    normalize_house_number_addition,
     normalize_images,
     normalize_postcode,
     normalize_price_cents,
@@ -43,10 +44,11 @@ class KamernetAdapter(SourceAdapter):
     async def discover(self, client: ScraperClient) -> AsyncIterator[dict[str, Any]]:
         base = self.settings.kamernet_search_url
         if not base:
-            return
+            raise ScrapeError("Kamernet discovery URL is empty")
         page = 1
         count = 0
-        while count < self.settings.max_listings_per_source:
+        seen: set[str] = set()
+        while True:
             url = self._search_url(base, page)
             data = await client.fetch_json(url, referer=self.settings.kamernet_base_url)
             listings = self._extract_cards(data)
@@ -62,14 +64,17 @@ class KamernetAdapter(SourceAdapter):
                 )
                 listing_url = card.get("url") or card.get("shareUrl") or card.get("link")
                 if not external_id or not listing_url:
-                    continue
+                    raise ScrapeError("Kamernet card missing ID or URL")
+                if external_id in seen:
+                    raise ScrapeError("Kamernet pagination repeated a listing")
+                seen.add(external_id)
                 count += 1
                 if count > self.settings.max_listings_per_source:
-                    break
+                    raise ScrapeError("Kamernet listing limit reached; discovery incomplete")
                 yield {
                     "external_id": external_id,
-                    "url": listing_url,
-                    "purpose_raw": card.get("purpose") or card.get("listingType"),
+                    "url": urljoin(self.settings.kamernet_base_url, listing_url),
+                    "purpose_raw": card.get("purpose") or card.get("listingType") or "rent",
                     "title": card.get("title") or card.get("name"),
                     "price_raw": card.get("price")
                     or card.get("rentPrice")
@@ -82,8 +87,6 @@ class KamernetAdapter(SourceAdapter):
                     "postcode": card.get("postcode") or deep_get(card, "address", "postcode"),
                     "images": card.get("images") or card.get("photos") or [],
                 }
-            if len(listings) < self._page_size:
-                break
             page += 1
 
     async def fetch_detail(self, client: ScraperClient, summary: dict[str, Any]) -> DetailPayload:
@@ -104,6 +107,8 @@ class KamernetAdapter(SourceAdapter):
         # Kamernet embeds its data model in JSON-LD and __INITIAL_STATE__.
         json_ld = extract_json_ld(html)
         state = extract_embedded_json(html, ("__INITIAL_STATE__", "__NEXT_DATA__"))
+        if not json_ld and not state:
+            raise ScrapeError("Kamernet detail lacks structured listing data")
 
         address = self._address(json_ld, state)
         result["title"] = pick_text(
@@ -120,6 +125,10 @@ class KamernetAdapter(SourceAdapter):
         )
         result["city"] = pick_text(address.get("city"), summary.get("city"), meta.get("og:city"))
         result["house_number"] = pick_text(address.get("houseNumber"), summary.get("house_number"))
+        result["house_number_addition"] = address.get("houseNumberAddition") or (
+            normalize_house_number_addition(result["house_number"])
+            or normalize_house_number_addition(result["street"])
+        )
         result["price_raw"] = pick_text(
             self._from_state(state, "price"),
             self._from_state(state, "rentPrice"),
@@ -157,7 +166,9 @@ class KamernetAdapter(SourceAdapter):
         house_number = normalize_house_number(merged.get("house_number")) or 0
         street = clean_text(merged.get("street") or "Onbekend")
         city = clean_text(merged.get("city") or "Onbekend")
-        price_cents = normalize_price_cents(merged.get("price_raw") or merged.get("price"))
+        price_cents = normalize_price_cents(
+            str(merged.get("price_raw") or merged.get("price") or "")
+        )
         availability = normalize_availability(merged.get("status_raw") or merged.get("status"))
 
         return NormalizedListing(
@@ -172,6 +183,11 @@ class KamernetAdapter(SourceAdapter):
             monthly_rent_cents=price_cents if purpose == ListingPurpose.RENT else None,
             street=street,
             house_number=house_number,
+            house_number_addition=merged.get("house_number_addition")
+            or (
+                normalize_house_number_addition(merged.get("house_number"))
+                or normalize_house_number_addition(street)
+            ),
             postcode=postcode,
             city=city,
             municipality=clean_text(merged.get("municipality")) or None,
@@ -200,12 +216,10 @@ class KamernetAdapter(SourceAdapter):
 
     def _search_url(self, base: str, page: int) -> str:
         separator = "&" if "?" in base else "?"
-        return (f"{base}{separator}page={page}&pageSize={self._page_size}&city={quote('')}").rstrip(
-            "&city="
-        )
+        return f"{base}{separator}page={page}&pageSize={self._page_size}"
 
     @staticmethod
-    def _extract_cards(data: dict[str, Any]) -> list[dict[str, Any]]:
+    def _extract_cards(data: dict[str, Any] | list[dict[str, Any]]) -> list[dict[str, Any]]:
         if isinstance(data, list):
             return data
         for key in ("listings", "results", "items", "data", "records"):
@@ -213,10 +227,8 @@ class KamernetAdapter(SourceAdapter):
             if isinstance(value, list):
                 return value
             if isinstance(value, dict):
-                nested = KamernetAdapter._extract_cards(value)
-                if nested:
-                    return nested
-        return []
+                return KamernetAdapter._extract_cards(value)
+        raise ScrapeError("unrecognized Kamernet search response")
 
     @staticmethod
     def _address(json_ld: list[dict[str, Any]], state: dict[str, Any]) -> dict[str, Any]:
@@ -228,6 +240,7 @@ class KamernetAdapter(SourceAdapter):
                     "postcode": address.get("postalCode"),
                     "city": address.get("addressLocality"),
                     "houseNumber": address.get("houseNumber"),
+                    "houseNumberAddition": address.get("houseNumberAddition"),
                 }
         address = deep_get(state, "listing", "address") or deep_get(state, "address")
         return address if isinstance(address, dict) else {}

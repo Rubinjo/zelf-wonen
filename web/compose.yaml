@@ -1,14 +1,67 @@
+# Run from web/: docker compose --env-file .env.production up -d --build
 services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN:?Set APP_DOMAIN to your public hostname}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+      - aggregated_media:/srv/aggregated-media:ro
+      - web_uploads:/srv/uploads:ro
+    depends_on:
+      web:
+        condition: service_healthy
+    networks: [frontend]
+
+  web:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_APP_URL: https://${APP_DOMAIN:?Set APP_DOMAIN}
+    image: houser-web:local
+    restart: unless-stopped
+    init: true
+    env_file: .env.production
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_APP_URL: https://${APP_DOMAIN:?Set APP_DOMAIN}
+      BETTER_AUTH_URL: https://${APP_DOMAIN:?Set APP_DOMAIN}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?Set a random Better Auth secret}
+      IP_HASH_SALT: ${IP_HASH_SALT:?Set an independent random IP hash salt}
+      DATABASE_URL: postgresql://houser:${POSTGRES_PASSWORD:?Set a URL-safe database password}@postgres:5432/houser?schema=public
+      ML_ESTIMATOR_URL: http://estimator:8000
+      ML_ESTIMATOR_TOKEN: ${ML_ESTIMATOR_TOKEN:?Set an estimator service token}
+      AGGREGATED_MEDIA_BASE_URL: ${AGGREGATED_MEDIA_BASE_URL:-/aggregated-media}
+    volumes:
+      - web_data:/app/.data
+      - web_uploads:/app/public/uploads
+      - aggregated_media:/app/public/aggregated-media:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      estimator:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks: [frontend, backend]
+
   postgres:
     image: postgres:17-alpine
-    container_name: houser-postgres
     restart: unless-stopped
     environment:
       POSTGRES_DB: houser
       POSTGRES_USER: houser
-      POSTGRES_PASSWORD: houser_dev_password
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a URL-safe database password}
     volumes:
       - houser_postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -17,62 +70,85 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
+    networks: [backend]
 
   estimator:
     build:
       context: ../estimator
-      dockerfile: Dockerfile
     image: houser-estimator:local
-    container_name: houser-estimator
     restart: unless-stopped
     init: true
     environment:
-      ENVIRONMENT: ${ENVIRONMENT:-development}
-      ML_ESTIMATOR_TOKEN: ${ML_ESTIMATOR_TOKEN:-}
-    ports:
-      - "${ESTIMATOR_PORT:-8000}:8000"
+      ENVIRONMENT: production
+      ML_ESTIMATOR_TOKEN: ${ML_ESTIMATOR_TOKEN:?Set an estimator service token}
     healthcheck:
-      test:
-        [
-          "CMD",
-          "python",
-          "-c",
-          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=2)",
-        ]
+      # Readiness includes the dataset, not just a responding HTTP process.
+      test: ["CMD", "python", "-c", "import json, urllib.request; data = json.load(urllib.request.urlopen('http://localhost:8000/health', timeout=2)); assert data['status'] == 'ok', 'Estimator dataset unavailable'"]
       interval: 10s
       timeout: 3s
       retries: 5
       start_period: 10s
+    networks: [backend]
 
-  # Inbound aggregator cron service. Runs under the `aggregator` profile so it
-  # does not start with the default `docker compose up`.
+  # Explicit backup/restore helper; never started with the application stack.
+  storage-maintenance:
+    image: houser-web:local
+    profiles: ["maintenance"]
+    user: "0:0"
+    entrypoint: ["tar"]
+    working_dir: /app
+    network_mode: none
+    volumes:
+      - web_data:/app/.data
+      - web_uploads:/app/public/uploads
+      - aggregated_media:/app/public/aggregated-media
+
+  # Enable explicitly with --profile aggregator; this worker makes outbound requests.
   aggregator:
     build:
       context: ../aggregator
-      dockerfile: Dockerfile
     image: houser-aggregator:local
-    container_name: houser-aggregator
-    restart: unless-stopped
+    restart: "no"
+    command: ["sync"]
     init: true
     profiles: ["aggregator"]
     environment:
-      AGGREGATOR_DATABASE_URL: postgresql://houser:houser_dev_password@postgres:5432/houser
+      AGGREGATOR_DATABASE_URL: postgresql://houser:${POSTGRES_PASSWORD:?Set a URL-safe database password}@postgres:5432/houser
       AGGREGATOR_SYNC_INTERVAL_SECONDS: ${AGGREGATOR_SYNC_INTERVAL_SECONDS:-21600}
       AGGREGATOR_PROXY_URLS: ${AGGREGATOR_PROXY_URLS:-}
       AGGREGATOR_ENABLED_SOURCES: ${AGGREGATOR_ENABLED_SOURCES:-FUNDA,KAMERNET}
+      AGGREGATOR_FUNDA_SITEMAP_URL: ${AGGREGATOR_FUNDA_SITEMAP_URL:-https://www.funda.nl/sitemap/v1/huizen.xml}
+      AGGREGATOR_KAMERNET_SEARCH_URL: ${AGGREGATOR_KAMERNET_SEARCH_URL:-https://kamernet.nl/api/listing/search}
+      AGGREGATOR_MAX_LISTINGS_PER_SOURCE: ${AGGREGATOR_MAX_LISTINGS_PER_SOURCE:-10000}
+      AGGREGATOR_POLITE_DELAY_SECONDS: ${AGGREGATOR_POLITE_DELAY_SECONDS:-1}
+      AGGREGATOR_EXPIRE_MISSING: ${AGGREGATOR_EXPIRE_MISSING:-false}
+      AGGREGATOR_STATUS_FILE: /app/state/status.json
       AGGREGATOR_IMAGE_STORAGE_MODE: ${AGGREGATOR_IMAGE_STORAGE_MODE:-local}
-      AGGREGATOR_LOCAL_MEDIA_DIR: ${AGGREGATOR_LOCAL_MEDIA_DIR:-/app/media}
+      AGGREGATOR_LOCAL_MEDIA_DIR: /app/media
       AGGREGATOR_OBJECT_STORAGE_ENDPOINT_URL: ${AGGREGATOR_OBJECT_STORAGE_ENDPOINT_URL:-}
       AGGREGATOR_OBJECT_STORAGE_BUCKET: ${AGGREGATOR_OBJECT_STORAGE_BUCKET:-zelfwonen-listings}
       AGGREGATOR_OBJECT_STORAGE_REGION: ${AGGREGATOR_OBJECT_STORAGE_REGION:-auto}
       AGGREGATOR_OBJECT_STORAGE_ACCESS_KEY_ID: ${AGGREGATOR_OBJECT_STORAGE_ACCESS_KEY_ID:-}
       AGGREGATOR_OBJECT_STORAGE_SECRET_ACCESS_KEY: ${AGGREGATOR_OBJECT_STORAGE_SECRET_ACCESS_KEY:-}
     volumes:
-      # Local-mode images land in web/public so Next.js can serve them.
-      - ./public/aggregated-media:/app/media
+      - aggregated_media:/app/media
+      - aggregator_state:/app/state
     depends_on:
       postgres:
         condition: service_healthy
+    networks: [backend, outbound]
+
+networks:
+  frontend:
+  backend:
+    internal: true
+  outbound:
 
 volumes:
+  aggregator_state:
   houser_postgres_data:
+  web_data:
+  web_uploads:
+  aggregated_media:
+  caddy_data:
+  caddy_config:

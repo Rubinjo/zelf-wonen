@@ -20,7 +20,7 @@ export async function POST(
         z.string().uuid().parse(listingId);
         const input = publishListingSchema.parse(await request.json());
         const data = await publishListing(listingId, session.user.id, input);
-        return NextResponse.json({ data }, { status: 202 });
+        return NextResponse.json({ data }, { status: 200 });
     } catch (error) {
         if (error instanceof AuthenticationError) {
             return NextResponse.json(
@@ -35,8 +35,7 @@ export async function POST(
             const status = {
                 LISTING_NOT_FOUND: 404,
                 LISTING_NOT_READY: 422,
-                IDIN_VERIFICATION_REQUIRED: 428,
-                PACKAGE_PAYMENT_REQUIRED: 402,
+                IDENTITY_VERIFICATION_REQUIRED: 428,
                 IDEMPOTENCY_CONFLICT: 409,
             }[error.code];
             return NextResponse.json(
@@ -60,7 +59,7 @@ export async function POST(
             {
                 error: {
                     code: "PUBLICATION_FAILED",
-                    message: "Publication provider is unavailable",
+                    message: "Publication is currently unavailable",
                 },
             },
             { status: 503 },

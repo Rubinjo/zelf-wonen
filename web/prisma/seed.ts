@@ -10,10 +10,10 @@
  *   - energy labels + CBS neighborhood profiles
  *   - listings in every status: DRAFT, READY_FOR_VERIFICATION, LIVE,
  *     UNDER_OFFER, SOLD, RENTED, ARCHIVED + an expired-bid-window listing
- *   - media, floor plans, publications (PLATFORM/FUNDA) + paid orders
+ *   - media, floor plans, free PLATFORM publications
  *   - cryptographically chained bids & bid events
  *   - viewing slots/bookings, favorites, saved searches, shortlist shares,
- *     seeker notifications, iDIN verification attempts + audit logs
+ *     seeker notifications, identity verification attempts + audit logs
  *   - 3 property transactions (pending sale, completed sale, completed rental)
  *     with milestones, messages, documents, events + passport versions
  *   - estimator caches + postcode price stats
@@ -50,9 +50,6 @@ import {
     ParkingOption,
     PropertyAmenity,
     PropertyType,
-    PublicationChannel,
-    PublicationPackage,
-    PublicationStatus,
     RoofType,
     TransactionDocumentCategory,
     TransactionEventType,
@@ -2443,7 +2440,7 @@ async function main() {
                             "Representative apartment in the heart of The Hague, close to the Binnenhof and the Hofvijver. Many original ornaments.",
                         asking: BigInt(47500000),
                         viewingNotes:
-                            "Alleen op afspraak, iDIN-verificatie vereist.",
+                            "Alleen op afspraak, identity-verificatie vereist.",
                         attributes: mkAttributes({
                             condition: "GOOD",
                             highlights: [
@@ -3014,122 +3011,20 @@ async function main() {
                     });
                 }
 
-                // ---- 7. Publication orders + publications --------------
-                async function publish(
-                    listingKey: string,
-                    orderKey: string,
-                    opts: {
-                        pkg: PublicationPackage;
-                        amount: bigint;
-                        channels: Array<
-                            [PublicationChannel, PublicationStatus, string]
-                        >;
-                    },
-                ) {
-                    const listing = listings[listingKey];
-                    const order = await tx.publicationOrder.create({
+                // ---- 7. Free platform publications ---------------------
+                for (const listingKey of ["gracht", "watergraafsmeer", "denhaag", "parking", "land", "jordaan", "haarlem", "rotterdam", "oudwest"]) {
+                    const withdrawn = listingKey === "rotterdam";
+                    await tx.listingPublication.create({
                         data: {
-                            listingId: listing.id,
-                            userId: listing.owner,
-                            package: opts.pkg,
-                            status: "PAID",
-                            amountCents: opts.amount,
-                            paymentProvider: "stripe-sim",
-                            paymentReference: orderKey,
-                            paidAt: daysFromNow(-12),
-                            consumedAt: daysFromNow(-11),
+                            listingId: listings[listingKey].id,
+                            idempotencyKey: randomUUID(),
+                            channel: "PLATFORM",
+                            status: withdrawn ? "WITHDRAWN" : "LIVE",
+                            submittedAt: daysFromNow(-11),
+                            liveAt: withdrawn ? null : daysFromNow(-10),
                         },
                     });
-                    for (const [
-                        channel,
-                        status,
-                        externalRef,
-                    ] of opts.channels) {
-                        await tx.listingPublication.create({
-                            data: {
-                                listingId: listing.id,
-                                orderId: order.id,
-                                idempotencyKey: randomUUID(),
-                                channel,
-                                status,
-                                package: opts.pkg,
-                                externalReference: externalRef,
-                                requestPayloadHash: sha256(
-                                    `req:${externalRef}`,
-                                ),
-                                responsePayloadHash: sha256(
-                                    `res:${externalRef}`,
-                                ),
-                                submittedAt: daysFromNow(-11),
-                                liveAt:
-                                    status === "LIVE" ? daysFromNow(-10) : null,
-                                failedAt:
-                                    status === "REJECTED"
-                                        ? daysFromNow(-9)
-                                        : null,
-                                failureCode:
-                                    status === "REJECTED"
-                                        ? "CHANNEL_REJECTED"
-                                        : null,
-                            },
-                        });
-                    }
                 }
-
-                await publish("gracht", "pay_dev_001", {
-                    pkg: "GOLD",
-                    amount: BigInt(49900),
-                    channels: [
-                        ["PLATFORM", "LIVE", "pl_gracht"],
-                        ["FUNDA", "LIVE", "funda_dev_001"],
-                    ],
-                });
-                await publish("watergraafsmeer", "pay_dev_002", {
-                    pkg: "SILVER",
-                    amount: BigInt(29900),
-                    channels: [
-                        ["PLATFORM", "LIVE", "pl_watergraafsmeer"],
-                        ["FUNDA", "REJECTED", "funda_dev_002"],
-                    ],
-                });
-                await publish("denhaag", "pay_dev_003", {
-                    pkg: "GOLD",
-                    amount: BigInt(49900),
-                    channels: [["PLATFORM", "LIVE", "pl_denhaag"]],
-                });
-                await publish("parking", "pay_dev_004", {
-                    pkg: "BRONZE",
-                    amount: BigInt(9900),
-                    channels: [["PLATFORM", "LIVE", "pl_parking"]],
-                });
-                await publish("land", "pay_dev_005", {
-                    pkg: "BRONZE",
-                    amount: BigInt(9900),
-                    channels: [["PLATFORM", "LIVE", "pl_land"]],
-                });
-                await publish("jordaan", "pay_dev_006", {
-                    pkg: "SILVER",
-                    amount: BigInt(29900),
-                    channels: [["PLATFORM", "LIVE", "pl_jordaan"]],
-                });
-                await publish("haarlem", "pay_dev_007", {
-                    pkg: "SILVER",
-                    amount: BigInt(29900),
-                    channels: [["PLATFORM", "LIVE", "pl_haarlem"]],
-                });
-                await publish("rotterdam", "pay_dev_008", {
-                    pkg: "GOLD",
-                    amount: BigInt(49900),
-                    channels: [
-                        ["PLATFORM", "WITHDRAWN", "pl_rotterdam"],
-                        ["FUNDA", "WITHDRAWN", "funda_dev_008"],
-                    ],
-                });
-                await publish("oudwest", "pay_dev_009", {
-                    pkg: "BRONZE",
-                    amount: BigInt(9900),
-                    channels: [["PLATFORM", "LIVE", "pl_oudwest"]],
-                });
 
                 // ---- 8. Bids + bid events (chained) --------------------
                 const bidChains: Record<
@@ -3507,7 +3402,7 @@ async function main() {
                 ]);
 
                 // ---- 10. Identity verification attempts ----------------
-                async function idinAttempt(
+                async function identityAttempt(
                     userKey: keyof typeof users,
                     listingKey: string | null,
                     purpose: VerificationPurpose,
@@ -3528,7 +3423,7 @@ async function main() {
                                 ? listings[listingKey].id
                                 : null,
                             purpose,
-                            provider: "SIMULATED_IDIN",
+                            provider: "DEVELOPMENT_IDENTITY",
                             providerReference: ref,
                             status,
                             subjectReferenceHash: sha256(`subject:${ref}`),
@@ -3545,18 +3440,18 @@ async function main() {
                             failureCode: opts?.failureCode ?? null,
                             responsePayloadHash:
                                 status === "VERIFIED"
-                                    ? sha256(`idin:response:${ref}`)
+                                    ? sha256(`identity:response:${ref}`)
                                     : null,
                         },
                     });
                 }
 
-                await idinAttempt(
+                await identityAttempt(
                     "thomas",
                     null,
                     "ACCOUNT_ACCESS",
                     "VERIFIED",
-                    "idin_dev_001",
+                    "identity_dev_001",
                     {
                         matched: {
                             givenName: "Thomas",
@@ -3565,12 +3460,12 @@ async function main() {
                         },
                     },
                 );
-                await idinAttempt(
+                await identityAttempt(
                     "lisa",
                     null,
                     "ACCOUNT_ACCESS",
                     "VERIFIED",
-                    "idin_dev_002",
+                    "identity_dev_002",
                     {
                         matched: {
                             givenName: "Lisa",
@@ -3579,12 +3474,12 @@ async function main() {
                         },
                     },
                 );
-                await idinAttempt(
+                await identityAttempt(
                     "jan",
                     "gracht",
                     "LISTING_PUBLICATION",
                     "VERIFIED",
-                    "idin_dev_003",
+                    "identity_dev_003",
                     {
                         matched: {
                             givenName: "Jan",
@@ -3594,12 +3489,12 @@ async function main() {
                         completedDays: -15,
                     },
                 );
-                await idinAttempt(
+                await identityAttempt(
                     "sanne",
                     "rotterdam",
                     "LISTING_PUBLICATION",
                     "VERIFIED",
-                    "idin_dev_004",
+                    "identity_dev_004",
                     {
                         matched: {
                             givenName: "Sanne",
@@ -3609,12 +3504,12 @@ async function main() {
                         completedDays: -50,
                     },
                 );
-                await idinAttempt(
+                await identityAttempt(
                     "pieter",
                     "oudwest",
                     "LISTING_PUBLICATION",
                     "VERIFIED",
-                    "idin_dev_005",
+                    "identity_dev_005",
                     {
                         matched: {
                             givenName: "Pieter",
@@ -3624,24 +3519,24 @@ async function main() {
                         completedDays: -60,
                     },
                 );
-                await idinAttempt(
+                await identityAttempt(
                     "bram",
                     "watergraafsmeer",
                     "ACCOUNT_ACCESS",
                     "INITIATED",
-                    "idin_dev_006",
+                    "identity_dev_006",
                     {
                         initiatedDays: -1,
                     },
                 );
-                await idinAttempt(
+                await identityAttempt(
                     "femke",
                     null,
                     "ACCOUNT_ACCESS",
                     "FAILED",
-                    "idin_dev_007",
+                    "identity_dev_007",
                     {
-                        failureCode: "IDIN_USER_CANCELLED",
+                        failureCode: "DEVELOPMENT_CANCELLED",
                         initiatedDays: -4,
                     },
                 );
@@ -4794,7 +4689,7 @@ async function main() {
                         listingKey: "gracht",
                         actorKey: "jan",
                         eventType: "LISTING_PUBLISHED",
-                        payload: { channels: ["PLATFORM", "FUNDA"] },
+                        payload: { channels: ["PLATFORM"] },
                         daysAgo: -10,
                     },
                     {
@@ -4874,7 +4769,7 @@ async function main() {
                         listingKey: "rotterdam",
                         actorKey: "sanne",
                         eventType: "LISTING_PUBLISHED",
-                        payload: { channels: ["PLATFORM", "FUNDA"] },
+                        payload: { channels: ["PLATFORM"] },
                         daysAgo: -45,
                     },
                     {
@@ -5172,10 +5067,10 @@ async function main() {
             "      david.deboer@example.dev      David de Boer (bids, shortlist)",
         );
         console.log(
-            "      femke.smit@example.dev        Femke Smit (bids, failed iDIN attempt)",
+            "      femke.smit@example.dev        Femke Smit (bids, failed identity attempt)",
         );
         console.log(
-            "      bram.willems@example.dev      Bram Willems (EN locale, pending iDIN)",
+            "      bram.willems@example.dev      Bram Willems (EN locale, pending identity)",
         );
         console.log("");
         console.log("  2FA is disabled on all seed accounts so you can log in");

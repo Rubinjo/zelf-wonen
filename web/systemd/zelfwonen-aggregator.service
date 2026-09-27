@@ -1,0 +1,17 @@
+[Unit]
+Description=Refresh Funda and Kamernet listings
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+OnFailure=zelfwonen-aggregator-alert.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/zelf-wonen/web
+ExecStart=/usr/bin/bash /opt/zelf-wonen/web/scripts/sync-aggregator.sh
+# Stop the container too if the service times out or is explicitly stopped.
+ExecStopPost=-/usr/bin/docker stop -t 30 zelfwonen-aggregator-${INVOCATION_ID}
+TimeoutStartSec=20h
+TimeoutStopSec=60
+StandardOutput=journal
+StandardError=journal

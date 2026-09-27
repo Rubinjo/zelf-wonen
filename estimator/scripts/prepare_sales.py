@@ -21,6 +21,9 @@ def main() -> None:
     with args.csv.open(encoding="utf-8-sig", newline="") as stream:
         for line, row in enumerate(csv.DictReader(stream), start=2):
             row["postcode"] = row["postcode"].replace(" ", "").upper()
+            for field in ("houseNumber", "latitude", "longitude"):
+                if field in row and not row[field]:
+                    row[field] = None
             try:
                 sales.append(Sale.model_validate(row))
             except ValueError as error:

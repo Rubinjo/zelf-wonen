@@ -8,6 +8,7 @@ come from a managed secret store in production; never commit them to the repo.
 from __future__ import annotations
 
 from functools import lru_cache
+from typing import Literal
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -40,6 +41,9 @@ class Settings(BaseSettings):
     sync_interval_seconds: int = Field(default=6 * 60 * 60, ge=60)
     # Stable Postgres advisory lock key (single bigint) shared by all replicas.
     advisory_lock_key: int = 7_241_001
+    status_file: str = ".state/status.json"
+    # Enable only after verifying that discovery covers the entire source.
+    expire_missing: bool = False
 
     # --- Scraping resilience ------------------------------------------------
     # Comma-separated list of residential proxy URLs, e.g.
@@ -53,7 +57,7 @@ class Settings(BaseSettings):
     # Pause between individual outbound requests to look like a human.
     polite_delay_seconds: float = 0.5
     # Hard cap per run per source (safety valve for development).
-    max_listings_per_source: int = 10_000
+    max_listings_per_source: int = Field(default=10_000, ge=1)
 
     # --- Sources ------------------------------------------------------------
     enabled_sources: str = "FUNDA,KAMERNET"
@@ -64,8 +68,8 @@ class Settings(BaseSettings):
 
     # --- Image hosting ------------------------------------------------------
     # "s3" uploads to S3-compatible object storage (AWS S3 / Cloudflare R2);
-    # "local" writes under local_media_dir (development only).
-    image_storage_mode: str = "local"
+    # "local" writes to disk (a persistent shared volume on the single-VM deployment).
+    image_storage_mode: Literal["local", "s3"] = "local"
     # Default writes into the web app's public folder so Next.js serves the
     # re-hosted images at /aggregated-media/* in local development.
     local_media_dir: str = "../web/public/aggregated-media"
@@ -74,7 +78,6 @@ class Settings(BaseSettings):
     object_storage_bucket: str = "zelfwonen-listings"
     object_storage_access_key_id: str | None = None
     object_storage_secret_access_key: str | None = None
-    object_storage_public_base_url: str | None = None
     max_images_per_listing: int = 40
 
     @property

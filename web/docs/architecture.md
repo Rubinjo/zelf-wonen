@@ -2,7 +2,7 @@
 
 ## Goals and trust boundaries
 
-ZelfWonen is a bilingual self-service sales/rental platform. The Next.js application is a modular monolith for transactional workflows; deterministic price regression runs in an isolated Python service; and a second isolated Python/uv cron microservice (`aggregator/`) ingests external listings. External providers are hidden behind adapters.
+ZelfWonen is a bilingual self-service sales/rental platform. The Next.js application is a modular monolith for transactional workflows; deterministic comparable-sales valuation runs in an isolated Python service; and a second isolated Python/uv cron microservice (`aggregator/`) ingests external listings. External providers are hidden behind adapters.
 
 The strategic direction is shifting from **publishing** listings outward to
 **aggregating** listings inward from Funda and Kamernet (see "Inbound listing
@@ -11,7 +11,7 @@ aggregator" below).
 Two verification gates are deliberately separate:
 
 1. **Email gate:** Better Auth requires a verified email before any listing, upload, AI, address-data, or estimator endpoint is usable.
-2. **Publication gate:** iDIN is requested only when an owner tries to move a draft to `LIVE` or publish externally. A current successful attempt linked to that owner/listing is required in the same publication transaction.
+2. **Publication gate:** Didit is requested only when an owner tries to move a draft to `LIVE` . A current successful attempt linked to that owner is required in the same publication transaction.
 
 ## High-level system architecture
 
@@ -38,14 +38,12 @@ flowchart TB
   Upload --> Object[(Object storage\nversioning + object lock)]
 
   Property --> PDOK[PDOK Locatieserver\nBAG address/geocoding]
-  Property --> Kadaster[BRK/BAG OGC or licensed feed\nparcel + official land area]
+  Property --> BAG[PDOK BAG WFS\nbuilding details]
+  Property --> Kadaster[PDOK cadastral map WFS\nparcel + official land area]
   Property --> EnergyLabelNl[Energielabel.nl\nbest-effort single-address lookup]
-  Property --> RVO[EP-Online ingestion\nAPI-key mutation files]
 
-  Listing --> IDIN[iDIN provider adapter\nlate-stage identity check]
-  Listing --> Payment[Payment provider\nBronze / Silver / Gold]
-  Listing --> Publisher[Publisher adapter]
-  Publisher --> Funda[Simulated Funda\ndirect consumer API]
+  Listing --> DIDIT[Didit provider adapter\nlate-stage identity check]
+  Listing --> Marketplace[Free ZelfWonen publication]
 
   Estimate --> Cache{Input hash cached?}
   Cache -->|yes| PG
@@ -53,7 +51,7 @@ flowchart TB
   LLM --> ML[Python REST service\nPydantic + deterministic model]
   ML --> Estimate
   Estimate -. tier 2 .-> ML
-  ML --> Sales[(Licensed completed sales + CBS index)]
+  ML --> Sales[(Public Utrecht completed sales + CBS index)]
 
   Bidding --> PDF[Anonymized PDF generator]
   PDF --> Object
@@ -83,70 +81,61 @@ sequenceDiagram
 
 Every protected route repeats the server-side session and `emailVerified` check. Proxy-level cookie checks may improve navigation UX but are never authorization.
 
-### Publish transition and iDIN gate
+### Publish transition and Didit gate
 
 ```mermaid
 sequenceDiagram
   actor U as Owner
   participant API as Publish API
-  participant I as iDIN adapter
-  participant P as Payment provider
+  participant I as Didit adapter
   participant DB as PostgreSQL
-  participant F as Funda adapter
 
-  U->>API: POST publish (package + channels)
-  API->>DB: Check owner, email, validation, paid order, iDIN
-  alt iDIN missing/expired
-    API-->>U: 428 IDIN_VERIFICATION_REQUIRED
-    U->>I: Verify via bank
+  U->>API: POST publish (idempotency key)
+  API->>DB: Check owner, email, validation, Didit
+  alt Didit missing/expired
+    API-->>U: 428 IDENTITY_VERIFICATION_REQUIRED
+    U->>I: Verify identity through hosted Didit workflow
     I->>API: Signed callback
     API->>DB: Append verification attempt/audit
   end
-  U->>P: Pay package when not yet paid
   U->>API: Retry with same idempotency key
-  API->>DB: Create QUEUED publication
-  API->>F: Submit normalized payload
-  F-->>API: External reference/status
-  API->>DB: Mark submitted/live and append audit event
+  API->>DB: Atomically create PLATFORM publication and mark listing LIVE
   API-->>U: Publication result
 ```
 
-Callbacks must validate provider signatures, issuer, audience, expiry, nonce, and replay protection. Do not store BSN or raw bank assertions. Store a salted provider-subject hash, match flags, provider reference, status, timestamps, and a raw-payload hash.
+Callbacks validate the raw-body signature and signed timestamp, then fetch the authoritative session decision. Session, workflow, environment and local account binding must match. Store only references, status, timestamps, expiry and a response-projection hash; documents and biometrics are not persisted. Successful verification is cached per user for 365 days by default and reused across listings. The retired iDIN endpoints return HTTP 410, and identity verification cannot sign an agreement.
 
 ### Hybrid estimator
 
 Normalized property fields, owner text, sorted image hashes, the condition rubric version and current model/data version determine the cache key. A valid 24-hour cache hit bypasses vision and prediction after checking model readiness. Response metadata is stored alongside normalized input in the existing JSON column.
 
 - Authorized uploaded photos are assessed on the fixed 1–5 rubric. Unseen dimensions are null. Vision failure falls back to quantitative inputs.
-- Python selects 5–20 similar local completed sales using postcode sector, property type, floor area, rooms, construction year and recency. A CBS monthly index adjusts sale prices to a common valuation month; a weighted median produces the base price.
+- Python selects 5–20 similar local completed sales using published coordinates around a known postcode sector, property type, floor area, rooms, construction year and recency. Anonymized data excludes the subject’s full postcode. A CBS monthly index adjusts sale prices to a common valuation month; a weighted median produces the base price.
 - Visible-condition adjustments are confidence-weighted and bounded at ±4%. They are explicit heuristics, not learned renovation returns, and cannot increase reported confidence.
-- Missing sales artifacts or insufficient local evidence produce an unavailable estimate. The postcode-statistic and emergency-price fallbacks have been removed.
+- When local evidence is insufficient, an optional property WOZ assessment takes precedence over official municipal median WOZ per m². CBS provincial/city quarterly indices and national monthly movement update the reference value. PDOK verifies the address and supplies exact coordinates, municipality and province; these resolved fields also enter the cache key.
+- Residentievinder asking-price medians only flag disagreement and widen bounds. They do not change the central estimate or act as completed-sale labels. WOZ methods apply no photo premiums and report zero comparables.
+- Missing or stale artifacts, unverified addresses and unsupported properties produce an unavailable estimate.
 
-Outputs include euro cents, heuristic bounds, comparable count, valuation month, image adjustment and version. They are indicative, not a certified valuation. The public CBS index is bundled; a licensed Dutch completed-sales artifact still needs to be imported. See [estimator setup and limitations](../../estimator/README.md).
+Outputs include euro cents, heuristic bounds, method, source links, warnings, comparable count, reference and valuation months, image adjustment and version. They are indicative, not a certified valuation. All 342 municipalities have a statistical fallback; transaction-price accuracy is not nationally validated. Free datasets ship in the image; no paid export is required. See [estimator method and limitations](../../estimator/METHOD.md).
 
 ## Data/integration decisions
 
 ### Kadaster and BAG
 
-PDOK Locatieserver is an open geocoder and is suitable for resolving addresses and BAG identifiers. It is not the authoritative source for every parcel attribute. Official parcel geometry/land area should be obtained from the applicable BRK/BAG OGC API or licensed Kadaster product, normalized by a background sync, and stored with source timestamps and payload provenance.
+PDOK Locatieserver resolves addresses and BAG identifiers. The public PDOK BAG WFS supplies building details, and the PDOK cadastral map WFS supplies parcel land area when the address resolves to a single parcel. These lookups do not require Kadaster API credentials. Stored parcel identifiers and land areas take precedence over live parcel results.
 
-### EP-Online
+### Energy labels
 
-RVO EP-Online exposes public-data delivery for registered labels and performance indicators; access to automated mutation files requires an API key. A scheduled ingestion worker should download/validate mutations and upsert address-level label snapshots. The request path reads the local normalized mirror to avoid coupling the wizard to a bulk-feed outage. Confirm current RVO terms, fields, retention, and redistribution rights before production.
+The request path performs a best-effort single-address Energielabel.nl lookup and falls back to the latest known non-unknown energy label in the local database. No EP-Online ingestion worker or API credentials are used. Existing source metadata is retained for stored labels.
 
 ### Floor plans and media
 
 - Static floor plans accept PNG/JPEG/PDF through signed uploads. MIME sniffing, malware scanning, image transcoding, size limits, SHA-256, and EXIF removal happen before `READY`.
 - Floorplanner embeds use an allowlisted host and project identifier. The platform stores no untrusted arbitrary iframe HTML.
-- Publishing uses short-lived signed URLs or provider-side media transfer; the public-base URL in the scaffold is only an adapter seam.
 
-### Simulated Funda layer (deprecated)
+### Free platform publication
 
-> **Deprecated.** Push-publishing listings to Funda/Kamernet is being
-> abandoned in favour of the inbound aggregator described below. The existing
-> `ListingPublisher` port, `FundaPublisher` simulated adapter, publication
-> orders and iDIN publication gate remain only for compatibility and are no
-> longer a product direction.
+Owner listings are published only on ZelfWonen, with no payment or package selection. The email and Didit gates remain required. Legacy order/package columns are retained for historical records and are not populated by new publications. The external publisher adapter and checkout endpoint have been removed.
 
 ## Inbound listing aggregator
 
@@ -168,7 +157,7 @@ flowchart LR
   Normalize --> Dedup[Address dedup\npostcode+house OR street+house]
   Dedup --> PG[(PostgreSQL\naggregated_listings\n+ platform_links)]
   Cron --> Raw[(raw_payloads\nHTML/JSON debugging)]
-  Cron --> Storage[(Object storage\nre-hosted images)]
+  Cron --> Storage[(Persistent media volume\nre-hosted images)]
 ```
 
 Key decisions:
@@ -179,8 +168,8 @@ Key decisions:
   advisory lock.
 - **Normalization:** chaotic HTML/JSON is mapped onto one strict internal schema
   (`aggregator/app/models.py`). The web app only ever reads normalized rows.
-- **Images:** source images are downloaded and re-hosted in platform-controlled
-  object storage (S3/R2) and served through our own CDN/domain; source images
+- **Images:** source images are downloaded and re-hosted in a persistent VM volume
+  (optionally S3/R2) and served through our own domain; source images
   are never hotlinked.
 - **Deduplication:** the same property listed on Funda and Kamernet with
   different IDs merges into one `AggregatedListing` master by
@@ -210,7 +199,7 @@ Integrity controls:
 2. Canonicalize the event payload and chain `SHA-256(previousHash + payload)`.
 3. Database triggers reject `UPDATE` and `DELETE` for immutable tables.
 4. Export an anonymized PDF after finalization; persist its SHA-256 and chain head.
-5. Store the PDF in object storage with retention/object-lock and share time-limited links with eligible active bidders.
+5. Store the PDF in the private `web_data` volume and return it through the authorized logbook API. Object-lock/WORM archival is future production hardening.
 6. Keep bidder identity/contact data separate from the shareable document and apply retention/deletion policies under GDPR.
 
 Hash chains make alteration evident; they do not by themselves prevent a privileged database administrator from replacing all data. Production should additionally use restricted database roles, off-site signed checkpoints/WORM audit storage, backups, key management, and monitored access.
@@ -233,7 +222,7 @@ The room covers:
 
 Property-passport snapshots include listing/property data, source records, media hashes and the listing version. Each passport version stores the preceding hash and its own canonical SHA-256 hash. The PDF includes the version hash and a separate snapshot hash so recipients can identify the exact dossier version.
 
-Development stores transaction documents outside `public/` under `.data/transaction-documents`; downloads require a verified session and room membership. Production must replace local storage with EU-region private object storage, malware scanning, MIME/content verification, encryption, retention policy and immutable versioning/object lock. Platform confirmation records intent and agreed terms, but is not a qualified electronic signature. Connect an eIDAS-capable signing provider and complete Dutch legal review before representing generated agreements as signed purchase or rental contracts.
+Both development and the single-VM portfolio deployment store transaction documents outside `public/` under `.data/transaction-documents`; Docker persists them in `web_data`. Downloads require a verified session and room membership. The shared storage module also handles listing uploads, generated PDFs and logbooks; Caddy only mounts public media volumes. The estimator reads authorized photo bytes directly, so no object-storage URL is required. See [deployment and backups](deployment.md). Production hardening for real transactions includes malware scanning, encryption, retention policy and immutable archival. Platform confirmation records intent and agreed terms, but is not a qualified electronic signature. Connect an eIDAS-capable signing provider and complete Dutch legal review before representing generated agreements as signed purchase or rental contracts.
 
 ## Personal seeker dashboard
 
@@ -248,7 +237,7 @@ Shortlists use random bearer tokens whose SHA-256 hashes are stored in PostgreSQ
 - Validate all request/response contracts with Zod; use Pydantic against the same OpenAPI contract in Python.
 - Use integer cents, UTC timestamps, UUID primary keys, optimistic listing versions, idempotency keys, and database constraints.
 - Encrypt secrets in managed secret storage; separate production/staging provider credentials.
-- Rate-limit auth, AI, estimate, upload, iDIN start/callback, publication, and bid endpoints.
+- Rate-limit auth, AI, estimate, upload, Didit start/webhook, publication, and bid endpoints.
 - Use CSRF/origin protection, CSP/frame allowlists, signed callbacks, SSRF-safe media resolution, malware scanning, and PII-redacted structured logs.
 - Apply GDPR purpose limitation, data minimization, retention schedules, data-subject workflows, processor agreements, and EU-region storage.
 - Track SLOs and fallback-tier rates. Alert when Tier 3 usage, failed publications, callback signature failures, or audit-chain validation errors rise.

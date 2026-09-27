@@ -44,13 +44,13 @@ export const en: Messages = {
     home: {
         eyebrow: "Sell or rent out your own home",
         title: "Sell your home. Without an estate agent.",
-        intro: "Create a compelling property listing, choose a smart asking price and reach home seekers through ZelfWonen, Funda and Kamernet. You stay in control and save on estate agent fees.",
+        intro: "Create a compelling property listing, choose an asking price and reach home seekers for free through ZelfWonen.",
         primary: "Add your property",
         secondary: "See how it works",
-        channelsEyebrow: "One listing, wider reach",
-        channelsTitle: "Visible where property seekers already search",
+        channelsEyebrow: "List your home for free",
+        channelsTitle: "Reach home seekers on ZelfWonen",
         channelsText:
-            "Manage your property in one place and choose Funda for a sale or rental. For rentals, you can also choose Kamernet. Availability and channel fees depend on your package.",
+            "Manage and publish your property for free on ZelfWonen. Stay in control of your sale or rental.",
         processEyebrow: "Sell without an estate agent",
         processTitle: "From first idea to viewing",
         processIntro:
@@ -66,16 +66,16 @@ export const en: Messages = {
         comparisonHighlight:
             "Save on agent fees and keep control of your home sale.",
         comparisonNote:
-            "Indicative comparison, not a quote. Agent rates and channel costs vary by provider, region, property and package. Always check which external placements are included before payment.",
+            "ZelfWonen is free. External advisers, notaries and other services may charge their own fees.",
         faqEyebrow: "Frequently asked questions",
         faqTitle: "Selling your own home, clearly explained",
         ctaTitle: "Your home. Your process. Your result.",
         ctaText:
             "Create a free account and discover how easy selling or renting on your own can be.",
         footer: "© 2026 ZelfWonen. For the Dutch housing market.",
-        trustPackages: "Packages from €99",
+        trustPackages: "Completely free",
         trustSaleRent: "For selling and renting",
-        trustChannels: "Publish on Funda & Kamernet",
+        trustChannels: "Publish on ZelfWonen",
     },
     footer: {
         privacy: "Privacy",
@@ -296,7 +296,7 @@ export const en: Messages = {
         noListings: "You haven't created any properties yet.",
         noListingsAction: "Start with your first listing",
         statusDraft: "Draft",
-        statusReadyForVerification: "Ready for iDIN",
+        statusReadyForVerification: "Ready for verification",
         statusLive: "Live",
         statusUnderOffer: "Under offer",
         statusSold: "Sold",

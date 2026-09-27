@@ -103,6 +103,15 @@ def normalize_house_number(value: Any) -> int | None:
     return int(match.group(1)) if match else None
 
 
+def normalize_house_number_addition(value: Any) -> str | None:
+    """Retain suffixes from a complete street address or house-number field."""
+    match = re.search(
+        r"\d{1,5}(?:\s*-?\s*([A-Za-z][A-Za-z0-9-]*)|\s*-\s*(\d+))\s*$",
+        clean_text(value),
+    )
+    return (match.group(1) or match.group(2)) if match else None
+
+
 def normalize_price_cents(value: Any) -> int | None:
     """Parse a price string/float ("€ 450.000", "1.250,-", 1250.50) into euro cents."""
     if value is None:
@@ -146,6 +155,8 @@ def normalize_property_type(value: Any) -> PropertyType:
 
 def normalize_availability(value: Any) -> ListingAvailability:
     raw = strip_accents(clean_text(value)).lower()
+    if raw.rsplit("/", 1)[-1] in {"soldout", "outofstock", "discontinued"}:
+        return ListingAvailability.EXPIRED
     for key, availability in _AVAILABILITY.items():
         if key == raw or key in raw:
             return availability

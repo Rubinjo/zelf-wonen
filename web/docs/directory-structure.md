@@ -36,10 +36,9 @@ web/
 │  │  │  ├─ property-data/route.ts     # PDOK + normalized official data
 │  │  │  ├─ listings/[listingId]/
 │  │  │  │  ├─ bids/route.ts           # Immutable bid submission
-│  │  │  │  └─ publish/route.ts        # iDIN/payment/publication gate
+│  │  │  │  └─ publish/route.ts        # email/Didit/free publication gate
 │  │  │  └─ webhooks/
-│  │  │     ├─ idin/route.ts           # Signed provider callback (planned)
-│  │  │     └─ payments/route.ts       # Signed payment callback (planned)
+│  │  │     ├─ identity/didit/webhook/route.ts # Signed provider callback
 │  │  ├─ globals.css
 │  │  ├─ layout.tsx
 │  │  └─ page.tsx                      # Bilingual marketing shell
@@ -55,11 +54,9 @@ web/
 │  ├─ generated/prisma/                # Generated, excluded from manual edits
 │  ├─ lib/
 │  │  ├─ integrations/
-│  │  │  ├─ identity/idin-provider.ts
+│  │  │  ├─ identity/didit-client.ts
 │  │  │  ├─ property-data/pdok-client.ts
 │  │  │  └─ publishing/
-│  │  │     ├─ publisher.ts
-│  │  │     └─ funda-publisher.ts
 │  │  ├─ schemas/                      # Shared Zod API/domain contracts
 │  │  ├─ auth-client.ts
 │  │  ├─ auth.ts

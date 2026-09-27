@@ -29,7 +29,7 @@ def house_number_addition_key(addition: str | None) -> str:
 
 
 def postcode_house_key(postcode: str | None, house_number: int, addition: str | None) -> str | None:
-    if not postcode or house_number is None:
+    if not postcode or not house_number or house_number < 0:
         return None
     normalized = clean_text(postcode).upper().replace(" ", "")
     if not re.fullmatch(r"\d{4}[A-Za-z]{2}", normalized):

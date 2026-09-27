@@ -11,6 +11,9 @@ RUN uv sync --frozen --no-dev
 
 COPY app ./app
 COPY data/cbs-index.json ./data/cbs-index.json
+COPY data/public-sales.json ./data/public-sales.json
+COPY data/national-woz.json ./data/national-woz.json
+COPY data/NOTICE.md ./data/NOTICE.md
 
 FROM python:3.12 AS runtime
 

@@ -286,20 +286,7 @@ export const updateListingSchema = z
         },
     );
 
-export const publishListingSchema = z.object({
-    package: z.enum(["BRONZE", "SILVER", "GOLD"]),
-    channels: z
-        .array(z.enum(["PLATFORM", "FUNDA"]))
-        .min(1)
-        .max(2)
-        .refine((channels) => new Set(channels).size === channels.length, {
-            message: "Publication channels must be unique",
-        }),
-    idempotencyKey: z.string().uuid(),
-});
-
-export const createPublicationOrderSchema = z.object({
-    package: z.enum(["BRONZE", "SILVER", "GOLD"]),
+export const publishListingSchema = z.strictObject({
     idempotencyKey: z.string().uuid(),
 });
 

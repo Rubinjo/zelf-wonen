@@ -1,0 +1,10 @@
+node_modules
+.next
+.env*
+.data
+.backups
+public/uploads
+public/aggregated-media
+src/generated
+*.tsbuildinfo
+npm-debug.log*

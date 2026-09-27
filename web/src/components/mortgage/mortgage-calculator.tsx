@@ -1,7 +1,8 @@
 "use client";
 
+import { PublicHeader } from "@/components/platform/public-header";
+
 import { useMemo, useState, type ReactNode } from "react";
-import Link from "next/link";
 import {
     Banknote,
     Briefcase,
@@ -17,8 +18,6 @@ import {
     Users,
     Zap,
 } from "lucide-react";
-import { AuthActions } from "@/components/auth/auth-actions";
-import { BrandLogo } from "@/components/platform/brand-logo";
 import { useTranslations } from "@/lib/messages/use-translations";
 import type { MessageKey } from "@/lib/messages/types";
 import {
@@ -795,40 +794,7 @@ export function MortgageCalculator() {
 
     return (
         <div className="min-h-screen bg-background">
-            <header className="border-b border-line bg-background/92 backdrop-blur-xl">
-                <div className="mx-auto flex h-18 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:px-8">
-                    <Link
-                        href="/"
-                        className="flex items-center"
-                        aria-label="ZelfWonen home"
-                    >
-                        <BrandLogo className="h-9 w-auto" />
-                    </Link>
-                    <nav className="flex items-center gap-1.5 sm:gap-2">
-                        <Link
-                            href="/search"
-                            className="hidden px-3 py-2 text-sm font-semibold text-muted transition hover:text-brand lg:block"
-                        >
-                            Woning zoeken
-                        </Link>
-                        <Link
-                            href="/mortgage-calculator"
-                            className="hidden px-3 py-2 text-sm font-semibold text-brand lg:block"
-                        >
-                            Hypotheek berekenen
-                        </Link>
-                        <AuthActions
-                            language={language}
-                            dashboardHref="/dashboard/seeker"
-                            dashboardLabel={
-                                language === "en"
-                                    ? "My dashboard"
-                                    : "Mijn dashboard"
-                            }
-                        />
-                    </nav>
-                </div>
-            </header>
+            <PublicHeader language={language} />
 
             <section className="border-b border-line bg-brand-dark text-white">
                 <div className="mx-auto max-w-[1600px] px-4 py-9 sm:px-6 lg:px-8">

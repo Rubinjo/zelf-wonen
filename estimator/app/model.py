@@ -4,12 +4,13 @@ import math
 import os
 from datetime import date
 from pathlib import Path
+from statistics import mean
 
 from .data import Sale, load_index, load_sales
 from .schemas import EstimateRequest, EstimateResponse
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
-MODEL_VERSION = "nl-comparables-v1"
+MODEL_VERSION = "nl-comparables-v2"
 CONDITION_FIELDS = (
     "kitchenCondition",
     "bathroomCondition",
@@ -21,6 +22,14 @@ CONDITION_FIELDS = (
 
 class InsufficientData(ValueError):
     pass
+
+
+def distance_km(first: tuple[float, float], second: tuple[float, float]) -> float:
+    lat1, lon1, lat2, lon2 = map(math.radians, (*first, *second))
+    a = math.sin((lat2 - lat1) / 2) ** 2 + (
+        math.cos(lat1) * math.cos(lat2) * math.sin((lon2 - lon1) / 2) ** 2
+    )
+    return 6371 * 2 * math.asin(math.sqrt(min(1.0, a)))
 
 
 def weighted_quantile(values: list[tuple[float, float]], quantile: float) -> float:
@@ -43,7 +52,7 @@ class ComparableSalesModel:
     @classmethod
     def from_files(cls) -> "ComparableSalesModel":
         dataset, sales_hash = load_sales(
-            Path(os.getenv("ESTIMATOR_SALES_PATH", str(DATA_DIR / "sales.json")))
+            Path(os.getenv("ESTIMATOR_SALES_PATH", str(DATA_DIR / "public-sales.json")))
         )
         index, index_hash = load_index(DATA_DIR / "cbs-index.json")
         return cls(dataset.sales, index, f"{MODEL_VERSION}-{sales_hash}-{index_hash}")
@@ -60,19 +69,49 @@ class ComparableSalesModel:
         target_month = max(months)
         if (as_of - date.fromisoformat(target_month + "-01")).days > 180:
             raise InsufficientData("CBS price index is stale; refresh it before estimating")
+        # Approximate the sector location from observed properties, never from the
+        # numerical postcode. Only pre-valuation observations can locate a subject.
+        locations = [
+            (sale.latitude, sale.longitude)
+            for sale in self.sales
+            if sale.postcode[:4] == request.postcode[:4]
+            and sale.saleDate < as_of
+            and sale.latitude is not None
+            and sale.longitude is not None
+        ]
+        center = (
+            (mean(lat for lat, _ in locations), mean(lon for _, lon in locations))
+            if locations
+            else None
+        )
+        if request.latitude is not None and request.longitude is not None:
+            center = (request.latitude, request.longitude)
         # One observation per property avoids repeat sales dominating the neighborhood.
         candidates: dict[str, tuple[float, Sale]] = {}
         for sale in self.sales:
             age = (as_of - sale.saleDate).days
             ratio = sale.livingAreaSqm / request.livingAreaSqm
             month = sale.saleDate.strftime("%Y-%m")
+            geographic_distance = None
+            if center and sale.latitude is not None and sale.longitude is not None:
+                geographic_distance = distance_km(center, (sale.latitude, sale.longitude))
+            nearby = (
+                geographic_distance <= 5
+                if geographic_distance is not None
+                else sale.postcode[:4] == request.postcode[:4]
+            )
             if (
                 not 0 < age <= 3 * 365
                 or month > target_month
                 or month not in self.index
-                or sale.postcode[:4] != request.postcode[:4]
+                or not nearby
                 or sale.propertyType != request.propertyType
-                or (sale.postcode == request.postcode and sale.houseNumber == request.houseNumber)
+                # Without real house numbers, exclude the entire subject postcode
+                # to prevent its own anonymized sale from supporting its valuation.
+                or (
+                    sale.postcode == request.postcode
+                    and (sale.houseNumber is None or sale.houseNumber == request.houseNumber)
+                )
                 or not 0.75 <= ratio <= 1.33
                 or abs(sale.roomCount - request.roomCount) > 2
             ):
@@ -89,6 +128,7 @@ class ComparableSalesModel:
                 + abs(sale.roomCount - request.roomCount) / 2
                 + year_distance / 30
                 + age / 1095
+                + (geographic_distance / 2 if geographic_distance is not None else 0)
             )
             previous = candidates.get(sale.propertyId)
             if previous is None or sale.saleDate > previous[1].saleDate:

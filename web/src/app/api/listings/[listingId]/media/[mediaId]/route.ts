@@ -1,10 +1,9 @@
-import { unlink } from "node:fs/promises";
-import path from "node:path";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { requireEmailVerifiedUser } from "@/features/auth/guards";
 import { handleApiError } from "@/lib/api-response";
 import { db } from "@/lib/db";
+import { deleteStoredFile } from "@/lib/storage";
 
 class MediaDeleteConflict extends Error {}
 
@@ -79,19 +78,10 @@ export async function DELETE(
             );
         }
         if (media.storageKey.startsWith("uploads/")) {
-            const target = path.resolve(
-                process.cwd(),
-                "public",
-                media.storageKey,
-            );
-            const uploadsRoot = path.resolve(
-                process.cwd(),
-                "public",
-                "uploads",
-            );
-            if (target.startsWith(`${uploadsRoot}${path.sep}`)) {
-                await unlink(target).catch(() => undefined);
-            }
+            await deleteStoredFile("listing-media", media.storageKey).catch((error: unknown) => {
+                // The database deletion is committed; report failed cleanup for operators.
+                console.error("Failed to remove listing media", media.id, error);
+            });
         }
         return new NextResponse(null, { status: 204 });
     } catch (error) {

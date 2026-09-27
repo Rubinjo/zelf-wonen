@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import {
-    AlertTriangle,
     Check,
     CheckCircle2,
     Clock3,
@@ -134,13 +133,11 @@ export function Koopovereenkomst({
     isSeller,
     closed,
     refresh,
-    signNotice,
 }: {
     room: AgreementRoom;
     isSeller: boolean;
     closed: boolean;
     refresh: () => Promise<void>;
-    signNotice?: string;
 }) {
     const agreement = room.agreement;
     const signed = agreement?.status === "SIGNED";
@@ -150,7 +147,6 @@ export function Koopovereenkomst({
     const editable =
         isSeller && !closed && !anySigned && agreement?.status !== "VOID";
     const [editing, setEditing] = useState(Boolean(editable && !agreement));
-    const [noticeDismissed, setNoticeDismissed] = useState(false);
     const endpoint = `/api/transactions/${room.id}/agreement`;
 
     const saveMutation = useMutation({
@@ -196,21 +192,6 @@ export function Koopovereenkomst({
             await refresh();
         },
     });
-    const idinMutation = useMutation({
-        mutationFn: () =>
-            api<{ redirectUrl: string | null }>(endpoint, {
-                method: "POST",
-                headers: { "content-type": "application/json" },
-                body: JSON.stringify({ action: "SIGN_IDIN" }),
-            }),
-        onSuccess(data) {
-            if (data.redirectUrl) {
-                // Volgende pagina is de (gesimuleerde) iDIN-omgeving; de
-                // callback voltooit de ondertekening en keert terug.
-                window.location.assign(data.redirectUrl);
-            }
-        },
-    });
     const pdfMutation = useMutation({
         mutationFn: () =>
             api(`/api/transactions/${room.id}/generated-documents`, {
@@ -239,31 +220,6 @@ export function Koopovereenkomst({
 
     return (
         <div className="grid gap-5 lg:grid-cols-[1.3fr_0.7fr]">
-            {signNotice && !noticeDismissed && (
-                <div
-                    className={`flex items-start gap-3 border p-4 text-sm lg:col-span-2 ${signNotice === "success" ? "border-brand/30 bg-brand/5 text-brand-dark" : "border-amber-200 bg-amber-50 text-amber-900"}`}
-                >
-                    {signNotice === "success" ? (
-                        <CheckCircle2 className="mt-0.5 shrink-0" size={18} />
-                    ) : (
-                        <AlertTriangle className="mt-0.5 shrink-0" size={18} />
-                    )}
-                    <span className="flex-1 leading-6">
-                        {signNotice === "success"
-                            ? "Je hebt de koopovereenkomst met iDIN ondertekend. De andere partij kan nu ondertekenen."
-                            : signNotice === "cancelled"
-                              ? "De iDIN-ondertekening is geannuleerd. De koopovereenkomst is niet ondertekend."
-                              : "De iDIN-ondertekening kon niet worden voltooid. Probeer het opnieuw."}
-                    </span>
-                    <button
-                        onClick={() => setNoticeDismissed(true)}
-                        className="shrink-0 text-current opacity-70 hover:opacity-100"
-                        aria-label="Melding sluiten"
-                    >
-                        <X size={16} />
-                    </button>
-                </div>
-            )}
             <Panel
                 title="Koopovereenkomst"
                 description="De gestructureerde afspraken tussen koper en verkoper, gebaseerd op het gangbare model voor bestaande woningen en de wettelijke bepalingen van het Burgerlijk Wetboek."
@@ -339,10 +295,6 @@ export function Koopovereenkomst({
                 <SigningPanel
                     room={room}
                     agreement={agreement!}
-                    isSeller={isSeller}
-                    onSignIdin={() => idinMutation.mutate()}
-                    idinPending={idinMutation.isPending}
-                    idinError={idinMutation.error?.message}
                 />
                 {editable && (
                     <Panel title="Beheren">
@@ -1276,130 +1228,21 @@ function AgreementPreview({
     );
 }
 
-function SigningPanel({
-    room,
-    agreement,
-    isSeller,
-    onSignIdin,
-    idinPending,
-    idinError,
-}: {
-    room: AgreementRoom;
-    agreement: Agreement;
-    isSeller: boolean;
-    onSignIdin: () => void;
-    idinPending: boolean;
-    idinError?: string;
-}) {
-    const mySigned = isSeller
-        ? Boolean(agreement.sellerSignedAt)
-        : Boolean(agreement.buyerSignedAt);
-    const [consent, setConsent] = useState(false);
-    const signed = agreement.status === "SIGNED";
-    const available =
-        !signed &&
-        (agreement.status === "AWAITING_SIGNATURES" ||
-            agreement.status === "PARTIALLY_SIGNED");
+function SigningPanel({ room, agreement }: { room: AgreementRoom; agreement: Agreement }) {
     return (
-        <Panel
-            title="Ondertekening"
-            description="Elke partij ondertekent dezelfde inhoud. Met iDIN wordt je identiteit via je bank bevestigd (geavanceerde elektronische handtekening)."
-        >
+        <Panel title="Ondertekening" description="Didit controleert je identiteit. Digitale ondertekening van koopovereenkomsten is nog niet beschikbaar.">
             <div className="grid gap-3">
-                <SignatureRow
-                    label={room.seller.name}
-                    role="Verkoper"
-                    signedAt={agreement.sellerSignedAt}
-                    method={agreement.sellerSignatureMethod}
-                />
-                <SignatureRow
-                    label={room.buyer.name}
-                    role="Koper"
-                    signedAt={agreement.buyerSignedAt}
-                    method={agreement.buyerSignatureMethod}
-                />
+                <SignatureRow label={room.seller.name} role="Verkoper" signedAt={agreement.sellerSignedAt} method={agreement.sellerSignatureMethod} />
+                <SignatureRow label={room.buyer.name} role="Koper" signedAt={agreement.buyerSignedAt} method={agreement.buyerSignatureMethod} />
             </div>
-            {signed ? (
-                <p className="mt-4 inline-flex items-center gap-2 font-semibold text-brand">
-                    <CheckCircle2 size={18} /> Koopovereenkomst ondertekend
-                </p>
-            ) : available ? (
-                mySigned ? (
-                    <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-brand">
-                        <Check size={16} /> Jij hebt ondertekend. We wachten op
-                        de andere partij.
-                    </p>
-                ) : (
-                    <div className="mt-5 border border-brand/20 bg-background p-4">
-                        <label className="flex items-start gap-3 text-sm leading-6">
-                            <input
-                                type="checkbox"
-                                checked={consent}
-                                onChange={(event) =>
-                                    setConsent(event.target.checked)
-                                }
-                                className="mt-1 size-4 accent-brand"
-                            />{" "}
-                            <span>
-                                Ik verklaar dat mijn digitale bevestiging mijn
-                                instemming met de inhoud van deze
-                                koopovereenkomst uitdrukt en dat ik de
-                                wettelijke bedenktijd en ontbindende voorwaarden
-                                ken (Art 3:15a BW).
-                            </span>
-                        </label>
-                        <button
-                            onClick={onSignIdin}
-                            disabled={!consent || idinPending}
-                            className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 bg-brand px-5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                            {idinPending ? (
-                                <LoaderCircle
-                                    className="animate-spin"
-                                    size={17}
-                                />
-                            ) : (
-                                <ShieldCheck size={17} />
-                            )}{" "}
-                            Ondertekenen met iDIN
-                        </button>
-                        {idinError && (
-                            <p className="mt-3 text-sm text-red-700">
-                                {idinError}
-                            </p>
-                        )}
-                        <p className="mt-3 text-xs leading-5 text-muted">
-                            Je wordt doorgestuurd naar je bank om je identiteit
-                            te bevestigen. Daarna wordt de overeenkomst
-                            automatisch ondertekend en keer je terug naar deze
-                            pagina. Ondertekenen zonder iDIN is niet mogelijk.
-                        </p>
-                    </div>
-                )
-            ) : (
-                <p className="mt-4 text-sm text-muted">
-                    {agreement.status === "DRAFT"
-                        ? "De verkoper stelt de koopovereenkomst op. Na aanbieding kun je hier ondertekenen."
-                        : agreement.status === "VOID"
-                          ? "Deze koopovereenkomst is ingetrokken."
-                          : "Ondertekening is niet beschikbaar."}
-                </p>
-            )}
-            <div className="mt-5 flex gap-2 border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-900">
-                <AlertTriangle className="mt-0.5 shrink-0" size={14} />
-                <span>
-                    Ook met iDIN blijft een notariële leveringsakte vereist voor
-                    de eigendomsoverdracht. Laat de overeenkomst voor
-                    ondertekening controleren door een deskundige of de notaris.
-                </span>
-            </div>
+            {agreement.status !== "SIGNED" && <p className="mt-4 text-sm text-muted">Je kunt de conceptovereenkomst downloaden en buiten het platform laten ondertekenen.</p>}
         </Panel>
     );
 }
 
 function methodLabel(method: string | null) {
     if (!method) return "";
-    if (method === "IDIN") return "iDIN (bankidentificatie)";
+    if (method === "IDIN") return "iDIN (historisch)";
     if (method === "PLATFORM_ACK") return "platformbevestiging";
     return method;
 }

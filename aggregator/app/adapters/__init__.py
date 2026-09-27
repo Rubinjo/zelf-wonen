@@ -12,6 +12,7 @@ from collections.abc import AsyncIterator
 from dataclasses import dataclass
 from typing import Any
 
+from ..config import Settings
 from ..http_client import ScraperClient
 from ..models import ListingSource, NormalizedListing
 
@@ -75,11 +76,11 @@ class AdapterRegistry:
         return [adapter for adapter in self._adapters.values() if adapter.source.value in wanted]
 
     @classmethod
-    def default(cls) -> AdapterRegistry:
+    def default(cls, settings: Settings | None = None) -> AdapterRegistry:
         from .funda import FundaAdapter
         from .kamernet import KamernetAdapter
 
         registry = cls()
-        registry.register(FundaAdapter())
-        registry.register(KamernetAdapter())
+        registry.register(FundaAdapter(settings))
+        registry.register(KamernetAdapter(settings))
         return registry

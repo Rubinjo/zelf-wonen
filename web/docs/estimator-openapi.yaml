@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: ZelfWonen deterministic estimator API
   version: 1.0.0
-  description: Internal REST contract between Next.js and the Python regression service.
+  description: Internal REST contract for the evidence hierarchy. Local completed sales take precedence, followed by supplied property WOZ or official municipal WOZ medians with regional CBS index adjustments. All bounds are uncalibrated. The web server resolves geography with PDOK.
 servers:
   - url: http://estimator:8000
 paths:
@@ -85,6 +85,13 @@ components:
           type: string
           pattern: "^[1-9][0-9]{3}[A-Z]{2}$"
         houseNumber: { type: integer, minimum: 1 }
+        addition: { type: [string, "null"], maxLength: 12 }
+        municipalityCode: { type: [string, "null"], pattern: '^GM[0-9]{4}$' }
+        provinceCode: { type: [string, "null"], pattern: '^PV(2[0-9]|3[01])$' }
+        latitude: { type: [number, "null"], minimum: 50, maximum: 54 }
+        longitude: { type: [number, "null"], minimum: 3, maximum: 8 }
+        wozValueCents: { type: [integer, "null"], minimum: 1000000, maximum: 2000000000, description: Supply with wozAssessmentYear }
+        wozAssessmentYear: { type: [integer, "null"], minimum: 2000, maximum: 2200, description: Assessment year; value reference is January of the preceding year }
         propertyType:
           type: string
           enum: [HOUSE, APARTMENT, PARKING, LAND, COMMERCIAL, OTHER]
@@ -113,6 +120,13 @@ components:
         upperBoundCents: { type: integer, minimum: 0 }
         confidence: { type: number, minimum: 0, maximum: 1 }
         modelVersion: { type: string, minLength: 1 }
-        comparableCount: { type: integer, minimum: 5 }
+        comparableCount: { type: integer, minimum: 0 }
+        method: { type: string, enum: [COMPARABLE_SALES, PROPERTY_WOZ, MUNICIPAL_WOZ] }
+        warnings: { type: array, items: { type: string } }
+        calibrated: { type: boolean, const: false }
+        sourceUrl: { type: string }
+        referenceMonth: { type: [string, "null"] }
+        askingBenchmarkCents: { type: [integer, "null"] }
+        askingSourceUrl: { type: [string, "null"] }
         valuationMonth: { type: string, description: Latest available completed CBS index month (YYYY-MM) }
         conditionAdjustmentPercent: { type: number, minimum: -4, maximum: 4 }

@@ -1,8 +1,8 @@
 """Image hosting: download source images into platform-controlled storage.
 
-We never hotlink source images. Each image is downloaded through the same
-resilient client, content-hashed, and written either to S3-compatible object
-storage (AWS S3 / Cloudflare R2) or to a local directory in development. The
+We never hotlink source images. Each image uses the source proxy/User-Agent pool,
+is content-hashed, and is written either to S3-compatible object
+storage (AWS S3 / Cloudflare R2) or to a persistent local directory on the VM. The
 UI only ever references the returned ``storage_key``.
 """
 
@@ -10,7 +10,8 @@ from __future__ import annotations
 
 import hashlib
 import logging
-import mimetypes
+import os
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -21,7 +22,20 @@ from .http_client import ScraperClient
 
 logger = logging.getLogger(__name__)
 
-ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/avif"}
+MAX_IMAGE_BYTES = 20 * 1024 * 1024
+
+
+def image_content_type(body: bytes) -> str | None:
+    """Reject HTML/error pages even when a source URL ends in .jpg."""
+    if body.startswith(b"\xff\xd8\xff"):
+        return "image/jpeg"
+    if body.startswith(b"\x89PNG\r\n\x1a\n"):
+        return "image/png"
+    if body[:4] == b"RIFF" and body[8:12] == b"WEBP":
+        return "image/webp"
+    if body[4:8] == b"ftyp" and body[8:12] in (b"avif", b"avis"):
+        return "image/avif"
+    return None
 
 
 @dataclass
@@ -39,7 +53,8 @@ class ImageStorage:
         self._s3 = None
         if settings.image_storage_mode == "s3":
             self._s3 = self._build_s3_client(settings)
-        Path(settings.local_media_dir).mkdir(parents=True, exist_ok=True)
+        else:
+            Path(settings.local_media_dir).mkdir(parents=True, exist_ok=True)
 
     @staticmethod
     def _build_s3_client(settings: Settings):
@@ -62,10 +77,10 @@ class ImageStorage:
             logger.warning("image download failed or empty: %s", source_url)
             return None
 
-        content_type = mimetypes.guess_type(source_url)[0] or "image/jpeg"
-        if content_type not in ALLOWED_IMAGE_TYPES:
-            # Default to JPEG when the URL carries no reliable extension.
-            content_type = "image/jpeg"
+        content_type = image_content_type(body)
+        if content_type is None or len(body) > MAX_IMAGE_BYTES:
+            logger.warning("invalid or oversized image: %s", source_url)
+            return None
 
         sha256 = hashlib.sha256(body).hexdigest()
         extension = {
@@ -88,7 +103,21 @@ class ImageStorage:
             target = Path(self._settings.local_media_dir) / storage_key
             target.parent.mkdir(parents=True, exist_ok=True)
             if not target.exists():
-                target.write_bytes(body)
+                # Publish only complete files; Caddy reads this volume concurrently.
+                descriptor, temporary_name = tempfile.mkstemp(
+                    dir=target.parent, prefix=".upload-"
+                )
+                temporary_path = Path(temporary_name)
+                try:
+                    with os.fdopen(descriptor, "wb") as temporary:
+                        temporary.write(body)
+                    temporary_path.chmod(0o644)
+                    try:
+                        os.link(temporary_path, target)
+                    except FileExistsError:
+                        pass  # Another writer stored the same content hash.
+                finally:
+                    temporary_path.unlink(missing_ok=True)
 
         return StoredImage(
             storage_key=storage_key,
@@ -110,10 +139,16 @@ class ImageStorage:
                 timeout=self._settings.request_timeout_seconds,
                 follow_redirects=True,
                 headers=headers,
+                proxy=proxy,
             ) as session:
-                response = await session.get(source_url, proxy=proxy)
-                if response.status_code >= 400:
-                    return None
-                return response.content
+                async with session.stream("GET", source_url) as response:
+                    if response.status_code >= 400:
+                        return None
+                    body = bytearray()
+                    async for chunk in response.aiter_bytes():
+                        body.extend(chunk)
+                        if len(body) > MAX_IMAGE_BYTES:
+                            return None
+                    return bytes(body)
         except httpx.HTTPError:
             return None

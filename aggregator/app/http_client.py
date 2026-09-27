@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import json
 import logging
 import random
 from dataclasses import dataclass
@@ -97,8 +98,19 @@ class ScraperClient:
         for attempt in range(self._settings.max_retries + 1):
             try:
                 response = await self._request_once(url, referer=referer)
-                if response.status_code in (429, 500, 502, 503, 504):
+                if response.status_code not in (404, 410) and not 200 <= response.status_code < 300:
                     raise ScrapeError(f"HTTP {response.status_code} for {url}")
+                if response.status_code == 200 and any(
+                    marker in response.text.lower()
+                    for marker in (
+                        "<title>just a moment",
+                        "<title>access denied",
+                        "cf-chl-",
+                        "<title>captcha",
+                        "<title>robot or human",
+                    )
+                ):
+                    raise ScrapeError(f"challenge page for {url}")
                 return response
             except (httpx.HTTPError, ScrapeError) as exc:  # noqa: B902 - httpx.HTTPError subclass
                 last_error = exc
@@ -115,10 +127,15 @@ class ScraperClient:
                 await asyncio.sleep(delay)
         raise ScrapeError(f"failed to fetch {url}: {last_error}") from last_error
 
-    async def fetch_json(self, url: str, *, referer: str | None = None) -> dict[str, Any]:
+    async def fetch_json(
+        self, url: str, *, referer: str | None = None
+    ) -> dict[str, Any] | list[dict[str, Any]]:
         response = await self.fetch(url, referer=referer)
         try:
-            return response.text and __import__("json").loads(response.text)  # type: ignore[return-value]
+            data = json.loads(response.text)
+            if not isinstance(data, (dict, list)):
+                raise ValueError("expected an object or array")
+            return data
         except ValueError as exc:
             raise ScrapeError(f"invalid JSON from {url}") from exc
 
@@ -128,7 +145,17 @@ class ScraperClient:
         if referer:
             headers["Referer"] = referer
         proxy = self._proxies.next()
-        response = await self._client.get(url, headers=headers, proxy=proxy)
+        if proxy:
+            # httpx configures proxies on the client, not on individual requests.
+            async with httpx.AsyncClient(
+                proxy=proxy,
+                timeout=self._settings.request_timeout_seconds,
+                follow_redirects=True,
+                headers=self._client.headers,
+            ) as session:
+                response = await session.get(url, headers=headers)
+        else:
+            response = await self._client.get(url, headers=headers)
         content_hash = hashlib.sha256(response.content).hexdigest()
         return ScrapeResponse(
             url=str(response.url),

@@ -3,13 +3,12 @@
 One run per source:
 
 1. discover cheap summaries (sitemap/search),
-2. decide per listing whether a full detail fetch is needed (new, changed
-   summary, or previously offline),
+2. refresh every discovered detail page to capture price/status changes,
 3. store the raw detail payload in ``raw_payloads`` for debugging,
-4. normalize to the strict internal schema, deduplicate across sources by
-   address, and upsert a single master record + ``platform_links``,
+4. normalize and upsert master records + ``platform_links`` using stable source
+   identity and conservative postcode matching for Funda,
 5. download images into platform-controlled storage,
-6. mark links absent from this run as OFFLINE (never delete).
+6. optionally expire absent links, only after complete successful discovery.
 
 The whole run is guarded by a PostgreSQL advisory lock, so a scrape that runs
 longer than the cron interval can never overlap with itself.
@@ -26,11 +25,12 @@ import asyncpg
 from .adapters import AdapterRegistry, ListingGone, SourceAdapter
 from .config import Settings
 from .db import Repository
-from .dedup import canonical_dedup_key, postcode_house_key, slugify, street_house_key
+from .dedup import postcode_house_key, slugify
 from .http_client import ScrapeError, ScraperClient
 from .lock import advisory_lock
 from .models import ListingAvailability
 from .normalizer import clean_text, normalize_availability, normalize_price_cents, normalize_purpose
+from .status import record_status
 from .storage import ImageStorage
 
 logger = logging.getLogger(__name__)
@@ -58,16 +58,34 @@ async def run_sync(settings: Settings) -> None:
                     "skipping run: another aggregator holds advisory lock %d",
                     settings.advisory_lock_key,
                 )
-                return
+                raise ScrapeError("another aggregator is running")
             repo = Repository(pool, settings)
             storage = ImageStorage(settings)
-            registry = AdapterRegistry.default()
+            registry = AdapterRegistry.default(settings)
             async with ScraperClient(settings) as client:
-                for adapter in registry.enabled(settings.source_names):
+                adapters = registry.enabled(settings.source_names)
+                if {a.source.value for a in adapters} != set(settings.source_names) or not adapters:
+                    raise ScrapeError("enabled sources are empty or contain unknown sources")
+                failed: list[str] = []
+                for adapter in adapters:
+                    counts = {"seen": 0, "processed": 0, "failed": 0}
                     try:
-                        await sync_source(adapter, client, repo, storage, settings)
+                        await sync_source(adapter, client, repo, storage, settings, counts)
                     except Exception:  # one source must never take down the whole run
                         logger.exception("source %s failed", adapter.source.value)
+                        failed.append(adapter.source.value)
+                        record_status(
+                            settings.status_file,
+                            adapter.source.value,
+                            counts=counts,
+                            error="Source failed; inspect the service journal",
+                        )
+                    else:
+                        record_status(
+                            settings.status_file, adapter.source.value, counts=counts, error=None
+                        )
+                if failed:
+                    raise ScrapeError(f"sources failed: {', '.join(failed)}")
     finally:
         await pool.close()
 
@@ -78,22 +96,38 @@ async def sync_source(
     repo: Repository,
     storage: ImageStorage,
     settings: Settings,
-) -> None:
+    counts: dict[str, int] | None = None,
+) -> int:
+    counts = counts if counts is not None else {"seen": 0, "processed": 0, "failed": 0}
     seen_ids: set[str] = set()
+    failures = 0
     async for summary in adapter.discover(client):
         external_id = str(summary.get("external_id") or "")
         if not external_id:
             continue
         seen_ids.add(external_id)
+        counts["seen"] = len(seen_ids)
         try:
             await process_listing(adapter, client, repo, storage, settings, summary)
+            counts["processed"] += 1
         except ScrapeError:
+            failures += 1
+            counts["failed"] += 1
             logger.warning("scrape failed for %s %s", adapter.source.value, summary.get("url"))
         except Exception:
+            failures += 1
+            counts["failed"] += 1
             logger.exception("unhandled error for %s %s", adapter.source.value, external_id)
 
-    # Expiry: never delete. Anything not seen this run becomes OFFLINE.
-    affected_masters = await repo.mark_links_offline_for_source(adapter.source, seen_ids)
+    if not seen_ids or failures:
+        raise ScrapeError(f"{adapter.source.value}: {len(seen_ids)} seen, {failures} failed")
+
+    # Absence is not proof of removal unless discovery is known to be exhaustive.
+    affected_masters = (
+        await repo.mark_links_offline_for_source(adapter.source, seen_ids)
+        if settings.expire_missing
+        else []
+    )
     for master_id in affected_masters:
         await repo.mark_master_offline_if_all_links_offline(master_id)
     logger.info(
@@ -102,6 +136,7 @@ async def sync_source(
         len(seen_ids),
         len(affected_masters),
     )
+    return len(seen_ids)
 
 
 async def process_listing(
@@ -118,25 +153,7 @@ async def process_listing(
     summary_hash = _summary_hash(summary)
 
     existing_link = await repo.find_platform_link(source, external_id)
-    need_detail = (
-        existing_link is None
-        or (existing_link["summary_hash"] != summary_hash)
-        or (existing_link["status"] != ListingAvailability.ACTIVE.value)
-    )
-
-    if not need_detail:
-        # Summary unchanged: only refresh liveness.
-        await repo.upsert_platform_link(
-            master_id=str(existing_link["listing_id"]),
-            source=source,
-            external_id=external_id,
-            url=str(summary.get("url") or ""),
-            status=ListingAvailability.ACTIVE,
-            summary_hash=summary_hash,
-            now=now,
-        )
-        await repo.touch_master(str(existing_link["listing_id"]), ListingAvailability.ACTIVE, now)
-        return
+    # Sitemaps do not reliably expose price/status changes. Refresh every run.
 
     # --- Full detail fetch --------------------------------------------------
     try:
@@ -172,21 +189,30 @@ async def process_listing(
 
     merged = {**summary, **adapter.parse_detail(summary, payload)}
     listing = adapter.normalize(merged)
+    if (
+        listing.street == "Onbekend"
+        or listing.city == "Onbekend"
+        or not (listing.asking_price_cents or listing.monthly_rent_cents)
+    ):
+        raise ScrapeError("detail page lacks a usable address or price")
 
     # --- Dedup + master upsert ----------------------------------------------
     postcode_key = postcode_house_key(
         listing.postcode, listing.house_number, listing.house_number_addition
     )
-    street_key = street_house_key(
-        listing.street, listing.house_number, listing.house_number_addition
+    # Rooms at one address are distinct offers. Keep Kamernet records source-scoped.
+    if source.value == "KAMERNET":
+        postcode_key = None
+    street_key = None
+    existing_master = (
+        {"id": existing_link["listing_id"]}
+        if existing_link
+        else await repo.find_master_by_keys(postcode_key, street_key)
     )
-    existing_master = await repo.find_master_by_keys(postcode_key, street_key)
 
     is_new = existing_master is None
     if is_new:
-        dedup_key = canonical_dedup_key(
-            listing.postcode, listing.street, listing.house_number, listing.house_number_addition
-        )
+        dedup_key = postcode_key or f"source:{source.value}:{external_id}"
         master_id = await _create_master_with_slug_retry(
             repo, listing, dedup_key, postcode_key, street_key, summary_hash, now
         )

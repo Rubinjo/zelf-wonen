@@ -3,7 +3,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
 import { NeighborhoodDataClient } from "@/lib/integrations/neighborhood-data-client";
 import { PdokClient } from "@/lib/integrations/property-data/pdok-client";
-import { hasVerifiedIdentity } from "@/features/identity/idin-service";
+import { hasVerifiedIdentity } from "@/features/identity/identity-service";
 import { applyGardenToLayout } from "@/features/listings/garden";
 import {
     getQuestionnaireSections,
@@ -61,7 +61,6 @@ const listingInclude = {
         orderBy: { completedAt: "desc" as const },
         take: 1,
     },
-    publicationOrders: { orderBy: { createdAt: "desc" as const } },
     publications: { orderBy: { createdAt: "desc" as const } },
 };
 

@@ -3,7 +3,8 @@ import os
 
 from fastapi import Depends, FastAPI, Header, HTTPException, status
 
-from .model import ComparableSalesModel, InsufficientData
+from .model import InsufficientData
+from .national import NationalModel
 from .schemas import EstimateRequest, EstimateResponse
 
 app = FastAPI(
@@ -12,7 +13,7 @@ app = FastAPI(
     docs_url=("/docs" if os.getenv("ENVIRONMENT", "development") != "production" else None),
 )
 try:
-    model = ComparableSalesModel.from_files()
+    model = NationalModel.from_files()
 except (OSError, ValueError, KeyError):
     model = None
 
@@ -39,7 +40,7 @@ def health() -> dict[str, str]:
 @app.post("/v1/estimate", response_model=EstimateResponse, dependencies=[Depends(authorize)])
 def estimate(request: EstimateRequest) -> EstimateResponse:
     if model is None:
-        raise HTTPException(status_code=503, detail="Validated completed-sales dataset unavailable")
+        raise HTTPException(status_code=503, detail="Validated estimator data unavailable")
     try:
         return model.predict(request)
     except InsufficientData as error:

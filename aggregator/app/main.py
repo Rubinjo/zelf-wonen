@@ -14,6 +14,7 @@ import logging
 import sys
 
 from .config import Settings, get_settings
+from .http_client import ScrapeError
 from .sync import run_sync
 
 
@@ -27,7 +28,10 @@ def _configure_logging(settings: Settings) -> None:
 async def _run_loop(settings: Settings) -> None:
     while True:
         started = asyncio.get_running_loop().time()
-        await run_sync(settings)
+        try:
+            await run_sync(settings)
+        except ScrapeError:
+            logging.getLogger(__name__).exception("sync failed; next interval will retry")
         elapsed = asyncio.get_running_loop().time() - started
         # Sleep the remaining time so the cadence stays a stable 6h regardless
         # of how long the scrape took.

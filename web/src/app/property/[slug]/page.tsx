@@ -1,3 +1,5 @@
+import { getLanguage } from "@/lib/language";
+import { PublicHeader } from "@/components/platform/public-header";
 import Link from "next/link";
 import Image from "next/image";
 import { headers } from "next/headers";
@@ -19,7 +21,6 @@ import {
     KeyRound,
     Landmark,
     Layers3,
-    Languages,
     MapPin,
     Ruler,
     ShieldCheck,
@@ -34,7 +35,6 @@ import { ListingMessageLauncher } from "@/components/messages/listing-message-la
 import { ListingMessageThread } from "@/components/messages/listing-message-thread";
 import { PropertyLocation } from "@/components/listing/property-location";
 import { AggregatedListingDetail } from "@/components/listing/aggregated-listing-detail";
-import { BrandLogo } from "@/components/platform/brand-logo";
 import { ViewingBooking } from "@/components/viewings/viewing-booking";
 import {
     gardenOrientationLabels,
@@ -470,7 +470,10 @@ export default async function PublicListingPage({
     params: Promise<{ slug: string }>;
     searchParams: Promise<{ lang?: string }>;
 }) {
-    const language = (await searchParams).lang === "en" ? "en" : "nl";
+    const requestedLanguage = (await searchParams).lang;
+    const language = requestedLanguage === "en" || requestedLanguage === "nl"
+        ? requestedLanguage
+        : await getLanguage();
     const t = copy[language];
 
     // Aggregated listings (Funda/Kamernet) have their own detail view with
@@ -703,30 +706,7 @@ export default async function PublicListingPage({
 
     return (
         <div className="min-h-screen bg-background">
-            <header className="sticky top-0 z-40 border-b border-line bg-background/92 backdrop-blur-xl">
-                <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-5 lg:px-8">
-                    <Link href="/" className="flex items-center">
-                        <BrandLogo className="h-9 w-auto" />
-                    </Link>
-                    <div className="flex items-center gap-2">
-                        <Link
-                            href="/search"
-                            className="hidden rounded-full px-4 py-2 text-sm font-semibold text-brand sm:inline-flex"
-                        >
-                            {language === "nl"
-                                ? "Woning zoeken"
-                                : "Find a home"}
-                        </Link>
-                        <Link
-                            href={`?lang=${language === "nl" ? "en" : "nl"}`}
-                            className="inline-flex items-center gap-2 rounded-full border border-line px-4 py-2 text-sm font-semibold"
-                        >
-                            <Languages size={16} />{" "}
-                            {language === "nl" ? "English" : "Nederlands"}
-                        </Link>
-                    </div>
-                </div>
-            </header>
+            <PublicHeader language={language} />
             <main>
                 <div className="mx-auto max-w-7xl px-5 py-6 lg:px-8">
                     {photos.length > 0 ? (

@@ -4,7 +4,7 @@ import {
     AuthenticationError,
     requireEmailVerifiedUser,
 } from "@/features/auth/guards";
-import { estimateProperty } from "@/features/estimator/service";
+import { estimateProperty, EstimateInputError } from "@/features/estimator/service";
 import { estimateRequestSchema } from "@/lib/schemas/estimator";
 
 export async function POST(request: NextRequest) {
@@ -14,6 +14,9 @@ export async function POST(request: NextRequest) {
         const data = await estimateProperty(input, session.user.id);
         return NextResponse.json({ data });
     } catch (error) {
+        if (error instanceof EstimateInputError) {
+            return NextResponse.json({ error: { code: "INSUFFICIENT_ESTIMATE_DATA", message: error.message } }, { status: 422 });
+        }
         if (error instanceof AuthenticationError) {
             return NextResponse.json(
                 { error: { code: error.code, message: error.message } },

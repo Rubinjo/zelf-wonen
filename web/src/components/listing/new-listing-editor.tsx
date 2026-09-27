@@ -1,5 +1,7 @@
 "use client";
 
+import { useListingCopy } from "@/lib/messages/use-listing-copy";
+
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { ListingEditor } from "@/components/listing/listing-editor";
@@ -52,6 +54,7 @@ function subscribeToDraft(onChange: () => void) {
 }
 
 export function NewListingEditor() {
+    const { t } = useListingCopy();
     // undefined = nog niet gemount, null = geen draft, anders de draft.
     const draft = useSyncExternalStore(
         subscribeToDraft,
@@ -72,16 +75,14 @@ export function NewListingEditor() {
     if (!draft) {
         return (
             <div className="mx-auto max-w-4xl rounded-4xl border border-line bg-surface p-6 shadow-sm sm:p-9">
-                <h1 className="text-2xl font-semibold">Geen adres gevonden</h1>
+                <h1 className="text-2xl font-semibold">{t("Geen adres gevonden")}</h1>
                 <p className="mt-2 text-sm leading-6 text-muted">
-                    Start eerst met het invoeren van je postcode en huisnummer.
-                </p>
+                    {t("Start eerst met het invoeren van je postcode en huisnummer.")}</p>
                 <Link
                     href="/dashboard/listings/new"
                     className="mt-5 inline-flex h-11 items-center gap-2 rounded-full bg-brand px-5 text-sm font-semibold text-white"
                 >
-                    Adres invoeren
-                </Link>
+                    {t("Adres invoeren")}</Link>
             </div>
         );
     }

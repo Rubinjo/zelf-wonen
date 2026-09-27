@@ -1,5 +1,7 @@
 "use client";
 
+import { useListingCopy } from "@/lib/messages/use-listing-copy";
+
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -96,13 +98,7 @@ function toLocalInput(value: string) {
     return local.toISOString().slice(0, 16);
 }
 
-const dateFormatter = new Intl.DateTimeFormat("nl-NL", {
-    weekday: "short",
-    day: "numeric",
-    month: "long",
-    hour: "2-digit",
-    minute: "2-digit",
-});
+
 
 export function ViewingPlanner({
     listingId,
@@ -113,6 +109,14 @@ export function ViewingPlanner({
     propertyType: PropertyType;
     listingStatus: string;
 }) {
+    const { t, locale } = useListingCopy();
+    const dateFormatter = new Intl.DateTimeFormat(locale, {
+    weekday: "short",
+    day: "numeric",
+    month: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+});
     const queryClient = useQueryClient();
     const [draft, setDraft] = useState<SlotDraft>(emptyDraft);
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -166,7 +170,7 @@ export function ViewingPlanner({
             if (!response.ok) {
                 const payload = await response.json().catch(() => ({}));
                 throw new Error(
-                    payload.error?.message ?? "Verwijderen is mislukt",
+                    payload.error?.message ?? t("Verwijderen is mislukt"),
                 );
             }
         },
@@ -221,32 +225,29 @@ export function ViewingPlanner({
                 <div>
                     <div className="flex items-center gap-2">
                         <h2 className="text-2xl font-semibold">
-                            Bezichtigingen
-                        </h2>
+                            {t("Bezichtigingen")}</h2>
                         <button
                             type="button"
-                            aria-label="Toon advies over de duur van een bezichtiging"
+                            aria-label={t("Toon advies over de duur van een bezichtiging")}
                             aria-expanded={showAdvice}
                             onClick={() => setShowAdvice((current) => !current)}
                             className="grid size-8 place-items-center text-brand"
-                            title="Advies over de duur"
+                            title={t("Advies over de duur")}
                         >
                             <Info size={18} />
                         </button>
                     </div>
                     <p className="mt-1 text-sm leading-6 text-muted">
-                        Plan losse afspraken of een open huis. Tijdstippen met
-                        boekingen blijven ongewijzigd.
+                        {t("Plan losse afspraken of een open huis. Tijdstippen met boekingen blijven ongewijzigd.")}
                     </p>
                 </div>
             </div>
 
             {showAdvice ? (
                 <div className="mt-5 border-l-4 border-brand bg-background p-4 text-sm leading-6">
-                    Voor een {advice.label} adviseren we ongeveer{" "}
-                    <strong>{advice.appointmentMinutes} minuten</strong> per
-                    losse bezichtiging. Reserveer voor een open huis ongeveer{" "}
-                    <strong>{advice.openHouseMinutes} minuten</strong>. Voeg
+                    {t("Voor een")}{" "}{" "}{t(advice.label)} {t("adviseren we ongeveer")}{" "}{" "}
+                    <strong>{advice.appointmentMinutes} {t("minuten")}</strong> {t("per losse bezichtiging. Reserveer voor een open huis ongeveer")}{" "}{" "}
+                    <strong>{advice.openHouseMinutes} {t("minuten")}</strong>. Voeg
                     extra tijd toe voor vragen, uitloop en wisseling van
                     bezoekers.
                 </div>
@@ -267,14 +268,13 @@ export function ViewingPlanner({
                             }
                             className="input mt-2"
                         >
-                            <option value="APPOINTMENT">Losse afspraak</option>
-                            <option value="OPEN_HOUSE">Open huis</option>
+                            <option value="APPOINTMENT">{t("Losse afspraak")}</option>
+                            <option value="OPEN_HOUSE">{t("Open huis")}</option>
                         </select>
                     </label>
                     {draft.type === "OPEN_HOUSE" ? (
                         <label className="text-sm font-semibold">
-                            Maximum aantal bezoekers
-                            <input
+                            {t("Maximum aantal bezoekers")}<input
                                 required
                                 type="number"
                                 min="1"
@@ -308,8 +308,7 @@ export function ViewingPlanner({
                         />
                     </label>
                     <label className="text-sm font-semibold">
-                        Einde
-                        <input
+                        {t("Einde")}<input
                             required
                             type="datetime-local"
                             value={draft.endsAt}
@@ -324,12 +323,12 @@ export function ViewingPlanner({
                     </label>
                     <fieldset className="sm:col-span-2">
                         <legend className="text-sm font-semibold">
-                            Publiceren
+                            {t("Publiceren")}
                         </legend>
                         <div className="mt-2 grid grid-cols-2 border border-line p-1">
                             {[
-                                ["DIRECT", "Direct zichtbaar"],
-                                ["SCHEDULED", "Inplannen"],
+                                ["DIRECT", t("Direct zichtbaar")],
+                                ["SCHEDULED", t("Inplannen")],
                             ].map(([value, label]) => (
                                 <button
                                     key={value}
@@ -350,8 +349,7 @@ export function ViewingPlanner({
                     </fieldset>
                     {draft.publicationMode === "SCHEDULED" ? (
                         <label className="text-sm font-semibold sm:col-span-2">
-                            Zichtbaar vanaf
-                            <input
+                            {t("Zichtbaar vanaf")}<input
                                 required
                                 type="datetime-local"
                                 min={toLocalInput(new Date().toISOString())}
@@ -370,7 +368,7 @@ export function ViewingPlanner({
                 </div>
                 {save.error ? (
                     <p className="mt-4 bg-red-50 p-4 text-sm text-red-700">
-                        {save.error.message}
+                        {t(save.error.message)}
                     </p>
                 ) : null}
                 <div className="mt-5 flex flex-wrap gap-3">
@@ -383,7 +381,7 @@ export function ViewingPlanner({
                         ) : (
                             <CalendarDays size={17} />
                         )}
-                        {editingId ? "Wijziging opslaan" : "Tijdstip toevoegen"}
+                        {editingId ? t("Wijziging opslaan") : t("Tijdstip toevoegen")}
                     </button>
                     {editingId ? (
                         <button
@@ -394,19 +392,18 @@ export function ViewingPlanner({
                             }}
                             className="inline-flex h-11 items-center gap-2 rounded-full border border-line px-5 text-sm font-semibold"
                         >
-                            <X size={17} /> Annuleren
-                        </button>
+                            <X size={17} /> {t("Annuleren")}</button>
                     ) : null}
                 </div>
             </form>
 
             <div className="mt-9 border-t border-line pt-7">
-                <h3 className="font-semibold">Geplande momenten</h3>
+                <h3 className="font-semibold">{t("Geplande momenten")}</h3>
                 {slots.isLoading ? (
                     <LoaderCircle className="mt-5 animate-spin text-brand" />
                 ) : slots.error ? (
                     <p className="mt-4 bg-red-50 p-4 text-sm text-red-700">
-                        {slots.error.message}
+                        {t(slots.error.message)}
                     </p>
                 ) : slots.data?.length ? (
                     <div className="mt-4 divide-y divide-line border-y border-line">
@@ -418,8 +415,8 @@ export function ViewingPlanner({
                                         <div>
                                             <p className="font-semibold">
                                                 {slot.type === "OPEN_HOUSE"
-                                                    ? "Open huis"
-                                                    : "Losse afspraak"}
+                                                    ? t("Open huis")
+                                                    : t("Losse afspraak")}
                                             </p>
                                             <p className="mt-1 flex items-center gap-2 text-sm text-muted">
                                                 <Clock3 size={15} />
@@ -428,7 +425,7 @@ export function ViewingPlanner({
                                                 )}
                                                 {" - "}
                                                 {new Intl.DateTimeFormat(
-                                                    "nl-NL",
+                                                    locale,
                                                     {
                                                         hour: "2-digit",
                                                         minute: "2-digit",
@@ -440,17 +437,16 @@ export function ViewingPlanner({
                                                     size={15}
                                                     className="text-brand"
                                                 />
-                                                {slot.bookings.length} van{" "}
-                                                {slot.capacity} geboekt
-                                            </p>
+                                                {slot.bookings.length} {t("van")}{" "}{" "}
+                                                {slot.capacity} {t("geboekt")}</p>
                                             <p className="mt-2 flex items-center gap-2 text-sm text-muted">
                                                 <CalendarClock size={15} />
                                                 {new Date(slot.publishedAt) <=
                                                 new Date()
                                                     ? listingStatus === "LIVE"
-                                                        ? "Zichtbaar voor woningzoekers"
-                                                        : "Wordt zichtbaar zodra de advertentie live staat"
-                                                    : `Zichtbaar vanaf ${dateFormatter.format(new Date(slot.publishedAt))}${listingStatus === "LIVE" ? "" : ", zodra de advertentie live staat"}`}
+                                                        ? t("Zichtbaar voor woningzoekers")
+                                                        : t("Wordt zichtbaar zodra de advertentie live staat")
+                                                    : `${t("Zichtbaar vanaf")} ${dateFormatter.format(new Date(slot.publishedAt))}${listingStatus === "LIVE" ? "" : t(", zodra de advertentie live staat")}`}
                                             </p>
                                         </div>
                                         <div className="flex gap-2">
@@ -458,8 +454,8 @@ export function ViewingPlanner({
                                                 type="button"
                                                 title={
                                                     booked
-                                                        ? "Geboekte momenten kunnen niet worden gewijzigd"
-                                                        : "Wijzigen"
+                                                        ? t("Geboekte momenten kunnen niet worden gewijzigd")
+                                                        : t("Wijzigen")
                                                 }
                                                 disabled={booked}
                                                 onClick={() => edit(slot)}
@@ -471,8 +467,8 @@ export function ViewingPlanner({
                                                 type="button"
                                                 title={
                                                     booked
-                                                        ? "Geboekte momenten kunnen niet worden verwijderd"
-                                                        : "Verwijderen"
+                                                        ? t("Geboekte momenten kunnen niet worden verwijderd")
+                                                        : t("Verwijderen")
                                                 }
                                                 disabled={
                                                     booked || remove.isPending
@@ -529,8 +525,7 @@ export function ViewingPlanner({
                                                                             14
                                                                         }
                                                                     />
-                                                                    Bevestig
-                                                                    aanwezigheid
+                                                                    {t("Bevestig aanwezigheid")}
                                                                 </button>
                                                                 <button
                                                                     type="button"
@@ -554,23 +549,20 @@ export function ViewingPlanner({
                                                                             14
                                                                         }
                                                                     />
-                                                                    Niet
-                                                                    verschenen
+                                                                    {t("Niet verschenen")}
                                                                 </button>
                                                             </div>
                                                         ) : (
                                                             <p className="mt-2 text-xs text-muted">
-                                                                Aanwezigheid kan
-                                                                na afloop worden
-                                                                bevestigd.
+                                                                {t("Aanwezigheid kan na afloop worden bevestigd.")}
                                                             </p>
                                                         )
                                                     ) : (
                                                         <p className="mt-2 text-xs font-semibold text-brand">
                                                             {booking.attendanceStatus ===
                                                             "CONFIRMED"
-                                                                ? "Aanwezigheid bevestigd"
-                                                                : "Niet verschenen"}
+                                                                ? t("Aanwezigheid bevestigd")
+                                                                : t("Niet verschenen")}
                                                         </p>
                                                     )}
                                                 </div>
@@ -583,17 +575,17 @@ export function ViewingPlanner({
                     </div>
                 ) : (
                     <p className="mt-4 text-sm text-muted">
-                        Er zijn nog geen bezichtigingen gepland.
+                        {t("Er zijn nog geen bezichtigingen gepland.")}
                     </p>
                 )}
                 {remove.error ? (
                     <p className="mt-4 bg-red-50 p-4 text-sm text-red-700">
-                        {remove.error.message}
+                        {t(remove.error.message)}
                     </p>
                 ) : null}
                 {reviewAttendance.error ? (
                     <p className="mt-4 bg-red-50 p-4 text-sm text-red-700">
-                        {reviewAttendance.error.message}
+                        {t(reviewAttendance.error.message)}
                     </p>
                 ) : null}
             </div>

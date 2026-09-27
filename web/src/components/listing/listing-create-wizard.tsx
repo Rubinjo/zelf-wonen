@@ -1,5 +1,7 @@
 "use client";
 
+import { useListingCopy } from "@/lib/messages/use-listing-copy";
+
 import { useState, type FormEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { LoaderCircle, MapPin, Search } from "lucide-react";
@@ -23,6 +25,7 @@ async function parseResponse(response: Response) {
 }
 
 export function ListingCreateWizard() {
+    const { t } = useListingCopy();
     const router = useRouter();
     const [address, setAddress] = useState<DraftAddress>({
         postcode: "",
@@ -66,7 +69,7 @@ export function ListingCreateWizard() {
         },
         onError(error) {
             setLookupError(
-                error instanceof Error ? error.message : "Adres niet gevonden",
+                error instanceof Error ? error.message : t("Adres niet gevonden"),
             );
         },
     });
@@ -97,15 +100,12 @@ export function ListingCreateWizard() {
         <div className="mx-auto max-w-4xl">
             <div className="mb-8">
                 <p className="text-sm font-semibold uppercase tracking-[0.16em] text-brand">
-                    Nieuwe advertentie
+                    {t("Nieuwe advertentie")}
                 </p>
                 <h1 className="mt-2 text-4xl font-semibold tracking-[-0.04em]">
-                    Voeg je woning toe
-                </h1>
+                    {t("Voeg je woning toe")}</h1>
                 <p className="mt-3 text-muted">
-                    We controleren het adres en openen daarna je concept. Je
-                    slaat het concept zelf op; alles blijft een concept totdat
-                    je publiceert.
+                    {t("We controleren het adres en openen daarna je concept. Je slaat het concept zelf op; alles blijft een concept totdat je publiceert.")}
                 </p>
             </div>
             <form
@@ -116,15 +116,12 @@ export function ListingCreateWizard() {
                     <MapPin size={22} />
                 </span>
                 <h2 className="mt-6 text-2xl font-semibold">
-                    Waar staat de woning?
-                </h2>
+                    {t("Waar staat de woning?")}</h2>
                 <p className="mt-2 text-sm leading-6 text-muted">
-                    PDOK controleert het adres en koppelt beschikbare BAG-,
-                    Kadaster- en energielabelgegevens. Daarna ga je meteen
-                    verder in je concept.
+                    {t("PDOK controleert het adres en koppelt beschikbare BAG-, Kadaster- en energielabelgegevens. Daarna ga je meteen verder in je concept.")}
                 </p>
                 <div className="mt-7 grid gap-4 sm:grid-cols-[1fr_140px_120px]">
-                    <Field label="Postcode">
+                    <Field label={t("Postcode")}>
                         <input
                             required
                             value={address.postcode}
@@ -138,7 +135,7 @@ export function ListingCreateWizard() {
                             className="input"
                         />
                     </Field>
-                    <Field label="Huisnummer">
+                    <Field label={t("Huisnummer")}>
                         <input
                             required
                             type="number"
@@ -153,7 +150,7 @@ export function ListingCreateWizard() {
                             className="input"
                         />
                     </Field>
-                    <Field label="Toevoeging">
+                    <Field label={t("Toevoeging")}>
                         <input
                             value={address.addition}
                             onChange={(event) =>
@@ -168,7 +165,7 @@ export function ListingCreateWizard() {
                 </div>
                 {lookupError ? (
                     <div className="mt-5 rounded-2xl bg-amber-50 p-4 text-sm text-amber-900 dark:bg-amber-500/15 dark:text-amber-200">
-                        <p>{lookupError}</p>
+                        <p>{t(lookupError)}</p>
                         <div className="mt-4 grid gap-3 sm:grid-cols-2">
                             <input
                                 value={address.street}
@@ -178,7 +175,7 @@ export function ListingCreateWizard() {
                                         street: event.target.value,
                                     })
                                 }
-                                placeholder="Straatnaam"
+                                placeholder={t("Straatnaam")}
                                 className="input"
                             />
                             <input
@@ -189,7 +186,7 @@ export function ListingCreateWizard() {
                                         city: event.target.value,
                                     })
                                 }
-                                placeholder="Plaats"
+                                placeholder={t("Plaats")}
                                 className="input"
                             />
                         </div>
@@ -199,7 +196,7 @@ export function ListingCreateWizard() {
                             onClick={handleManualContinue}
                             className="mt-3 font-semibold text-brand disabled:opacity-40"
                         >
-                            Handmatig doorgaan →
+                            {t("Handmatig doorgaan →")}
                         </button>
                     </div>
                 ) : null}
@@ -213,8 +210,8 @@ export function ListingCreateWizard() {
                         <Search size={18} />
                     )}{" "}
                     {lookup.isPending
-                        ? "Adres controleren..."
-                        : "Adres controleren"}
+                        ? t("Adres controleren...")
+                        : t("Adres controleren")}
                 </button>
             </form>
         </div>
@@ -230,11 +227,12 @@ function Field({
     required?: boolean;
     children: React.ReactNode;
 }) {
+    const { t } = useListingCopy();
     return (
         <label className="block text-sm font-semibold">
             {label}
             {required ? (
-                <span className="text-red-600" title="Verplicht veld">
+                <span className="text-red-600" title={t("Verplicht veld")}>
                     {" "}
                     *
                 </span>

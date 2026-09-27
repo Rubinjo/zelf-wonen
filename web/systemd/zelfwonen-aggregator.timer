@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily listing refresh at 04:20 Amsterdam time
+
+[Timer]
+OnCalendar=*-*-* 04:20:00 Europe/Amsterdam
+RandomizedDelaySec=10m
+Persistent=true
+Unit=zelfwonen-aggregator.service
+
+[Install]
+WantedBy=timers.target

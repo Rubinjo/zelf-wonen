@@ -1,0 +1,5430 @@
+{
+  "source": "https://www.cbs.nl/item?sc_itemid=9f5fb087-2192-4ede-91d2-29bc7e0d3a9e&sc_lang=nl-nl",
+  "license": "CC BY 4.0",
+  "publishedAt": "2026-02-13",
+  "referenceMonth": "2024-01",
+  "assessmentYear": 2025,
+  "sourceSha256": "4e8ca0e74f8cfb06075d463e8cd401edf77150d6b259d6b99b327c46485480f7",
+  "municipalities": {
+    "GM0014": {
+      "name": "Groningen",
+      "wozPerSqm": 3170
+    },
+    "GM0034": {
+      "name": "Almere",
+      "wozPerSqm": 3533
+    },
+    "GM0037": {
+      "name": "Stadskanaal",
+      "wozPerSqm": 2306
+    },
+    "GM0047": {
+      "name": "Veendam",
+      "wozPerSqm": 1895
+    },
+    "GM0050": {
+      "name": "Zeewolde",
+      "wozPerSqm": 3190
+    },
+    "GM0059": {
+      "name": "Achtkarspelen",
+      "wozPerSqm": 2172
+    },
+    "GM0060": {
+      "name": "Ameland",
+      "wozPerSqm": 2620
+    },
+    "GM0072": {
+      "name": "Harlingen",
+      "wozPerSqm": 2065
+    },
+    "GM0074": {
+      "name": "Heerenveen",
+      "wozPerSqm": 2504
+    },
+    "GM0080": {
+      "name": "Leeuwarden",
+      "wozPerSqm": 2343
+    },
+    "GM0085": {
+      "name": "Ooststellingwerf",
+      "wozPerSqm": 2525
+    },
+    "GM0086": {
+      "name": "Opsterland",
+      "wozPerSqm": 2295
+    },
+    "GM0088": {
+      "name": "Schiermonnikoog",
+      "wozPerSqm": 3644
+    },
+    "GM0090": {
+      "name": "Smallingerland",
+      "wozPerSqm": 2185
+    },
+    "GM0093": {
+      "name": "Terschelling",
+      "wozPerSqm": 3706
+    },
+    "GM0096": {
+      "name": "Vlieland",
+      "wozPerSqm": 3945
+    },
+    "GM0098": {
+      "name": "Weststellingwerf",
+      "wozPerSqm": 2362
+    },
+    "GM0106": {
+      "name": "Assen",
+      "wozPerSqm": 2472
+    },
+    "GM0109": {
+      "name": "Coevorden",
+      "wozPerSqm": 2271
+    },
+    "GM0114": {
+      "name": "Emmen",
+      "wozPerSqm": 1995
+    },
+    "GM0118": {
+      "name": "Hoogeveen",
+      "wozPerSqm": 2283
+    },
+    "GM0119": {
+      "name": "Meppel",
+      "wozPerSqm": 2678
+    },
+    "GM0141": {
+      "name": "Almelo",
+      "wozPerSqm": 2430
+    },
+    "GM0147": {
+      "name": "Borne",
+      "wozPerSqm": 2826
+    },
+    "GM0148": {
+      "name": "Dalfsen",
+      "wozPerSqm": 2982
+    },
+    "GM0150": {
+      "name": "Deventer",
+      "wozPerSqm": 3178
+    },
+    "GM0153": {
+      "name": "Enschede",
+      "wozPerSqm": 2714
+    },
+    "GM0158": {
+      "name": "Haaksbergen",
+      "wozPerSqm": 2658
+    },
+    "GM0160": {
+      "name": "Hardenberg",
+      "wozPerSqm": 2403
+    },
+    "GM0163": {
+      "name": "Hellendoorn",
+      "wozPerSqm": 3000
+    },
+    "GM0164": {
+      "name": "Hengelo (O.)",
+      "wozPerSqm": 2596
+    },
+    "GM0166": {
+      "name": "Kampen",
+      "wozPerSqm": 2897
+    },
+    "GM0168": {
+      "name": "Losser",
+      "wozPerSqm": 2478
+    },
+    "GM0171": {
+      "name": "Noordoostpolder",
+      "wozPerSqm": 2534
+    },
+    "GM0173": {
+      "name": "Oldenzaal",
+      "wozPerSqm": 2749
+    },
+    "GM0175": {
+      "name": "Ommen",
+      "wozPerSqm": 2865
+    },
+    "GM0177": {
+      "name": "Raalte",
+      "wozPerSqm": 2853
+    },
+    "GM0180": {
+      "name": "Staphorst",
+      "wozPerSqm": 2111
+    },
+    "GM0183": {
+      "name": "Tubbergen",
+      "wozPerSqm": 2530
+    },
+    "GM0184": {
+      "name": "Urk",
+      "wozPerSqm": 2820
+    },
+    "GM0189": {
+      "name": "Wierden",
+      "wozPerSqm": 2787
+    },
+    "GM0193": {
+      "name": "Zwolle",
+      "wozPerSqm": 3408
+    },
+    "GM0197": {
+      "name": "Aalten",
+      "wozPerSqm": 2613
+    },
+    "GM0200": {
+      "name": "Apeldoorn",
+      "wozPerSqm": 3169
+    },
+    "GM0202": {
+      "name": "Arnhem",
+      "wozPerSqm": 3288
+    },
+    "GM0203": {
+      "name": "Barneveld",
+      "wozPerSqm": 3554
+    },
+    "GM0209": {
+      "name": "Beuningen",
+      "wozPerSqm": 3154
+    },
+    "GM0213": {
+      "name": "Brummen",
+      "wozPerSqm": 2947
+    },
+    "GM0214": {
+      "name": "Buren",
+      "wozPerSqm": 3192
+    },
+    "GM0216": {
+      "name": "Culemborg",
+      "wozPerSqm": 3558
+    },
+    "GM0221": {
+      "name": "Doesburg",
+      "wozPerSqm": 2543
+    },
+    "GM0222": {
+      "name": "Doetinchem",
+      "wozPerSqm": 2623
+    },
+    "GM0225": {
+      "name": "Druten",
+      "wozPerSqm": 2892
+    },
+    "GM0226": {
+      "name": "Duiven",
+      "wozPerSqm": 2951
+    },
+    "GM0228": {
+      "name": "Ede",
+      "wozPerSqm": 3679
+    },
+    "GM0230": {
+      "name": "Elburg",
+      "wozPerSqm": 3033
+    },
+    "GM0232": {
+      "name": "Epe",
+      "wozPerSqm": 3213
+    },
+    "GM0233": {
+      "name": "Ermelo",
+      "wozPerSqm": 3505
+    },
+    "GM0243": {
+      "name": "Harderwijk",
+      "wozPerSqm": 3475
+    },
+    "GM0244": {
+      "name": "Hattem",
+      "wozPerSqm": 3233
+    },
+    "GM0246": {
+      "name": "Heerde",
+      "wozPerSqm": 3427
+    },
+    "GM0252": {
+      "name": "Heumen",
+      "wozPerSqm": 3118
+    },
+    "GM0262": {
+      "name": "Lochem",
+      "wozPerSqm": 2977
+    },
+    "GM0263": {
+      "name": "Maasdriel",
+      "wozPerSqm": 3177
+    },
+    "GM0267": {
+      "name": "Nijkerk",
+      "wozPerSqm": 3766
+    },
+    "GM0268": {
+      "name": "Nijmegen",
+      "wozPerSqm": 3732
+    },
+    "GM0269": {
+      "name": "Oldebroek",
+      "wozPerSqm": 2913
+    },
+    "GM0273": {
+      "name": "Putten",
+      "wozPerSqm": 3765
+    },
+    "GM0274": {
+      "name": "Renkum",
+      "wozPerSqm": 3385
+    },
+    "GM0275": {
+      "name": "Rheden",
+      "wozPerSqm": 3160
+    },
+    "GM0277": {
+      "name": "Rozendaal",
+      "wozPerSqm": 4139
+    },
+    "GM0279": {
+      "name": "Scherpenzeel",
+      "wozPerSqm": 3483
+    },
+    "GM0281": {
+      "name": "Tiel",
+      "wozPerSqm": 3176
+    },
+    "GM0285": {
+      "name": "Voorst",
+      "wozPerSqm": 3209
+    },
+    "GM0289": {
+      "name": "Wageningen",
+      "wozPerSqm": 3466
+    },
+    "GM0293": {
+      "name": "Westervoort",
+      "wozPerSqm": 2774
+    },
+    "GM0294": {
+      "name": "Winterswijk",
+      "wozPerSqm": 2341
+    },
+    "GM0296": {
+      "name": "Wijchen",
+      "wozPerSqm": 3077
+    },
+    "GM0297": {
+      "name": "Zaltbommel",
+      "wozPerSqm": 2988
+    },
+    "GM0299": {
+      "name": "Zevenaar",
+      "wozPerSqm": 2495
+    },
+    "GM0301": {
+      "name": "Zutphen",
+      "wozPerSqm": 2806
+    },
+    "GM0302": {
+      "name": "Nunspeet",
+      "wozPerSqm": 3399
+    },
+    "GM0303": {
+      "name": "Dronten",
+      "wozPerSqm": 2762
+    },
+    "GM0307": {
+      "name": "Amersfoort",
+      "wozPerSqm": 3990
+    },
+    "GM0308": {
+      "name": "Baarn",
+      "wozPerSqm": 4369
+    },
+    "GM0310": {
+      "name": "De Bilt",
+      "wozPerSqm": 4627
+    },
+    "GM0312": {
+      "name": "Bunnik",
+      "wozPerSqm": 4345
+    },
+    "GM0313": {
+      "name": "Bunschoten",
+      "wozPerSqm": 3725
+    },
+    "GM0317": {
+      "name": "Eemnes",
+      "wozPerSqm": 4048
+    },
+    "GM0321": {
+      "name": "Houten",
+      "wozPerSqm": 4319
+    },
+    "GM0327": {
+      "name": "Leusden",
+      "wozPerSqm": 3789
+    },
+    "GM0331": {
+      "name": "Lopik",
+      "wozPerSqm": 3556
+    },
+    "GM0335": {
+      "name": "Montfoort",
+      "wozPerSqm": 3742
+    },
+    "GM0339": {
+      "name": "Renswoude",
+      "wozPerSqm": 3557
+    },
+    "GM0340": {
+      "name": "Rhenen",
+      "wozPerSqm": 3529
+    },
+    "GM0342": {
+      "name": "Soest",
+      "wozPerSqm": 3849
+    },
+    "GM0344": {
+      "name": "Utrecht",
+      "wozPerSqm": 5318
+    },
+    "GM0345": {
+      "name": "Veenendaal",
+      "wozPerSqm": 3541
+    },
+    "GM0351": {
+      "name": "Woudenberg",
+      "wozPerSqm": 3824
+    },
+    "GM0352": {
+      "name": "Wijk bij Duurstede",
+      "wozPerSqm": 3640
+    },
+    "GM0353": {
+      "name": "IJsselstein",
+      "wozPerSqm": 3971
+    },
+    "GM0355": {
+      "name": "Zeist",
+      "wozPerSqm": 4500
+    },
+    "GM0356": {
+      "name": "Nieuwegein",
+      "wozPerSqm": 3711
+    },
+    "GM0358": {
+      "name": "Aalsmeer",
+      "wozPerSqm": 4197
+    },
+    "GM0361": {
+      "name": "Alkmaar",
+      "wozPerSqm": 3659
+    },
+    "GM0362": {
+      "name": "Amstelveen",
+      "wozPerSqm": 5138
+    },
+    "GM0363": {
+      "name": "Amsterdam",
+      "wozPerSqm": 7111
+    },
+    "GM0373": {
+      "name": "Bergen (NH.)",
+      "wozPerSqm": 4553
+    },
+    "GM0375": {
+      "name": "Beverwijk",
+      "wozPerSqm": 3590
+    },
+    "GM0376": {
+      "name": "Blaricum",
+      "wozPerSqm": 4951
+    },
+    "GM0377": {
+      "name": "Bloemendaal",
+      "wozPerSqm": 5336
+    },
+    "GM0383": {
+      "name": "Castricum",
+      "wozPerSqm": 4032
+    },
+    "GM0384": {
+      "name": "Diemen",
+      "wozPerSqm": 5158
+    },
+    "GM0385": {
+      "name": "Edam-Volendam",
+      "wozPerSqm": 3237
+    },
+    "GM0388": {
+      "name": "Enkhuizen",
+      "wozPerSqm": 2994
+    },
+    "GM0392": {
+      "name": "Haarlem",
+      "wozPerSqm": 5174
+    },
+    "GM0394": {
+      "name": "Haarlemmermeer",
+      "wozPerSqm": 4307
+    },
+    "GM0396": {
+      "name": "Heemskerk",
+      "wozPerSqm": 3589
+    },
+    "GM0397": {
+      "name": "Heemstede",
+      "wozPerSqm": 5131
+    },
+    "GM0399": {
+      "name": "Heiloo",
+      "wozPerSqm": 4425
+    },
+    "GM0400": {
+      "name": "Den Helder",
+      "wozPerSqm": 2464
+    },
+    "GM0402": {
+      "name": "Hilversum",
+      "wozPerSqm": 4318
+    },
+    "GM0405": {
+      "name": "Hoorn",
+      "wozPerSqm": 3162
+    },
+    "GM0406": {
+      "name": "Huizen",
+      "wozPerSqm": 3902
+    },
+    "GM0415": {
+      "name": "Landsmeer",
+      "wozPerSqm": 4812
+    },
+    "GM0417": {
+      "name": "Laren (NH.)",
+      "wozPerSqm": 5697
+    },
+    "GM0420": {
+      "name": "Medemblik",
+      "wozPerSqm": 3000
+    },
+    "GM0431": {
+      "name": "Oostzaan",
+      "wozPerSqm": 4419
+    },
+    "GM0432": {
+      "name": "Opmeer",
+      "wozPerSqm": 2960
+    },
+    "GM0437": {
+      "name": "Ouder-Amstel",
+      "wozPerSqm": 4963
+    },
+    "GM0439": {
+      "name": "Purmerend",
+      "wozPerSqm": 3752
+    },
+    "GM0441": {
+      "name": "Schagen",
+      "wozPerSqm": 2812
+    },
+    "GM0448": {
+      "name": "Texel",
+      "wozPerSqm": 3475
+    },
+    "GM0450": {
+      "name": "Uitgeest",
+      "wozPerSqm": 3846
+    },
+    "GM0451": {
+      "name": "Uithoorn",
+      "wozPerSqm": 3945
+    },
+    "GM0453": {
+      "name": "Velsen",
+      "wozPerSqm": 3836
+    },
+    "GM0473": {
+      "name": "Zandvoort",
+      "wozPerSqm": 4464
+    },
+    "GM0479": {
+      "name": "Zaanstad",
+      "wozPerSqm": 3832
+    },
+    "GM0482": {
+      "name": "Alblasserdam",
+      "wozPerSqm": 3126
+    },
+    "GM0484": {
+      "name": "Alphen aan den Rijn",
+      "wozPerSqm": 3489
+    },
+    "GM0489": {
+      "name": "Barendrecht",
+      "wozPerSqm": 3543
+    },
+    "GM0498": {
+      "name": "Drechterland",
+      "wozPerSqm": 2956
+    },
+    "GM0502": {
+      "name": "Capelle aan den IJssel",
+      "wozPerSqm": 3518
+    },
+    "GM0503": {
+      "name": "Delft",
+      "wozPerSqm": 4040
+    },
+    "GM0505": {
+      "name": "Dordrecht",
+      "wozPerSqm": 3130
+    },
+    "GM0512": {
+      "name": "Gorinchem",
+      "wozPerSqm": 3395
+    },
+    "GM0513": {
+      "name": "Gouda",
+      "wozPerSqm": 3507
+    },
+    "GM0518": {
+      "name": "'s-Gravenhage",
+      "wozPerSqm": 3891
+    },
+    "GM0523": {
+      "name": "Hardinxveld-Giessendam",
+      "wozPerSqm": 3140
+    },
+    "GM0531": {
+      "name": "Hendrik-Ido-Ambacht",
+      "wozPerSqm": 3603
+    },
+    "GM0532": {
+      "name": "Stede Broec",
+      "wozPerSqm": 2860
+    },
+    "GM0534": {
+      "name": "Hillegom",
+      "wozPerSqm": 4175
+    },
+    "GM0537": {
+      "name": "Katwijk",
+      "wozPerSqm": 4217
+    },
+    "GM0542": {
+      "name": "Krimpen aan den IJssel",
+      "wozPerSqm": 3324
+    },
+    "GM0546": {
+      "name": "Leiden",
+      "wozPerSqm": 4547
+    },
+    "GM0547": {
+      "name": "Leiderdorp",
+      "wozPerSqm": 4053
+    },
+    "GM0553": {
+      "name": "Lisse",
+      "wozPerSqm": 3700
+    },
+    "GM0556": {
+      "name": "Maassluis",
+      "wozPerSqm": 3200
+    },
+    "GM0569": {
+      "name": "Nieuwkoop",
+      "wozPerSqm": 3494
+    },
+    "GM0575": {
+      "name": "Noordwijk",
+      "wozPerSqm": 4181
+    },
+    "GM0579": {
+      "name": "Oegstgeest",
+      "wozPerSqm": 4521
+    },
+    "GM0589": {
+      "name": "Oudewater",
+      "wozPerSqm": 3444
+    },
+    "GM0590": {
+      "name": "Papendrecht",
+      "wozPerSqm": 3211
+    },
+    "GM0597": {
+      "name": "Ridderkerk",
+      "wozPerSqm": 3221
+    },
+    "GM0599": {
+      "name": "Rotterdam",
+      "wozPerSqm": 3636
+    },
+    "GM0603": {
+      "name": "Rijswijk (ZH.)",
+      "wozPerSqm": 3443
+    },
+    "GM0606": {
+      "name": "Schiedam",
+      "wozPerSqm": 3179
+    },
+    "GM0610": {
+      "name": "Sliedrecht",
+      "wozPerSqm": 3224
+    },
+    "GM0613": {
+      "name": "Albrandswaard",
+      "wozPerSqm": 3536
+    },
+    "GM0622": {
+      "name": "Vlaardingen",
+      "wozPerSqm": 3152
+    },
+    "GM0626": {
+      "name": "Voorschoten",
+      "wozPerSqm": 4276
+    },
+    "GM0627": {
+      "name": "Waddinxveen",
+      "wozPerSqm": 3493
+    },
+    "GM0629": {
+      "name": "Wassenaar",
+      "wozPerSqm": 4496
+    },
+    "GM0632": {
+      "name": "Woerden",
+      "wozPerSqm": 3581
+    },
+    "GM0637": {
+      "name": "Zoetermeer",
+      "wozPerSqm": 3488
+    },
+    "GM0638": {
+      "name": "Zoeterwoude",
+      "wozPerSqm": 4240
+    },
+    "GM0642": {
+      "name": "Zwijndrecht",
+      "wozPerSqm": 3125
+    },
+    "GM0654": {
+      "name": "Borsele",
+      "wozPerSqm": 2438
+    },
+    "GM0664": {
+      "name": "Goes",
+      "wozPerSqm": 2788
+    },
+    "GM0668": {
+      "name": "West Maas en Waal",
+      "wozPerSqm": 3000
+    },
+    "GM0677": {
+      "name": "Hulst",
+      "wozPerSqm": 2178
+    },
+    "GM0678": {
+      "name": "Kapelle",
+      "wozPerSqm": 2777
+    },
+    "GM0687": {
+      "name": "Middelburg (Z.)",
+      "wozPerSqm": 2630
+    },
+    "GM0703": {
+      "name": "Reimerswaal",
+      "wozPerSqm": 2485
+    },
+    "GM0715": {
+      "name": "Terneuzen",
+      "wozPerSqm": 2011
+    },
+    "GM0716": {
+      "name": "Tholen",
+      "wozPerSqm": 2325
+    },
+    "GM0717": {
+      "name": "Veere",
+      "wozPerSqm": 2955
+    },
+    "GM0718": {
+      "name": "Vlissingen",
+      "wozPerSqm": 2310
+    },
+    "GM0736": {
+      "name": "De Ronde Venen",
+      "wozPerSqm": 4057
+    },
+    "GM0737": {
+      "name": "Tytsjerksteradiel",
+      "wozPerSqm": 2262
+    },
+    "GM0743": {
+      "name": "Asten",
+      "wozPerSqm": 2903
+    },
+    "GM0744": {
+      "name": "Baarle-Nassau",
+      "wozPerSqm": 2714
+    },
+    "GM0748": {
+      "name": "Bergen op Zoom",
+      "wozPerSqm": 2732
+    },
+    "GM0753": {
+      "name": "Best",
+      "wozPerSqm": 3344
+    },
+    "GM0755": {
+      "name": "Boekel",
+      "wozPerSqm": 2898
+    },
+    "GM0757": {
+      "name": "Boxtel",
+      "wozPerSqm": 2936
+    },
+    "GM0758": {
+      "name": "Breda",
+      "wozPerSqm": 3568
+    },
+    "GM0762": {
+      "name": "Deurne",
+      "wozPerSqm": 2889
+    },
+    "GM0765": {
+      "name": "Pekela",
+      "wozPerSqm": 1603
+    },
+    "GM0766": {
+      "name": "Dongen",
+      "wozPerSqm": 2827
+    },
+    "GM0770": {
+      "name": "Eersel",
+      "wozPerSqm": 3117
+    },
+    "GM0772": {
+      "name": "Eindhoven",
+      "wozPerSqm": 3723
+    },
+    "GM0777": {
+      "name": "Etten-Leur",
+      "wozPerSqm": 3000
+    },
+    "GM0779": {
+      "name": "Geertruidenberg",
+      "wozPerSqm": 2871
+    },
+    "GM0784": {
+      "name": "Gilze en Rijen",
+      "wozPerSqm": 3058
+    },
+    "GM0785": {
+      "name": "Goirle",
+      "wozPerSqm": 3263
+    },
+    "GM0794": {
+      "name": "Helmond",
+      "wozPerSqm": 2808
+    },
+    "GM0796": {
+      "name": "'s-Hertogenbosch",
+      "wozPerSqm": 3641
+    },
+    "GM0797": {
+      "name": "Heusden",
+      "wozPerSqm": 3146
+    },
+    "GM0798": {
+      "name": "Hilvarenbeek",
+      "wozPerSqm": 3175
+    },
+    "GM0809": {
+      "name": "Loon op Zand",
+      "wozPerSqm": 3042
+    },
+    "GM0820": {
+      "name": "Nuenen, Gerwen en Nederwetten",
+      "wozPerSqm": 3415
+    },
+    "GM0823": {
+      "name": "Oirschot",
+      "wozPerSqm": 3369
+    },
+    "GM0824": {
+      "name": "Oisterwijk",
+      "wozPerSqm": 3474
+    },
+    "GM0826": {
+      "name": "Oosterhout",
+      "wozPerSqm": 3039
+    },
+    "GM0828": {
+      "name": "Oss",
+      "wozPerSqm": 2913
+    },
+    "GM0840": {
+      "name": "Rucphen",
+      "wozPerSqm": 2723
+    },
+    "GM0845": {
+      "name": "Sint-Michielsgestel",
+      "wozPerSqm": 3200
+    },
+    "GM0847": {
+      "name": "Someren",
+      "wozPerSqm": 2830
+    },
+    "GM0848": {
+      "name": "Son en Breugel",
+      "wozPerSqm": 3423
+    },
+    "GM0851": {
+      "name": "Steenbergen",
+      "wozPerSqm": 2683
+    },
+    "GM0852": {
+      "name": "Waterland",
+      "wozPerSqm": 3606
+    },
+    "GM0855": {
+      "name": "Tilburg",
+      "wozPerSqm": 3117
+    },
+    "GM0858": {
+      "name": "Valkenswaard",
+      "wozPerSqm": 3284
+    },
+    "GM0861": {
+      "name": "Veldhoven",
+      "wozPerSqm": 3637
+    },
+    "GM0865": {
+      "name": "Vught",
+      "wozPerSqm": 3872
+    },
+    "GM0866": {
+      "name": "Waalre",
+      "wozPerSqm": 3444
+    },
+    "GM0867": {
+      "name": "Waalwijk",
+      "wozPerSqm": 3156
+    },
+    "GM0873": {
+      "name": "Woensdrecht",
+      "wozPerSqm": 2622
+    },
+    "GM0879": {
+      "name": "Zundert",
+      "wozPerSqm": 3058
+    },
+    "GM0880": {
+      "name": "Wormerland",
+      "wozPerSqm": 3881
+    },
+    "GM0882": {
+      "name": "Landgraaf",
+      "wozPerSqm": 2060
+    },
+    "GM0888": {
+      "name": "Beek (L.)",
+      "wozPerSqm": 2327
+    },
+    "GM0889": {
+      "name": "Beesel",
+      "wozPerSqm": 2352
+    },
+    "GM0893": {
+      "name": "Bergen (L.)",
+      "wozPerSqm": 2425
+    },
+    "GM0899": {
+      "name": "Brunssum",
+      "wozPerSqm": 1933
+    },
+    "GM0907": {
+      "name": "Gennep",
+      "wozPerSqm": 2729
+    },
+    "GM0917": {
+      "name": "Heerlen",
+      "wozPerSqm": 1881
+    },
+    "GM0928": {
+      "name": "Kerkrade",
+      "wozPerSqm": 1750
+    },
+    "GM0935": {
+      "name": "Maastricht",
+      "wozPerSqm": 2899
+    },
+    "GM0938": {
+      "name": "Meerssen",
+      "wozPerSqm": 2412
+    },
+    "GM0944": {
+      "name": "Mook en Middelaar",
+      "wozPerSqm": 2967
+    },
+    "GM0946": {
+      "name": "Nederweert",
+      "wozPerSqm": 2451
+    },
+    "GM0957": {
+      "name": "Roermond",
+      "wozPerSqm": 2512
+    },
+    "GM0965": {
+      "name": "Simpelveld",
+      "wozPerSqm": 1847
+    },
+    "GM0971": {
+      "name": "Stein (L.)",
+      "wozPerSqm": 2264
+    },
+    "GM0981": {
+      "name": "Vaals",
+      "wozPerSqm": 2026
+    },
+    "GM0983": {
+      "name": "Venlo",
+      "wozPerSqm": 2478
+    },
+    "GM0984": {
+      "name": "Venray",
+      "wozPerSqm": 2587
+    },
+    "GM0986": {
+      "name": "Voerendaal",
+      "wozPerSqm": 2319
+    },
+    "GM0988": {
+      "name": "Weert",
+      "wozPerSqm": 2756
+    },
+    "GM0994": {
+      "name": "Valkenburg aan de Geul",
+      "wozPerSqm": 2479
+    },
+    "GM0995": {
+      "name": "Lelystad",
+      "wozPerSqm": 2773
+    },
+    "GM1507": {
+      "name": "Horst aan de Maas",
+      "wozPerSqm": 2468
+    },
+    "GM1509": {
+      "name": "Oude IJsselstreek",
+      "wozPerSqm": 2432
+    },
+    "GM1525": {
+      "name": "Teylingen",
+      "wozPerSqm": 4000
+    },
+    "GM1581": {
+      "name": "Utrechtse Heuvelrug",
+      "wozPerSqm": 4148
+    },
+    "GM1586": {
+      "name": "Oost Gelre",
+      "wozPerSqm": 2442
+    },
+    "GM1598": {
+      "name": "Koggenland",
+      "wozPerSqm": 3000
+    },
+    "GM1621": {
+      "name": "Lansingerland",
+      "wozPerSqm": 3871
+    },
+    "GM1640": {
+      "name": "Leudal",
+      "wozPerSqm": 2350
+    },
+    "GM1641": {
+      "name": "Maasgouw",
+      "wozPerSqm": 2295
+    },
+    "GM1652": {
+      "name": "Gemert-Bakel",
+      "wozPerSqm": 2871
+    },
+    "GM1655": {
+      "name": "Halderberge",
+      "wozPerSqm": 2745
+    },
+    "GM1658": {
+      "name": "Heeze-Leende",
+      "wozPerSqm": 3140
+    },
+    "GM1659": {
+      "name": "Laarbeek",
+      "wozPerSqm": 2972
+    },
+    "GM1667": {
+      "name": "Reusel-De Mierden",
+      "wozPerSqm": 2943
+    },
+    "GM1669": {
+      "name": "Roerdalen",
+      "wozPerSqm": 2180
+    },
+    "GM1674": {
+      "name": "Roosendaal",
+      "wozPerSqm": 2667
+    },
+    "GM1676": {
+      "name": "Schouwen-Duiveland",
+      "wozPerSqm": 2832
+    },
+    "GM1680": {
+      "name": "Aa en Hunze",
+      "wozPerSqm": 2330
+    },
+    "GM1681": {
+      "name": "Borger-Odoorn",
+      "wozPerSqm": 2289
+    },
+    "GM1690": {
+      "name": "De Wolden",
+      "wozPerSqm": 2563
+    },
+    "GM1695": {
+      "name": "Noord-Beveland",
+      "wozPerSqm": 2226
+    },
+    "GM1696": {
+      "name": "Wijdemeren",
+      "wozPerSqm": 4198
+    },
+    "GM1699": {
+      "name": "Noordenveld",
+      "wozPerSqm": 2768
+    },
+    "GM1700": {
+      "name": "Twenterand",
+      "wozPerSqm": 2482
+    },
+    "GM1701": {
+      "name": "Westerveld",
+      "wozPerSqm": 2606
+    },
+    "GM1705": {
+      "name": "Lingewaard",
+      "wozPerSqm": 3098
+    },
+    "GM1706": {
+      "name": "Cranendonck",
+      "wozPerSqm": 2593
+    },
+    "GM1708": {
+      "name": "Steenwijkerland",
+      "wozPerSqm": 2360
+    },
+    "GM1709": {
+      "name": "Moerdijk",
+      "wozPerSqm": 2837
+    },
+    "GM1711": {
+      "name": "Echt-Susteren",
+      "wozPerSqm": 2231
+    },
+    "GM1714": {
+      "name": "Sluis",
+      "wozPerSqm": 2363
+    },
+    "GM1719": {
+      "name": "Drimmelen",
+      "wozPerSqm": 2984
+    },
+    "GM1721": {
+      "name": "Bernheze",
+      "wozPerSqm": 3169
+    },
+    "GM1723": {
+      "name": "Alphen-Chaam",
+      "wozPerSqm": 2956
+    },
+    "GM1724": {
+      "name": "Bergeijk",
+      "wozPerSqm": 2881
+    },
+    "GM1728": {
+      "name": "Bladel",
+      "wozPerSqm": 3124
+    },
+    "GM1729": {
+      "name": "Gulpen-Wittem",
+      "wozPerSqm": 2341
+    },
+    "GM1730": {
+      "name": "Tynaarlo",
+      "wozPerSqm": 2811
+    },
+    "GM1731": {
+      "name": "Midden-Drenthe",
+      "wozPerSqm": 2331
+    },
+    "GM1734": {
+      "name": "Overbetuwe",
+      "wozPerSqm": 3092
+    },
+    "GM1735": {
+      "name": "Hof van Twente",
+      "wozPerSqm": 2396
+    },
+    "GM1740": {
+      "name": "Neder-Betuwe",
+      "wozPerSqm": 2968
+    },
+    "GM1742": {
+      "name": "Rijssen-Holten",
+      "wozPerSqm": 2755
+    },
+    "GM1771": {
+      "name": "Geldrop-Mierlo",
+      "wozPerSqm": 3198
+    },
+    "GM1773": {
+      "name": "Olst-Wijhe",
+      "wozPerSqm": 2893
+    },
+    "GM1774": {
+      "name": "Dinkelland",
+      "wozPerSqm": 2546
+    },
+    "GM1783": {
+      "name": "Westland",
+      "wozPerSqm": 3811
+    },
+    "GM1842": {
+      "name": "Midden-Delfland",
+      "wozPerSqm": 3948
+    },
+    "GM1859": {
+      "name": "Berkelland",
+      "wozPerSqm": 2659
+    },
+    "GM1876": {
+      "name": "Bronckhorst",
+      "wozPerSqm": 2907
+    },
+    "GM1883": {
+      "name": "Sittard-Geleen",
+      "wozPerSqm": 2156
+    },
+    "GM1884": {
+      "name": "Kaag en Braassem",
+      "wozPerSqm": 3865
+    },
+    "GM1891": {
+      "name": "Dantumadiel",
+      "wozPerSqm": 2316
+    },
+    "GM1892": {
+      "name": "Zuidplas",
+      "wozPerSqm": 3622
+    },
+    "GM1894": {
+      "name": "Peel en Maas",
+      "wozPerSqm": 2534
+    },
+    "GM1895": {
+      "name": "Oldambt",
+      "wozPerSqm": 2015
+    },
+    "GM1896": {
+      "name": "Zwartewaterland",
+      "wozPerSqm": 2389
+    },
+    "GM1900": {
+      "name": "S�dwest-Frysl�n",
+      "wozPerSqm": 2297
+    },
+    "GM1901": {
+      "name": "Bodegraven-Reeuwijk",
+      "wozPerSqm": 3583
+    },
+    "GM1903": {
+      "name": "Eijsden-Margraten",
+      "wozPerSqm": 2541
+    },
+    "GM1904": {
+      "name": "Stichtse Vecht",
+      "wozPerSqm": 4056
+    },
+    "GM1911": {
+      "name": "Hollands Kroon",
+      "wozPerSqm": 2663
+    },
+    "GM1916": {
+      "name": "Leidschendam-Voorburg",
+      "wozPerSqm": 4114
+    },
+    "GM1924": {
+      "name": "Goeree-Overflakkee",
+      "wozPerSqm": 2914
+    },
+    "GM1926": {
+      "name": "Pijnacker-Nootdorp",
+      "wozPerSqm": 4012
+    },
+    "GM1930": {
+      "name": "Nissewaard",
+      "wozPerSqm": 2873
+    },
+    "GM1931": {
+      "name": "Krimpenerwaard",
+      "wozPerSqm": 3323
+    },
+    "GM1940": {
+      "name": "De Fryske Marren",
+      "wozPerSqm": 2562
+    },
+    "GM1942": {
+      "name": "Gooise Meren",
+      "wozPerSqm": 4527
+    },
+    "GM1945": {
+      "name": "Berg en Dal",
+      "wozPerSqm": 3000
+    },
+    "GM1948": {
+      "name": "Meierijstad",
+      "wozPerSqm": 3193
+    },
+    "GM1949": {
+      "name": "Waadhoeke",
+      "wozPerSqm": 1939
+    },
+    "GM1950": {
+      "name": "Westerwolde",
+      "wozPerSqm": 2281
+    },
+    "GM1952": {
+      "name": "Midden-Groningen",
+      "wozPerSqm": 2210
+    },
+    "GM1954": {
+      "name": "Beekdaelen",
+      "wozPerSqm": 2109
+    },
+    "GM1955": {
+      "name": "Montferland",
+      "wozPerSqm": 2303
+    },
+    "GM1959": {
+      "name": "Altena",
+      "wozPerSqm": 3010
+    },
+    "GM1960": {
+      "name": "West Betuwe",
+      "wozPerSqm": 3353
+    },
+    "GM1961": {
+      "name": "Vijfheerenlanden",
+      "wozPerSqm": 3252
+    },
+    "GM1963": {
+      "name": "Hoeksche Waard",
+      "wozPerSqm": 3133
+    },
+    "GM1966": {
+      "name": "Het Hogeland",
+      "wozPerSqm": 2007
+    },
+    "GM1969": {
+      "name": "Westerkwartier",
+      "wozPerSqm": 2275
+    },
+    "GM1970": {
+      "name": "Noardeast-Frysl�n",
+      "wozPerSqm": 2146
+    },
+    "GM1978": {
+      "name": "Molenlanden",
+      "wozPerSqm": 3071
+    },
+    "GM1979": {
+      "name": "Eemsdelta",
+      "wozPerSqm": 1961
+    },
+    "GM1980": {
+      "name": "Dijk en Waard",
+      "wozPerSqm": 3359
+    },
+    "GM1982": {
+      "name": "Land van Cuijk",
+      "wozPerSqm": 2767
+    },
+    "GM1991": {
+      "name": "Maashorst",
+      "wozPerSqm": 3077
+    },
+    "GM1992": {
+      "name": "Voorne aan Zee",
+      "wozPerSqm": 3058
+    }
+  },
+  "asking": {
+    "source": "https://data.residentievinder.nl/prijs-per-m2/over-deze-data/",
+    "downloadUrl": "https://www.kaggle.com/api/v1/datasets/download/dekeijzer/vraagprijs-per-m-per-gemeente-nederland?datasetVersionNumber=1",
+    "license": "CC BY 4.0",
+    "publishedAt": "2026-08-15",
+    "sourceSha256": "31821762202714ed3418cda9c37f7a5beacdb44d220ec7332288de4e9552b49d",
+    "municipalities": {
+      "GM0518": {
+        "medianPerSqm": 5000,
+        "count": 2323
+      },
+      "GM0796": {
+        "medianPerSqm": 4866,
+        "count": 661
+      },
+      "GM1680": {
+        "medianPerSqm": 3490,
+        "count": 112
+      },
+      "GM0358": {
+        "medianPerSqm": 5298,
+        "count": 126
+      },
+      "GM0197": {
+        "medianPerSqm": 3323,
+        "count": 126
+      },
+      "GM0059": {
+        "medianPerSqm": 3000,
+        "count": 61
+      },
+      "GM0482": {
+        "medianPerSqm": 3947,
+        "count": 47
+      },
+      "GM0613": {
+        "medianPerSqm": 3352,
+        "count": 82
+      },
+      "GM0361": {
+        "medianPerSqm": 4449,
+        "count": 339
+      },
+      "GM0141": {
+        "medianPerSqm": 3286,
+        "count": 254
+      },
+      "GM0034": {
+        "medianPerSqm": 4197,
+        "count": 655
+      },
+      "GM0484": {
+        "medianPerSqm": 4231,
+        "count": 435
+      },
+      "GM1723": {
+        "medianPerSqm": 4304,
+        "count": 48
+      },
+      "GM1959": {
+        "medianPerSqm": 3925,
+        "count": 175
+      },
+      "GM0060": {
+        "medianPerSqm": 5919,
+        "count": 30
+      },
+      "GM0307": {
+        "medianPerSqm": 5042,
+        "count": 307
+      },
+      "GM0362": {
+        "medianPerSqm": 6106,
+        "count": 396
+      },
+      "GM0363": {
+        "medianPerSqm": 7315,
+        "count": 1911
+      },
+      "GM0200": {
+        "medianPerSqm": 4071,
+        "count": 427
+      },
+      "GM0202": {
+        "medianPerSqm": 3938,
+        "count": 421
+      },
+      "GM0106": {
+        "medianPerSqm": 3089,
+        "count": 245
+      },
+      "GM0743": {
+        "medianPerSqm": 3750,
+        "count": 15
+      },
+      "GM0744": {
+        "medianPerSqm": 3252,
+        "count": 25
+      },
+      "GM0308": {
+        "medianPerSqm": 5677,
+        "count": 109
+      },
+      "GM0489": {
+        "medianPerSqm": 4628,
+        "count": 137
+      },
+      "GM0203": {
+        "medianPerSqm": 4262,
+        "count": 154
+      },
+      "GM0888": {
+        "medianPerSqm": 2387,
+        "count": 126
+      },
+      "GM1954": {
+        "medianPerSqm": 2786,
+        "count": 603
+      },
+      "GM0889": {
+        "medianPerSqm": 2740,
+        "count": 37
+      },
+      "GM1945": {
+        "medianPerSqm": 3863,
+        "count": 95
+      },
+      "GM1724": {
+        "medianPerSqm": 4250,
+        "count": 109
+      },
+      "GM0893": {
+        "medianPerSqm": 2403,
+        "count": 27
+      },
+      "GM0373": {
+        "medianPerSqm": 6378,
+        "count": 317
+      },
+      "GM0748": {
+        "medianPerSqm": 3886,
+        "count": 346
+      },
+      "GM1859": {
+        "medianPerSqm": 2826,
+        "count": 135
+      },
+      "GM1721": {
+        "medianPerSqm": 4298,
+        "count": 111
+      },
+      "GM0753": {
+        "medianPerSqm": 4444,
+        "count": 58
+      },
+      "GM0209": {
+        "medianPerSqm": 3850,
+        "count": 115
+      },
+      "GM0375": {
+        "medianPerSqm": 4174,
+        "count": 216
+      },
+      "GM1728": {
+        "medianPerSqm": 3904,
+        "count": 44
+      },
+      "GM0376": {
+        "medianPerSqm": 7356,
+        "count": 27
+      },
+      "GM0377": {
+        "medianPerSqm": 6387,
+        "count": 46
+      },
+      "GM1901": {
+        "medianPerSqm": 4142,
+        "count": 191
+      },
+      "GM0755": {
+        "medianPerSqm": 4112,
+        "count": 20
+      },
+      "GM1681": {
+        "medianPerSqm": 2992,
+        "count": 57
+      },
+      "GM0147": {
+        "medianPerSqm": 3503,
+        "count": 64
+      },
+      "GM0654": {
+        "medianPerSqm": 2819,
+        "count": 129
+      },
+      "GM0757": {
+        "medianPerSqm": 3801,
+        "count": 64
+      },
+      "GM0758": {
+        "medianPerSqm": 4741,
+        "count": 608
+      },
+      "GM1876": {
+        "medianPerSqm": 4216,
+        "count": 241
+      },
+      "GM0213": {
+        "medianPerSqm": 3925,
+        "count": 41
+      },
+      "GM0899": {
+        "medianPerSqm": 2567,
+        "count": 146
+      },
+      "GM0312": {
+        "medianPerSqm": 5376,
+        "count": 24
+      },
+      "GM0313": {
+        "medianPerSqm": 4924,
+        "count": 128
+      },
+      "GM0214": {
+        "medianPerSqm": 5930,
+        "count": 87
+      },
+      "GM0502": {
+        "medianPerSqm": 4166,
+        "count": 184
+      },
+      "GM0383": {
+        "medianPerSqm": 4975,
+        "count": 81
+      },
+      "GM0109": {
+        "medianPerSqm": 3495,
+        "count": 303
+      },
+      "GM1706": {
+        "medianPerSqm": 4916,
+        "count": 45
+      },
+      "GM0216": {
+        "medianPerSqm": 4289,
+        "count": 54
+      },
+      "GM0148": {
+        "medianPerSqm": 3965,
+        "count": 75
+      },
+      "GM1891": {
+        "medianPerSqm": 3102,
+        "count": 108
+      },
+      "GM0310": {
+        "medianPerSqm": 5777,
+        "count": 83
+      },
+      "GM1940": {
+        "medianPerSqm": 3919,
+        "count": 280
+      },
+      "GM0736": {
+        "medianPerSqm": 4534,
+        "count": 406
+      },
+      "GM1690": {
+        "medianPerSqm": 3664,
+        "count": 70
+      },
+      "GM0503": {
+        "medianPerSqm": 5282,
+        "count": 525
+      },
+      "GM0400": {
+        "medianPerSqm": 3090,
+        "count": 181
+      },
+      "GM0762": {
+        "medianPerSqm": 3268,
+        "count": 22
+      },
+      "GM0150": {
+        "medianPerSqm": 3808,
+        "count": 277
+      },
+      "GM0384": {
+        "medianPerSqm": 5682,
+        "count": 69
+      },
+      "GM1980": {
+        "medianPerSqm": 4025,
+        "count": 289
+      },
+      "GM1774": {
+        "medianPerSqm": 3563,
+        "count": 52
+      },
+      "GM0221": {
+        "medianPerSqm": 2876,
+        "count": 24
+      },
+      "GM0222": {
+        "medianPerSqm": 3640,
+        "count": 88
+      },
+      "GM0766": {
+        "medianPerSqm": 3750,
+        "count": 69
+      },
+      "GM0505": {
+        "medianPerSqm": 4029,
+        "count": 283
+      },
+      "GM0498": {
+        "medianPerSqm": 3764,
+        "count": 44
+      },
+      "GM1719": {
+        "medianPerSqm": 3862,
+        "count": 168
+      },
+      "GM0303": {
+        "medianPerSqm": 3230,
+        "count": 129
+      },
+      "GM0225": {
+        "medianPerSqm": 3299,
+        "count": 97
+      },
+      "GM0226": {
+        "medianPerSqm": 3465,
+        "count": 51
+      },
+      "GM1711": {
+        "medianPerSqm": 2847,
+        "count": 254
+      },
+      "GM0385": {
+        "medianPerSqm": 4286,
+        "count": 77
+      },
+      "GM0228": {
+        "medianPerSqm": 4642,
+        "count": 278
+      },
+      "GM0317": {
+        "medianPerSqm": 4830,
+        "count": 24
+      },
+      "GM1979": {
+        "medianPerSqm": 2350,
+        "count": 146
+      },
+      "GM0770": {
+        "medianPerSqm": 3972,
+        "count": 43
+      },
+      "GM1903": {
+        "medianPerSqm": 5661,
+        "count": 213
+      },
+      "GM0772": {
+        "medianPerSqm": 4545,
+        "count": 541
+      },
+      "GM0230": {
+        "medianPerSqm": 3962,
+        "count": 44
+      },
+      "GM0114": {
+        "medianPerSqm": 2775,
+        "count": 276
+      },
+      "GM0388": {
+        "medianPerSqm": 4044,
+        "count": 35
+      },
+      "GM0153": {
+        "medianPerSqm": 3233,
+        "count": 515
+      },
+      "GM0232": {
+        "medianPerSqm": 4562,
+        "count": 52
+      },
+      "GM0233": {
+        "medianPerSqm": 6316,
+        "count": 83
+      },
+      "GM0777": {
+        "medianPerSqm": 3737,
+        "count": 93
+      },
+      "GM0779": {
+        "medianPerSqm": 3824,
+        "count": 63
+      },
+      "GM1771": {
+        "medianPerSqm": 3884,
+        "count": 83
+      },
+      "GM1652": {
+        "medianPerSqm": 2955,
+        "count": 85
+      },
+      "GM0907": {
+        "medianPerSqm": 3481,
+        "count": 33
+      },
+      "GM0784": {
+        "medianPerSqm": 3565,
+        "count": 65
+      },
+      "GM1924": {
+        "medianPerSqm": 3747,
+        "count": 436
+      },
+      "GM0664": {
+        "medianPerSqm": 3525,
+        "count": 228
+      },
+      "GM0785": {
+        "medianPerSqm": 4038,
+        "count": 59
+      },
+      "GM1942": {
+        "medianPerSqm": 5743,
+        "count": 198
+      },
+      "GM0512": {
+        "medianPerSqm": 4120,
+        "count": 159
+      },
+      "GM0513": {
+        "medianPerSqm": 4138,
+        "count": 180
+      },
+      "GM0014": {
+        "medianPerSqm": 3822,
+        "count": 662
+      },
+      "GM1729": {
+        "medianPerSqm": 3198,
+        "count": 45
+      },
+      "GM0158": {
+        "medianPerSqm": 3208,
+        "count": 54
+      },
+      "GM0392": {
+        "medianPerSqm": 5910,
+        "count": 528
+      },
+      "GM0394": {
+        "medianPerSqm": 4848,
+        "count": 374
+      },
+      "GM1655": {
+        "medianPerSqm": 3913,
+        "count": 346
+      },
+      "GM0160": {
+        "medianPerSqm": 2996,
+        "count": 600
+      },
+      "GM0243": {
+        "medianPerSqm": 4067,
+        "count": 96
+      },
+      "GM0523": {
+        "medianPerSqm": 3786,
+        "count": 31
+      },
+      "GM0072": {
+        "medianPerSqm": 3131,
+        "count": 248
+      },
+      "GM0244": {
+        "medianPerSqm": 4620,
+        "count": 14
+      },
+      "GM0396": {
+        "medianPerSqm": 4264,
+        "count": 49
+      },
+      "GM0397": {
+        "medianPerSqm": 5809,
+        "count": 53
+      },
+      "GM0246": {
+        "medianPerSqm": 4079,
+        "count": 57
+      },
+      "GM0074": {
+        "medianPerSqm": 3236,
+        "count": 769
+      },
+      "GM0917": {
+        "medianPerSqm": 2377,
+        "count": 633
+      },
+      "GM1658": {
+        "medianPerSqm": 2162,
+        "count": 69
+      },
+      "GM0399": {
+        "medianPerSqm": 5316,
+        "count": 98
+      },
+      "GM0163": {
+        "medianPerSqm": 3715,
+        "count": 68
+      },
+      "GM0794": {
+        "medianPerSqm": 3835,
+        "count": 245
+      },
+      "GM0531": {
+        "medianPerSqm": 4832,
+        "count": 99
+      },
+      "GM0164": {
+        "medianPerSqm": 3279,
+        "count": 259
+      },
+      "GM1966": {
+        "medianPerSqm": 2612,
+        "count": 224
+      },
+      "GM0252": {
+        "medianPerSqm": 3226,
+        "count": 84
+      },
+      "GM0797": {
+        "medianPerSqm": 3784,
+        "count": 130
+      },
+      "GM0534": {
+        "medianPerSqm": 4630,
+        "count": 59
+      },
+      "GM0798": {
+        "medianPerSqm": 5098,
+        "count": 98
+      },
+      "GM0402": {
+        "medianPerSqm": 5394,
+        "count": 276
+      },
+      "GM1963": {
+        "medianPerSqm": 3929,
+        "count": 306
+      },
+      "GM1735": {
+        "medianPerSqm": 3472,
+        "count": 55
+      },
+      "GM1911": {
+        "medianPerSqm": 3351,
+        "count": 218
+      },
+      "GM0118": {
+        "medianPerSqm": 3305,
+        "count": 189
+      },
+      "GM0405": {
+        "medianPerSqm": 4132,
+        "count": 166
+      },
+      "GM1507": {
+        "medianPerSqm": 2864,
+        "count": 142
+      },
+      "GM0321": {
+        "medianPerSqm": 4220,
+        "count": 135
+      },
+      "GM0406": {
+        "medianPerSqm": 5152,
+        "count": 85
+      },
+      "GM0677": {
+        "medianPerSqm": 2517,
+        "count": 121
+      },
+      "GM0353": {
+        "medianPerSqm": 4699,
+        "count": 26
+      },
+      "GM1884": {
+        "medianPerSqm": 5068,
+        "count": 113
+      },
+      "GM0166": {
+        "medianPerSqm": 3606,
+        "count": 93
+      },
+      "GM0678": {
+        "medianPerSqm": 3439,
+        "count": 32
+      },
+      "GM0537": {
+        "medianPerSqm": 5054,
+        "count": 90
+      },
+      "GM0928": {
+        "medianPerSqm": 2004,
+        "count": 133
+      },
+      "GM1598": {
+        "medianPerSqm": 3613,
+        "count": 57
+      },
+      "GM0542": {
+        "medianPerSqm": 4167,
+        "count": 76
+      },
+      "GM1931": {
+        "medianPerSqm": 4663,
+        "count": 230
+      },
+      "GM1659": {
+        "medianPerSqm": 3455,
+        "count": 28
+      },
+      "GM1982": {
+        "medianPerSqm": 3510,
+        "count": 269
+      },
+      "GM0882": {
+        "medianPerSqm": 2381,
+        "count": 159
+      },
+      "GM0415": {
+        "medianPerSqm": 7016,
+        "count": 34
+      },
+      "GM1621": {
+        "medianPerSqm": 4539,
+        "count": 188
+      },
+      "GM0417": {
+        "medianPerSqm": 7384,
+        "count": 54
+      },
+      "GM0080": {
+        "medianPerSqm": 2987,
+        "count": 296
+      },
+      "GM0546": {
+        "medianPerSqm": 5952,
+        "count": 403
+      },
+      "GM0547": {
+        "medianPerSqm": 4741,
+        "count": 129
+      },
+      "GM1916": {
+        "medianPerSqm": 5542,
+        "count": 486
+      },
+      "GM0995": {
+        "medianPerSqm": 3535,
+        "count": 235
+      },
+      "GM1640": {
+        "medianPerSqm": 2953,
+        "count": 827
+      },
+      "GM0327": {
+        "medianPerSqm": 11958,
+        "count": 72
+      },
+      "GM1705": {
+        "medianPerSqm": 3693,
+        "count": 149
+      },
+      "GM0553": {
+        "medianPerSqm": 5179,
+        "count": 69
+      },
+      "GM0262": {
+        "medianPerSqm": 3842,
+        "count": 110
+      },
+      "GM0809": {
+        "medianPerSqm": 3235,
+        "count": 75
+      },
+      "GM0331": {
+        "medianPerSqm": 4536,
+        "count": 33
+      },
+      "GM0168": {
+        "medianPerSqm": 3153,
+        "count": 94
+      },
+      "GM0263": {
+        "medianPerSqm": 3830,
+        "count": 130
+      },
+      "GM1641": {
+        "medianPerSqm": 2083,
+        "count": 324
+      },
+      "GM1991": {
+        "medianPerSqm": 4126,
+        "count": 139
+      },
+      "GM0556": {
+        "medianPerSqm": 4210,
+        "count": 132
+      },
+      "GM0935": {
+        "medianPerSqm": 3621,
+        "count": 469
+      },
+      "GM0420": {
+        "medianPerSqm": 3780,
+        "count": 117
+      },
+      "GM0938": {
+        "medianPerSqm": 2713,
+        "count": 57
+      },
+      "GM1948": {
+        "medianPerSqm": 3980,
+        "count": 187
+      },
+      "GM0119": {
+        "medianPerSqm": 3850,
+        "count": 85
+      },
+      "GM0687": {
+        "medianPerSqm": 3692,
+        "count": 180
+      },
+      "GM1842": {
+        "medianPerSqm": 5000,
+        "count": 21
+      },
+      "GM1731": {
+        "medianPerSqm": 3346,
+        "count": 106
+      },
+      "GM1952": {
+        "medianPerSqm": 2951,
+        "count": 133
+      },
+      "GM1709": {
+        "medianPerSqm": 3289,
+        "count": 223
+      },
+      "GM1978": {
+        "medianPerSqm": 3975,
+        "count": 95
+      },
+      "GM1955": {
+        "medianPerSqm": 3088,
+        "count": 97
+      },
+      "GM0335": {
+        "medianPerSqm": 3914,
+        "count": 12
+      },
+      "GM0944": {
+        "medianPerSqm": 4301,
+        "count": 13
+      },
+      "GM1740": {
+        "medianPerSqm": 3850,
+        "count": 64
+      },
+      "GM0946": {
+        "medianPerSqm": 2662,
+        "count": 30
+      },
+      "GM0356": {
+        "medianPerSqm": 4500,
+        "count": 143
+      },
+      "GM0569": {
+        "medianPerSqm": 4450,
+        "count": 123
+      },
+      "GM0267": {
+        "medianPerSqm": 4624,
+        "count": 54
+      },
+      "GM0268": {
+        "medianPerSqm": 3981,
+        "count": 399
+      },
+      "GM1930": {
+        "medianPerSqm": 3960,
+        "count": 216
+      },
+      "GM1970": {
+        "medianPerSqm": 2500,
+        "count": 137
+      },
+      "GM1695": {
+        "medianPerSqm": 4933,
+        "count": 169
+      },
+      "GM1699": {
+        "medianPerSqm": 3521,
+        "count": 286
+      },
+      "GM0171": {
+        "medianPerSqm": 3186,
+        "count": 112
+      },
+      "GM0575": {
+        "medianPerSqm": 5833,
+        "count": 146
+      },
+      "GM0820": {
+        "medianPerSqm": 4031,
+        "count": 30
+      },
+      "GM0302": {
+        "medianPerSqm": 3933,
+        "count": 59
+      },
+      "GM0579": {
+        "medianPerSqm": 5515,
+        "count": 61
+      },
+      "GM0823": {
+        "medianPerSqm": 4245,
+        "count": 41
+      },
+      "GM0824": {
+        "medianPerSqm": 4650,
+        "count": 187
+      },
+      "GM1895": {
+        "medianPerSqm": 2270,
+        "count": 137
+      },
+      "GM0269": {
+        "medianPerSqm": 3953,
+        "count": 41
+      },
+      "GM0173": {
+        "medianPerSqm": 3416,
+        "count": 87
+      },
+      "GM1773": {
+        "medianPerSqm": 3463,
+        "count": 53
+      },
+      "GM0175": {
+        "medianPerSqm": 3008,
+        "count": 125
+      },
+      "GM1586": {
+        "medianPerSqm": 3252,
+        "count": 66
+      },
+      "GM0826": {
+        "medianPerSqm": 3992,
+        "count": 168
+      },
+      "GM0085": {
+        "medianPerSqm": 3022,
+        "count": 126
+      },
+      "GM0431": {
+        "medianPerSqm": 5469,
+        "count": 19
+      },
+      "GM0432": {
+        "medianPerSqm": 3558,
+        "count": 25
+      },
+      "GM0086": {
+        "medianPerSqm": 3604,
+        "count": 300
+      },
+      "GM0828": {
+        "medianPerSqm": 3634,
+        "count": 601
+      },
+      "GM1509": {
+        "medianPerSqm": 3178,
+        "count": 144
+      },
+      "GM0437": {
+        "medianPerSqm": 5647,
+        "count": 46
+      },
+      "GM0589": {
+        "medianPerSqm": 5060,
+        "count": 17
+      },
+      "GM1734": {
+        "medianPerSqm": 4096,
+        "count": 163
+      },
+      "GM0590": {
+        "medianPerSqm": 3864,
+        "count": 125
+      },
+      "GM1894": {
+        "medianPerSqm": 3094,
+        "count": 87
+      },
+      "GM0765": {
+        "medianPerSqm": 2300,
+        "count": 23
+      },
+      "GM1926": {
+        "medianPerSqm": 4737,
+        "count": 163
+      },
+      "GM0439": {
+        "medianPerSqm": 4460,
+        "count": 212
+      },
+      "GM0273": {
+        "medianPerSqm": 4806,
+        "count": 419
+      },
+      "GM0177": {
+        "medianPerSqm": 2845,
+        "count": 121
+      },
+      "GM0703": {
+        "medianPerSqm": 3190,
+        "count": 24
+      },
+      "GM0274": {
+        "medianPerSqm": 5198,
+        "count": 116
+      },
+      "GM0339": {
+        "medianPerSqm": 4214,
+        "count": 12
+      },
+      "GM1667": {
+        "medianPerSqm": 3393,
+        "count": 63
+      },
+      "GM0275": {
+        "medianPerSqm": 3750,
+        "count": 162
+      },
+      "GM0340": {
+        "medianPerSqm": 5080,
+        "count": 48
+      },
+      "GM0597": {
+        "medianPerSqm": 3924,
+        "count": 103
+      },
+      "GM1742": {
+        "medianPerSqm": 3875,
+        "count": 26
+      },
+      "GM0603": {
+        "medianPerSqm": 4133,
+        "count": 162
+      },
+      "GM1669": {
+        "medianPerSqm": 2863,
+        "count": 120
+      },
+      "GM0957": {
+        "medianPerSqm": 3130,
+        "count": 350
+      },
+      "GM1674": {
+        "medianPerSqm": 2923,
+        "count": 483
+      },
+      "GM0599": {
+        "medianPerSqm": 4544,
+        "count": 2836
+      },
+      "GM0840": {
+        "medianPerSqm": 3860,
+        "count": 109
+      },
+      "GM0441": {
+        "medianPerSqm": 3814,
+        "count": 263
+      },
+      "GM0279": {
+        "medianPerSqm": 3851,
+        "count": 23
+      },
+      "GM0606": {
+        "medianPerSqm": 3852,
+        "count": 289
+      },
+      "GM1676": {
+        "medianPerSqm": 3497,
+        "count": 189
+      },
+      "GM0965": {
+        "medianPerSqm": 2419,
+        "count": 35
+      },
+      "GM0845": {
+        "medianPerSqm": 4255,
+        "count": 49
+      },
+      "GM1883": {
+        "medianPerSqm": 2526,
+        "count": 416
+      },
+      "GM0610": {
+        "medianPerSqm": 3952,
+        "count": 51
+      },
+      "GM1714": {
+        "medianPerSqm": 2789,
+        "count": 625
+      },
+      "GM0090": {
+        "medianPerSqm": 3018,
+        "count": 492
+      },
+      "GM0342": {
+        "medianPerSqm": 5022,
+        "count": 91
+      },
+      "GM0847": {
+        "medianPerSqm": 3531,
+        "count": 41
+      },
+      "GM0848": {
+        "medianPerSqm": 3582,
+        "count": 56
+      },
+      "GM0037": {
+        "medianPerSqm": 2812,
+        "count": 101
+      },
+      "GM0180": {
+        "medianPerSqm": 3158,
+        "count": 19
+      },
+      "GM0532": {
+        "medianPerSqm": 3349,
+        "count": 52
+      },
+      "GM0851": {
+        "medianPerSqm": 3502,
+        "count": 94
+      },
+      "GM1708": {
+        "medianPerSqm": 2805,
+        "count": 234
+      },
+      "GM0971": {
+        "medianPerSqm": 2897,
+        "count": 163
+      },
+      "GM1904": {
+        "medianPerSqm": 5640,
+        "count": 231
+      },
+      "GM1900": {
+        "medianPerSqm": 2742,
+        "count": 342
+      },
+      "GM0715": {
+        "medianPerSqm": 2889,
+        "count": 338
+      },
+      "GM0093": {
+        "medianPerSqm": 6641,
+        "count": 36
+      },
+      "GM0448": {
+        "medianPerSqm": 5519,
+        "count": 76
+      },
+      "GM1525": {
+        "medianPerSqm": 5198,
+        "count": 125
+      },
+      "GM0716": {
+        "medianPerSqm": 2993,
+        "count": 87
+      },
+      "GM0281": {
+        "medianPerSqm": 3843,
+        "count": 93
+      },
+      "GM0855": {
+        "medianPerSqm": 3933,
+        "count": 1009
+      },
+      "GM0183": {
+        "medianPerSqm": 3507,
+        "count": 36
+      },
+      "GM1700": {
+        "medianPerSqm": 3257,
+        "count": 164
+      },
+      "GM1730": {
+        "medianPerSqm": 3546,
+        "count": 176
+      },
+      "GM0737": {
+        "medianPerSqm": 3015,
+        "count": 59
+      },
+      "GM0450": {
+        "medianPerSqm": 4065,
+        "count": 23
+      },
+      "GM0451": {
+        "medianPerSqm": 5065,
+        "count": 55
+      },
+      "GM0344": {
+        "medianPerSqm": 5667,
+        "count": 637
+      },
+      "GM1581": {
+        "medianPerSqm": 5194,
+        "count": 100
+      },
+      "GM0981": {
+        "medianPerSqm": 3772,
+        "count": 76
+      },
+      "GM0994": {
+        "medianPerSqm": 2670,
+        "count": 181
+      },
+      "GM0858": {
+        "medianPerSqm": 4112,
+        "count": 80
+      },
+      "GM0047": {
+        "medianPerSqm": 2674,
+        "count": 73
+      },
+      "GM0345": {
+        "medianPerSqm": 4579,
+        "count": 157
+      },
+      "GM0717": {
+        "medianPerSqm": 4658,
+        "count": 323
+      },
+      "GM0861": {
+        "medianPerSqm": 4383,
+        "count": 143
+      },
+      "GM0453": {
+        "medianPerSqm": 4508,
+        "count": 98
+      },
+      "GM0983": {
+        "medianPerSqm": 3140,
+        "count": 614
+      },
+      "GM0984": {
+        "medianPerSqm": 3536,
+        "count": 148
+      },
+      "GM1961": {
+        "medianPerSqm": 4220,
+        "count": 80
+      },
+      "GM0622": {
+        "medianPerSqm": 4167,
+        "count": 166
+      },
+      "GM0718": {
+        "medianPerSqm": 3247,
+        "count": 205
+      },
+      "GM0986": {
+        "medianPerSqm": 1910,
+        "count": 73
+      },
+      "GM1992": {
+        "medianPerSqm": 3988,
+        "count": 364
+      },
+      "GM0626": {
+        "medianPerSqm": 4648,
+        "count": 86
+      },
+      "GM0285": {
+        "medianPerSqm": 4167,
+        "count": 68
+      },
+      "GM0865": {
+        "medianPerSqm": 5000,
+        "count": 123
+      },
+      "GM1949": {
+        "medianPerSqm": 2669,
+        "count": 139
+      },
+      "GM0866": {
+        "medianPerSqm": 4252,
+        "count": 43
+      },
+      "GM0867": {
+        "medianPerSqm": 3933,
+        "count": 186
+      },
+      "GM0627": {
+        "medianPerSqm": 4741,
+        "count": 136
+      },
+      "GM0289": {
+        "medianPerSqm": 4185,
+        "count": 102
+      },
+      "GM0629": {
+        "medianPerSqm": 5658,
+        "count": 212
+      },
+      "GM0852": {
+        "medianPerSqm": 5723,
+        "count": 63
+      },
+      "GM0988": {
+        "medianPerSqm": 3302,
+        "count": 350
+      },
+      "GM1960": {
+        "medianPerSqm": 4115,
+        "count": 170
+      },
+      "GM0668": {
+        "medianPerSqm": 3305,
+        "count": 247
+      },
+      "GM1969": {
+        "medianPerSqm": 2647,
+        "count": 324
+      },
+      "GM1701": {
+        "medianPerSqm": 3571,
+        "count": 78
+      },
+      "GM0293": {
+        "medianPerSqm": 3674,
+        "count": 25
+      },
+      "GM1950": {
+        "medianPerSqm": 2838,
+        "count": 146
+      },
+      "GM1783": {
+        "medianPerSqm": 4612,
+        "count": 375
+      },
+      "GM0098": {
+        "medianPerSqm": 3606,
+        "count": 247
+      },
+      "GM0189": {
+        "medianPerSqm": 3628,
+        "count": 62
+      },
+      "GM0296": {
+        "medianPerSqm": 3171,
+        "count": 150
+      },
+      "GM1696": {
+        "medianPerSqm": 5305,
+        "count": 85
+      },
+      "GM0352": {
+        "medianPerSqm": 5088,
+        "count": 242
+      },
+      "GM0294": {
+        "medianPerSqm": 2754,
+        "count": 114
+      },
+      "GM0873": {
+        "medianPerSqm": 3042,
+        "count": 232
+      },
+      "GM0632": {
+        "medianPerSqm": 4737,
+        "count": 124
+      },
+      "GM0880": {
+        "medianPerSqm": 4628,
+        "count": 61
+      },
+      "GM0351": {
+        "medianPerSqm": 5062,
+        "count": 102
+      },
+      "GM0479": {
+        "medianPerSqm": 4211,
+        "count": 1783
+      },
+      "GM0297": {
+        "medianPerSqm": 4490,
+        "count": 108
+      },
+      "GM0473": {
+        "medianPerSqm": 6363,
+        "count": 71
+      },
+      "GM0050": {
+        "medianPerSqm": 3809,
+        "count": 85
+      },
+      "GM0355": {
+        "medianPerSqm": 5556,
+        "count": 115
+      },
+      "GM0299": {
+        "medianPerSqm": 3369,
+        "count": 179
+      },
+      "GM0637": {
+        "medianPerSqm": 4237,
+        "count": 308
+      },
+      "GM0638": {
+        "medianPerSqm": 5577,
+        "count": 24
+      },
+      "GM1892": {
+        "medianPerSqm": 4375,
+        "count": 121
+      },
+      "GM0879": {
+        "medianPerSqm": 3992,
+        "count": 59
+      },
+      "GM0301": {
+        "medianPerSqm": 3530,
+        "count": 111
+      },
+      "GM1896": {
+        "medianPerSqm": 3255,
+        "count": 47
+      },
+      "GM0642": {
+        "medianPerSqm": 3881,
+        "count": 160
+      },
+      "GM0193": {
+        "medianPerSqm": 4214,
+        "count": 248
+      }
+    }
+  },
+  "regionalIndices": {
+    "NL01": {
+      "1995KW01": 28.9,
+      "1995KW02": 29.3,
+      "1995KW03": 30,
+      "1995KW04": 30.4,
+      "1996KW01": 31.2,
+      "1996KW02": 32.1,
+      "1996KW03": 33.1,
+      "1996KW04": 34,
+      "1997KW01": 34.9,
+      "1997KW02": 35.9,
+      "1997KW03": 36.9,
+      "1997KW04": 37.7,
+      "1998KW01": 38.5,
+      "1998KW02": 39.5,
+      "1998KW03": 40.8,
+      "1998KW04": 41.9,
+      "1999KW01": 43.4,
+      "1999KW02": 45.3,
+      "1999KW03": 47.6,
+      "1999KW04": 49.7,
+      "2000KW01": 51.8,
+      "2000KW02": 53.8,
+      "2000KW03": 56,
+      "2000KW04": 57.3,
+      "2001KW01": 58.9,
+      "2001KW02": 60.4,
+      "2001KW03": 61.8,
+      "2001KW04": 62.4,
+      "2002KW01": 63.4,
+      "2002KW02": 64.4,
+      "2002KW03": 65.5,
+      "2002KW04": 65.4,
+      "2003KW01": 66.1,
+      "2003KW02": 66.8,
+      "2003KW03": 67.4,
+      "2003KW04": 68,
+      "2004KW01": 68.8,
+      "2004KW02": 69.6,
+      "2004KW03": 70.5,
+      "2004KW04": 70.7,
+      "2005KW01": 71.4,
+      "2005KW02": 72.3,
+      "2005KW03": 73.2,
+      "2005KW04": 73.6,
+      "2006KW01": 74.7,
+      "2006KW02": 75.6,
+      "2006KW03": 76.5,
+      "2006KW04": 76.9,
+      "2007KW01": 77.8,
+      "2007KW02": 78.7,
+      "2007KW03": 80,
+      "2007KW04": 80.2,
+      "2008KW01": 81.2,
+      "2008KW02": 81.4,
+      "2008KW03": 82.4,
+      "2008KW04": 81.7,
+      "2009KW01": 81.1,
+      "2009KW02": 79.2,
+      "2009KW03": 78.2,
+      "2009KW04": 77.7,
+      "2010KW01": 77.5,
+      "2010KW02": 77.7,
+      "2010KW03": 77.8,
+      "2010KW04": 76.9,
+      "2011KW01": 76.6,
+      "2011KW02": 76.2,
+      "2011KW03": 75.7,
+      "2011KW04": 74.4,
+      "2012KW01": 73.4,
+      "2012KW02": 72.1,
+      "2012KW03": 69.5,
+      "2012KW04": 68.9,
+      "2013KW01": 67.4,
+      "2013KW02": 66.1,
+      "2013KW03": 66.3,
+      "2013KW04": 66.2,
+      "2014KW01": 66.6,
+      "2014KW02": 67,
+      "2014KW03": 67.7,
+      "2014KW04": 67.9,
+      "2015KW01": 68.4,
+      "2015KW02": 69,
+      "2015KW03": 70.1,
+      "2015KW04": 70.6,
+      "2016KW01": 71.5,
+      "2016KW02": 72.4,
+      "2016KW03": 74.3,
+      "2016KW04": 75.2,
+      "2017KW01": 76.7,
+      "2017KW02": 78.3,
+      "2017KW03": 80.4,
+      "2017KW04": 81.7,
+      "2018KW01": 83.8,
+      "2018KW02": 85.5,
+      "2018KW03": 87.9,
+      "2018KW04": 89.2,
+      "2019KW01": 90.7,
+      "2019KW02": 91.8,
+      "2019KW03": 93.5,
+      "2019KW04": 94.8,
+      "2020KW01": 96.9,
+      "2020KW02": 98.9,
+      "2020KW03": 101.1,
+      "2020KW04": 103.1,
+      "2021KW01": 106.8,
+      "2021KW02": 111.6,
+      "2021KW03": 118.7,
+      "2021KW04": 123.2,
+      "2022KW01": 128.2,
+      "2022KW02": 131.8,
+      "2022KW03": 132.4,
+      "2022KW04": 129,
+      "2023KW01": 126.8,
+      "2023KW02": 124.7,
+      "2023KW03": 126.4,
+      "2023KW04": 128.6,
+      "2024KW01": 131.6,
+      "2024KW02": 135.4,
+      "2024KW03": 140.4,
+      "2024KW04": 143.3,
+      "2025KW01": 146,
+      "2025KW02": 148.7,
+      "2025KW03": 151.4,
+      "2025KW04": 152.2,
+      "2026KW01": 153.6,
+      "2026KW02": 154.9
+    },
+    "LD01": {
+      "1995KW01": 31.3,
+      "1995KW02": 31.7,
+      "1995KW03": 32.4,
+      "1995KW04": 33.1,
+      "1996KW01": 33.9,
+      "1996KW02": 34.7,
+      "1996KW03": 35.7,
+      "1996KW04": 36.4,
+      "1997KW01": 36.7,
+      "1997KW02": 38,
+      "1997KW03": 38.8,
+      "1997KW04": 39.5,
+      "1998KW01": 40.2,
+      "1998KW02": 40.8,
+      "1998KW03": 42.3,
+      "1998KW04": 43.3,
+      "1999KW01": 44.1,
+      "1999KW02": 45.8,
+      "1999KW03": 48.1,
+      "1999KW04": 50.1,
+      "2000KW01": 52,
+      "2000KW02": 54.4,
+      "2000KW03": 57,
+      "2000KW04": 58.3,
+      "2001KW01": 60.4,
+      "2001KW02": 62.1,
+      "2001KW03": 63.8,
+      "2001KW04": 64.5,
+      "2002KW01": 65.6,
+      "2002KW02": 66.6,
+      "2002KW03": 68.3,
+      "2002KW04": 68.1,
+      "2003KW01": 69.8,
+      "2003KW02": 70.7,
+      "2003KW03": 71.2,
+      "2003KW04": 72,
+      "2004KW01": 73.3,
+      "2004KW02": 74.1,
+      "2004KW03": 75.7,
+      "2004KW04": 76,
+      "2005KW01": 77.4,
+      "2005KW02": 78.6,
+      "2005KW03": 80.1,
+      "2005KW04": 80.5,
+      "2006KW01": 81.9,
+      "2006KW02": 83.1,
+      "2006KW03": 84,
+      "2006KW04": 84.6,
+      "2007KW01": 85.5,
+      "2007KW02": 86.2,
+      "2007KW03": 87,
+      "2007KW04": 87.2,
+      "2008KW01": 88.3,
+      "2008KW02": 88.1,
+      "2008KW03": 88.7,
+      "2008KW04": 88.2,
+      "2009KW01": 86.8,
+      "2009KW02": 84.9,
+      "2009KW03": 84.7,
+      "2009KW04": 83.9,
+      "2010KW01": 84.4,
+      "2010KW02": 84.3,
+      "2010KW03": 84.8,
+      "2010KW04": 83.7,
+      "2011KW01": 82.7,
+      "2011KW02": 82.1,
+      "2011KW03": 81.3,
+      "2011KW04": 80.1,
+      "2012KW01": 79,
+      "2012KW02": 77.5,
+      "2012KW03": 75.2,
+      "2012KW04": 74.4,
+      "2013KW01": 73.1,
+      "2013KW02": 71.3,
+      "2013KW03": 71.3,
+      "2013KW04": 71.3,
+      "2014KW01": 71.1,
+      "2014KW02": 71.3,
+      "2014KW03": 71.5,
+      "2014KW04": 71.4,
+      "2015KW01": 72.3,
+      "2015KW02": 72.5,
+      "2015KW03": 73.1,
+      "2015KW04": 73.4,
+      "2016KW01": 73.8,
+      "2016KW02": 74.4,
+      "2016KW03": 76.6,
+      "2016KW04": 77,
+      "2017KW01": 77.8,
+      "2017KW02": 79.1,
+      "2017KW03": 80.9,
+      "2017KW04": 81.7,
+      "2018KW01": 83.1,
+      "2018KW02": 84.8,
+      "2018KW03": 86.5,
+      "2018KW04": 88.1,
+      "2019KW01": 89.4,
+      "2019KW02": 90.7,
+      "2019KW03": 93.2,
+      "2019KW04": 94.5,
+      "2020KW01": 96.5,
+      "2020KW02": 98.3,
+      "2020KW03": 101.3,
+      "2020KW04": 103.9,
+      "2021KW01": 108,
+      "2021KW02": 113.2,
+      "2021KW03": 121.7,
+      "2021KW04": 126.8,
+      "2022KW01": 132.4,
+      "2022KW02": 135.7,
+      "2022KW03": 136.3,
+      "2022KW04": 133.1,
+      "2023KW01": 130.7,
+      "2023KW02": 128.8,
+      "2023KW03": 130.7,
+      "2023KW04": 134.3,
+      "2024KW01": 136.8,
+      "2024KW02": 140.6,
+      "2024KW03": 146.2,
+      "2024KW04": 150.5,
+      "2025KW01": 153.6,
+      "2025KW02": 157.2,
+      "2025KW03": 160.2,
+      "2025KW04": 162.4,
+      "2026KW01": 165,
+      "2026KW02": 167
+    },
+    "LD02": {
+      "1995KW01": 31.5,
+      "1995KW02": 32.1,
+      "1995KW03": 32.9,
+      "1995KW04": 33.5,
+      "1996KW01": 34,
+      "1996KW02": 35.4,
+      "1996KW03": 36.4,
+      "1996KW04": 37.5,
+      "1997KW01": 38.1,
+      "1997KW02": 39.3,
+      "1997KW03": 40.4,
+      "1997KW04": 41.3,
+      "1998KW01": 41.9,
+      "1998KW02": 43.1,
+      "1998KW03": 44.5,
+      "1998KW04": 46,
+      "1999KW01": 47.9,
+      "1999KW02": 49.7,
+      "1999KW03": 52.4,
+      "1999KW04": 55.1,
+      "2000KW01": 57.5,
+      "2000KW02": 59.9,
+      "2000KW03": 62.1,
+      "2000KW04": 63.6,
+      "2001KW01": 65.6,
+      "2001KW02": 67,
+      "2001KW03": 68.2,
+      "2001KW04": 69,
+      "2002KW01": 70.1,
+      "2002KW02": 71.3,
+      "2002KW03": 72.7,
+      "2002KW04": 72.6,
+      "2003KW01": 73.2,
+      "2003KW02": 73.6,
+      "2003KW03": 74.3,
+      "2003KW04": 75.3,
+      "2004KW01": 76.2,
+      "2004KW02": 76.7,
+      "2004KW03": 77.6,
+      "2004KW04": 78,
+      "2005KW01": 78.2,
+      "2005KW02": 79.1,
+      "2005KW03": 79.8,
+      "2005KW04": 80.6,
+      "2006KW01": 81.7,
+      "2006KW02": 82.3,
+      "2006KW03": 83.2,
+      "2006KW04": 83.1,
+      "2007KW01": 84.1,
+      "2007KW02": 85,
+      "2007KW03": 85.9,
+      "2007KW04": 85.9,
+      "2008KW01": 86.5,
+      "2008KW02": 86.8,
+      "2008KW03": 87.4,
+      "2008KW04": 86.8,
+      "2009KW01": 85.9,
+      "2009KW02": 84.4,
+      "2009KW03": 82.9,
+      "2009KW04": 82.7,
+      "2010KW01": 82.1,
+      "2010KW02": 82.6,
+      "2010KW03": 82.8,
+      "2010KW04": 81.7,
+      "2011KW01": 81.2,
+      "2011KW02": 80.4,
+      "2011KW03": 79.6,
+      "2011KW04": 78.5,
+      "2012KW01": 77.7,
+      "2012KW02": 76.3,
+      "2012KW03": 73.2,
+      "2012KW04": 73,
+      "2013KW01": 71.5,
+      "2013KW02": 69.7,
+      "2013KW03": 70.1,
+      "2013KW04": 69.6,
+      "2014KW01": 70.1,
+      "2014KW02": 70.3,
+      "2014KW03": 70.5,
+      "2014KW04": 70.6,
+      "2015KW01": 70.9,
+      "2015KW02": 71.1,
+      "2015KW03": 71.9,
+      "2015KW04": 72.1,
+      "2016KW01": 73.1,
+      "2016KW02": 73.5,
+      "2016KW03": 75,
+      "2016KW04": 75.7,
+      "2017KW01": 76.9,
+      "2017KW02": 78.2,
+      "2017KW03": 80.1,
+      "2017KW04": 81.7,
+      "2018KW01": 83.5,
+      "2018KW02": 85,
+      "2018KW03": 86.9,
+      "2018KW04": 88.6,
+      "2019KW01": 90,
+      "2019KW02": 91,
+      "2019KW03": 93,
+      "2019KW04": 94.1,
+      "2020KW01": 96.5,
+      "2020KW02": 98.7,
+      "2020KW03": 101.1,
+      "2020KW04": 103.6,
+      "2021KW01": 107.8,
+      "2021KW02": 113,
+      "2021KW03": 120.7,
+      "2021KW04": 125.8,
+      "2022KW01": 131.7,
+      "2022KW02": 135.4,
+      "2022KW03": 136.5,
+      "2022KW04": 133,
+      "2023KW01": 131.4,
+      "2023KW02": 129.3,
+      "2023KW03": 130.9,
+      "2023KW04": 132.6,
+      "2024KW01": 136.1,
+      "2024KW02": 139.9,
+      "2024KW03": 145.4,
+      "2024KW04": 148.7,
+      "2025KW01": 152.1,
+      "2025KW02": 155.3,
+      "2025KW03": 158.4,
+      "2025KW04": 159.7,
+      "2026KW01": 161.6,
+      "2026KW02": 163.1
+    },
+    "LD03": {
+      "1995KW01": 26.7,
+      "1995KW02": 27,
+      "1995KW03": 27.6,
+      "1995KW04": 27.9,
+      "1996KW01": 28.6,
+      "1996KW02": 29.4,
+      "1996KW03": 30.4,
+      "1996KW04": 31.1,
+      "1997KW01": 32,
+      "1997KW02": 32.9,
+      "1997KW03": 33.9,
+      "1997KW04": 34.7,
+      "1998KW01": 35.3,
+      "1998KW02": 36.5,
+      "1998KW03": 37.7,
+      "1998KW04": 38.5,
+      "1999KW01": 40.1,
+      "1999KW02": 41.9,
+      "1999KW03": 44.1,
+      "1999KW04": 46.1,
+      "2000KW01": 48,
+      "2000KW02": 49.8,
+      "2000KW03": 51.9,
+      "2000KW04": 53.1,
+      "2001KW01": 54.5,
+      "2001KW02": 56,
+      "2001KW03": 57.2,
+      "2001KW04": 57.7,
+      "2002KW01": 58.6,
+      "2002KW02": 59.5,
+      "2002KW03": 60.4,
+      "2002KW04": 60.2,
+      "2003KW01": 61,
+      "2003KW02": 61.5,
+      "2003KW03": 62.2,
+      "2003KW04": 62.7,
+      "2004KW01": 63.3,
+      "2004KW02": 64.1,
+      "2004KW03": 65,
+      "2004KW04": 65.2,
+      "2005KW01": 66,
+      "2005KW02": 66.8,
+      "2005KW03": 67.6,
+      "2005KW04": 67.9,
+      "2006KW01": 69,
+      "2006KW02": 69.8,
+      "2006KW03": 70.9,
+      "2006KW04": 71.3,
+      "2007KW01": 72.1,
+      "2007KW02": 73.2,
+      "2007KW03": 74.8,
+      "2007KW04": 75.2,
+      "2008KW01": 76.1,
+      "2008KW02": 76.6,
+      "2008KW03": 77.7,
+      "2008KW04": 77,
+      "2009KW01": 76.5,
+      "2009KW02": 74.4,
+      "2009KW03": 73.7,
+      "2009KW04": 73.2,
+      "2010KW01": 72.9,
+      "2010KW02": 73.1,
+      "2010KW03": 73.2,
+      "2010KW04": 72.6,
+      "2011KW01": 72.4,
+      "2011KW02": 72.1,
+      "2011KW03": 71.8,
+      "2011KW04": 70.4,
+      "2012KW01": 69.6,
+      "2012KW02": 68.3,
+      "2012KW03": 65.8,
+      "2012KW04": 65.2,
+      "2013KW01": 63.7,
+      "2013KW02": 62.8,
+      "2013KW03": 63,
+      "2013KW04": 62.9,
+      "2014KW01": 63.4,
+      "2014KW02": 64,
+      "2014KW03": 64.9,
+      "2014KW04": 65.1,
+      "2015KW01": 65.8,
+      "2015KW02": 66.5,
+      "2015KW03": 67.7,
+      "2015KW04": 68.4,
+      "2016KW01": 69.4,
+      "2016KW02": 70.6,
+      "2016KW03": 72.8,
+      "2016KW04": 73.8,
+      "2017KW01": 75.7,
+      "2017KW02": 77.5,
+      "2017KW03": 79.8,
+      "2017KW04": 81.2,
+      "2018KW01": 83.6,
+      "2018KW02": 85.6,
+      "2018KW03": 88.3,
+      "2018KW04": 89.6,
+      "2019KW01": 91.1,
+      "2019KW02": 92.2,
+      "2019KW03": 93.8,
+      "2019KW04": 95.1,
+      "2020KW01": 97,
+      "2020KW02": 99,
+      "2020KW03": 101.2,
+      "2020KW04": 102.8,
+      "2021KW01": 106.1,
+      "2021KW02": 111.1,
+      "2021KW03": 118.2,
+      "2021KW04": 122.4,
+      "2022KW01": 127.1,
+      "2022KW02": 130.8,
+      "2022KW03": 131.2,
+      "2022KW04": 127.1,
+      "2023KW01": 124.7,
+      "2023KW02": 122.2,
+      "2023KW03": 124,
+      "2023KW04": 126.2,
+      "2024KW01": 129.2,
+      "2024KW02": 133,
+      "2024KW03": 137.7,
+      "2024KW04": 140.2,
+      "2025KW01": 142.2,
+      "2025KW02": 144.6,
+      "2025KW03": 147.2,
+      "2025KW04": 147.6,
+      "2026KW01": 148.5,
+      "2026KW02": 149.7
+    },
+    "LD04": {
+      "1995KW01": 32.2,
+      "1995KW02": 32.7,
+      "1995KW03": 33.5,
+      "1995KW04": 34,
+      "1996KW01": 35.2,
+      "1996KW02": 36.1,
+      "1996KW03": 37.4,
+      "1996KW04": 38.4,
+      "1997KW01": 39.9,
+      "1997KW02": 40.7,
+      "1997KW03": 41.8,
+      "1997KW04": 42.9,
+      "1998KW01": 44,
+      "1998KW02": 44.7,
+      "1998KW03": 46.2,
+      "1998KW04": 47.5,
+      "1999KW01": 49.1,
+      "1999KW02": 51.2,
+      "1999KW03": 53.6,
+      "1999KW04": 55.6,
+      "2000KW01": 58.4,
+      "2000KW02": 60.2,
+      "2000KW03": 62.6,
+      "2000KW04": 64,
+      "2001KW01": 65.6,
+      "2001KW02": 67.1,
+      "2001KW03": 69.2,
+      "2001KW04": 69.7,
+      "2002KW01": 70.8,
+      "2002KW02": 71.8,
+      "2002KW03": 73.1,
+      "2002KW04": 73.4,
+      "2003KW01": 73.8,
+      "2003KW02": 74.8,
+      "2003KW03": 75.2,
+      "2003KW04": 75.9,
+      "2004KW01": 76.7,
+      "2004KW02": 77.6,
+      "2004KW03": 78.6,
+      "2004KW04": 78.7,
+      "2005KW01": 79.2,
+      "2005KW02": 80.2,
+      "2005KW03": 81.2,
+      "2005KW04": 81.6,
+      "2006KW01": 82.4,
+      "2006KW02": 83.8,
+      "2006KW03": 84.4,
+      "2006KW04": 84.9,
+      "2007KW01": 86,
+      "2007KW02": 86.6,
+      "2007KW03": 87.6,
+      "2007KW04": 87.6,
+      "2008KW01": 89,
+      "2008KW02": 88.6,
+      "2008KW03": 89.5,
+      "2008KW04": 88.8,
+      "2009KW01": 88.3,
+      "2009KW02": 86.3,
+      "2009KW03": 84.9,
+      "2009KW04": 84,
+      "2010KW01": 84.3,
+      "2010KW02": 84.2,
+      "2010KW03": 84,
+      "2010KW04": 83,
+      "2011KW01": 82.3,
+      "2011KW02": 82.2,
+      "2011KW03": 81.4,
+      "2011KW04": 79.9,
+      "2012KW01": 78.5,
+      "2012KW02": 77.5,
+      "2012KW03": 74.4,
+      "2012KW04": 73.9,
+      "2013KW01": 72.2,
+      "2013KW02": 70.7,
+      "2013KW03": 70.7,
+      "2013KW04": 70.6,
+      "2014KW01": 70.9,
+      "2014KW02": 71.3,
+      "2014KW03": 72.1,
+      "2014KW04": 72.1,
+      "2015KW01": 72.3,
+      "2015KW02": 72.9,
+      "2015KW03": 73.8,
+      "2015KW04": 74,
+      "2016KW01": 74.8,
+      "2016KW02": 75.5,
+      "2016KW03": 76.8,
+      "2016KW04": 77.6,
+      "2017KW01": 78.8,
+      "2017KW02": 80.1,
+      "2017KW03": 81.4,
+      "2017KW04": 82.8,
+      "2018KW01": 84.9,
+      "2018KW02": 86,
+      "2018KW03": 88.2,
+      "2018KW04": 89.2,
+      "2019KW01": 90.8,
+      "2019KW02": 92.2,
+      "2019KW03": 93.4,
+      "2019KW04": 94.7,
+      "2020KW01": 97.1,
+      "2020KW02": 98.9,
+      "2020KW03": 101,
+      "2020KW04": 103,
+      "2021KW01": 106.9,
+      "2021KW02": 110.8,
+      "2021KW03": 116.8,
+      "2021KW04": 121.2,
+      "2022KW01": 126.4,
+      "2022KW02": 129.8,
+      "2022KW03": 130.5,
+      "2022KW04": 128.6,
+      "2023KW01": 126.7,
+      "2023KW02": 125.5,
+      "2023KW03": 126.8,
+      "2023KW04": 129.1,
+      "2024KW01": 132,
+      "2024KW02": 135.8,
+      "2024KW03": 140.6,
+      "2024KW04": 143.9,
+      "2025KW01": 147.2,
+      "2025KW02": 149.9,
+      "2025KW03": 152.4,
+      "2025KW04": 153.3,
+      "2026KW01": 155.2,
+      "2026KW02": 156.5
+    },
+    "PV20": {
+      "1995KW01": 30.2,
+      "1995KW02": 30.3,
+      "1995KW03": 31.1,
+      "1995KW04": 31.5,
+      "1996KW01": 32.2,
+      "1996KW02": 33.2,
+      "1996KW03": 34.1,
+      "1996KW04": 34.7,
+      "1997KW01": 35.1,
+      "1997KW02": 35.7,
+      "1997KW03": 36.8,
+      "1997KW04": 37.3,
+      "1998KW01": 37.8,
+      "1998KW02": 38,
+      "1998KW03": 39.2,
+      "1998KW04": 40.2,
+      "1999KW01": 40.5,
+      "1999KW02": 42.1,
+      "1999KW03": 43.9,
+      "1999KW04": 45.4,
+      "2000KW01": 46.9,
+      "2000KW02": 48.8,
+      "2000KW03": 51.5,
+      "2000KW04": 52.7,
+      "2001KW01": 54.5,
+      "2001KW02": 55.9,
+      "2001KW03": 59,
+      "2001KW04": 59.6,
+      "2002KW01": 61,
+      "2002KW02": 62.3,
+      "2002KW03": 63.9,
+      "2002KW04": 63.7,
+      "2003KW01": 65,
+      "2003KW02": 65.8,
+      "2003KW03": 67,
+      "2003KW04": 67.3,
+      "2004KW01": 68.7,
+      "2004KW02": 68.9,
+      "2004KW03": 71.3,
+      "2004KW04": 71.1,
+      "2005KW01": 73.7,
+      "2005KW02": 75.2,
+      "2005KW03": 76.6,
+      "2005KW04": 77.5,
+      "2006KW01": 78.6,
+      "2006KW02": 80.2,
+      "2006KW03": 81.1,
+      "2006KW04": 81.5,
+      "2007KW01": 82,
+      "2007KW02": 82.5,
+      "2007KW03": 83.5,
+      "2007KW04": 83.5,
+      "2008KW01": 84.5,
+      "2008KW02": 84.3,
+      "2008KW03": 85.2,
+      "2008KW04": 84.6,
+      "2009KW01": 82.2,
+      "2009KW02": 81,
+      "2009KW03": 81.4,
+      "2009KW04": 79.9,
+      "2010KW01": 80.5,
+      "2010KW02": 80,
+      "2010KW03": 81.4,
+      "2010KW04": 80,
+      "2011KW01": 79.9,
+      "2011KW02": 78.7,
+      "2011KW03": 77.8,
+      "2011KW04": 76.9,
+      "2012KW01": 75.3,
+      "2012KW02": 74.4,
+      "2012KW03": 72.2,
+      "2012KW04": 71.6,
+      "2013KW01": 71.1,
+      "2013KW02": 69.6,
+      "2013KW03": 69.3,
+      "2013KW04": 68.4,
+      "2014KW01": 68.6,
+      "2014KW02": 69.4,
+      "2014KW03": 69.5,
+      "2014KW04": 69.7,
+      "2015KW01": 70.6,
+      "2015KW02": 71.2,
+      "2015KW03": 71.4,
+      "2015KW04": 71.6,
+      "2016KW01": 72.2,
+      "2016KW02": 73.2,
+      "2016KW03": 76.1,
+      "2016KW04": 76.5,
+      "2017KW01": 77.1,
+      "2017KW02": 78,
+      "2017KW03": 80.5,
+      "2017KW04": 81.1,
+      "2018KW01": 82.3,
+      "2018KW02": 84.1,
+      "2018KW03": 85.9,
+      "2018KW04": 86.9,
+      "2019KW01": 87.9,
+      "2019KW02": 89,
+      "2019KW03": 91.7,
+      "2019KW04": 93.7,
+      "2020KW01": 96.1,
+      "2020KW02": 98.7,
+      "2020KW03": 101.3,
+      "2020KW04": 103.9,
+      "2021KW01": 107.8,
+      "2021KW02": 113.3,
+      "2021KW03": 121.3,
+      "2021KW04": 126.8,
+      "2022KW01": 133.5,
+      "2022KW02": 136.3,
+      "2022KW03": 135.9,
+      "2022KW04": 132.9,
+      "2023KW01": 130.2,
+      "2023KW02": 128.5,
+      "2023KW03": 132.5,
+      "2023KW04": 135.1,
+      "2024KW01": 137.4,
+      "2024KW02": 141.2,
+      "2024KW03": 147.5,
+      "2024KW04": 151.1,
+      "2025KW01": 155.2,
+      "2025KW02": 157.5,
+      "2025KW03": 163.6,
+      "2025KW04": 163.7,
+      "2026KW01": 166.4,
+      "2026KW02": 169.9
+    },
+    "PV21": {
+      "1995KW01": 31.2,
+      "1995KW02": 32.1,
+      "1995KW03": 32.4,
+      "1995KW04": 33.5,
+      "1996KW01": 33.9,
+      "1996KW02": 35,
+      "1996KW03": 35.7,
+      "1996KW04": 36.6,
+      "1997KW01": 36.6,
+      "1997KW02": 38.6,
+      "1997KW03": 39,
+      "1997KW04": 39.8,
+      "1998KW01": 41,
+      "1998KW02": 41.6,
+      "1998KW03": 43.1,
+      "1998KW04": 44,
+      "1999KW01": 44.8,
+      "1999KW02": 46.4,
+      "1999KW03": 49,
+      "1999KW04": 50.7,
+      "2000KW01": 53.1,
+      "2000KW02": 55.9,
+      "2000KW03": 58.4,
+      "2000KW04": 59.3,
+      "2001KW01": 62.3,
+      "2001KW02": 63.4,
+      "2001KW03": 65.3,
+      "2001KW04": 66.4,
+      "2002KW01": 66.9,
+      "2002KW02": 68,
+      "2002KW03": 69.6,
+      "2002KW04": 69.5,
+      "2003KW01": 71.8,
+      "2003KW02": 73,
+      "2003KW03": 72.6,
+      "2003KW04": 74.5,
+      "2004KW01": 75.5,
+      "2004KW02": 76.9,
+      "2004KW03": 78.4,
+      "2004KW04": 79,
+      "2005KW01": 79.7,
+      "2005KW02": 80.7,
+      "2005KW03": 82.3,
+      "2005KW04": 82.4,
+      "2006KW01": 84.4,
+      "2006KW02": 85.4,
+      "2006KW03": 86.2,
+      "2006KW04": 87,
+      "2007KW01": 87.6,
+      "2007KW02": 88.6,
+      "2007KW03": 89.3,
+      "2007KW04": 89.3,
+      "2008KW01": 91,
+      "2008KW02": 90.6,
+      "2008KW03": 91,
+      "2008KW04": 90.7,
+      "2009KW01": 88.6,
+      "2009KW02": 86.5,
+      "2009KW03": 86.6,
+      "2009KW04": 86.1,
+      "2010KW01": 86.7,
+      "2010KW02": 86.8,
+      "2010KW03": 87.1,
+      "2010KW04": 85.9,
+      "2011KW01": 84.3,
+      "2011KW02": 83.7,
+      "2011KW03": 83.4,
+      "2011KW04": 81.2,
+      "2012KW01": 79.9,
+      "2012KW02": 79.4,
+      "2012KW03": 76.2,
+      "2012KW04": 75.2,
+      "2013KW01": 74,
+      "2013KW02": 71.5,
+      "2013KW03": 72.2,
+      "2013KW04": 72.2,
+      "2014KW01": 71.6,
+      "2014KW02": 71.8,
+      "2014KW03": 71.5,
+      "2014KW04": 71.7,
+      "2015KW01": 72.3,
+      "2015KW02": 72.7,
+      "2015KW03": 73.3,
+      "2015KW04": 73.9,
+      "2016KW01": 74.7,
+      "2016KW02": 74.6,
+      "2016KW03": 77,
+      "2016KW04": 77.3,
+      "2017KW01": 78.2,
+      "2017KW02": 79.9,
+      "2017KW03": 81.4,
+      "2017KW04": 82.3,
+      "2018KW01": 84.2,
+      "2018KW02": 85.7,
+      "2018KW03": 87,
+      "2018KW04": 89.4,
+      "2019KW01": 89.9,
+      "2019KW02": 92.1,
+      "2019KW03": 94,
+      "2019KW04": 95.3,
+      "2020KW01": 96.7,
+      "2020KW02": 97.9,
+      "2020KW03": 101.5,
+      "2020KW04": 103.8,
+      "2021KW01": 107.2,
+      "2021KW02": 112.8,
+      "2021KW03": 121.2,
+      "2021KW04": 126,
+      "2022KW01": 131.7,
+      "2022KW02": 133.9,
+      "2022KW03": 135.2,
+      "2022KW04": 131.9,
+      "2023KW01": 129.2,
+      "2023KW02": 127.6,
+      "2023KW03": 129,
+      "2023KW04": 132.9,
+      "2024KW01": 134.1,
+      "2024KW02": 138.4,
+      "2024KW03": 143.5,
+      "2024KW04": 147.8,
+      "2025KW01": 149.5,
+      "2025KW02": 152.9,
+      "2025KW03": 154.9,
+      "2025KW04": 158.3,
+      "2026KW01": 160,
+      "2026KW02": 161.1
+    },
+    "PV22": {
+      "1995KW01": 32.8,
+      "1995KW02": 33.1,
+      "1995KW03": 34.2,
+      "1995KW04": 34.7,
+      "1996KW01": 35.8,
+      "1996KW02": 36.4,
+      "1996KW03": 37.7,
+      "1996KW04": 38.3,
+      "1997KW01": 38.9,
+      "1997KW02": 40,
+      "1997KW03": 40.9,
+      "1997KW04": 41.7,
+      "1998KW01": 42.1,
+      "1998KW02": 43.1,
+      "1998KW03": 44.8,
+      "1998KW04": 45.8,
+      "1999KW01": 47.1,
+      "1999KW02": 49,
+      "1999KW03": 51.5,
+      "1999KW04": 54.2,
+      "2000KW01": 56.2,
+      "2000KW02": 58.6,
+      "2000KW03": 61.3,
+      "2000KW04": 63.1,
+      "2001KW01": 64.5,
+      "2001KW02": 67,
+      "2001KW03": 67.5,
+      "2001KW04": 67.8,
+      "2002KW01": 69,
+      "2002KW02": 69.6,
+      "2002KW03": 71.6,
+      "2002KW04": 71.4,
+      "2003KW01": 72.5,
+      "2003KW02": 73.2,
+      "2003KW03": 73.9,
+      "2003KW04": 74.2,
+      "2004KW01": 75.8,
+      "2004KW02": 76.3,
+      "2004KW03": 77.3,
+      "2004KW04": 77.6,
+      "2005KW01": 78.6,
+      "2005KW02": 79.8,
+      "2005KW03": 81.1,
+      "2005KW04": 81.4,
+      "2006KW01": 82.6,
+      "2006KW02": 83.7,
+      "2006KW03": 84.7,
+      "2006KW04": 85.1,
+      "2007KW01": 86.7,
+      "2007KW02": 87.5,
+      "2007KW03": 88,
+      "2007KW04": 88.6,
+      "2008KW01": 89.1,
+      "2008KW02": 89.1,
+      "2008KW03": 89.8,
+      "2008KW04": 89.2,
+      "2009KW01": 89.4,
+      "2009KW02": 87,
+      "2009KW03": 86.1,
+      "2009KW04": 85.5,
+      "2010KW01": 85.7,
+      "2010KW02": 86.1,
+      "2010KW03": 85.8,
+      "2010KW04": 84.8,
+      "2011KW01": 83.8,
+      "2011KW02": 83.9,
+      "2011KW03": 82.6,
+      "2011KW04": 82.3,
+      "2012KW01": 81.9,
+      "2012KW02": 78.5,
+      "2012KW03": 77.2,
+      "2012KW04": 76.4,
+      "2013KW01": 74.1,
+      "2013KW02": 73,
+      "2013KW03": 72.4,
+      "2013KW04": 73.1,
+      "2014KW01": 73.1,
+      "2014KW02": 72.7,
+      "2014KW03": 73.6,
+      "2014KW04": 72.8,
+      "2015KW01": 74,
+      "2015KW02": 73.4,
+      "2015KW03": 74.5,
+      "2015KW04": 74.5,
+      "2016KW01": 74.3,
+      "2016KW02": 75.3,
+      "2016KW03": 76.5,
+      "2016KW04": 77.2,
+      "2017KW01": 77.9,
+      "2017KW02": 79.2,
+      "2017KW03": 80.7,
+      "2017KW04": 81.6,
+      "2018KW01": 82.6,
+      "2018KW02": 84.3,
+      "2018KW03": 86.4,
+      "2018KW04": 87.8,
+      "2019KW01": 90.1,
+      "2019KW02": 90.7,
+      "2019KW03": 93.5,
+      "2019KW04": 94.3,
+      "2020KW01": 96.5,
+      "2020KW02": 98.5,
+      "2020KW03": 101.1,
+      "2020KW04": 103.9,
+      "2021KW01": 109.2,
+      "2021KW02": 113.6,
+      "2021KW03": 122.5,
+      "2021KW04": 127.7,
+      "2022KW01": 132.1,
+      "2022KW02": 137.1,
+      "2022KW03": 137.7,
+      "2022KW04": 134.7,
+      "2023KW01": 132.9,
+      "2023KW02": 130.6,
+      "2023KW03": 131.1,
+      "2023KW04": 135.2,
+      "2024KW01": 139,
+      "2024KW02": 142.5,
+      "2024KW03": 147.7,
+      "2024KW04": 152.9,
+      "2025KW01": 156.6,
+      "2025KW02": 161.6,
+      "2025KW03": 162.9,
+      "2025KW04": 165.7,
+      "2026KW01": 169.4,
+      "2026KW02": 170.8
+    },
+    "PV23": {
+      "1995KW01": 32.3,
+      "1995KW02": 32.5,
+      "1995KW03": 33.2,
+      "1995KW04": 34,
+      "1996KW01": 34.4,
+      "1996KW02": 36.2,
+      "1996KW03": 36.9,
+      "1996KW04": 38,
+      "1997KW01": 38.7,
+      "1997KW02": 40,
+      "1997KW03": 40.4,
+      "1997KW04": 41.9,
+      "1998KW01": 42,
+      "1998KW02": 43.1,
+      "1998KW03": 44.2,
+      "1998KW04": 46.3,
+      "1999KW01": 47.1,
+      "1999KW02": 48.7,
+      "1999KW03": 51.3,
+      "1999KW04": 53.2,
+      "2000KW01": 56,
+      "2000KW02": 58.6,
+      "2000KW03": 60.9,
+      "2000KW04": 62.5,
+      "2001KW01": 64.3,
+      "2001KW02": 65.8,
+      "2001KW03": 68.1,
+      "2001KW04": 68.2,
+      "2002KW01": 69.6,
+      "2002KW02": 70.5,
+      "2002KW03": 72.2,
+      "2002KW04": 71.8,
+      "2003KW01": 72.5,
+      "2003KW02": 73.3,
+      "2003KW03": 73.6,
+      "2003KW04": 74.8,
+      "2004KW01": 75.7,
+      "2004KW02": 76.4,
+      "2004KW03": 77.2,
+      "2004KW04": 77.7,
+      "2005KW01": 77.8,
+      "2005KW02": 79,
+      "2005KW03": 80.1,
+      "2005KW04": 80.8,
+      "2006KW01": 81.8,
+      "2006KW02": 82.7,
+      "2006KW03": 82.8,
+      "2006KW04": 83,
+      "2007KW01": 83.9,
+      "2007KW02": 84.3,
+      "2007KW03": 84.9,
+      "2007KW04": 84.5,
+      "2008KW01": 86.1,
+      "2008KW02": 85.9,
+      "2008KW03": 86.8,
+      "2008KW04": 85.8,
+      "2009KW01": 85.8,
+      "2009KW02": 83.6,
+      "2009KW03": 83.3,
+      "2009KW04": 82.7,
+      "2010KW01": 82.4,
+      "2010KW02": 82.9,
+      "2010KW03": 83,
+      "2010KW04": 82.3,
+      "2011KW01": 81.1,
+      "2011KW02": 81,
+      "2011KW03": 80.6,
+      "2011KW04": 79,
+      "2012KW01": 79,
+      "2012KW02": 77.7,
+      "2012KW03": 74.4,
+      "2012KW04": 74.7,
+      "2013KW01": 72.9,
+      "2013KW02": 71,
+      "2013KW03": 71.8,
+      "2013KW04": 71.4,
+      "2014KW01": 72.4,
+      "2014KW02": 72.3,
+      "2014KW03": 72.5,
+      "2014KW04": 72.4,
+      "2015KW01": 72.6,
+      "2015KW02": 73,
+      "2015KW03": 73.4,
+      "2015KW04": 73.7,
+      "2016KW01": 75,
+      "2016KW02": 75.4,
+      "2016KW03": 76.5,
+      "2016KW04": 77.1,
+      "2017KW01": 78.2,
+      "2017KW02": 79.5,
+      "2017KW03": 81.4,
+      "2017KW04": 82.4,
+      "2018KW01": 83.9,
+      "2018KW02": 85.6,
+      "2018KW03": 87.5,
+      "2018KW04": 88.6,
+      "2019KW01": 90.2,
+      "2019KW02": 90.6,
+      "2019KW03": 93.3,
+      "2019KW04": 94.1,
+      "2020KW01": 96.6,
+      "2020KW02": 98.8,
+      "2020KW03": 101.3,
+      "2020KW04": 103.3,
+      "2021KW01": 107.6,
+      "2021KW02": 112.3,
+      "2021KW03": 119.1,
+      "2021KW04": 122.6,
+      "2022KW01": 127.3,
+      "2022KW02": 132.8,
+      "2022KW03": 133.8,
+      "2022KW04": 131.2,
+      "2023KW01": 129.9,
+      "2023KW02": 128.5,
+      "2023KW03": 129.9,
+      "2023KW04": 130.6,
+      "2024KW01": 134.3,
+      "2024KW02": 138.1,
+      "2024KW03": 143.7,
+      "2024KW04": 147.4,
+      "2025KW01": 150.9,
+      "2025KW02": 153.8,
+      "2025KW03": 156.6,
+      "2025KW04": 158.6,
+      "2026KW01": 160,
+      "2026KW02": 160.7
+    },
+    "PV24": {
+      "1995KW01": 32.7,
+      "1995KW02": 32.7,
+      "1995KW03": 33.7,
+      "1995KW04": 34.3,
+      "1996KW01": 34.3,
+      "1996KW02": 35.2,
+      "1996KW03": 36.5,
+      "1996KW04": 37.4,
+      "1997KW01": 37.5,
+      "1997KW02": 37.7,
+      "1997KW03": 38.7,
+      "1997KW04": 39.3,
+      "1998KW01": 39.8,
+      "1998KW02": 40.5,
+      "1998KW03": 41.9,
+      "1998KW04": 42.4,
+      "1999KW01": 46,
+      "1999KW02": 48,
+      "1999KW03": 50.3,
+      "1999KW04": 53.2,
+      "2000KW01": 55.5,
+      "2000KW02": 57.6,
+      "2000KW03": 59.4,
+      "2000KW04": 60.7,
+      "2001KW01": 62.6,
+      "2001KW02": 63.8,
+      "2001KW03": 64.3,
+      "2001KW04": 64.5,
+      "2002KW01": 66.5,
+      "2002KW02": 67.4,
+      "2002KW03": 69.1,
+      "2002KW04": 69.5,
+      "2003KW01": 69.8,
+      "2003KW02": 70.6,
+      "2003KW03": 70.8,
+      "2003KW04": 71.2,
+      "2004KW01": 71.2,
+      "2004KW02": 71.2,
+      "2004KW03": 71.9,
+      "2004KW04": 72.5,
+      "2005KW01": 72.5,
+      "2005KW02": 73.2,
+      "2005KW03": 74.1,
+      "2005KW04": 74.1,
+      "2006KW01": 74.6,
+      "2006KW02": 74.7,
+      "2006KW03": 75.4,
+      "2006KW04": 75.5,
+      "2007KW01": 76.6,
+      "2007KW02": 76.6,
+      "2007KW03": 77,
+      "2007KW04": 77.5,
+      "2008KW01": 76.8,
+      "2008KW02": 78,
+      "2008KW03": 78.3,
+      "2008KW04": 78.1,
+      "2009KW01": 76.9,
+      "2009KW02": 75.8,
+      "2009KW03": 74.9,
+      "2009KW04": 74,
+      "2010KW01": 73.6,
+      "2010KW02": 73.9,
+      "2010KW03": 74.2,
+      "2010KW04": 71.8,
+      "2011KW01": 71.9,
+      "2011KW02": 71.6,
+      "2011KW03": 70.6,
+      "2011KW04": 71,
+      "2012KW01": 69.7,
+      "2012KW02": 68.5,
+      "2012KW03": 66.8,
+      "2012KW04": 66.3,
+      "2013KW01": 65.3,
+      "2013KW02": 64,
+      "2013KW03": 64.3,
+      "2013KW04": 64.2,
+      "2014KW01": 64.6,
+      "2014KW02": 64.6,
+      "2014KW03": 64.9,
+      "2014KW04": 66,
+      "2015KW01": 64.7,
+      "2015KW02": 65.4,
+      "2015KW03": 66.3,
+      "2015KW04": 66.7,
+      "2016KW01": 67.3,
+      "2016KW02": 67.8,
+      "2016KW03": 69.6,
+      "2016KW04": 70.9,
+      "2017KW01": 72,
+      "2017KW02": 73.6,
+      "2017KW03": 75.7,
+      "2017KW04": 78.2,
+      "2018KW01": 79.8,
+      "2018KW02": 82.3,
+      "2018KW03": 84.6,
+      "2018KW04": 87.1,
+      "2019KW01": 88.6,
+      "2019KW02": 90,
+      "2019KW03": 92.5,
+      "2019KW04": 93.1,
+      "2020KW01": 95.5,
+      "2020KW02": 98.8,
+      "2020KW03": 101,
+      "2020KW04": 104.7,
+      "2021KW01": 108.4,
+      "2021KW02": 115.1,
+      "2021KW03": 122.9,
+      "2021KW04": 129.1,
+      "2022KW01": 135.4,
+      "2022KW02": 139.7,
+      "2022KW03": 139.3,
+      "2022KW04": 134.7,
+      "2023KW01": 132.7,
+      "2023KW02": 130.6,
+      "2023KW03": 132.9,
+      "2023KW04": 136.1,
+      "2024KW01": 139.5,
+      "2024KW02": 144.2,
+      "2024KW03": 148.9,
+      "2024KW04": 151.6,
+      "2025KW01": 154.6,
+      "2025KW02": 156.5,
+      "2025KW03": 158.5,
+      "2025KW04": 160.2,
+      "2026KW01": 160.4,
+      "2026KW02": 161.5
+    },
+    "PV25": {
+      "1995KW01": 30.9,
+      "1995KW02": 31.8,
+      "1995KW03": 32.6,
+      "1995KW04": 33.1,
+      "1996KW01": 33.8,
+      "1996KW02": 35.1,
+      "1996KW03": 36.2,
+      "1996KW04": 37.2,
+      "1997KW01": 37.9,
+      "1997KW02": 39.2,
+      "1997KW03": 40.6,
+      "1997KW04": 41.3,
+      "1998KW01": 42.3,
+      "1998KW02": 43.6,
+      "1998KW03": 45.2,
+      "1998KW04": 46.5,
+      "1999KW01": 48.8,
+      "1999KW02": 50.7,
+      "1999KW03": 53.6,
+      "1999KW04": 56.5,
+      "2000KW01": 58.8,
+      "2000KW02": 61.2,
+      "2000KW03": 63.5,
+      "2000KW04": 65,
+      "2001KW01": 67,
+      "2001KW02": 68.4,
+      "2001KW03": 69.3,
+      "2001KW04": 70.5,
+      "2002KW01": 71.3,
+      "2002KW02": 72.8,
+      "2002KW03": 73.9,
+      "2002KW04": 73.9,
+      "2003KW01": 74.4,
+      "2003KW02": 74.6,
+      "2003KW03": 75.6,
+      "2003KW04": 76.6,
+      "2004KW01": 77.8,
+      "2004KW02": 78.3,
+      "2004KW03": 79.2,
+      "2004KW04": 79.5,
+      "2005KW01": 79.7,
+      "2005KW02": 80.6,
+      "2005KW03": 81.1,
+      "2005KW04": 82,
+      "2006KW01": 83.4,
+      "2006KW02": 83.9,
+      "2006KW03": 85.2,
+      "2006KW04": 84.9,
+      "2007KW01": 86,
+      "2007KW02": 87.3,
+      "2007KW03": 88.4,
+      "2007KW04": 88.6,
+      "2008KW01": 89,
+      "2008KW02": 89.3,
+      "2008KW03": 89.8,
+      "2008KW04": 89.4,
+      "2009KW01": 88.2,
+      "2009KW02": 86.7,
+      "2009KW03": 84.6,
+      "2009KW04": 84.7,
+      "2010KW01": 83.9,
+      "2010KW02": 84.5,
+      "2010KW03": 84.7,
+      "2010KW04": 83.7,
+      "2011KW01": 83.3,
+      "2011KW02": 82.1,
+      "2011KW03": 81.2,
+      "2011KW04": 80,
+      "2012KW01": 78.9,
+      "2012KW02": 77.4,
+      "2012KW03": 74.2,
+      "2012KW04": 73.8,
+      "2013KW01": 72.2,
+      "2013KW02": 70.4,
+      "2013KW03": 70.7,
+      "2013KW04": 70,
+      "2014KW01": 70.3,
+      "2014KW02": 70.6,
+      "2014KW03": 70.9,
+      "2014KW04": 70.9,
+      "2015KW01": 71.5,
+      "2015KW02": 71.5,
+      "2015KW03": 72.5,
+      "2015KW04": 72.7,
+      "2016KW01": 73.5,
+      "2016KW02": 73.9,
+      "2016KW03": 75.6,
+      "2016KW04": 76.1,
+      "2017KW01": 77.5,
+      "2017KW02": 78.7,
+      "2017KW03": 80.5,
+      "2017KW04": 82.2,
+      "2018KW01": 84.3,
+      "2018KW02": 85.4,
+      "2018KW03": 87.3,
+      "2018KW04": 89,
+      "2019KW01": 90.3,
+      "2019KW02": 91.5,
+      "2019KW03": 93,
+      "2019KW04": 94.3,
+      "2020KW01": 96.7,
+      "2020KW02": 98.7,
+      "2020KW03": 101.1,
+      "2020KW04": 103.6,
+      "2021KW01": 107.7,
+      "2021KW02": 112.9,
+      "2021KW03": 120.9,
+      "2021KW04": 126.7,
+      "2022KW01": 132.8,
+      "2022KW02": 135.6,
+      "2022KW03": 137.1,
+      "2022KW04": 133.4,
+      "2023KW01": 131.7,
+      "2023KW02": 129.2,
+      "2023KW03": 130.8,
+      "2023KW04": 132.6,
+      "2024KW01": 136,
+      "2024KW02": 139.7,
+      "2024KW03": 145.3,
+      "2024KW04": 148.6,
+      "2025KW01": 152,
+      "2025KW02": 155.7,
+      "2025KW03": 159.2,
+      "2025KW04": 160,
+      "2026KW01": 162.6,
+      "2026KW02": 164.4
+    },
+    "PV26": {
+      "1995KW01": 27.6,
+      "1995KW02": 28,
+      "1995KW03": 28.6,
+      "1995KW04": 29.1,
+      "1996KW01": 29.6,
+      "1996KW02": 30.6,
+      "1996KW03": 31.4,
+      "1996KW04": 32.3,
+      "1997KW01": 33.1,
+      "1997KW02": 34.4,
+      "1997KW03": 35.7,
+      "1997KW04": 36.3,
+      "1998KW01": 37.4,
+      "1998KW02": 38.3,
+      "1998KW03": 39.6,
+      "1998KW04": 40.7,
+      "1999KW01": 41.7,
+      "1999KW02": 43.9,
+      "1999KW03": 46.5,
+      "1999KW04": 48.4,
+      "2000KW01": 50.7,
+      "2000KW02": 52.3,
+      "2000KW03": 54.4,
+      "2000KW04": 55,
+      "2001KW01": 55.8,
+      "2001KW02": 56.7,
+      "2001KW03": 58,
+      "2001KW04": 58.4,
+      "2002KW01": 59.2,
+      "2002KW02": 59.9,
+      "2002KW03": 60.6,
+      "2002KW04": 59.8,
+      "2003KW01": 61,
+      "2003KW02": 61.5,
+      "2003KW03": 62.5,
+      "2003KW04": 63,
+      "2004KW01": 63.9,
+      "2004KW02": 64.4,
+      "2004KW03": 65.7,
+      "2004KW04": 65.8,
+      "2005KW01": 67.1,
+      "2005KW02": 67.7,
+      "2005KW03": 68.6,
+      "2005KW04": 68.9,
+      "2006KW01": 70.1,
+      "2006KW02": 70.9,
+      "2006KW03": 72.1,
+      "2006KW04": 72.9,
+      "2007KW01": 74,
+      "2007KW02": 75.1,
+      "2007KW03": 76.8,
+      "2007KW04": 77.6,
+      "2008KW01": 78.2,
+      "2008KW02": 78.5,
+      "2008KW03": 80.4,
+      "2008KW04": 79.9,
+      "2009KW01": 79.2,
+      "2009KW02": 77.5,
+      "2009KW03": 76.1,
+      "2009KW04": 75.7,
+      "2010KW01": 75.9,
+      "2010KW02": 75.2,
+      "2010KW03": 75.6,
+      "2010KW04": 74.6,
+      "2011KW01": 74.5,
+      "2011KW02": 74.2,
+      "2011KW03": 73.7,
+      "2011KW04": 72.4,
+      "2012KW01": 71.9,
+      "2012KW02": 70.3,
+      "2012KW03": 66.8,
+      "2012KW04": 66.7,
+      "2013KW01": 65.3,
+      "2013KW02": 64.2,
+      "2013KW03": 64.1,
+      "2013KW04": 64.1,
+      "2014KW01": 64.6,
+      "2014KW02": 65.1,
+      "2014KW03": 65.9,
+      "2014KW04": 66.2,
+      "2015KW01": 67.2,
+      "2015KW02": 67.3,
+      "2015KW03": 68.6,
+      "2015KW04": 69.1,
+      "2016KW01": 70.3,
+      "2016KW02": 71.3,
+      "2016KW03": 73.4,
+      "2016KW04": 74.7,
+      "2017KW01": 76.6,
+      "2017KW02": 78.3,
+      "2017KW03": 80.4,
+      "2017KW04": 82.1,
+      "2018KW01": 83.8,
+      "2018KW02": 85.5,
+      "2018KW03": 88,
+      "2018KW04": 88.7,
+      "2019KW01": 90.8,
+      "2019KW02": 91.7,
+      "2019KW03": 93.4,
+      "2019KW04": 94.6,
+      "2020KW01": 97.1,
+      "2020KW02": 98.7,
+      "2020KW03": 101.1,
+      "2020KW04": 103.1,
+      "2021KW01": 107,
+      "2021KW02": 111.7,
+      "2021KW03": 119.8,
+      "2021KW04": 124,
+      "2022KW01": 129.2,
+      "2022KW02": 133.7,
+      "2022KW03": 133.2,
+      "2022KW04": 127.8,
+      "2023KW01": 124.7,
+      "2023KW02": 121.9,
+      "2023KW03": 124.3,
+      "2023KW04": 127.3,
+      "2024KW01": 131.9,
+      "2024KW02": 136.6,
+      "2024KW03": 142.1,
+      "2024KW04": 145.2,
+      "2025KW01": 149,
+      "2025KW02": 151.3,
+      "2025KW03": 154.7,
+      "2025KW04": 154.5,
+      "2026KW01": 156,
+      "2026KW02": 157
+    },
+    "PV27": {
+      "1995KW01": 24,
+      "1995KW02": 24.3,
+      "1995KW03": 25,
+      "1995KW04": 25.2,
+      "1996KW01": 25.9,
+      "1996KW02": 26.7,
+      "1996KW03": 27.7,
+      "1996KW04": 28.3,
+      "1997KW01": 29.3,
+      "1997KW02": 30.3,
+      "1997KW03": 30.9,
+      "1997KW04": 31.8,
+      "1998KW01": 32.5,
+      "1998KW02": 33.8,
+      "1998KW03": 35.2,
+      "1998KW04": 36.1,
+      "1999KW01": 38.1,
+      "1999KW02": 40.1,
+      "1999KW03": 42.4,
+      "1999KW04": 44.7,
+      "2000KW01": 46.6,
+      "2000KW02": 48.4,
+      "2000KW03": 50.3,
+      "2000KW04": 51.6,
+      "2001KW01": 53.5,
+      "2001KW02": 54.8,
+      "2001KW03": 55.4,
+      "2001KW04": 55.7,
+      "2002KW01": 56.5,
+      "2002KW02": 57.2,
+      "2002KW03": 57.9,
+      "2002KW04": 57.7,
+      "2003KW01": 57.4,
+      "2003KW02": 57.8,
+      "2003KW03": 58,
+      "2003KW04": 58.4,
+      "2004KW01": 59.2,
+      "2004KW02": 59.7,
+      "2004KW03": 60.4,
+      "2004KW04": 60.2,
+      "2005KW01": 61.1,
+      "2005KW02": 62,
+      "2005KW03": 62.8,
+      "2005KW04": 63.2,
+      "2006KW01": 64.2,
+      "2006KW02": 65.1,
+      "2006KW03": 66.6,
+      "2006KW04": 67,
+      "2007KW01": 68,
+      "2007KW02": 69.3,
+      "2007KW03": 71.6,
+      "2007KW04": 72,
+      "2008KW01": 73.4,
+      "2008KW02": 73.9,
+      "2008KW03": 74.8,
+      "2008KW04": 73.8,
+      "2009KW01": 73.6,
+      "2009KW02": 71.1,
+      "2009KW03": 70.4,
+      "2009KW04": 70.2,
+      "2010KW01": 69.5,
+      "2010KW02": 70.2,
+      "2010KW03": 70,
+      "2010KW04": 69.6,
+      "2011KW01": 69.5,
+      "2011KW02": 69.2,
+      "2011KW03": 68.9,
+      "2011KW04": 67.4,
+      "2012KW01": 66.9,
+      "2012KW02": 65.1,
+      "2012KW03": 63.3,
+      "2012KW04": 62.4,
+      "2013KW01": 60.7,
+      "2013KW02": 60,
+      "2013KW03": 60.3,
+      "2013KW04": 59.8,
+      "2014KW01": 60.9,
+      "2014KW02": 61.5,
+      "2014KW03": 62.9,
+      "2014KW04": 63.2,
+      "2015KW01": 63.9,
+      "2015KW02": 64.9,
+      "2015KW03": 66.5,
+      "2015KW04": 67.4,
+      "2016KW01": 68.5,
+      "2016KW02": 70.1,
+      "2016KW03": 72.8,
+      "2016KW04": 73.7,
+      "2017KW01": 76,
+      "2017KW02": 78.1,
+      "2017KW03": 80.8,
+      "2017KW04": 81.8,
+      "2018KW01": 84.8,
+      "2018KW02": 86.7,
+      "2018KW03": 89.7,
+      "2018KW04": 91,
+      "2019KW01": 92.2,
+      "2019KW02": 93.5,
+      "2019KW03": 94.6,
+      "2019KW04": 95.8,
+      "2020KW01": 97.2,
+      "2020KW02": 99.4,
+      "2020KW03": 101.2,
+      "2020KW04": 102.2,
+      "2021KW01": 105.7,
+      "2021KW02": 110.9,
+      "2021KW03": 118.7,
+      "2021KW04": 122.2,
+      "2022KW01": 127.1,
+      "2022KW02": 130.8,
+      "2022KW03": 130.6,
+      "2022KW04": 125.8,
+      "2023KW01": 122.7,
+      "2023KW02": 120.5,
+      "2023KW03": 122.6,
+      "2023KW04": 124.4,
+      "2024KW01": 126.8,
+      "2024KW02": 131.1,
+      "2024KW03": 135.6,
+      "2024KW04": 137,
+      "2025KW01": 138,
+      "2025KW02": 140.4,
+      "2025KW03": 142.3,
+      "2025KW04": 142.4,
+      "2026KW01": 142.6,
+      "2026KW02": 143.7
+    },
+    "PV28": {
+      "1995KW01": 28.6,
+      "1995KW02": 28.9,
+      "1995KW03": 29.5,
+      "1995KW04": 29.7,
+      "1996KW01": 30.4,
+      "1996KW02": 31.3,
+      "1996KW03": 32.3,
+      "1996KW04": 32.9,
+      "1997KW01": 33.8,
+      "1997KW02": 34.7,
+      "1997KW03": 36,
+      "1997KW04": 36.7,
+      "1998KW01": 37,
+      "1998KW02": 38.2,
+      "1998KW03": 39.2,
+      "1998KW04": 40.1,
+      "1999KW01": 41.4,
+      "1999KW02": 43.1,
+      "1999KW03": 45.1,
+      "1999KW04": 47.1,
+      "2000KW01": 48.7,
+      "2000KW02": 50.7,
+      "2000KW03": 52.9,
+      "2000KW04": 54.5,
+      "2001KW01": 55.6,
+      "2001KW02": 57.4,
+      "2001KW03": 59.2,
+      "2001KW04": 59.8,
+      "2002KW01": 60.8,
+      "2002KW02": 62,
+      "2002KW03": 62.9,
+      "2002KW04": 62.9,
+      "2003KW01": 64.4,
+      "2003KW02": 65,
+      "2003KW03": 65.9,
+      "2003KW04": 66.5,
+      "2004KW01": 66.9,
+      "2004KW02": 67.8,
+      "2004KW03": 68.8,
+      "2004KW04": 69.3,
+      "2005KW01": 69.9,
+      "2005KW02": 70.5,
+      "2005KW03": 71.4,
+      "2005KW04": 71.5,
+      "2006KW01": 72.5,
+      "2006KW02": 73.3,
+      "2006KW03": 74,
+      "2006KW04": 74.3,
+      "2007KW01": 74.8,
+      "2007KW02": 75.7,
+      "2007KW03": 76.6,
+      "2007KW04": 77,
+      "2008KW01": 77.4,
+      "2008KW02": 78,
+      "2008KW03": 79,
+      "2008KW04": 78.6,
+      "2009KW01": 77.5,
+      "2009KW02": 75.8,
+      "2009KW03": 75.2,
+      "2009KW04": 74.6,
+      "2010KW01": 74.4,
+      "2010KW02": 74.5,
+      "2010KW03": 74.7,
+      "2010KW04": 74,
+      "2011KW01": 73.7,
+      "2011KW02": 73.4,
+      "2011KW03": 73.1,
+      "2011KW04": 71.8,
+      "2012KW01": 70.7,
+      "2012KW02": 69.8,
+      "2012KW03": 67.1,
+      "2012KW04": 66.4,
+      "2013KW01": 65.1,
+      "2013KW02": 64,
+      "2013KW03": 64.3,
+      "2013KW04": 64.5,
+      "2014KW01": 64.5,
+      "2014KW02": 65,
+      "2014KW03": 65.6,
+      "2014KW04": 65.8,
+      "2015KW01": 66.1,
+      "2015KW02": 66.7,
+      "2015KW03": 67.7,
+      "2015KW04": 68.3,
+      "2016KW01": 69,
+      "2016KW02": 70,
+      "2016KW03": 71.6,
+      "2016KW04": 72.7,
+      "2017KW01": 74.4,
+      "2017KW02": 76,
+      "2017KW03": 78.3,
+      "2017KW04": 80,
+      "2018KW01": 82.4,
+      "2018KW02": 84.6,
+      "2018KW03": 87.2,
+      "2018KW04": 88.7,
+      "2019KW01": 90.3,
+      "2019KW02": 91.1,
+      "2019KW03": 93.1,
+      "2019KW04": 94.8,
+      "2020KW01": 96.8,
+      "2020KW02": 98.9,
+      "2020KW03": 101.2,
+      "2020KW04": 103.1,
+      "2021KW01": 106.2,
+      "2021KW02": 110.8,
+      "2021KW03": 116.9,
+      "2021KW04": 121.8,
+      "2022KW01": 126.1,
+      "2022KW02": 129.4,
+      "2022KW03": 130.7,
+      "2022KW04": 127.8,
+      "2023KW01": 126.2,
+      "2023KW02": 123.6,
+      "2023KW03": 124.8,
+      "2023KW04": 126.9,
+      "2024KW01": 129.9,
+      "2024KW02": 133,
+      "2024KW03": 137.8,
+      "2024KW04": 141.1,
+      "2025KW01": 143.5,
+      "2025KW02": 146.1,
+      "2025KW03": 148.9,
+      "2025KW04": 149.9,
+      "2026KW01": 151.2,
+      "2026KW02": 152.7
+    },
+    "PV29": {
+      "1995KW01": 31.3,
+      "1995KW02": 31.6,
+      "1995KW03": 32.4,
+      "1995KW04": 33.5,
+      "1996KW01": 34.1,
+      "1996KW02": 34.7,
+      "1996KW03": 35.9,
+      "1996KW04": 36.4,
+      "1997KW01": 37.3,
+      "1997KW02": 37.9,
+      "1997KW03": 38.4,
+      "1997KW04": 39.2,
+      "1998KW01": 39.4,
+      "1998KW02": 40.6,
+      "1998KW03": 41.4,
+      "1998KW04": 41.9,
+      "1999KW01": 43.4,
+      "1999KW02": 45,
+      "1999KW03": 46.6,
+      "1999KW04": 48.2,
+      "2000KW01": 50.2,
+      "2000KW02": 51.8,
+      "2000KW03": 54,
+      "2000KW04": 55.4,
+      "2001KW01": 57,
+      "2001KW02": 58.5,
+      "2001KW03": 60.3,
+      "2001KW04": 62.2,
+      "2002KW01": 63.8,
+      "2002KW02": 64.3,
+      "2002KW03": 67.6,
+      "2002KW04": 68.2,
+      "2003KW01": 68.7,
+      "2003KW02": 69.6,
+      "2003KW03": 70.7,
+      "2003KW04": 72,
+      "2004KW01": 73.5,
+      "2004KW02": 76,
+      "2004KW03": 75.7,
+      "2004KW04": 77.2,
+      "2005KW01": 77.8,
+      "2005KW02": 79.6,
+      "2005KW03": 80.1,
+      "2005KW04": 81.2,
+      "2006KW01": 82.7,
+      "2006KW02": 82.9,
+      "2006KW03": 84.7,
+      "2006KW04": 85.1,
+      "2007KW01": 84.5,
+      "2007KW02": 85.3,
+      "2007KW03": 86.6,
+      "2007KW04": 86.6,
+      "2008KW01": 87.8,
+      "2008KW02": 87.4,
+      "2008KW03": 88,
+      "2008KW04": 87.3,
+      "2009KW01": 87.6,
+      "2009KW02": 85.5,
+      "2009KW03": 87.2,
+      "2009KW04": 84.3,
+      "2010KW01": 84.9,
+      "2010KW02": 84.4,
+      "2010KW03": 84.9,
+      "2010KW04": 83.9,
+      "2011KW01": 83.6,
+      "2011KW02": 83.9,
+      "2011KW03": 83.6,
+      "2011KW04": 83,
+      "2012KW01": 81.1,
+      "2012KW02": 79.7,
+      "2012KW03": 78,
+      "2012KW04": 78.8,
+      "2013KW01": 77.6,
+      "2013KW02": 76.8,
+      "2013KW03": 77.4,
+      "2013KW04": 76.9,
+      "2014KW01": 76.9,
+      "2014KW02": 76.8,
+      "2014KW03": 76.6,
+      "2014KW04": 76.5,
+      "2015KW01": 77.1,
+      "2015KW02": 77.8,
+      "2015KW03": 76.5,
+      "2015KW04": 77.2,
+      "2016KW01": 78.1,
+      "2016KW02": 78.7,
+      "2016KW03": 79.6,
+      "2016KW04": 80.3,
+      "2017KW01": 79.8,
+      "2017KW02": 81.1,
+      "2017KW03": 81.8,
+      "2017KW04": 83.3,
+      "2018KW01": 83.1,
+      "2018KW02": 84.8,
+      "2018KW03": 86.6,
+      "2018KW04": 88.2,
+      "2019KW01": 90.1,
+      "2019KW02": 91.6,
+      "2019KW03": 93.1,
+      "2019KW04": 94.2,
+      "2020KW01": 96.4,
+      "2020KW02": 98.2,
+      "2020KW03": 101,
+      "2020KW04": 104.3,
+      "2021KW01": 105.7,
+      "2021KW02": 113.5,
+      "2021KW03": 118.9,
+      "2021KW04": 123.8,
+      "2022KW01": 127.6,
+      "2022KW02": 131.7,
+      "2022KW03": 132.9,
+      "2022KW04": 130.5,
+      "2023KW01": 130.5,
+      "2023KW02": 128.1,
+      "2023KW03": 129.2,
+      "2023KW04": 131,
+      "2024KW01": 132.7,
+      "2024KW02": 134.5,
+      "2024KW03": 138.1,
+      "2024KW04": 140.6,
+      "2025KW01": 142.4,
+      "2025KW02": 144.2,
+      "2025KW03": 147.7,
+      "2025KW04": 149.9,
+      "2026KW01": 149.5,
+      "2026KW02": 150
+    },
+    "PV30": {
+      "1995KW01": 30.4,
+      "1995KW02": 30.9,
+      "1995KW03": 31.6,
+      "1995KW04": 32,
+      "1996KW01": 33.2,
+      "1996KW02": 34.3,
+      "1996KW03": 35.4,
+      "1996KW04": 36.5,
+      "1997KW01": 37.9,
+      "1997KW02": 38.6,
+      "1997KW03": 39.6,
+      "1997KW04": 40.8,
+      "1998KW01": 41.9,
+      "1998KW02": 42.6,
+      "1998KW03": 43.9,
+      "1998KW04": 45.2,
+      "1999KW01": 46.7,
+      "1999KW02": 48.7,
+      "1999KW03": 51.2,
+      "1999KW04": 53.3,
+      "2000KW01": 56.1,
+      "2000KW02": 58.1,
+      "2000KW03": 60.5,
+      "2000KW04": 62,
+      "2001KW01": 64.1,
+      "2001KW02": 65.6,
+      "2001KW03": 67.8,
+      "2001KW04": 68.6,
+      "2002KW01": 69.6,
+      "2002KW02": 70.6,
+      "2002KW03": 71.9,
+      "2002KW04": 72.4,
+      "2003KW01": 72.9,
+      "2003KW02": 73.9,
+      "2003KW03": 74.4,
+      "2003KW04": 75.2,
+      "2004KW01": 76.1,
+      "2004KW02": 76.7,
+      "2004KW03": 77.7,
+      "2004KW04": 77.8,
+      "2005KW01": 78.6,
+      "2005KW02": 79.7,
+      "2005KW03": 80.6,
+      "2005KW04": 81.1,
+      "2006KW01": 82.2,
+      "2006KW02": 83.4,
+      "2006KW03": 84.1,
+      "2006KW04": 84.8,
+      "2007KW01": 85.9,
+      "2007KW02": 86.7,
+      "2007KW03": 87.6,
+      "2007KW04": 87.8,
+      "2008KW01": 89.2,
+      "2008KW02": 89,
+      "2008KW03": 90,
+      "2008KW04": 89.1,
+      "2009KW01": 88.8,
+      "2009KW02": 86.9,
+      "2009KW03": 85.4,
+      "2009KW04": 84.4,
+      "2010KW01": 85,
+      "2010KW02": 84.7,
+      "2010KW03": 84.3,
+      "2010KW04": 83.4,
+      "2011KW01": 82.5,
+      "2011KW02": 82.6,
+      "2011KW03": 81.8,
+      "2011KW04": 80.2,
+      "2012KW01": 78.8,
+      "2012KW02": 77.7,
+      "2012KW03": 74.5,
+      "2012KW04": 73.8,
+      "2013KW01": 71.9,
+      "2013KW02": 70.7,
+      "2013KW03": 70.5,
+      "2013KW04": 70.5,
+      "2014KW01": 70.6,
+      "2014KW02": 71.1,
+      "2014KW03": 71.8,
+      "2014KW04": 71.8,
+      "2015KW01": 72.2,
+      "2015KW02": 72.7,
+      "2015KW03": 73.6,
+      "2015KW04": 73.9,
+      "2016KW01": 74.8,
+      "2016KW02": 75.3,
+      "2016KW03": 76.6,
+      "2016KW04": 77.5,
+      "2017KW01": 78.8,
+      "2017KW02": 80.2,
+      "2017KW03": 81.5,
+      "2017KW04": 83,
+      "2018KW01": 85.1,
+      "2018KW02": 86.2,
+      "2018KW03": 88.3,
+      "2018KW04": 89.4,
+      "2019KW01": 90.9,
+      "2019KW02": 92.3,
+      "2019KW03": 93.5,
+      "2019KW04": 94.6,
+      "2020KW01": 97,
+      "2020KW02": 99,
+      "2020KW03": 101,
+      "2020KW04": 103.1,
+      "2021KW01": 106.9,
+      "2021KW02": 110.9,
+      "2021KW03": 117,
+      "2021KW04": 121.4,
+      "2022KW01": 126.7,
+      "2022KW02": 130.2,
+      "2022KW03": 131.3,
+      "2022KW04": 129.3,
+      "2023KW01": 127.3,
+      "2023KW02": 125.8,
+      "2023KW03": 127,
+      "2023KW04": 129.1,
+      "2024KW01": 132.2,
+      "2024KW02": 136.1,
+      "2024KW03": 141.2,
+      "2024KW04": 144.6,
+      "2025KW01": 147.8,
+      "2025KW02": 150.8,
+      "2025KW03": 153.2,
+      "2025KW04": 153.9,
+      "2026KW01": 156.2,
+      "2026KW02": 157.3
+    },
+    "PV31": {
+      "1995KW01": 38.2,
+      "1995KW02": 38.7,
+      "1995KW03": 39.4,
+      "1995KW04": 40.4,
+      "1996KW01": 41.6,
+      "1996KW02": 42.3,
+      "1996KW03": 43.8,
+      "1996KW04": 44.9,
+      "1997KW01": 46.6,
+      "1997KW02": 47.4,
+      "1997KW03": 48.8,
+      "1997KW04": 50,
+      "1998KW01": 50.8,
+      "1998KW02": 51.9,
+      "1998KW03": 53.7,
+      "1998KW04": 55,
+      "1999KW01": 57,
+      "1999KW02": 59.5,
+      "1999KW03": 61.7,
+      "1999KW04": 63.3,
+      "2000KW01": 66.1,
+      "2000KW02": 67.4,
+      "2000KW03": 69.7,
+      "2000KW04": 70.8,
+      "2001KW01": 70.7,
+      "2001KW02": 72.1,
+      "2001KW03": 73.9,
+      "2001KW04": 73.5,
+      "2002KW01": 74.7,
+      "2002KW02": 75.6,
+      "2002KW03": 77.1,
+      "2002KW04": 77,
+      "2003KW01": 76.8,
+      "2003KW02": 77.7,
+      "2003KW03": 77.9,
+      "2003KW04": 78.4,
+      "2004KW01": 79.2,
+      "2004KW02": 80.6,
+      "2004KW03": 81.6,
+      "2004KW04": 81.7,
+      "2005KW01": 81.2,
+      "2005KW02": 82.1,
+      "2005KW03": 83.1,
+      "2005KW04": 83.6,
+      "2006KW01": 83.6,
+      "2006KW02": 85.4,
+      "2006KW03": 85.9,
+      "2006KW04": 85.7,
+      "2007KW01": 86.7,
+      "2007KW02": 86.7,
+      "2007KW03": 87.8,
+      "2007KW04": 87.1,
+      "2008KW01": 88.6,
+      "2008KW02": 87.8,
+      "2008KW03": 88.4,
+      "2008KW04": 87.9,
+      "2009KW01": 86.7,
+      "2009KW02": 84.6,
+      "2009KW03": 83.5,
+      "2009KW04": 83.1,
+      "2010KW01": 82.3,
+      "2010KW02": 82.8,
+      "2010KW03": 83.4,
+      "2010KW04": 82,
+      "2011KW01": 82.1,
+      "2011KW02": 81.3,
+      "2011KW03": 80.6,
+      "2011KW04": 79.4,
+      "2012KW01": 78.1,
+      "2012KW02": 77.2,
+      "2012KW03": 74.4,
+      "2012KW04": 74.3,
+      "2013KW01": 72.9,
+      "2013KW02": 71,
+      "2013KW03": 71.4,
+      "2013KW04": 71.2,
+      "2014KW01": 71.6,
+      "2014KW02": 72.1,
+      "2014KW03": 72.9,
+      "2014KW04": 72.9,
+      "2015KW01": 72.7,
+      "2015KW02": 73.4,
+      "2015KW03": 74.5,
+      "2015KW04": 74.2,
+      "2016KW01": 74.9,
+      "2016KW02": 76.1,
+      "2016KW03": 77.5,
+      "2016KW04": 78.1,
+      "2017KW01": 78.8,
+      "2017KW02": 79.8,
+      "2017KW03": 81,
+      "2017KW04": 82.2,
+      "2018KW01": 84.1,
+      "2018KW02": 85.4,
+      "2018KW03": 87.7,
+      "2018KW04": 88.8,
+      "2019KW01": 90.5,
+      "2019KW02": 91.9,
+      "2019KW03": 93,
+      "2019KW04": 95,
+      "2020KW01": 97.4,
+      "2020KW02": 98.7,
+      "2020KW03": 101,
+      "2020KW04": 102.8,
+      "2021KW01": 107.1,
+      "2021KW02": 110.3,
+      "2021KW03": 116.4,
+      "2021KW04": 120.4,
+      "2022KW01": 125.5,
+      "2022KW02": 128.4,
+      "2022KW03": 128,
+      "2022KW04": 126.4,
+      "2023KW01": 124.9,
+      "2023KW02": 124.4,
+      "2023KW03": 126.1,
+      "2023KW04": 128.9,
+      "2024KW01": 131.3,
+      "2024KW02": 134.9,
+      "2024KW03": 138.7,
+      "2024KW04": 141.5,
+      "2025KW01": 145.2,
+      "2025KW02": 146.9,
+      "2025KW03": 149.9,
+      "2025KW04": 151.3,
+      "2026KW01": 152.1,
+      "2026KW02": 154
+    },
+    "GM0363": {
+      "1995KW01": 18.8,
+      "1995KW02": 19,
+      "1995KW03": 19.5,
+      "1995KW04": 19.9,
+      "1996KW01": 19.7,
+      "1996KW02": 20.4,
+      "1996KW03": 21.3,
+      "1996KW04": 21.8,
+      "1997KW01": 22.5,
+      "1997KW02": 23.4,
+      "1997KW03": 24.5,
+      "1997KW04": 24.8,
+      "1998KW01": 26.3,
+      "1998KW02": 27.1,
+      "1998KW03": 28.5,
+      "1998KW04": 29.4,
+      "1999KW01": 31.7,
+      "1999KW02": 33.7,
+      "1999KW03": 35.4,
+      "1999KW04": 37.4,
+      "2000KW01": 39.6,
+      "2000KW02": 40.9,
+      "2000KW03": 42.2,
+      "2000KW04": 43.7,
+      "2001KW01": 45.8,
+      "2001KW02": 47.2,
+      "2001KW03": 48,
+      "2001KW04": 48.2,
+      "2002KW01": 48.3,
+      "2002KW02": 48,
+      "2002KW03": 48.6,
+      "2002KW04": 47.8,
+      "2003KW01": 47.5,
+      "2003KW02": 46.7,
+      "2003KW03": 46.4,
+      "2003KW04": 46.7,
+      "2004KW01": 46.8,
+      "2004KW02": 47.3,
+      "2004KW03": 47.8,
+      "2004KW04": 47.2,
+      "2005KW01": 48.2,
+      "2005KW02": 49.3,
+      "2005KW03": 50.1,
+      "2005KW04": 50.6,
+      "2006KW01": 51.8,
+      "2006KW02": 52.5,
+      "2006KW03": 54.9,
+      "2006KW04": 55.7,
+      "2007KW01": 57,
+      "2007KW02": 59.1,
+      "2007KW03": 61.6,
+      "2007KW04": 61.8,
+      "2008KW01": 64.1,
+      "2008KW02": 64.5,
+      "2008KW03": 65,
+      "2008KW04": 63.1,
+      "2009KW01": 61.9,
+      "2009KW02": 60.2,
+      "2009KW03": 59.5,
+      "2009KW04": 60.3,
+      "2010KW01": 59.8,
+      "2010KW02": 60.8,
+      "2010KW03": 60.2,
+      "2010KW04": 60,
+      "2011KW01": 61,
+      "2011KW02": 60.3,
+      "2011KW03": 60.2,
+      "2011KW04": 58.5,
+      "2012KW01": 58.6,
+      "2012KW02": 57.2,
+      "2012KW03": 55.7,
+      "2012KW04": 54.8,
+      "2013KW01": 53.2,
+      "2013KW02": 54.1,
+      "2013KW03": 53.9,
+      "2013KW04": 53.4,
+      "2014KW01": 54.5,
+      "2014KW02": 56,
+      "2014KW03": 57.2,
+      "2014KW04": 57.8,
+      "2015KW01": 59.9,
+      "2015KW02": 60.5,
+      "2015KW03": 62.9,
+      "2015KW04": 64.1,
+      "2016KW01": 66.4,
+      "2016KW02": 69.4,
+      "2016KW03": 71.8,
+      "2016KW04": 73.4,
+      "2017KW01": 76.7,
+      "2017KW02": 78.7,
+      "2017KW03": 81.8,
+      "2017KW04": 83.2,
+      "2018KW01": 85.9,
+      "2018KW02": 89.3,
+      "2018KW03": 92.5,
+      "2018KW04": 93.6,
+      "2019KW01": 93.8,
+      "2019KW02": 95.4,
+      "2019KW03": 96,
+      "2019KW04": 96.7,
+      "2020KW01": 98.1,
+      "2020KW02": 100.5,
+      "2020KW03": 101.3,
+      "2020KW04": 100.1,
+      "2021KW01": 104,
+      "2021KW02": 108,
+      "2021KW03": 116.4,
+      "2021KW04": 117.7,
+      "2022KW01": 123.4,
+      "2022KW02": 126.5,
+      "2022KW03": 126.3,
+      "2022KW04": 119,
+      "2023KW01": 116.5,
+      "2023KW02": 115,
+      "2023KW03": 119.1,
+      "2023KW04": 120,
+      "2024KW01": 122.6,
+      "2024KW02": 126.9,
+      "2024KW03": 131.1,
+      "2024KW04": 130.8,
+      "2025KW01": 130.4,
+      "2025KW02": 132.4,
+      "2025KW03": 134.1,
+      "2025KW04": 132.9,
+      "2026KW01": 132.9,
+      "2026KW02": 133.5
+    },
+    "GM0518": {
+      "1995KW01": 25,
+      "1995KW02": 25.3,
+      "1995KW03": 25.8,
+      "1995KW04": 25.9,
+      "1996KW01": 26.4,
+      "1996KW02": 27,
+      "1996KW03": 27.9,
+      "1996KW04": 28.1,
+      "1997KW01": 28.7,
+      "1997KW02": 29.9,
+      "1997KW03": 30.9,
+      "1997KW04": 31.3,
+      "1998KW01": 31.5,
+      "1998KW02": 33,
+      "1998KW03": 34.5,
+      "1998KW04": 35.1,
+      "1999KW01": 35,
+      "1999KW02": 36.8,
+      "1999KW03": 39.3,
+      "1999KW04": 40.6,
+      "2000KW01": 41.9,
+      "2000KW02": 44.1,
+      "2000KW03": 46.5,
+      "2000KW04": 48.8,
+      "2001KW01": 49.4,
+      "2001KW02": 51.5,
+      "2001KW03": 53.2,
+      "2001KW04": 54.1,
+      "2002KW01": 54.8,
+      "2002KW02": 56.1,
+      "2002KW03": 56.7,
+      "2002KW04": 57.2,
+      "2003KW01": 58.3,
+      "2003KW02": 58.5,
+      "2003KW03": 59.5,
+      "2003KW04": 60.1,
+      "2004KW01": 60.4,
+      "2004KW02": 61.3,
+      "2004KW03": 62.6,
+      "2004KW04": 63.2,
+      "2005KW01": 63.4,
+      "2005KW02": 63.7,
+      "2005KW03": 65.5,
+      "2005KW04": 65.4,
+      "2006KW01": 65.5,
+      "2006KW02": 67.3,
+      "2006KW03": 68.6,
+      "2006KW04": 68.8,
+      "2007KW01": 69.3,
+      "2007KW02": 69.8,
+      "2007KW03": 71.3,
+      "2007KW04": 72,
+      "2008KW01": 72.2,
+      "2008KW02": 72.9,
+      "2008KW03": 73.7,
+      "2008KW04": 73.8,
+      "2009KW01": 72.7,
+      "2009KW02": 70.4,
+      "2009KW03": 71.2,
+      "2009KW04": 70.2,
+      "2010KW01": 69.9,
+      "2010KW02": 70.1,
+      "2010KW03": 70.2,
+      "2010KW04": 70.3,
+      "2011KW01": 69.3,
+      "2011KW02": 69.3,
+      "2011KW03": 69.2,
+      "2011KW04": 67.9,
+      "2012KW01": 67.1,
+      "2012KW02": 65,
+      "2012KW03": 62.9,
+      "2012KW04": 61.7,
+      "2013KW01": 59.5,
+      "2013KW02": 59.3,
+      "2013KW03": 60,
+      "2013KW04": 60.2,
+      "2014KW01": 60.5,
+      "2014KW02": 60.3,
+      "2014KW03": 61.7,
+      "2014KW04": 62.4,
+      "2015KW01": 62.1,
+      "2015KW02": 62.9,
+      "2015KW03": 64.2,
+      "2015KW04": 65.5,
+      "2016KW01": 66.4,
+      "2016KW02": 67.9,
+      "2016KW03": 69.5,
+      "2016KW04": 71.8,
+      "2017KW01": 73.6,
+      "2017KW02": 75.1,
+      "2017KW03": 77.6,
+      "2017KW04": 80.1,
+      "2018KW01": 82.4,
+      "2018KW02": 84.8,
+      "2018KW03": 87.5,
+      "2018KW04": 89.9,
+      "2019KW01": 90.4,
+      "2019KW02": 92.6,
+      "2019KW03": 93.2,
+      "2019KW04": 95.8,
+      "2020KW01": 96.9,
+      "2020KW02": 99.1,
+      "2020KW03": 100.8,
+      "2020KW04": 103.2,
+      "2021KW01": 106,
+      "2021KW02": 112.2,
+      "2021KW03": 118.2,
+      "2021KW04": 121.6,
+      "2022KW01": 125.7,
+      "2022KW02": 128,
+      "2022KW03": 130.1,
+      "2022KW04": 124.7,
+      "2023KW01": 122.5,
+      "2023KW02": 121,
+      "2023KW03": 122.6,
+      "2023KW04": 123.6,
+      "2024KW01": 125.6,
+      "2024KW02": 128.1,
+      "2024KW03": 134.7,
+      "2024KW04": 136.4,
+      "2025KW01": 139.1,
+      "2025KW02": 140.6,
+      "2025KW03": 142.5,
+      "2025KW04": 143.3,
+      "2026KW01": 145.1,
+      "2026KW02": 146.9
+    },
+    "GM0599": {
+      "1995KW01": 23.6,
+      "1995KW02": 24.3,
+      "1995KW03": 24.5,
+      "1995KW04": 24.4,
+      "1996KW01": 25.7,
+      "1996KW02": 26.3,
+      "1996KW03": 27.2,
+      "1996KW04": 27.7,
+      "1997KW01": 28.5,
+      "1997KW02": 29.4,
+      "1997KW03": 30.2,
+      "1997KW04": 31,
+      "1998KW01": 31,
+      "1998KW02": 31.9,
+      "1998KW03": 32.9,
+      "1998KW04": 34.2,
+      "1999KW01": 34.7,
+      "1999KW02": 36.3,
+      "1999KW03": 38,
+      "1999KW04": 39.6,
+      "2000KW01": 41.5,
+      "2000KW02": 42.8,
+      "2000KW03": 44.6,
+      "2000KW04": 45.4,
+      "2001KW01": 47.5,
+      "2001KW02": 48.2,
+      "2001KW03": 50.1,
+      "2001KW04": 50.8,
+      "2002KW01": 52.2,
+      "2002KW02": 53,
+      "2002KW03": 54.5,
+      "2002KW04": 54.3,
+      "2003KW01": 55.4,
+      "2003KW02": 55.9,
+      "2003KW03": 56.6,
+      "2003KW04": 57.2,
+      "2004KW01": 57.5,
+      "2004KW02": 57.9,
+      "2004KW03": 58.7,
+      "2004KW04": 59.1,
+      "2005KW01": 59.6,
+      "2005KW02": 60.8,
+      "2005KW03": 61.1,
+      "2005KW04": 61.1,
+      "2006KW01": 62.1,
+      "2006KW02": 62.5,
+      "2006KW03": 63,
+      "2006KW04": 63.4,
+      "2007KW01": 64.4,
+      "2007KW02": 64.8,
+      "2007KW03": 65.3,
+      "2007KW04": 64.9,
+      "2008KW01": 65.8,
+      "2008KW02": 66.4,
+      "2008KW03": 67.4,
+      "2008KW04": 67.1,
+      "2009KW01": 66.1,
+      "2009KW02": 65.2,
+      "2009KW03": 65.9,
+      "2009KW04": 64.8,
+      "2010KW01": 65.3,
+      "2010KW02": 65.5,
+      "2010KW03": 65.4,
+      "2010KW04": 63.8,
+      "2011KW01": 64.7,
+      "2011KW02": 63.7,
+      "2011KW03": 65.7,
+      "2011KW04": 64.2,
+      "2012KW01": 62.9,
+      "2012KW02": 61.9,
+      "2012KW03": 60.6,
+      "2012KW04": 60.1,
+      "2013KW01": 58.1,
+      "2013KW02": 56.8,
+      "2013KW03": 58.7,
+      "2013KW04": 58.2,
+      "2014KW01": 58,
+      "2014KW02": 59.2,
+      "2014KW03": 59.3,
+      "2014KW04": 59.1,
+      "2015KW01": 60.2,
+      "2015KW02": 61.1,
+      "2015KW03": 62.2,
+      "2015KW04": 62.3,
+      "2016KW01": 63.3,
+      "2016KW02": 64.6,
+      "2016KW03": 66.9,
+      "2016KW04": 68.8,
+      "2017KW01": 70.5,
+      "2017KW02": 73.3,
+      "2017KW03": 75.9,
+      "2017KW04": 78,
+      "2018KW01": 81,
+      "2018KW02": 83.8,
+      "2018KW03": 87.9,
+      "2018KW04": 88.1,
+      "2019KW01": 90.8,
+      "2019KW02": 91.4,
+      "2019KW03": 92.8,
+      "2019KW04": 93.8,
+      "2020KW01": 96.6,
+      "2020KW02": 98.5,
+      "2020KW03": 101.1,
+      "2020KW04": 103.8,
+      "2021KW01": 105.8,
+      "2021KW02": 111.2,
+      "2021KW03": 116.7,
+      "2021KW04": 122.2,
+      "2022KW01": 125.9,
+      "2022KW02": 129.4,
+      "2022KW03": 129.4,
+      "2022KW04": 127.2,
+      "2023KW01": 125.6,
+      "2023KW02": 123.2,
+      "2023KW03": 123.3,
+      "2023KW04": 125.7,
+      "2024KW01": 128,
+      "2024KW02": 130.3,
+      "2024KW03": 134.3,
+      "2024KW04": 137.4,
+      "2025KW01": 139.3,
+      "2025KW02": 141.7,
+      "2025KW03": 143.4,
+      "2025KW04": 144,
+      "2026KW01": 145.8,
+      "2026KW02": 146.2
+    },
+    "GM0344": {
+      "1995KW01": 19.9,
+      "1995KW02": 20.4,
+      "1995KW03": 20.8,
+      "1995KW04": 21.2,
+      "1996KW01": 21.6,
+      "1996KW02": 22.6,
+      "1996KW03": 23.3,
+      "1996KW04": 23.9,
+      "1997KW01": 24.4,
+      "1997KW02": 25.9,
+      "1997KW03": 26.5,
+      "1997KW04": 27.2,
+      "1998KW01": 27.9,
+      "1998KW02": 28,
+      "1998KW03": 29.9,
+      "1998KW04": 30.1,
+      "1999KW01": 32.8,
+      "1999KW02": 35,
+      "1999KW03": 36.5,
+      "1999KW04": 38.1,
+      "2000KW01": 38.8,
+      "2000KW02": 39.8,
+      "2000KW03": 41,
+      "2000KW04": 41.6,
+      "2001KW01": 42.1,
+      "2001KW02": 42.7,
+      "2001KW03": 43.6,
+      "2001KW04": 44.6,
+      "2002KW01": 44.6,
+      "2002KW02": 44.9,
+      "2002KW03": 45.6,
+      "2002KW04": 45.8,
+      "2003KW01": 46.5,
+      "2003KW02": 46.7,
+      "2003KW03": 47.7,
+      "2003KW04": 48.5,
+      "2004KW01": 49.5,
+      "2004KW02": 49.8,
+      "2004KW03": 51.1,
+      "2004KW04": 51.3,
+      "2005KW01": 52.8,
+      "2005KW02": 53.7,
+      "2005KW03": 54.2,
+      "2005KW04": 55,
+      "2006KW01": 55.8,
+      "2006KW02": 56.8,
+      "2006KW03": 58.1,
+      "2006KW04": 58.5,
+      "2007KW01": 60.1,
+      "2007KW02": 61.3,
+      "2007KW03": 63.4,
+      "2007KW04": 64.1,
+      "2008KW01": 65.8,
+      "2008KW02": 65.4,
+      "2008KW03": 67.1,
+      "2008KW04": 66.5,
+      "2009KW01": 66.3,
+      "2009KW02": 64.1,
+      "2009KW03": 64,
+      "2009KW04": 63.5,
+      "2010KW01": 63.3,
+      "2010KW02": 62.7,
+      "2010KW03": 63.6,
+      "2010KW04": 63.1,
+      "2011KW01": 64.3,
+      "2011KW02": 62.7,
+      "2011KW03": 63.7,
+      "2011KW04": 62.5,
+      "2012KW01": 62.1,
+      "2012KW02": 60.6,
+      "2012KW03": 57.3,
+      "2012KW04": 57.3,
+      "2013KW01": 56.4,
+      "2013KW02": 55.4,
+      "2013KW03": 56.2,
+      "2013KW04": 56.3,
+      "2014KW01": 56,
+      "2014KW02": 57.1,
+      "2014KW03": 58,
+      "2014KW04": 58.5,
+      "2015KW01": 59.9,
+      "2015KW02": 60.1,
+      "2015KW03": 62.2,
+      "2015KW04": 62.7,
+      "2016KW01": 64.5,
+      "2016KW02": 65.9,
+      "2016KW03": 68.3,
+      "2016KW04": 70.2,
+      "2017KW01": 72.5,
+      "2017KW02": 74.1,
+      "2017KW03": 76.1,
+      "2017KW04": 78.3,
+      "2018KW01": 80.2,
+      "2018KW02": 82.9,
+      "2018KW03": 85,
+      "2018KW04": 86.7,
+      "2019KW01": 89.2,
+      "2019KW02": 91,
+      "2019KW03": 92.2,
+      "2019KW04": 93.3,
+      "2020KW01": 96.5,
+      "2020KW02": 99.1,
+      "2020KW03": 101.5,
+      "2020KW04": 102.9,
+      "2021KW01": 106.2,
+      "2021KW02": 113,
+      "2021KW03": 120.7,
+      "2021KW04": 124.1,
+      "2022KW01": 128.8,
+      "2022KW02": 132.9,
+      "2022KW03": 130.8,
+      "2022KW04": 122.6,
+      "2023KW01": 119.3,
+      "2023KW02": 116.6,
+      "2023KW03": 120.1,
+      "2023KW04": 123.3,
+      "2024KW01": 129.7,
+      "2024KW02": 136.7,
+      "2024KW03": 142.3,
+      "2024KW04": 143.6,
+      "2025KW01": 148.1,
+      "2025KW02": 150.9,
+      "2025KW03": 153.4,
+      "2025KW04": 151.9,
+      "2026KW01": 152.9,
+      "2026KW02": 154.2
+    }
+  },
+  "regionalIndexSource": "https://opendata.cbs.nl/ODataApi/OData/85792NED/TypedDataSet"
+}

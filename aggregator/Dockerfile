@@ -6,9 +6,8 @@ ENV UV_COMPILE_BYTECODE=1 \
 RUN python -m pip install --no-cache-dir uv==0.9.5
 
 WORKDIR /app
-COPY pyproject.toml ./
-# uv.lock is optional during early development; prefer --frozen once committed.
-RUN uv sync --no-dev
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev
 
 COPY app ./app
 
@@ -21,6 +20,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 COPY --from=builder /app /app
 
-# The cron service is a long-lived loop, not an HTTP server.
+# The host timer invokes a single run; local development may explicitly use run.
 ENTRYPOINT ["/app/.venv/bin/python", "-m", "app.main"]
-CMD ["run"]
+CMD ["sync"]

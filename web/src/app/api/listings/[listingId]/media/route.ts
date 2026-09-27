@@ -1,11 +1,10 @@
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, unlink, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { requireEmailVerifiedUser } from "@/features/auth/guards";
 import { handleApiError } from "@/lib/api-response";
 import { db } from "@/lib/db";
+import { deleteStoredFile, storeFile } from "@/lib/storage";
 
 const allowedTypes = {
     "image/jpeg": ".jpg",
@@ -143,17 +142,7 @@ export async function POST(
         const id = randomUUID();
         const extension = allowedTypes[file.type as keyof typeof allowedTypes];
         const relativeKey = `uploads/${listingId}/${id}${extension}`;
-        const directory = path.join(
-            process.cwd(),
-            "public",
-            "uploads",
-            listingId,
-        );
-        await mkdir(directory, { recursive: true });
-        const target = path.join(directory, `${id}${extension}`);
-        await writeFile(target, bytes, {
-            flag: "wx",
-        });
+        await storeFile("listing-media", relativeKey, bytes);
 
         const media = await db
             .$transaction(async (tx) => {
@@ -225,7 +214,7 @@ export async function POST(
                 };
             })
             .catch(async (error) => {
-                await unlink(target).catch(() => undefined);
+                await deleteStoredFile("listing-media", relativeKey).catch(() => undefined);
                 throw error;
             });
 

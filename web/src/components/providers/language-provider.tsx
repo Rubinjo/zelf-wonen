@@ -24,11 +24,17 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
  * language and persists the user's choice in localStorage and a cookie
  * (`zelfwonen:lang`).
  */
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
+export function LanguageProvider({
+    children,
+    initialLanguage = "nl",
+}: {
+    children: React.ReactNode;
+    initialLanguage?: Language;
+}) {
     const language = useSyncExternalStore(
         languageStore.subscribe,
         languageStore.getSnapshot,
-        languageStore.getServerSnapshot,
+        () => initialLanguage,
     );
 
     const value = useMemo<LanguageContextValue>(

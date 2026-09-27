@@ -14,10 +14,12 @@ type PdokDocument = {
     postcode?: string;
     huisnummer?: number;
     huisnummertoevoeging?: string;
+    huisletter?: string;
     straatnaam?: string;
     woonplaatsnaam?: string;
     gemeentenaam?: string;
     provincienaam?: string;
+    provinciecode?: string;
     centroide_ll?: string;
     bouwjaar?: string;
     gekoppeld_perceel?: string[];
@@ -42,7 +44,9 @@ export class PdokClient {
             `${input.postcode} ${input.houseNumber}${addition}`,
         );
         url.searchParams.set("fq", "type:adres");
-        url.searchParams.set("rows", "5");
+        url.searchParams.append("fq", `postcode:${input.postcode}`);
+        url.searchParams.append("fq", `huisnummer:${input.houseNumber}`);
+        url.searchParams.set("rows", "100");
 
         const response = await fetch(url, {
             headers: { accept: "application/json" },
@@ -61,8 +65,8 @@ export class PdokClient {
             (candidate) =>
                 candidate.postcode?.replace(/\s/g, "") === input.postcode &&
                 candidate.huisnummer === input.houseNumber &&
-                (candidate.huisnummertoevoeging ?? "").toLowerCase() ===
-                    (input.addition ?? "").toLowerCase(),
+                [candidate.huisletter, candidate.huisnummertoevoeging].filter(Boolean).join("").toLowerCase() ===
+                    (input.addition ?? "").replace(/[\s-]/g, "").toLowerCase(),
         );
 
         if (!document) return null;
@@ -75,14 +79,15 @@ export class PdokClient {
             districtCode: document.wijkcode ?? null,
             districtName: document.wijknaam ?? null,
             municipalityCode: document.gemeentecode
-                ? `GM${document.gemeentecode}`
+                ? `GM${document.gemeentecode.replace(/^GM/, "").padStart(4, "0")}`
                 : null,
+            provinceCode: document.provinciecode ? `PV${document.provinciecode.replace(/^PV/, "")}` : null,
             cadastralParcelIds: document.gekoppeld_perceel ?? [],
             address: {
                 postcode:
                     document.postcode?.replace(/\s/g, "") ?? input.postcode,
                 houseNumber: document.huisnummer ?? input.houseNumber,
-                addition: document.huisnummertoevoeging ?? null,
+                addition: [document.huisletter, document.huisnummertoevoeging].filter(Boolean).join("-") || null,
                 street: document.straatnaam ?? "",
                 city: document.woonplaatsnaam ?? "",
                 municipality: document.gemeentenaam ?? null,

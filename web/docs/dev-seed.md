@@ -39,12 +39,12 @@ npm run db:seed
 - 15 listings covering **every** status: `DRAFT`, `READY_FOR_VERIFICATION`,
   `LIVE`, `UNDER_OFFER`, `SOLD`, `RENTED`, `ARCHIVED`, plus an
   expired-bid-window listing
-- listing media, floor plans, publication orders + `PLATFORM`/`FUNDA` publications
+- listing media, floor plans, free `PLATFORM` publications
   (incl. one `REJECTED` and some `WITHDRAWN`)
 - cryptographically chained bids + bid events (validated by
   `verifyAndOrderBidChain`)
 - viewing slots/bookings, favorites, saved searches, shortlist shares,
-  seeker notifications, iDIN verification attempts (verified/pending/failed)
+  seeker notifications, development identity fixtures (verified/pending/failed)
   and email verification audit logs
 - 3 property transactions: a pending sale, a completed sale and a completed
   rental — with milestones, messages, documents, chained events and passport
@@ -73,8 +73,8 @@ npm run db:seed
 | Thomas Mulder     | `thomas.mulder@example.dev`   | Buyer in the under-offer transaction              |
 | Lisa van Dijk     | `lisa.vandijk@example.dev`    | Buyer of the sold property + renter (completed)   |
 | David de Boer     | `david.deboer@example.dev`    | Highest bidder on the grachtpand, shortlist       |
-| Femke Smit        | `femke.smit@example.dev`      | Failed iDIN attempt, bids on rentals              |
-| Bram Willems      | `bram.willems@example.dev`    | EN locale, pending iDIN attempt                   |
+| Femke Smit        | `femke.smit@example.dev`      | Failed development identity attempt, bids on rentals              |
+| Bram Willems      | `bram.willems@example.dev`    | EN locale, pending development identity attempt                   |
 
 ## Notes
 

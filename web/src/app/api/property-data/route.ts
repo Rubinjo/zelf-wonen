@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
             }),
         ]);
 
-        // Kadaster/EP-Online sync workers normalize licensed/API data into these tables.
+        // Preserve stored parcel details and use stored labels when the live lookup is unavailable.
         const storedProperty = await db.property.findFirst({
             where: {
                 postcode: input.postcode,

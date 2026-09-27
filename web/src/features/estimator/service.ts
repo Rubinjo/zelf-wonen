@@ -2,6 +2,8 @@ import { createHash } from "node:crypto";
 import { Output } from "ai";
 import { Prisma } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
+import { readEstimatorImage } from "@/lib/storage";
+import { PdokClient } from "@/lib/integrations/property-data/pdok-client";
 import { generateTextWithFreeFallback } from "@/lib/integrations/openrouter";
 import {
     estimateResponseSchema,
@@ -15,6 +17,8 @@ import {
 } from "@/lib/schemas/estimator";
 
 type NumericEstimate = PythonEstimateResponse;
+
+export class EstimateInputError extends Error {}
 
 function normalizedInput(input: EstimateRequest) {
     return {
@@ -31,9 +35,9 @@ function normalizedInput(input: EstimateRequest) {
     };
 }
 
-function hashInput(input: EstimateRequest, modelVersion: string) {
+function hashInput(input: EstimateRequest, modelVersion: string, addressContext?: unknown) {
     return createHash("sha256")
-        .update(JSON.stringify({ input: normalizedInput(input), modelVersion, rubric: "visible-v2" }))
+        .update(JSON.stringify({ input: normalizedInput(input), modelVersion, addressContext, rubric: "visible-v2" }))
         .digest("hex");
 }
 
@@ -41,10 +45,16 @@ async function extractQualitativeFeatures(
     input: EstimateRequest,
     inputHash: string,
 ): Promise<QualitativeFeatures> {
-    const mediaBaseUrl =
-        process.env.OBJECT_STORAGE_MEDIA_BASE_URL ??
-        process.env.NEXT_PUBLIC_APP_URL ??
-        "http://localhost:3000";
+    // Send authorized file bytes so local development and the VM need no public
+    // media origin, signed URLs, or outbound request back to their own hostname.
+    const images = [];
+    for (const image of input.images) {
+        images.push({
+            type: "image" as const,
+            image: await readEstimatorImage(image),
+            mediaType: image.mimeType,
+        });
+    }
 
     const seed = Number.parseInt(inputHash.slice(0, 8), 16) & 0x7fffffff;
     const { output } = await generateTextWithFreeFallback({
@@ -73,14 +83,7 @@ async function extractQualitativeFeatures(
                             `Owner text: ${input.userText || "No owner text supplied."}`,
                         ].join("\n"),
                     },
-                    ...input.images.map((image) => ({
-                        type: "image" as const,
-                        image: new URL(
-                            image.storageKey.replace(/^\/+/, ""),
-                            `${mediaBaseUrl.replace(/\/+$/, "")}/`,
-                        ),
-                        mediaType: image.mimeType,
-                    })),
+                    ...images,
                 ],
             },
         ],
@@ -108,6 +111,9 @@ async function runPythonModel(
     });
 
     if (!response.ok) {
+        if (response.status === 422) {
+            throw new EstimateInputError("Deze woning kan niet betrouwbaar worden geschat. Controleer de kenmerken en WOZ-gegevens; nieuwbouw en bijzondere objecten vereisen een individuele taxatie.");
+        }
         throw new Error(`Python estimator returned ${response.status}`);
     }
 
@@ -122,6 +128,7 @@ function toResponse(
     features: QualitativeFeatures | null,
 ): EstimateResponse {
     return estimateResponseSchema.parse({
+        ...result,
         inputHash,
         cached,
         tier,
@@ -135,7 +142,7 @@ function toResponse(
         conditionAdjustmentPercent: result.conditionAdjustmentPercent,
         qualitativeFeatures: features,
         disclaimer:
-            "Indicative estimate from similar completed sales, adjusted to the latest available CBS index month. Bounds are heuristic, not a calibrated confidence interval. Photo adjustments are limited to visible condition and are not learned renovation returns. Not a taxatierapport.",
+            "Indicatieve waarde op basis van lokale verkopen of geïndexeerde WOZ-statistieken. Gemeentelijke cijfers houden geen rekening met alle individuele woningkenmerken. De bandbreedte is niet statistisch gekalibreerd. Geen taxatierapport.",
     });
 }
 
@@ -170,7 +177,17 @@ export async function estimateProperty(
         || !("modelVersion" in status) || typeof status.modelVersion !== "string") {
         throw new Error("Historical completed-sales data is unavailable");
     }
-    const inputHash = hashInput(input, status.modelVersion);
+    if ((input.wozValueCents === undefined) !== (input.wozAssessmentYear === undefined)) {
+        throw new EstimateInputError("Vul zowel de WOZ-waarde als het beschikkingsjaar in.");
+    }
+    const address = await new PdokClient().lookupAddress({
+        postcode: input.postcode, houseNumber: input.houseNumber, addition: input.addition,
+    });
+    if (!address?.municipalityCode) throw new EstimateInputError("Het adres kon niet worden gevonden bij PDOK. Controleer postcode, huisnummer en toevoeging.");
+    const municipalityCode = address.municipalityCode;
+    const context = { municipalityCode, latitude: address.coordinates?.latitude,
+        longitude: address.coordinates?.longitude, provinceCode: address.provinceCode ?? undefined };
+    const inputHash = hashInput(input, status.modelVersion, context);
     const cached = await db.estimateCache.findUnique({ where: { inputHash } });
     if (cached && cached.expiresAt && cached.expiresAt > new Date()) {
         const stored = cached.normalizedInput;
@@ -197,9 +214,14 @@ export async function estimateProperty(
         livingAreaSqm: input.livingAreaSqm,
         roomCount: input.roomCount,
         constructionYear: input.constructionYear,
+        addition: input.addition,
+        ...context,
+        wozValueCents: input.wozValueCents,
+        wozAssessmentYear: input.wozAssessmentYear,
         qualitativeFeatures: features,
     });
-    const tier: "MULTIMODAL_ML" | "BASIC_ML" = features ? "MULTIMODAL_ML" : "BASIC_ML";
+    const tier = result.method !== "COMPARABLE_SALES" ? "POSTCODE_SQM" as const
+        : features ? "MULTIMODAL_ML" as const : "BASIC_ML" as const;
     const cacheData = {
         normalizedInput: { ...normalizedInput(input), valuation: result } as Prisma.InputJsonValue,
         qualitativeFeatures: features ?? Prisma.DbNull,
