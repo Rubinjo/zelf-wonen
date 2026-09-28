@@ -1,99 +1,105 @@
 # ZelfWonen
 
-Self-service Dutch real-estate platform for owners who want to sell or rent without a traditional broker. The scaffold uses Next.js App Router, TypeScript, Tailwind CSS, Better Auth, TanStack Query, Zod, Vercel AI SDK, Prisma, PostgreSQL, and a REST contract for a deterministic Python estimator. Listing on ZelfWonen is completely free; the platform does not publish advertisements to external portals.
+**A self-service Dutch housing platform, with AI-assisted discovery and listing tools.**
 
-## What is scaffolded
+ZelfWonen brings property search, owner listings, viewings, bidding and transaction
+coordination into one application. Owners can prepare and publish sale or rental
+listings on ZelfWonen without a publication fee. Imported listings link back to
+their original platforms; ZelfWonen does not publish advertisements to external portals.
 
-- Bilingual Dutch/English marketing shell
-- Public sale/rental marketplace at `/search` with shareable filters, sorting, pagination, local favorites, and a synchronized OpenStreetMap view
-- Better Auth with mandatory email verification
-- Server-side verified-email authorization guard
-- Prisma/PostgreSQL draft for users, sessions, properties, labels, listings, media, Didit attempts, publications, bids, immutable events, exports, estimate cache, and audit events
-- PDOK address, BAG and cadastral parcel lookups, live single-address Energielabel.nl lookup, and stored property-data fallback
-- AI listing-description route
-- Three-tier estimator orchestration and OpenAPI contract
-- Didit hosted verification plus strict publication gate
-- Inbound listing aggregator microservice (`aggregator/`, Python + uv) that scrapes, normalizes and deduplicates Funda/Kamernet listings; this is independent of free owner listings
-- Immutable, hash-chained bid submission and PostgreSQL trigger draft
-- Buyer/seller transaction room with chat, private document exchange, deadlines, agreement confirmations, notary and handover workflow
-- Versioned, hash-chained property passport with completeness score and verifiable PDF export
+[Get started](docs/getting-started.md) · [Architecture](docs/architecture.md) ·
+[AI engineering](docs/ai-engineering.md) · [Documentation](docs/README.md)
 
-## Local setup
+> [!IMPORTANT]
+> ZelfWonen has minimal financial backing and is **not actively maintained**.
+> Support, fixes, provider availability and data refreshes are not guaranteed.
+> It is available as a platform to explore and self-host, and as an AI engineering
+> portfolio project; operating it for real users requires the work described in
+> [release readiness](docs/release-readiness.md).
+>
+> I am open to being contacted by people interested in helping make ZelfWonen
+> commercially viable.
 
-Requirements: Node.js 20.9+, npm, and Docker Desktop with Linux containers. Python 3.12 and uv are only required when running the estimator or the inbound aggregator outside Docker.
+## Explore the platform
 
-1. From `web/`, copy `.env.example` to `.env.local` and replace every required placeholder. A local file is already configured in this workspace.
-2. Install dependencies with `npm install`.
-3. Start PostgreSQL 17, generate Prisma, migrate, and apply immutable-history triggers with `npm run db:setup`.
-4. Start the deterministic estimator with `npm run estimator:start`.
-5. Start the application with `npm run dev`.
-
-For local development, PostgreSQL and the estimator are defined in `web/compose.local.yaml`. Use `npm run services:start` to build and start both. PostgreSQL publishes localhost port 5432 and persists data in the `houser_postgres_data` Docker volume; the estimator publishes localhost port 8000. Local verification links are printed in the Next.js terminal when no delivery webhook is configured.
-
-The marketplace only exposes listings with status `LIVE` and a public slug. Map markers require latitude and longitude on the related property, and map tiles are loaded in the browser from OpenStreetMap, so the deployed client needs outbound internet access to `tile.openstreetmap.org`.
-
-Do not run a production deployment with the example Better Auth secret, IP salt, media URL, or simulated provider endpoints.
-
-## VPS deployment
-
-`web/compose.yaml` runs the production web app behind Caddy HTTPS with private PostgreSQL and estimator services. See [VPS deployment](web/docs/deployment.md) for environment configuration, database initialization, persistent volumes, and the bundled free estimator dataset.
-
-## Commands
-
-| Command | Purpose |
+| For | Implemented workflows |
 | --- | --- |
-| `npm run dev` | Start the development server |
-| `npm run build` | Create a production build |
-| `npm run lint` | Run ESLint |
-| `npm run typecheck` | Run strict TypeScript checks |
-| `npm run db:start` | Start the PostgreSQL container |
-| `npm run db:stop` | Stop the PostgreSQL container |
-| `npm run db:logs` | Follow PostgreSQL container logs |
-| `npm run services:start` | Build and start PostgreSQL and the estimator |
-| `npm run services:stop` | Stop all local service containers |
-| `npm run estimator:start` | Build and start the deterministic estimator |
-| `npm run estimator:logs` | Follow estimator container logs |
-| `npm run db:setup` | Start PostgreSQL and initialize the complete schema |
-| `npm run db:generate` | Generate Prisma Client |
-| `npm run db:push` | Push the Prisma schema to the database |
-| `npm run db:immutability` | Apply append-only PostgreSQL triggers |
-| `npm run db:migrate` | Create/apply a development migration |
-| `npm run db:deploy` | Apply committed migrations in deployment |
-| `npm run db:studio` | Open Prisma Studio |
-| `npm run validate` | Generate, lint, typecheck, and build |
+| **Buyers and tenants** | Sale/rental search, filters, a synchronized map, favorites, saved searches, shared shortlists and a personal dashboard. |
+| **Property owners** | Draft editor, property-data lookups, photos and floor plans, Dutch/English writing assistance, viewing management and free platform publication. |
+| **Transaction participants** | Bids, a hash-chained bid logbook, private messages and documents, agreement confirmations, milestones and versioned property passports with PDF exports. |
+| **Operators** | An owner-only metrics dashboard, container deployment, backup scripts and an optional Funda/Kamernet import worker. |
 
-## Inbound aggregator
+Publishing requires verified email, a complete listing and a current Didit identity
+approval. Identity verification does not prove property ownership. Agreement
+confirmations are implemented, but **digital agreement signing is unavailable**.
+Imported properties use the source platform for viewings, bids and transactions.
 
-A separate Python/uv cron microservice in `aggregator/` scrapes, normalizes and
-deduplicates Funda/Kamernet listings into the same PostgreSQL database. It
-rotates residential proxies and User-Agents, re-hosts images in persistent VM storage (optionally S3/R2),
-and never deletes listings that disappear — it marks them `OFFLINE`/`EXPIRED`.
+## AI engineering in context
+
+The project combines structured LLM output with conventional application logic:
+
+- **Writing:** proposes Dutch and English titles and descriptions from supplied
+  property facts and owner drafts, for the owner to review.
+- **Search:** converts natural language into validated filters used by the existing
+  database query builder. The model does not generate SQL.
+- **Valuation:** assesses visible photo condition on a fixed rubric, then passes
+  structured features to a deterministic Python model. Completed sales take
+  precedence over property or municipal WOZ statistical fallbacks.
+
+The implementation includes schema validation, provider fallback, authorized image
+access, content-versioned valuation caching and explicit unavailable results.
+Valuation bounds are heuristic; the small regional sales evaluation does not
+establish nationwide accuracy. Read the [AI engineering guide](docs/ai-engineering.md)
+for source links, decisions and limitations.
+
+## Run locally
+
+Install **Node.js 20.9+**, npm and Docker with Linux containers. From the repository root:
 
 ```bash
-cd aggregator
-uv sync --python 3.12
-uv run python -m app.main sync     # one-shot sync
-uv run python -m app.main run      # loop every 6 hours (advisory-locked)
-uv run pytest                      # unit tests
+cd web
+cp .env.example .env.local
+# Edit .env.local: replace BETTER_AUTH_SECRET and IP_HASH_SALT with separate random secrets.
+# For local email links, set NEXT_PUBLIC_EMAIL_DELIVERY_MODE=console.
+npm ci
+npm run db:setup
+npm run estimator:start
+npm run dev
 ```
 
-Configure it with `AGGREGATOR_`-prefixed environment variables (see
-`aggregator/README.md`). The optional Docker Compose service is enabled with
-`docker compose -f compose.local.yaml --profile aggregator up -d --build` from `web/`.
+Open [localhost:3000](http://localhost:3000). A fresh database has no listings.
+Use the optional [development seed](web/docs/dev-seed.md) to explore sample users
+and workflows; **seeding deletes existing data in the target database**.
 
-## Documentation
+Basic browsing and seeded workflows need no AI or identity-provider credentials.
+OpenRouter enables AI assistance; Didit sandbox credentials are needed to test
+new publication approvals. Local sign-up prints email-verification links in the
+server terminal when no email delivery key is configured.
 
-- [Architecture and security decisions](docs/architecture.md)
-- [Next.js directory structure](docs/directory-structure.md)
-- [Inbound aggregator microservice](../aggregator/README.md)
-- [Python estimator REST contract](docs/estimator-openapi.yaml)
-- [Database schema draft](prisma/schema.prisma)
-- [Append-only trigger draft](prisma/immutability.sql)
+See [getting started](docs/getting-started.md) for configuration, feature requirements
+and troubleshooting. For a server deployment, use the [VPS guide](web/docs/deployment.md).
 
-## Production gaps
+## How it is built
 
-This is not yet a legally certified production system. The owner listing workflow, bid logbook/PDF, estimator, Didit identity verification, and free platform publication are implemented. The portfolio VM uses persistent local media volumes and authenticated private-document downloads; see [storage and backups](web/docs/deployment.md#persistence-and-updates). Before handling real transactions, add a production agreement-signing integration and immutable document archival; add malware scanning, rate limits, notifications, admin moderation, broader automated tests, observability, GDPR workflows, accessibility/localization review, and independent Dutch legal/privacy review.
+| Component | Technologies and responsibility |
+| --- | --- |
+| [Web application](web/) | Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4, TanStack Query, Better Auth and Zod; UI, authentication and domain workflows. |
+| [Persistence](web/prisma/schema.prisma) | PostgreSQL 17, Prisma 7 and SQL append-only triggers; shared application and imported-listing data. |
+| [AI integration](web/src/lib/integrations/openrouter.ts) | Vercel AI SDK with OpenRouter, structured outputs and configured model fallbacks. |
+| [Estimator](estimator/README.md) | Python 3.12, FastAPI and Pydantic; comparable sales, indexed WOZ fallbacks and bundled public-data artifacts. |
+| [Aggregator](aggregator/README.md) | Python 3.12, HTTPX, Pydantic and asyncpg; optional discovery, normalization and media ingestion. |
+| [Deployment](web/docs/deployment.md) | Docker Compose, Caddy HTTPS and persistent local volumes; systemd timer for optional imports. |
 
-## Free publication and identity verification
+The [architecture guide](docs/architecture.md) explains service boundaries and trust
+controls. The [repository map](docs/directory-structure.md) points to the code.
 
-Owner listings require verified email, a complete listing and current identity verification through Didit. There are no packages, checkout, payment endpoints or outbound publishing adapters. Historical order tables remain for existing records; new publications do not reference orders or packages. No schema migration is needed for this change. See [Didit setup and the 499-session limit](web/docs/didit-setup.md).
+## Contributing and release status
+
+Focused improvements and reproducible bug reports are welcome, with no guaranteed
+review timeline. Start with [contributing](CONTRIBUTING.md) and the
+[public-release gaps](docs/release-readiness.md).
+
+The application code and documentation are licensed under the [MIT License](LICENSE).
+Bundled datasets retain their separate [attribution and license notices](estimator/data/NOTICE.md).
+Third-party assets retain their respective rights; the MIT license does not replace
+those notices or grant rights to third-party brands.

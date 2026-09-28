@@ -1,25 +1,30 @@
 # Development seed (dummy data)
 
+[Documentation](../../docs/README.md) · [Getting started](../../docs/getting-started.md)
+
 A complete set of dummy data for the **local development database only**. It lets
-you exercise every feature of the platform without manual setup.
+you explore the main application workflows without entering sample records by hand.
+External providers still need their own configuration; seed identity fixtures
+cannot unlock new publication approvals.
 
 ## Safety
 
-The seed is deliberately guarded so it can **never** hit a production or staging
-database:
+The seed has development guards:
 
 - it refuses to run when `NODE_ENV=production`
-- it refuses to run unless `DATABASE_URL` points at `localhost`/`127.0.0.1`
+- it checks `DATABASE_URL` for a localhost, IPv4 loopback or IPv6 loopback marker
 
 It **wipes all existing data** first (append-only triggers are temporarily
-disabled, then re-enabled), so it is safe and re-runnable in dev.
+disabled, then re-enabled). Use only a disposable local database and verify the
+actual target yourself; a local tunnel or a URL containing a loopback marker is
+not proof that its data is disposable.
 
 ## Commands
 
 ```bash
 # From web/
 npm run db:seed            # tsx prisma/seed.ts
-npx prisma db seed         # equivalent (also triggered by `prisma migrate reset`)
+npx prisma db seed         # explicit alternative
 npm run db:verify-seed     # sanity-checks the seeded data (credentials + hash chains)
 ```
 
@@ -79,7 +84,7 @@ npm run db:seed
 ## Notes
 
 - The seed recreates data every run; your logins remain valid because password
-  hashes are regenerated deterministically against the same shared password.
+  passwords are reset to the same shared development password.
 - The seed generates **real dummy media files** so URLs resolve instead of
   returning 404:
   - listing photos + floor plans → PNGs written to `web/public/dev/listings/…`

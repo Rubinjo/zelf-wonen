@@ -1,5 +1,7 @@
 # Didit identity verification
 
+[Documentation](../../docs/README.md) · [Deployment](deployment.md)
+
 Didit verifies the identity of an email-verified listing owner before free
 publication. Existing verified identities are reused for the configured identity
 TTL (365 days by default, configurable with `IDENTITY_VERIFICATION_TTL_DAYS`).
@@ -30,8 +32,9 @@ removed; digital signing is unavailable pending a separate signing integration.
    the environment variable above. The endpoint validates the full raw-body
    `X-Signature` HMAC and the signed timestamp, then retrieves the authoritative
    session decision using the private API key. No simple-signature fallback is used.
-5. Recreate the web container after setting runtime credentials. No database
-   migration or new dependency is required: attempts and audits use existing tables.
+5. Recreate the web container after setting runtime credentials. Attempts and
+   audits use the application's identity tables; initialize the schema using the
+   deployment guide before enabling verification.
 6. Test with sandbox credentials on a local/nonproduction deployment using
    `DIDIT_MODE=sandbox`. Sandbox approvals are recorded as `DIDIT_SANDBOX` and
    cannot unlock production publishing, including when copying a development DB.
@@ -39,8 +42,9 @@ removed; digital signing is unavailable pending a separate signing integration.
 
 Missing/invalid credentials fail closed. Credentials are never sent to the browser.
 Do not configure paid features merely because a dashboard recommends them. Didit
-currently advertises 500 free full-KYC checks per workspace/month; verify the
-current plan and workflow settings before enabling live traffic.
+was configured around a 500-check monthly allowance. Verify the current plan,
+pricing and workflow settings before enabling live traffic; the app's hardcoded
+cap is not a statement of the provider's current offer.
 
 ## Monthly cap and failure handling
 

@@ -1,11 +1,20 @@
 # ZelfWonen public-data price estimator
 
-FastAPI evidence-hierarchy model with the existing property request, authentication,
-euro-cent response, Next.js cache and optional photo-condition adjustment. It runs
+[Documentation](../docs/README.md) · [AI engineering](../docs/ai-engineering.md) · [Method](METHOD.md)
+
+> This service is not actively maintained. Bundled evidence ages; operators must
+> refresh indices and review dataset coverage. See [project status](../README.md).
+
+A FastAPI service that estimates property values from local completed sales,
+then falls back to indexed property or municipal WOZ statistics. It returns
+integer euro cents and supports Bearer authentication. The Next.js application
+adds caching and optional photo-condition assessment. It runs
 out of the box using **free, bundled public data**, without a Kadaster
 Woningtransacties subscription, API key, or private sales export.
 
 ## Sources and coverage
+
+The figures below describe the bundled September 2026 snapshot, not a live data feed.
 
 - **Utrecht Housing Dataset**, real-data release: 153 completed transactions from
   January–November 2024 in 26 postcode sectors around Utrecht, Vleuten, De Meern
@@ -113,6 +122,9 @@ produces no adjustment. This is a heuristic, not a learned renovation return.
 Photos widen bounds and never increase confidence.
 
 ## Evaluation and limitations
+
+The following is the recorded result for the bundled artifacts; rerun the command
+above after changing data or model code.
 
 Forward-only evaluation uses only pre-cutoff sales to predict holdout sales at
 their transaction dates. The July 1, 2024 cutoff yields **90 holdout records,

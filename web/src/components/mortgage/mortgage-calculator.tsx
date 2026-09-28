@@ -715,6 +715,7 @@ function Results({ result }: { result: MortgageResult }) {
 // ---------------------------------------------------------------------------
 export function MortgageCalculator() {
     const { t, language } = useTranslations();
+    const l = (nl: string, en: string) => (language === "en" ? en : nl);
     const [applicantIsZzp, setApplicantIsZzp] = useState(false);
     const [hasPartner, setHasPartner] = useState(false);
     const [partnerIsZzp, setPartnerIsZzp] = useState(false);
@@ -805,10 +806,10 @@ export function MortgageCalculator() {
                         {t("mortgage.description")}
                     </h1>
                     <p className="mt-3 max-w-3xl text-sm leading-6 text-white/75 sm:text-base">
-                        Bereken je leencapaciteit zoals een hypotheekadviseur
-                        dat doet: op basis van je toetsinkomen, energielabel,
-                        studieschuld en andere verplichtingen. Vul links je
-                        gegevens in en zie rechts direct het resultaat.
+                        {l(
+                            "Bereken je leencapaciteit zoals een hypotheekadviseur dat doet: op basis van je toetsinkomen, energielabel, studieschuld en andere verplichtingen. Vul links je gegevens in en zie rechts direct het resultaat.",
+                            "Calculate your borrowing capacity like a mortgage adviser would, based on your qualifying income, energy label, student debt and other commitments. Enter your details on the left and see the result immediately on the right.",
+                        )}
                     </p>
                 </div>
             </section>
@@ -818,24 +819,24 @@ export function MortgageCalculator() {
                     <div className="grid gap-6">
                         <Section
                             icon={Users}
-                            title="Jouw situatie"
-                            subtitle="We stellen eerst een paar vragen, zodat je alleen de velden ziet die voor jou van toepassing zijn."
+                            title={l("Jouw situatie", "Your situation")}
+                            subtitle={l("We stellen eerst een paar vragen, zodat je alleen de velden ziet die voor jou van toepassing zijn.", "We start with a few questions so you only see the fields that apply to you.")}
                         >
                             <Toggle
                                 card
                                 icon={Briefcase}
                                 checked={applicantIsZzp}
                                 onChange={setApplicantIsZzp}
-                                label="Ben je zelfstandig ondernemer (ZZP)?"
-                                helper="Voor ondernemers kijkt de geldverstrekker naar de nettowinst van de laatste boekjaren."
+                                label={l("Ben je zelfstandig ondernemer (ZZP)?", "Are you self-employed?")}
+                                helper={l("Voor ondernemers kijkt de geldverstrekker naar de nettowinst van de laatste boekjaren.", "For self-employed applicants, lenders assess the net profit from recent financial years.")}
                             />
                             <Toggle
                                 card
                                 icon={Users}
                                 checked={hasPartner}
                                 onChange={setHasPartner}
-                                label="Koop je samen met een partner?"
-                                helper="Het inkomen van je partner telt voor 100% mee bij het bepalen van de leencapaciteit."
+                                label={l("Koop je samen met een partner?", "Are you buying with a partner?")}
+                                helper={l("Het inkomen van je partner telt voor 100% mee bij het bepalen van de leencapaciteit.", "Your partner's income counts in full when determining your borrowing capacity.")}
                             />
                             {hasPartner ? (
                                 <div className="border-l-2 border-brand/30 pl-4">
@@ -844,7 +845,7 @@ export function MortgageCalculator() {
                                         icon={Briefcase}
                                         checked={partnerIsZzp}
                                         onChange={setPartnerIsZzp}
-                                        label="Is je partner zelfstandig ondernemer (ZZP)?"
+                                        label={l("Is je partner zelfstandig ondernemer (ZZP)?", "Is your partner self-employed?")}
                                     />
                                 </div>
                             ) : null}
@@ -852,12 +853,12 @@ export function MortgageCalculator() {
 
                         <Section
                             icon={Banknote}
-                            title="Inkomen"
-                            subtitle="Vul hieronder je inkomen in. Je kunt kiezen tussen bruto per jaar, bruto per maand of netto per maand; we rekenen alles om naar een bruto jaarinkomen."
+                            title={l("Inkomen", "Income")}
+                            subtitle={l("Vul hieronder je inkomen in. Je kunt kiezen tussen bruto per jaar, bruto per maand of netto per maand; we rekenen alles om naar een bruto jaarinkomen.", "Enter your income below. Choose gross yearly, gross monthly or net monthly income; we convert it to gross annual income.")}
                         >
                             <div>
                                 <p className="text-sm font-semibold text-brand">
-                                    Jij{applicantIsZzp ? " (ZZP)" : ""}
+                                    {l("Jij", "You")}{applicantIsZzp ? l(" (ZZP)", " (self-employed)") : ""}
                                 </p>
                                 <div className="mt-3">
                                     <IncomeFields
@@ -871,7 +872,7 @@ export function MortgageCalculator() {
                             {hasPartner ? (
                                 <div className="border-t border-line pt-4">
                                     <p className="text-sm font-semibold text-brand">
-                                        Partner{partnerIsZzp ? " (ZZP)" : ""}
+                                        {l("Partner", "Partner")}{partnerIsZzp ? l(" (ZZP)", " (self-employed)") : ""}
                                     </p>
                                     <div className="mt-3">
                                         <IncomeFields
@@ -887,12 +888,12 @@ export function MortgageCalculator() {
 
                         <Section
                             icon={Leaf}
-                            title="Woning & energielabel"
-                            subtitle="Een energiezuinige woning (label A+ of beter) geeft recht op extra leenruimte, omdat je energielasten lager zijn."
+                            title={l("Woning & energielabel", "Home & energy label")}
+                            subtitle={l("Een energiezuinige woning (label A+ of beter) geeft recht op extra leenruimte, omdat je energielasten lager zijn.", "An energy-efficient home (label A+ or better) provides extra borrowing capacity because energy costs are lower.")}
                         >
                             <div>
                                 <p className="text-sm font-semibold">
-                                    Energielabel van de woning
+                                    {l("Energielabel van de woning", "Home energy label")}
                                 </p>
                                 <div className="mt-2.5 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
                                     {ENERGY_LABELS.map((label) => (
@@ -918,37 +919,37 @@ export function MortgageCalculator() {
                                     energyLabel === "A_PLUS_PLUS_PLUS" ||
                                     energyLabel === "A_PLUS_PLUS_PLUS_PLUS" ||
                                     energyLabel === "A_PLUS_PLUS_PLUS_PLUS_PLUS"
-                                        ? "Deze woning geeft extra leenruimte voor verduurzaming."
-                                        : "Dit label geeft geen extra leenruimte. Het label telt wel mee bij je energielasten."}
+                                        ? l("Deze woning geeft extra leenruimte voor verduurzaming.", "This home provides extra borrowing capacity for sustainability improvements.")
+                                        : l("Dit label geeft geen extra leenruimte. Het label telt wel mee bij je energielasten.", "This label does not provide extra borrowing capacity, but it is included in the estimated energy costs.")}
                                 </p>
                             </div>
                             <NumberField
                                 id="property-value"
-                                label="Woningwaarde / koopsom (optioneel)"
+                                label={l("Woningwaarde / koopsom (optioneel)", "Property value / purchase price (optional)")}
                                 value={propertyValue}
                                 onChange={setPropertyValue}
-                                placeholder="Bijv. 400000"
-                                helper="Vul je de koopsom in, dan vergelijken we je maximale hypotheek met de woning en checken we of NHG mogelijk is."
+                                placeholder={l("Bijv. 400000", "E.g. 400000")}
+                                helper={l("Vul je de koopsom in, dan vergelijken we je maximale hypotheek met de woning en checken we of NHG mogelijk is.", "Enter the purchase price to compare your maximum mortgage with the property and check whether NHG may be available.")}
                             />
                         </Section>
 
                         <Section
                             icon={Scale}
-                            title="Leningen & verplichtingen"
-                            subtitle="Studieschuld, partneralimentatie en andere leningen verlagen je maximale hypotheek, omdat ze beslag leggen op je maandbudget."
+                            title={l("Leningen & verplichtingen", "Loans & commitments")}
+                            subtitle={l("Studieschuld, partneralimentatie en andere leningen verlagen je maximale hypotheek, omdat ze beslag leggen op je maandbudget.", "Student debt, partner maintenance and other loans reduce your maximum mortgage because they use part of your monthly budget.")}
                         >
                             <div>
                                 <NumberField
                                     id="student-outstanding"
-                                    label="Studieschuld (totaal nog openstaand)"
+                                    label={l("Studieschuld (totaal nog openstaand)", "Student debt (total outstanding)")}
                                     value={studentOutstanding}
                                     onChange={setStudentOutstanding}
-                                    placeholder="Bijv. 20000"
-                                    helper="Ook een studieschuld telt mee, ook al staat die niet bij het BKR."
+                                    placeholder={l("Bijv. 20000", "E.g. 20000")}
+                                    helper={l("Ook een studieschuld telt mee, ook al staat die niet bij het BKR.", "Student debt is included even when it is not registered with the Dutch credit bureau (BKR).")}
                                 />
                                 <div className="mt-4 grid gap-4 sm:grid-cols-2">
                                     <Field
-                                        label="Berekening maandlast"
+                                        label={l("Berekening maandlast", "Monthly payment calculation")}
                                         htmlFor="student-method"
                                     >
                                         <select
@@ -963,15 +964,15 @@ export function MortgageCalculator() {
                                             className="input mt-1.5"
                                         >
                                             <option value="divide">
-                                                Schuld / resterende looptijd
+                                                {l("Schuld / resterende looptijd", "Debt / remaining term")}
                                             </option>
                                             <option value="nibud">
-                                                Nibud-wegingsfactor
+                                                {l("Nibud-wegingsfactor", "Nibud weighting factor")}
                                             </option>
                                         </select>
                                     </Field>
                                     <Field
-                                        label="Stelsel"
+                                        label={l("Stelsel", "Repayment scheme")}
                                         htmlFor="student-scheme"
                                     >
                                         <select
@@ -986,10 +987,10 @@ export function MortgageCalculator() {
                                             className="input mt-1.5"
                                         >
                                             <option value="old">
-                                                Oud stelsel (15 jaar)
+                                                {l("Oud stelsel (15 jaar)", "Old scheme (15 years)")}
                                             </option>
                                             <option value="new">
-                                                Nieuw stelsel (35 jaar)
+                                                {l("Nieuw stelsel (35 jaar)", "New scheme (35 years)")}
                                             </option>
                                         </select>
                                     </Field>
@@ -998,59 +999,59 @@ export function MortgageCalculator() {
                                     <div className="mt-4">
                                         <NumberField
                                             id="student-repayment-years"
-                                            label="Resterende aflosperiode"
+                                            label={l("Resterende aflosperiode", "Remaining repayment period")}
                                             value={repaymentYears}
                                             onChange={setRepaymentYears}
-                                            suffix="jaar"
-                                            helper="De studieschuld wordt gedeeld door de resterende looptijd voor de maandlast."
+                                            suffix={l("jaar", "years")}
+                                            helper={l("De studieschuld wordt gedeeld door de resterende looptijd voor de maandlast.", "The student debt is divided by the remaining term to estimate the monthly payment.")}
                                         />
                                     </div>
                                 ) : null}
                                 <p className="mt-3 text-xs leading-5 text-muted">
                                     {studentMethod === "divide"
-                                        ? "Maandlast = totale schuld ÷ (resterende jaren × 12). Dit is een eenvoudige, transparante benadering."
-                                        : "Maandlast = schuld × wegingsfactor: 0,75% per maand (oud stelsel) of 0,45% per maand (nieuw stelsel). Dit is de officiële Nibud-methode."}
+                                        ? l("Maandlast = totale schuld ÷ (resterende jaren × 12). Dit is een eenvoudige, transparante benadering.", "Monthly payment = total debt ÷ (remaining years × 12). This is a simple, transparent estimate.")
+                                        : l("Maandlast = schuld × wegingsfactor: 0,75% per maand (oud stelsel) of 0,45% per maand (nieuw stelsel). Dit is de officiële Nibud-methode.", "Monthly payment = debt × weighting factor: 0.75% per month (old scheme) or 0.45% per month (new scheme). This is the official Nibud method.")}
                                 </p>
                             </div>
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <NumberField
                                     id="alimony"
-                                    label="Partneralimentatie"
+                                    label={l("Partneralimentatie", "Partner maintenance")}
                                     value={alimonyMonthly}
                                     onChange={setAlimonyMonthly}
-                                    suffix="per maand"
-                                    helper="Kinderalimentatie telt niet mee voor de hypotheek."
+                                    suffix={l("per maand", "per month")}
+                                    helper={l("Kinderalimentatie telt niet mee voor de hypotheek.", "Child maintenance is not included in the mortgage calculation.")}
                                 />
                                 <NumberField
                                     id="other-loans"
-                                    label="Overige leningen"
+                                    label={l("Overige leningen", "Other loans")}
                                     value={otherLoansMonthly}
                                     onChange={setOtherLoansMonthly}
-                                    suffix="per maand"
-                                    helper="Persoonlijke lening, autolening of doorlopend krediet (totale maandlast)."
+                                    suffix={l("per maand", "per month")}
+                                    helper={l("Persoonlijke lening, autolening of doorlopend krediet (totale maandlast).", "Personal loan, car loan or revolving credit (total monthly payment).")}
                                 />
                             </div>
                         </Section>
 
                         <Section
                             icon={Landmark}
-                            title="Hypotheekrente vergelijken"
-                            subtitle="Je hypotheek loopt 30 jaar (annuïtair). Je kiest alleen hoe lang de rente vaststaat; daarvoor vergelijken we indicatief het aanbod van hypotheekaanbieders."
+                            title={l("Hypotheekrente vergelijken", "Compare mortgage rates")}
+                            subtitle={l("Je hypotheek loopt 30 jaar (annuïtair). Je kiest alleen hoe lang de rente vaststaat; daarvoor vergelijken we indicatief het aanbod van hypotheekaanbieders.", "Your annuity mortgage runs for 30 years. Choose the fixed-rate period and we will show an indicative comparison of mortgage providers.")}
                         >
                             <Toggle
                                 checked={nhg}
                                 onChange={selectNhg}
-                                label="Ik kom in aanmerking voor NHG"
+                                label={l("Ik kom in aanmerking voor NHG", "I qualify for NHG")}
                                 helper={
                                     propertyValueNumber != null &&
                                     propertyValueNumber > NHG_LIMIT_2026
-                                        ? `Let op: een woning van ${money(propertyValueNumber)} ligt boven de NHG-kostengrens van ${money(NHG_LIMIT_2026)} (2026).`
-                                        : `NHG is mogelijk tot een woningwaarde van ${money(NHG_LIMIT_2026)} (2026) en geeft meestal een lagere rente.`
+                                        ? l(`Let op: een woning van ${money(propertyValueNumber)} ligt boven de NHG-kostengrens van ${money(NHG_LIMIT_2026)} (2026).`, `Note: a property worth ${money(propertyValueNumber)} is above the NHG cost limit of ${money(NHG_LIMIT_2026)} (2026).`)
+                                        : l(`NHG is mogelijk tot een woningwaarde van ${money(NHG_LIMIT_2026)} (2026) en geeft meestal een lagere rente.`, `NHG may be available for property values up to ${money(NHG_LIMIT_2026)} (2026) and usually gives a lower interest rate.`)
                                 }
                             />
                             <div>
                                 <p className="text-sm font-semibold">
-                                    Rentevaste periode
+                                    {l("Rentevaste periode", "Fixed-rate period")}
                                 </p>
                                 <div className="mt-1.5 grid grid-cols-5 gap-1 rounded-lg border border-line bg-background p-1">
                                     {FIXED_TERMS.map((years) => (
@@ -1062,15 +1063,15 @@ export function MortgageCalculator() {
                                             }
                                             className={`h-10 rounded-md text-sm font-semibold transition ${fixedYears === years ? "bg-brand text-white" : "text-muted hover:bg-surface"}`}
                                         >
-                                            {years} jr
+                                            {years} {l("jr", "yrs")}
                                         </button>
                                     ))}
                                 </div>
                             </div>
                             <div>
                                 <p className="text-sm font-semibold">
-                                    Beste aanbieders ({nhg ? "met" : "zonder"}{" "}
-                                    NHG, {fixedYears} jaar vast)
+                                    {l("Beste aanbieders", "Best providers")} ({nhg ? l("met", "with") : l("zonder", "without")}{" "}
+                                    NHG, {fixedYears} {l("jaar vast", "years fixed")})
                                 </p>
                                 <ul className="mt-2 grid gap-2">
                                     {offers.map((offer, index) => {
@@ -1104,7 +1105,7 @@ export function MortgageCalculator() {
                                                                 {
                                                                     offer.fixedYears
                                                                 }{" "}
-                                                                jaar rentevast
+                                                                {l("jaar rentevast", "year fixed rate")}
                                                             </span>
                                                         </span>
                                                     </span>
@@ -1117,7 +1118,7 @@ export function MortgageCalculator() {
                                                         </span>
                                                         {index === 0 ? (
                                                             <span className="text-[10px] font-semibold uppercase tracking-wider text-brand">
-                                                                Beste deal
+                                                                {l("Beste deal", "Best deal")}
                                                             </span>
                                                         ) : null}
                                                     </span>
@@ -1129,25 +1130,21 @@ export function MortgageCalculator() {
                             </div>
                             <details>
                                 <summary className="cursor-pointer text-sm font-semibold text-brand">
-                                    Of vul zelf een toetsrente in
+                                    {l("Of vul zelf een toetsrente in", "Or enter an assessment rate yourself")}
                                 </summary>
                                 <div className="mt-3">
                                     <NumberField
                                         id="mortgage-rate"
-                                        label="Hypotheekrente / toetsrente"
+                                        label={l("Hypotheekrente / toetsrente", "Mortgage / assessment rate")}
                                         value={mortgageRate}
                                         onChange={setMortgageRate}
                                         suffix="%"
-                                        helper="Gebruik de actuele toetsrente van je aanbieder."
+                                        helper={l("Gebruik de actuele toetsrente van je aanbieder.", "Use your provider's current assessment rate.")}
                                     />
                                 </div>
                             </details>
                             <InfoBox>
-                                Indicatief aanbod, peildatum{" "}
-                                {MORTGAGE_RATES_DATE}. Rentes veranderen
-                                dagelijks — controleer de actuele rente bij de
-                                aanbieder of via een onafhankelijke
-                                vergelijkingssite.
+                                {l("Indicatief aanbod, peildatum", "Indicative offers as at")} {MORTGAGE_RATES_DATE}. {l("Rentes veranderen dagelijks — controleer de actuele rente bij de aanbieder of via een onafhankelijke vergelijkingssite.", "Rates change daily—check the current rate with the provider or an independent comparison service.")}
                             </InfoBox>
                         </Section>
                     </div>
@@ -1167,9 +1164,7 @@ export function MortgageCalculator() {
                                 className="mt-0.5 shrink-0 text-brand"
                             />
                             <p className="text-sm leading-6 text-muted">
-                                Gebaseerd op de publieke Nibud-normen voor
-                                verantwoorde hypotheken en de NHG-kostengrens
-                                van 2026.
+                                {l("Gebaseerd op de publieke Nibud-normen voor verantwoorde hypotheken en de NHG-kostengrens van 2026.", "Based on the public Nibud standards for responsible mortgages and the 2026 NHG cost limit.")}
                             </p>
                         </div>
                         <div className="flex items-start gap-3">
@@ -1178,8 +1173,7 @@ export function MortgageCalculator() {
                                 className="mt-0.5 shrink-0 text-brand"
                             />
                             <p className="text-sm leading-6 text-muted">
-                                Energielabel A+ of beter geeft tot € 20.000
-                                extra leenruimte voor een zuinige woning.
+                                {l("Energielabel A+ of beter geeft tot € 20.000 extra leenruimte voor een zuinige woning.", "Energy label A+ or better provides up to €20,000 in extra borrowing capacity for an efficient home.")}
                             </p>
                         </div>
                         <div className="flex items-start gap-3">
@@ -1188,8 +1182,7 @@ export function MortgageCalculator() {
                                 className="mt-0.5 shrink-0 text-brand"
                             />
                             <p className="text-sm leading-6 text-muted">
-                                Studieschuld, alimentatie en leningen verlagen
-                                je maandbudget en daarmee je maximale hypotheek.
+                                {l("Studieschuld, alimentatie en leningen verlagen je maandbudget en daarmee je maximale hypotheek.", "Student debt, maintenance and loans reduce your monthly budget and therefore your maximum mortgage.")}
                             </p>
                         </div>
                     </div>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { isAdminUser } from "@/features/admin/access";
 import {
     Handshake,
     Heart,
@@ -93,6 +94,11 @@ export default async function DashboardLayout({
                         </Link>
                     </nav>
                     <div className="flex items-center gap-3">
+                        {isAdminUser(session.user) && (
+                            <Link href="/dashboard/admin" prefetch={false} className="rounded-full border border-line px-3 py-2 text-xs font-semibold hover:bg-surface">
+                                Admin
+                            </Link>
+                        )}
                         <ThemeToggle />
                         <span className="hidden items-center gap-2 text-xs text-muted lg:flex">
                             <ShieldCheck size={15} className="text-brand" />{" "}

@@ -26,6 +26,7 @@ import {
     isBiddingClosed,
     StatusBadge,
 } from "@/components/listing/status-badge";
+import { useLanguage } from "@/components/providers/language-provider";
 
 const energyNames: Record<string, string> = {
     A_PLUS_PLUS_PLUS_PLUS_PLUS: "A+++++",
@@ -48,18 +49,19 @@ function listingPriceCents(listing: MarketplaceListing) {
         : listing.priceCents;
 }
 
-function formatMarkerPrice(priceCents: string | null) {
-    if (!priceCents) return "Prijs op aanvraag";
+function formatMarkerPrice(priceCents: string | null, language: "nl" | "en") {
+    if (!priceCents)
+        return language === "en" ? "Price on request" : "Prijs op aanvraag";
     const price = Number(priceCents) / 100;
     if (price >= 1_000_000) {
         return `€${new Intl.NumberFormat("nl-NL", {
             maximumFractionDigits: 1,
-        }).format(price / 1_000_000)} mln`;
+        }).format(price / 1_000_000)} ${language === "en" ? "m" : "mln"}`;
     }
     return `€${Math.round(price / 1_000)}k`;
 }
 
-function erfpachtLabel(listing: MarketplaceListing) {
+function erfpachtLabel(listing: MarketplaceListing, language: "nl" | "en") {
     if (listing.erfpachtType === "LEASEHOLD") {
         if (listing.erfpachtCanonCents) {
             const canon = new Intl.NumberFormat("nl-NL", {
@@ -67,14 +69,17 @@ function erfpachtLabel(listing: MarketplaceListing) {
                 currency: "EUR",
                 maximumFractionDigits: 0,
             }).format(Number(listing.erfpachtCanonCents) / 100);
-            return `Erfpacht · canon ${canon}/jaar`;
+            return language === "en"
+                ? `Leasehold · ground rent ${canon}/year`
+                : `Erfpacht · canon ${canon}/jaar`;
         }
-        return "Erfpacht";
+        return language === "en" ? "Leasehold" : "Erfpacht";
     }
     if (listing.erfpachtType === "LEASEHOLD_AFGEKOCHT") {
-        return "Erfpacht afgekocht";
+        return language === "en" ? "Leasehold bought out" : "Erfpacht afgekocht";
     }
-    if (listing.erfpachtType === "FREEHOLD") return "Volle eigendom";
+    if (listing.erfpachtType === "FREEHOLD")
+        return language === "en" ? "Freehold" : "Volle eigendom";
     return null;
 }
 
@@ -115,6 +120,7 @@ function MapControls({
     onCollapse: () => void;
 }) {
     const map = useMap();
+    const { language } = useLanguage();
 
     function searchCurrentArea() {
         const bounds = map.getBounds();
@@ -135,14 +141,14 @@ function MapControls({
                     className="inline-flex h-10 items-center gap-2 rounded-md border border-white/80 bg-brand px-4 text-sm font-semibold text-white shadow-[0_3px_12px_rgba(16,40,32,0.28)] transition hover:bg-brand-dark"
                 >
                     <Maximize2 size={16} />
-                    Filter op dit gebied
+                    {language === "en" ? "Search this area" : "Filter op dit gebied"}
                 </button>
                 {activeBounds ? (
                     <button
                         type="button"
                         onClick={onClearBounds}
-                        aria-label="Wis kaartgebied"
-                        title="Wis kaartgebied"
+                        aria-label={language === "en" ? "Clear map area" : "Wis kaartgebied"}
+                        title={language === "en" ? "Clear map area" : "Wis kaartgebied"}
                         className="grid size-10 place-items-center rounded-md border border-line bg-surface text-muted shadow-md transition hover:border-brand hover:text-brand"
                     >
                         <X size={17} />
@@ -152,8 +158,8 @@ function MapControls({
             <button
                 type="button"
                 onClick={onCollapse}
-                aria-label="Minimaliseer kaart"
-                title="Minimaliseer kaart"
+                aria-label={language === "en" ? "Collapse map" : "Minimaliseer kaart"}
+                title={language === "en" ? "Collapse map" : "Minimaliseer kaart"}
                 className="pointer-events-auto absolute right-3 hidden size-10 place-items-center rounded-md bg-surface text-brand shadow-lg transition hover:bg-background lg:grid"
             >
                 <PanelRightClose size={19} />
@@ -179,6 +185,7 @@ export function MarketplaceMap({
     onClearBounds: () => void;
     onCollapse: () => void;
 }) {
+    const { language } = useLanguage();
     const mappableListings = useMemo(
         () =>
             listings.filter(
@@ -204,19 +211,20 @@ export function MarketplaceMap({
                 <button
                     type="button"
                     onClick={onCollapse}
-                    aria-label="Minimaliseer kaart"
-                    title="Minimaliseer kaart"
+                    aria-label={language === "en" ? "Collapse map" : "Minimaliseer kaart"}
+                    title={language === "en" ? "Collapse map" : "Minimaliseer kaart"}
                     className="absolute right-3 top-3 hidden size-10 place-items-center rounded-md bg-surface text-brand shadow-lg transition hover:bg-background lg:grid"
                 >
                     <PanelRightClose size={19} />
                 </button>
                 <div>
                     <p className="font-semibold text-foreground">
-                        Geen locaties op de kaart
+                        {language === "en" ? "No locations on the map" : "Geen locaties op de kaart"}
                     </p>
                     <p className="mt-2 max-w-xs text-sm leading-6 text-muted">
-                        De woningen in deze selectie hebben nog geen
-                        kaartcoördinaten.
+                        {language === "en"
+                            ? "The homes in this selection do not have map coordinates yet."
+                            : "De woningen in deze selectie hebben nog geen kaartcoördinaten."}
                     </p>
                 </div>
             </div>
@@ -257,7 +265,7 @@ export function MarketplaceMap({
                         position={[listing.latitude!, listing.longitude!]}
                         icon={divIcon({
                             className: "marketplace-marker-shell",
-                            html: `<span class="marketplace-marker${selected ? " is-selected" : ""}">${formatMarkerPrice(listingPriceCents(listing))}</span>`,
+                            html: `<span class="marketplace-marker${selected ? " is-selected" : ""}">${formatMarkerPrice(listingPriceCents(listing), language)}</span>`,
                             iconAnchor: [42, 18],
                             popupAnchor: [0, -18],
                         })}
@@ -298,7 +306,7 @@ export function MarketplaceMap({
                                 />
                                 {listing.isMonument ? (
                                     <span className="inline-flex items-center gap-1.5 rounded-sm bg-background px-2 py-1 text-xs font-semibold text-brand">
-                                        <Landmark size={13} /> Monument
+                                        <Landmark size={13} /> {language === "en" ? "Listed monument" : "Monument"}
                                     </span>
                                 ) : null}
                             </div>
@@ -306,13 +314,15 @@ export function MarketplaceMap({
                                 {listing.postcode} {listing.city}
                             </p>
                             <p className="mt-2 font-semibold text-brand">
-                                {formatMarkerPrice(listingPriceCents(listing))}
-                                {listing.purpose === "RENT" ? " / mnd" : ""}
+                                {formatMarkerPrice(listingPriceCents(listing), language)}
+                                {listing.purpose === "RENT"
+                                    ? language === "en" ? " / month" : " / mnd"
+                                    : ""}
                             </p>
-                            {erfpachtLabel(listing) ? (
+                            {erfpachtLabel(listing, language) ? (
                                 <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-muted">
                                     <Landmark size={13} className="text-brand" />
-                                    {erfpachtLabel(listing)}
+                                    {erfpachtLabel(listing, language)}
                                 </p>
                             ) : null}
                             <div className="mt-3 flex items-center gap-3 border-t border-line pt-3 text-sm text-muted">
@@ -322,7 +332,7 @@ export function MarketplaceMap({
                                 </span>
                                 <span className="inline-flex items-center gap-1">
                                     <DoorOpen size={15} />
-                                    {listing.roomCount ?? "—"} kamers
+                                    {listing.roomCount ?? "—"} {language === "en" ? "rooms" : "kamers"}
                                 </span>
                                 {listing.energyLabel ? (
                                     <span className="ml-auto rounded-sm bg-[#dff4d8] px-2 py-0.5 text-xs font-bold text-[#1f6b2b] dark:bg-emerald-500/15 dark:text-emerald-300">

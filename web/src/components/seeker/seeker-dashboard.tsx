@@ -30,6 +30,7 @@ import {
     X,
 } from "lucide-react";
 import { ListingMessageThread } from "@/components/messages/listing-message-thread";
+import { useLanguage } from "@/components/providers/language-provider";
 
 type Listing = {
     id: string;
@@ -175,6 +176,36 @@ const statusNames: Record<string, string> = {
     CANCELLED: "Geannuleerd",
 };
 
+const englishTabLabels: Record<Tab, string> = {
+    overview: "Overview",
+    favorites: "Favorites",
+    searches: "Saved searches",
+    viewings: "Viewings",
+    bids: "Bids",
+    messages: "Messages",
+    transactions: "Transactions",
+    notifications: "Notifications",
+};
+const englishStatusNames: Record<string, string> = {
+    LIVE: "Available",
+    UNDER_OFFER: "Under offer",
+    SOLD: "Sold",
+    RENTED: "Rented",
+    SCHEDULED: "Scheduled",
+    CONFIRMED: "Attended",
+    NO_SHOW: "Did not attend",
+    SUBMITTED: "Submitted",
+    ACCEPTED: "Accepted",
+    REJECTED: "Rejected",
+    WITHDRAWN: "Withdrawn",
+    ACTIVE: "Active",
+    CONTRACT_PENDING: "Preparing contract",
+    CONDITIONS_PENDING: "Finalising conditions",
+    READY_FOR_TRANSFER: "Ready for transfer",
+    COMPLETED: "Completed",
+    CANCELLED: "Cancelled",
+};
+
 async function api<T>(url: string, init?: RequestInit): Promise<T> {
     const response = await fetch(url, init);
     const payload = await response.json().catch(() => ({}));
@@ -188,6 +219,8 @@ export function SeekerDashboard({
 }: {
     initialData: DashboardData;
 }) {
+    const { language } = useLanguage();
+    const isEn = language === "en";
     const params = useSearchParams();
     const initialTab = params.get("tab") as Tab | null;
     const [tab, setTab] = useState<Tab>(
@@ -245,13 +278,13 @@ export function SeekerDashboard({
             <header className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
                 <div>
                     <p className="text-sm font-semibold uppercase tracking-[0.16em] text-brand">
-                        Persoonlijk zoekersdashboard
+                        {isEn ? "Personal home seeker dashboard" : "Persoonlijk zoekersdashboard"}
                     </p>
                     <h1 className="mt-2 text-3xl font-semibold sm:text-4xl">
-                        Mijn zoektocht
+                        {isEn ? "My search" : "Mijn zoektocht"}
                     </h1>
                     <p className="mt-3 text-muted">
-                        Je woningen, afspraken en acties op één plek.
+                        {isEn ? "Your homes, appointments and actions in one place." : "Je woningen, afspraken en acties op één plek."}
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
@@ -259,19 +292,19 @@ export function SeekerDashboard({
                         href="/mortgage-calculator"
                         className="inline-flex h-12 items-center justify-center gap-2 border border-brand px-5 font-semibold text-brand transition hover:bg-brand hover:text-white"
                     >
-                        <Calculator size={18} /> Maximale hypotheek
+                        <Calculator size={18} /> {isEn ? "Maximum mortgage" : "Maximale hypotheek"}
                     </Link>
                     <Link
                         href="/search"
                         className="inline-flex h-12 items-center justify-center gap-2 bg-brand px-6 font-semibold text-white"
                     >
-                        <Search size={18} /> Zoek woningen
+                        <Search size={18} /> {isEn ? "Search homes" : "Zoek woningen"}
                     </Link>
                 </div>
             </header>
             <nav
                 className="mt-7 flex gap-1 overflow-x-auto border-b border-line"
-                aria-label="Zoekersdashboard"
+                aria-label={isEn ? "Home seeker dashboard" : "Zoekersdashboard"}
             >
                 <>
                     {tabs.map(([id, label, Icon]) => (
@@ -280,7 +313,7 @@ export function SeekerDashboard({
                             onClick={() => setTab(id)}
                             className={`relative inline-flex shrink-0 items-center gap-2 border-b-2 px-3 py-3 text-sm font-semibold ${tab === id ? "border-brand text-brand" : "border-transparent text-muted"}`}
                         >
-                            <Icon size={16} /> {label}
+                            <Icon size={16} /> {isEn ? englishTabLabels[id] : label}
                             {id === "notifications" && unread > 0 && (
                                 <span className="grid min-w-5 place-items-center rounded-full bg-brand px-1 text-[10px] text-white">
                                     {unread}
@@ -356,6 +389,9 @@ function Overview({
     data: DashboardData;
     selectTab: (tab: Tab) => void;
 }) {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+    const locale = isEn ? "en-NL" : "nl-NL";
     const nextViewing = data.viewings
         .filter((item) => new Date(item.slot.startsAt) > new Date())
         .sort((a, b) => a.slot.startsAt.localeCompare(b.slot.startsAt))[0];
@@ -383,10 +419,10 @@ function Overview({
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="text-xs font-semibold uppercase tracking-wider text-brand">
-                            Volgende acties
+                            {isEn ? "Next actions" : "Volgende acties"}
                         </p>
                         <h2 className="mt-1 text-xl font-semibold">
-                            Wat vraagt je aandacht?
+                            {isEn ? "What needs your attention?" : "Wat vraagt je aandacht?"}
                         </h2>
                     </div>
                     <BellRing className="text-brand" size={26} />
@@ -395,24 +431,24 @@ function Overview({
                     {nextViewing && (
                         <Action
                             icon={CalendarDays}
-                            title="Aankomende bezichtiging"
-                            text={`${nextViewing.listing.street} ${nextViewing.listing.houseNumber} · ${new Date(nextViewing.slot.startsAt).toLocaleString("nl-NL", { dateStyle: "medium", timeStyle: "short" })}`}
+                            title={isEn ? "Upcoming viewing" : "Aankomende bezichtiging"}
+                            text={`${nextViewing.listing.street} ${nextViewing.listing.houseNumber} · ${new Date(nextViewing.slot.startsAt).toLocaleString(locale, { dateStyle: "medium", timeStyle: "short" })}`}
                             onClick={() => selectTab("viewings")}
                         />
                     )}
                     {activeTransaction && (
                         <Action
                             icon={FileText}
-                            title="Actieve transactie"
-                            text={`${activeTransaction.listing.street} ${activeTransaction.listing.houseNumber} · ${statusNames[activeTransaction.status]}`}
+                            title={isEn ? "Active transaction" : "Actieve transactie"}
+                            text={`${activeTransaction.listing.street} ${activeTransaction.listing.houseNumber} · ${(isEn ? englishStatusNames : statusNames)[activeTransaction.status]}`}
                             href={`/dashboard/transactions/${activeTransaction.id}`}
                         />
                     )}
                     {deadlines[0] && (
                         <Action
                             icon={Clock3}
-                            title="Eerstvolgende deadline"
-                            text={`${deadlines[0].title} · ${new Date(deadlines[0].dueAt!).toLocaleDateString("nl-NL")}`}
+                            title={isEn ? "Next deadline" : "Eerstvolgende deadline"}
+                            text={`${deadlines[0].title} · ${new Date(deadlines[0].dueAt!).toLocaleDateString(locale)}`}
                             href={`/dashboard/transactions/${deadlines[0].transactionId}`}
                         />
                     )}
@@ -420,7 +456,7 @@ function Overview({
                         !activeTransaction &&
                         !deadlines.length && (
                             <div className="bg-background p-5 text-sm text-muted">
-                                Er staan geen urgente acties open.
+                                {isEn ? "There are no urgent actions." : "Er staan geen urgente acties open."}
                             </div>
                         )}
                 </div>
@@ -428,33 +464,33 @@ function Overview({
             <section className="grid grid-cols-2 gap-px overflow-hidden border border-line bg-line">
                 <Metric
                     value={data.favorites.length}
-                    label="Favorieten"
+                    label={isEn ? "Favorites" : "Favorieten"}
                     onClick={() => selectTab("favorites")}
                 />
                 <Metric
                     value={data.searches.length}
-                    label="Zoekopdrachten"
+                    label={isEn ? "Saved searches" : "Zoekopdrachten"}
                     onClick={() => selectTab("searches")}
                 />
                 <Metric
                     value={data.viewings.length}
-                    label="Bezichtigingen"
+                    label={isEn ? "Viewings" : "Bezichtigingen"}
                     onClick={() => selectTab("viewings")}
                 />
                 <Metric
                     value={data.bids.length}
-                    label="Biedingen"
+                    label={isEn ? "Bids" : "Biedingen"}
                     onClick={() => selectTab("bids")}
                 />
             </section>
             <section className="border border-line bg-surface p-6 lg:col-span-2">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold">Recent bewaard</h2>
+                    <h2 className="text-xl font-semibold">{isEn ? "Recently saved" : "Recent bewaard"}</h2>
                     <button
                         onClick={() => selectTab("favorites")}
                         className="text-sm font-semibold text-brand"
                     >
-                        Alle favorieten
+                        {isEn ? "All favorites" : "Alle favorieten"}
                     </button>
                 </div>
                 <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -468,8 +504,8 @@ function Overview({
                     {!data.favorites.length && (
                         <Empty
                             icon={Heart}
-                            title="Nog geen favorieten"
-                            text="Bewaar woningen vanuit de zoekresultaten om ze hier terug te vinden."
+                            title={isEn ? "No favorites yet" : "Nog geen favorieten"}
+                            text={isEn ? "Save homes from the search results to find them here." : "Bewaar woningen vanuit de zoekresultaten om ze hier terug te vinden."}
                             href="/search"
                         />
                     )}
@@ -917,15 +953,18 @@ function describeSearch(query: string) {
 }
 
 function Viewings({ items }: { items: Viewing[] }) {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+    const locale = isEn ? "en-NL" : "nl-NL";
     return (
         <ListSection
-            title="Bezichtigingen"
-            text="Je afspraken en bevestigde aanwezigheid."
+            title={isEn ? "Viewings" : "Bezichtigingen"}
+            text={isEn ? "Your appointments and confirmed attendance." : "Je afspraken en bevestigde aanwezigheid."}
             empty={
                 <Empty
                     icon={CalendarDays}
-                    title="Geen bezichtigingen"
-                    text="Open een woning en kies een beschikbaar tijdslot."
+                    title={isEn ? "No viewings" : "Geen bezichtigingen"}
+                    text={isEn ? "Open a home and choose an available time slot." : "Open een woning en kies een beschikbaar tijdslot."}
                     href="/search"
                 />
             }
@@ -940,7 +979,7 @@ function Viewings({ items }: { items: Viewing[] }) {
                         <ListingHeading listing={item.listing} />
                         <p className="mt-2 text-sm text-muted">
                             {new Date(item.slot.startsAt).toLocaleString(
-                                "nl-NL",
+                                    locale,
                                 { dateStyle: "full", timeStyle: "short" },
                             )}{" "}
                             -{" "}
@@ -959,7 +998,7 @@ function Viewings({ items }: { items: Viewing[] }) {
                         }
                         className="inline-flex h-10 items-center justify-center border border-line px-3 text-sm font-semibold text-brand"
                     >
-                        Woning
+                        {isEn ? "Home" : "Woning"}
                     </Link>
                 </div>
             ))}
@@ -967,15 +1006,18 @@ function Viewings({ items }: { items: Viewing[] }) {
     );
 }
 function Bids({ items }: { items: Bid[] }) {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+    const locale = isEn ? "en-NL" : "nl-NL";
     return (
         <ListSection
-            title="Mijn biedingen"
-            text="Bedrag, voorwaarden en de actuele beslissing per woning."
+            title={isEn ? "My bids" : "Mijn biedingen"}
+            text={isEn ? "Amount, conditions and the current decision for each home." : "Bedrag, voorwaarden en de actuele beslissing per woning."}
             empty={
                 <Empty
                     icon={Euro}
-                    title="Nog geen biedingen"
-                    text="Na een bevestigde bezichtiging kun je tijdens de biedperiode een bod vastleggen."
+                    title={isEn ? "No bids yet" : "Nog geen biedingen"}
+                    text={isEn ? "After a confirmed viewing, you can place a bid during the bidding period." : "Na een bevestigde bezichtiging kun je tijdens de biedperiode een bod vastleggen."}
                     href="/search"
                 />
             }
@@ -994,9 +1036,9 @@ function Bids({ items }: { items: Bid[] }) {
                                     {money(bid.amountCents)}
                                 </p>
                                 <p className="mt-1 text-xs text-muted">
-                                    Ingediend{" "}
+                                    {isEn ? "Submitted" : "Ingediend"}{" "}
                                     {new Date(bid.submittedAt).toLocaleString(
-                                        "nl-NL",
+                                        locale,
                                     )}
                                 </p>
                             </div>
@@ -1006,7 +1048,7 @@ function Bids({ items }: { items: Bid[] }) {
                                     href={`/dashboard/transactions/${bid.transaction.id}`}
                                     className="inline-flex h-10 items-center justify-center gap-1 bg-brand px-4 text-sm font-semibold text-white"
                                 >
-                                    Transactieruimte <ChevronRight size={14} />
+                                    {isEn ? "Transaction room" : "Transactieruimte"} <ChevronRight size={14} />
                                 </Link>
                             ) : (
                                 <Link
@@ -1017,16 +1059,16 @@ function Bids({ items }: { items: Bid[] }) {
                                     }
                                     className="inline-flex h-10 items-center justify-center border border-line px-4 text-sm font-semibold text-brand"
                                 >
-                                    Woning
+                                    {isEn ? "Home" : "Woning"}
                                 </Link>
                             )}
                         </div>
                         {bid.financingDeadline && (
                             <p className="mt-4 border-t border-line pt-3 text-xs text-muted">
-                                Financieringsdeadline:{" "}
+                                {isEn ? "Financing deadline:" : "Financieringsdeadline:"}{" "}
                                 {new Date(
                                     bid.financingDeadline,
-                                ).toLocaleDateString("nl-NL")}
+                                ).toLocaleDateString(locale)}
                             </p>
                         )}
                     </div>
@@ -1042,6 +1084,9 @@ function Messages({
     data: DashboardData;
     refresh: () => void;
 }) {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+    const locale = isEn ? "en-NL" : "nl-NL";
     const [openListingId, setOpenListingId] = useState<string | null>(null);
     if (openListingId) {
         return (
@@ -1056,13 +1101,13 @@ function Messages({
     }
     return (
         <ListSection
-            title="Berichten"
-            text="Jouw gesprekken met verkopers, rechtstreeks binnen het platform."
+            title={isEn ? "Messages" : "Berichten"}
+            text={isEn ? "Your conversations with sellers, directly within the platform." : "Jouw gesprekken met verkopers, rechtstreeks binnen het platform."}
             empty={
                 <Empty
                     icon={MessageSquare}
-                    title="Nog geen berichten"
-                    text="Open een woning en stuur een bericht aan de verkoper."
+                    title={isEn ? "No messages yet" : "Nog geen berichten"}
+                    text={isEn ? "Open a home and send the seller a message." : "Open een woning en stuur een bericht aan de verkoper."}
                     href="/search"
                 />
             }
@@ -1077,10 +1122,9 @@ function Messages({
                     <div className="flex-1">
                         <ListingHeading listing={thread.listing} />
                         <p className="mt-2 text-xs text-muted">
-                            {thread.messageCount} bericht
-                            {thread.messageCount === 1 ? "" : "en"} · laatste op{" "}
+                            {thread.messageCount} {isEn ? (thread.messageCount === 1 ? "message" : "messages") : `bericht${thread.messageCount === 1 ? "" : "en"}`} · {isEn ? "last on" : "laatste op"}{" "}
                             {new Date(thread.lastMessageAt).toLocaleString(
-                                "nl-NL",
+                                locale,
                                 { dateStyle: "medium", timeStyle: "short" },
                             )}
                         </p>
@@ -1092,7 +1136,7 @@ function Messages({
                     ) : null}
                     {thread.transaction && thread.hasTransferred ? (
                         <span className="inline-flex shrink-0 items-center gap-1 rounded-md bg-accent px-2 py-1 text-[11px] font-semibold text-brand-dark">
-                            <ShieldCheck size={12} /> Verplaatst naar transactie
+                            <ShieldCheck size={12} /> {isEn ? "Moved to transaction" : "Verplaatst naar transactie"}
                         </span>
                     ) : null}
                     <ChevronRight
@@ -1106,15 +1150,17 @@ function Messages({
 }
 
 function Transactions({ items }: { items: Transaction[] }) {
+    const { language } = useLanguage();
+    const isEn = language === "en";
     return (
         <ListSection
-            title="Aankoop- en huurtransacties"
-            text="Openstaande acties na een geaccepteerd bod."
+            title={isEn ? "Purchase and rental transactions" : "Aankoop- en huurtransacties"}
+            text={isEn ? "Outstanding actions after an accepted bid." : "Openstaande acties na een geaccepteerd bod."}
             empty={
                 <Empty
                     icon={FileText}
-                    title="Geen transacties"
-                    text="Na acceptatie van een bod verschijnt hier automatisch je beveiligde transactieruimte."
+                    title={isEn ? "No transactions" : "Geen transacties"}
+                    text={isEn ? "After a bid is accepted, your secure transaction room will appear here automatically." : "Na acceptatie van een bod verschijnt hier automatisch je beveiligde transactieruimte."}
                 />
             }
         >
@@ -1141,8 +1187,8 @@ function Transactions({ items }: { items: Transaction[] }) {
                             </div>
                             <p className="mt-2 text-xs text-muted">
                                 {transaction.milestones.length
-                                    ? `${done} van ${transaction.milestones.length} stappen afgerond`
-                                    : "Stappen worden voorbereid"}
+                                    ? isEn ? `${done} of ${transaction.milestones.length} steps completed` : `${done} van ${transaction.milestones.length} stappen afgerond`
+                                    : isEn ? "Steps are being prepared" : "Stappen worden voorbereid"}
                             </p>
                         </div>
                         <Status value={transaction.status} />
@@ -1164,6 +1210,9 @@ function Notifications({
     data: DashboardData;
     refresh: () => Promise<unknown>;
 }) {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+    const locale = isEn ? "en-NL" : "nl-NL";
     const read = useMutation({
         mutationFn: (notificationId?: string) =>
             api("/api/seeker/notifications", {
@@ -1189,9 +1238,9 @@ function Notifications({
             <section>
                 <div className="flex items-end justify-between gap-4">
                     <div>
-                        <h2 className="text-2xl font-semibold">Meldingen</h2>
+                        <h2 className="text-2xl font-semibold">{isEn ? "Notifications" : "Meldingen"}</h2>
                         <p className="mt-1 text-sm text-muted">
-                            Nieuwe woningen, wijzigingen en deadlines.
+                            {isEn ? "New homes, changes and deadlines." : "Nieuwe woningen, wijzigingen en deadlines."}
                         </p>
                     </div>
                     {data.notifications.some((item) => !item.readAt) && (
@@ -1199,7 +1248,7 @@ function Notifications({
                             onClick={() => read.mutate(undefined)}
                             className="text-sm font-semibold text-brand"
                         >
-                            Alles gelezen
+                            {isEn ? "Mark all as read" : "Alles gelezen"}
                         </button>
                     )}
                 </div>
@@ -1222,7 +1271,7 @@ function Notifications({
                                     <p className="mt-2 text-[11px] text-muted">
                                         {new Date(
                                             item.createdAt,
-                                        ).toLocaleString("nl-NL")}
+                                        ).toLocaleString(locale)}
                                     </p>
                                 </div>
                                 {item.href && (
@@ -1257,7 +1306,7 @@ function Notifications({
                     })}
                     {!data.notifications.length && (
                         <div className="p-10 text-center text-sm text-muted">
-                            Je hebt nog geen meldingen.
+                            {isEn ? "You do not have any notifications yet." : "Je hebt nog geen meldingen."}
                         </div>
                     )}
                 </div>
@@ -1265,21 +1314,21 @@ function Notifications({
             <section className="h-fit border border-line bg-surface p-5">
                 <div className="flex items-center gap-2">
                     <Settings2 className="text-brand" size={19} />
-                    <h3 className="font-semibold">Meldingsvoorkeuren</h3>
+                    <h3 className="font-semibold">{isEn ? "Notification preferences" : "Meldingsvoorkeuren"}</h3>
                 </div>
                 <p className="mt-2 text-xs leading-5 text-muted">
-                    Kies wat in je persoonlijke inbox verschijnt.
+                    {isEn ? "Choose what appears in your personal inbox." : "Kies wat in je persoonlijke inbox verschijnt."}
                 </p>
                 <div className="mt-5 grid gap-3">
                     {(
                         [
-                            ["newListing", "Nieuw aanbod"],
-                            ["priceChange", "Prijswijzigingen"],
-                            ["statusChange", "Statuswijzigingen"],
-                            ["viewing", "Bezichtigingen"],
-                            ["bid", "Biedingen"],
-                            ["transaction", "Transacties"],
-                            ["deadline", "Deadlines"],
+                            ["newListing", isEn ? "New listings" : "Nieuw aanbod"],
+                            ["priceChange", isEn ? "Price changes" : "Prijswijzigingen"],
+                            ["statusChange", isEn ? "Status changes" : "Statuswijzigingen"],
+                            ["viewing", isEn ? "Viewings" : "Bezichtigingen"],
+                            ["bid", isEn ? "Bids" : "Biedingen"],
+                            ["transaction", isEn ? "Transactions" : "Transacties"],
+                            ["deadline", isEn ? "Deadlines" : "Deadlines"],
                         ] as Array<[keyof Preferences, string]>
                     ).map(([key, label]) => (
                         <label
@@ -1306,7 +1355,7 @@ function Notifications({
                     ))}
                 </div>
                 <label className="mt-5 flex items-center justify-between border-t border-line pt-4 text-sm font-semibold">
-                    <span>In-app meldingen</span>
+                    <span>{isEn ? "In-app notifications" : "In-app meldingen"}</span>
                     <input
                         type="checkbox"
                         checked={data.preferences.inAppEnabled}
@@ -1424,6 +1473,7 @@ function Status({
     value: string;
     compact?: boolean;
 }) {
+    const { language } = useLanguage();
     const positive = [
         "LIVE",
         "CONFIRMED",
@@ -1435,7 +1485,7 @@ function Status({
         <span
             className={`inline-flex shrink-0 items-center ${compact ? "px-2 py-0.5 text-[10px]" : "px-3 py-1.5 text-xs"} font-semibold ${positive ? "bg-green-50 text-green-800 dark:bg-green-500/15 dark:text-green-300" : "bg-background text-muted"}`}
         >
-            {statusNames[value] ?? value}
+            {(language === "en" ? englishStatusNames : statusNames)[value] ?? value}
         </span>
     );
 }

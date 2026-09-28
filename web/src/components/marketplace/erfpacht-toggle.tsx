@@ -1,22 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import { useLanguage } from "@/components/providers/language-provider";
 
 export type ErfpachtFilter = "all" | "leasehold" | "freehold";
 
-const options = [
-    { value: "", label: "Alle woningen", state: "all" },
-    { value: "leasehold", label: "Alleen erfpacht", state: "leasehold" },
-    { value: "freehold", label: "Volle eigendom", state: "freehold" },
-] as const;
-
 export function ErfpachtToggle({ value }: { value: ErfpachtFilter }) {
+    const { language } = useLanguage();
     const [selected, setSelected] = useState<ErfpachtFilter>(value);
+    const options = [
+        { value: "", label: language === "en" ? "All homes" : "Alle woningen", state: "all" },
+        { value: "leasehold", label: language === "en" ? "Leasehold only" : "Alleen erfpacht", state: "leasehold" },
+        { value: "freehold", label: language === "en" ? "Freehold" : "Volle eigendom", state: "freehold" },
+    ] as const;
 
     return (
         <div
             role="radiogroup"
-            aria-label="Erfpacht"
+            aria-label={language === "en" ? "Ground ownership" : "Erfpacht"}
             className="grid grid-cols-3 gap-1 rounded-lg border border-line bg-background p-1"
         >
             {options.map((option) => (

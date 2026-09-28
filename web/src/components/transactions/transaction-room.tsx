@@ -34,6 +34,7 @@ import {
     type Agreement,
 } from "@/components/transactions/koopovereenkomst";
 import { SecurityDeposit } from "@/components/transactions/security-deposit";
+import { useLanguage } from "@/components/providers/language-provider";
 
 type Milestone = {
     id: string;
@@ -197,6 +198,24 @@ const documentNames: Record<string, string> = {
     CADASTRAL: "Kadastrale gegevens",
     OTHER: "Overig",
 };
+const englishTabNames: Record<(typeof tabs)[number][0], string> = {
+    overview: "Progress", passport: "Property passport", contract: "Contract",
+    security: "Security deposit", notary: "Notary", handover: "Handover",
+    documents: "Documents", chat: "Chat",
+};
+const englishStatusNames: Record<string, string> = {
+    ACTIVE: "Active", CONTRACT_PENDING: "Preparing contract",
+    CONDITIONS_PENDING: "Finalising conditions", READY_FOR_TRANSFER: "Ready for transfer",
+    COMPLETED: "Completed", CANCELLED: "Cancelled",
+};
+const englishDocumentNames: Record<string, string> = {
+    CHAT_ATTACHMENT: "Chat attachment", PURCHASE_AGREEMENT: "Purchase agreement",
+    PROPERTY_PASSPORT: "Property passport", FINANCING: "Financing",
+    BUILDING_INSPECTION: "Building inspection", SECURITY_DEPOSIT: "Security deposit",
+    NOTARY: "Notary", FINAL_INSPECTION: "Final inspection", ENERGY_LABEL: "Energy label",
+    FLOOR_PLAN: "Floor plan", VVE: "Owners' association documents",
+    CADASTRAL: "Land registry details", OTHER: "Other",
+};
 
 async function api<T>(url: string, init?: RequestInit): Promise<T> {
     const response = await fetch(url, init);
@@ -213,6 +232,9 @@ export function TransactionRoom({
     initialRoom: Room;
     currentUserId: string;
 }) {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+    const locale = isEn ? "en-NL" : "nl-NL";
     const queryClient = useQueryClient();
     const [tab, setTab] = useState<(typeof tabs)[number][0]>("overview");
     const roomQuery = useQuery({
@@ -230,7 +252,9 @@ export function TransactionRoom({
     const isSeller = room.sellerUserId === currentUserId;
     const closed = room.status === "COMPLETED" || room.status === "CANCELLED";
     const isSale = room.listing.purpose === "SALE";
-    const contractTabLabel = isSale ? "Koopovereenkomst" : "Contract";
+    const contractTabLabel = isSale
+        ? isEn ? "Purchase agreement" : "Koopovereenkomst"
+        : isEn ? "Rental agreement" : "Contract";
     const refresh = async () => {
         await Promise.all([
             queryClient.invalidateQueries({
@@ -256,7 +280,7 @@ export function TransactionRoom({
                         href="/dashboard/transactions"
                         className="inline-flex items-center gap-2 text-sm font-semibold text-brand"
                     >
-                        <ArrowLeft size={16} /> Alle transacties
+                        <ArrowLeft size={16} /> {isEn ? "All transactions" : "Alle transacties"}
                     </Link>
                     <h1 className="mt-3 text-2xl font-semibold sm:text-3xl">
                         {room.listing.property.street}{" "}
@@ -264,16 +288,16 @@ export function TransactionRoom({
                         {room.listing.property.houseNumberAddition}
                     </h1>
                     <p className="mt-1 text-sm text-muted">
-                        Je bent {isSeller ? "verkoper" : "koper"} · met{" "}
+                        {isEn ? "You are the" : "Je bent"} {isSeller ? (isEn ? "seller" : "verkoper") : (isEn ? "buyer" : "koper")} · {isEn ? "with" : "met"}{" "}
                         {isSeller ? room.buyer.name : room.seller.name}
                     </p>
                 </div>
                 <div className="flex items-center gap-3 border border-line bg-surface px-4 py-3">
                     <ShieldCheck className="text-brand" size={20} />
                     <div>
-                        <p className="text-xs text-muted">Beveiligde ruimte</p>
+                        <p className="text-xs text-muted">{isEn ? "Secure room" : "Beveiligde ruimte"}</p>
                         <p className="text-sm font-semibold">
-                            {statusNames[room.status]}
+                            {(isEn ? englishStatusNames : statusNames)[room.status]}
                         </p>
                     </div>
                 </div>
@@ -281,7 +305,7 @@ export function TransactionRoom({
             <div className="mt-6 grid gap-4 bg-brand-dark p-5 text-white md:grid-cols-[1fr_auto_auto] md:items-center">
                 <div>
                     <p className="text-xs font-semibold uppercase text-accent">
-                        Voortgang overdracht
+                        {isEn ? "Transfer progress" : "Voortgang overdracht"}
                     </p>
                     <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/20">
                         <div
@@ -290,14 +314,13 @@ export function TransactionRoom({
                         />
                     </div>
                     <p className="mt-2 text-xs text-white/70">
-                        {completed} van {room.milestones.length} stappen
-                        afgerond
+                        {completed} {isEn ? "of" : "van"} {room.milestones.length} {isEn ? "steps completed" : "stappen afgerond"}
                     </p>
                 </div>
                 <div className="md:border-l md:border-white/15 md:pl-6">
-                    <p className="text-xs text-white/60">Koopsom</p>
+                    <p className="text-xs text-white/60">{isEn ? (isSale ? "Purchase price" : "Monthly rent") : "Koopsom"}</p>
                     <p className="mt-1 text-lg font-semibold">
-                        {new Intl.NumberFormat("nl-NL", {
+                        {new Intl.NumberFormat(locale, {
                             style: "currency",
                             currency: "EUR",
                             maximumFractionDigits: 0,
@@ -305,13 +328,13 @@ export function TransactionRoom({
                     </p>
                 </div>
                 <div className="md:border-l md:border-white/15 md:pl-6">
-                    <p className="text-xs text-white/60">Beoogde overdracht</p>
+                    <p className="text-xs text-white/60">{isEn ? "Target transfer" : "Beoogde overdracht"}</p>
                     <p className="mt-1 text-sm font-semibold">
                         {room.targetTransferDate
                             ? new Date(
                                   room.targetTransferDate,
-                              ).toLocaleDateString("nl-NL")
-                            : "Nog afspreken"}
+                              ).toLocaleDateString(locale)
+                            : isEn ? "To be agreed" : "Nog afspreken"}
                     </p>
                 </div>
             </div>
@@ -328,7 +351,9 @@ export function TransactionRoom({
                             className={`inline-flex shrink-0 items-center gap-2 border-b-2 px-3 py-3 text-sm font-semibold ${tab === id ? "border-brand text-brand" : "border-transparent text-muted"}`}
                         >
                             <Icon size={16} />{" "}
-                            {id === "contract" ? contractTabLabel : label}
+                            {id === "contract"
+                                ? contractTabLabel
+                                : isEn ? englishTabNames[id] : label}
                         </button>
                     ))}
             </div>
@@ -794,11 +819,14 @@ function Overview({
     isSeller: boolean;
     isSale: boolean;
 }) {
+    const { language } = useLanguage();
+    const isEn = language === "en";
+    const locale = isEn ? "en-NL" : "nl-NL";
     return (
         <div className="grid gap-5 lg:grid-cols-[1.45fr_0.55fr]">
             <Panel
-                title="Stappen naar de overdracht"
-                description="De voortgang wordt automatisch bijgewerkt op basis van ondertekeningen, bevestigingen, documenten en oplevergegevens."
+                title={isEn ? "Steps towards transfer" : "Stappen naar de overdracht"}
+                description={isEn ? "Progress is updated automatically based on signatures, confirmations, documents and handover details." : "De voortgang wordt automatisch bijgewerkt op basis van ondertekeningen, bevestigingen, documenten en oplevergegevens."}
             >
                 <div className="divide-y divide-line">
                     {room.milestones.map((item) => {
@@ -843,10 +871,10 @@ function Overview({
                                             <p
                                                 className={`mt-1 text-[11px] ${view.tone === "overdue" ? "text-red-700" : "text-muted"}`}
                                             >
-                                                Deadline:{" "}
+                                                {isEn ? "Deadline:" : "Deadline:"}{" "}
                                                 {new Date(
                                                     item.dueAt,
-                                                ).toLocaleDateString("nl-NL")}
+                                                ).toLocaleDateString(locale)}
                                             </p>
                                         )}
                                 </div>
@@ -856,43 +884,43 @@ function Overview({
                 </div>
             </Panel>
             <div className="grid content-start gap-5">
-                <Panel title="Partijen">
+                <Panel title={isEn ? "Parties" : "Partijen"}>
                     <div className="grid gap-4 text-sm">
                         <Person
-                            label={isSale ? "Verkoper" : "Verhuurder"}
+                            label={isSale ? (isEn ? "Seller" : "Verkoper") : (isEn ? "Landlord" : "Verhuurder")}
                             person={room.seller}
                         />
                         <Person
-                            label={isSale ? "Koper" : "Huurder"}
+                            label={isSale ? (isEn ? "Buyer" : "Koper") : (isEn ? "Tenant" : "Huurder")}
                             person={room.buyer}
                         />
                     </div>
                 </Panel>
-                <Panel title="Woning">
+                <Panel title={isEn ? "Home" : "Woning"}>
                     <div className="grid gap-3 text-sm">
                         <Info
-                            label="Adres"
+                            label={isEn ? "Address" : "Adres"}
                             value={`${room.listing.property.postcode} ${room.listing.property.city}`}
                         />
                         <Info
-                            label="Woonoppervlak"
+                            label={isEn ? "Living area" : "Woonoppervlak"}
                             value={
                                 room.listing.property.livingAreaSqm
                                     ? `${room.listing.property.livingAreaSqm} m²`
-                                    : "Onbekend"
+                                    : isEn ? "Unknown" : "Onbekend"
                             }
                         />
                         <Info
-                            label="Kamers"
+                            label={isEn ? "Rooms" : "Kamers"}
                             value={String(
-                                room.listing.property.roomCount ?? "Onbekend",
+                                room.listing.property.roomCount ?? (isEn ? "Unknown" : "Onbekend"),
                             )}
                         />
                         <Info
-                            label="Bouwjaar"
+                            label={isEn ? "Year built" : "Bouwjaar"}
                             value={String(
                                 room.listing.property.constructionYear ??
-                                    "Onbekend",
+                                    (isEn ? "Unknown" : "Onbekend"),
                             )}
                         />
                     </div>
@@ -901,7 +929,7 @@ function Overview({
                             href={`/property/${room.listing.publicSlug}`}
                             className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand"
                         >
-                            Bekijk advertentie <ChevronRight size={15} />
+                            {isEn ? "View listing" : "Bekijk advertentie"} <ChevronRight size={15} />
                         </Link>
                     )}
                 </Panel>
@@ -937,6 +965,11 @@ const passportStatusNames: Record<string, string> = {
     SATISFIED: "Aanwezig",
     MISSING: "Ontbreekt",
     NOT_APPLICABLE: "Niet van toepassing",
+};
+const englishPassportStatusNames: Record<string, string> = {
+    SATISFIED: "Present",
+    MISSING: "Missing",
+    NOT_APPLICABLE: "Not applicable",
 };
 const passportStatusTones: Record<string, string> = {
     SATISFIED: "bg-brand/10 text-brand",
@@ -974,6 +1007,9 @@ function Passport({
     refresh: () => Promise<void>;
     onOpenDocuments: () => void;
 }) {
+    const { language } = useLanguage();
+    const l = (nl: string, en: string) => (language === "en" ? en : nl);
+    const locale = language === "en" ? "en-NL" : "nl-NL";
     const versions = data?.versions ?? [];
     const draft = data?.draft;
     const completeness = draft?.completeness;
@@ -997,7 +1033,7 @@ function Passport({
             }),
         onSuccess: async () => {
             setChangeNote("");
-            setSavedFeedback("Nieuwe versie vastgelegd.");
+            setSavedFeedback(l("Nieuwe versie vastgelegd.", "New version recorded."));
             await refresh();
         },
     });
@@ -1010,7 +1046,7 @@ function Passport({
             }),
         onSuccess: async () => {
             setSavedFeedback(
-                "Gegevens opgeslagen. Er is automatisch een nieuwe versie vastgelegd.",
+                l("Gegevens opgeslagen. Er is automatisch een nieuwe versie vastgelegd.", "Details saved. A new version was recorded automatically."),
             );
             await refresh();
         },
@@ -1020,7 +1056,7 @@ function Passport({
             const category = uploadingCategory;
             const file = category ? uploadFiles[category] : null;
             if (!category || !file)
-                throw new Error("Selecteer eerst een document");
+                throw new Error(l("Selecteer eerst een document", "Select a document first"));
             const form = new FormData();
             form.set("file", file);
             form.set("category", category);
@@ -1033,7 +1069,7 @@ function Passport({
             setUploadingCategory(null);
             setUploadFiles({});
             setSavedFeedback(
-                "Document toegevoegd aan het dossier; het woningpaspoort is bijgewerkt.",
+                l("Document toegevoegd aan het dossier; het woningpaspoort is bijgewerkt.", "Document added to the file; the property passport has been updated."),
             );
             await refresh();
         },
@@ -1047,7 +1083,7 @@ function Passport({
             }),
         onSuccess: async () => {
             setSavedFeedback(
-                "PDF toegevoegd aan de documentkluis. Bekijk hem onder Documenten.",
+                l("PDF toegevoegd aan de documentkluis. Bekijk hem onder Documenten.", "PDF added to the document vault. View it under Documents."),
             );
             await refresh();
         },
@@ -1057,8 +1093,8 @@ function Passport({
         <div className="grid gap-5">
             <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
                 <Panel
-                    title="Volledigheid"
-                    description="Het woningpaspoort is een verifieerbare momentopname van het woningdossier en wordt automatisch bijgewerkt bij wijzigingen."
+                    title={l("Volledigheid", "Completeness")}
+                    description={l("Het woningpaspoort is een verifieerbare momentopname van het woningdossier en wordt automatisch bijgewerkt bij wijzigingen.", "The property passport is a verifiable snapshot of the property file and is updated automatically when details change.")}
                 >
                     {completeness ? (
                         <>
@@ -1070,9 +1106,8 @@ function Passport({
                                     {completeness.score}%
                                 </p>
                                 <p className="text-sm text-muted">
-                                    {completeness.satisfied} van{" "}
-                                    {completeness.applicable} onderdelen
-                                    compleet
+                                    {completeness.satisfied} {l("van", "of")}{" "}
+                                    {completeness.applicable} {l("onderdelen compleet", "items complete")}
                                 </p>
                             </div>
                             <div className="mt-4 h-2 overflow-hidden rounded-full bg-background">
@@ -1084,26 +1119,24 @@ function Passport({
                             {draft?.hasChangesSinceLatest && isSeller && (
                                 <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-amber-700">
                                     <AlertCircle size={16} />
-                                    Er zijn nieuwe gegevens sinds versie{" "}
-                                    {latest?.version ?? 0}. Leg een nieuwe
-                                    versie vast.
+                                    {l("Er zijn nieuwe gegevens sinds versie", "There are new details since version")} {latest?.version ?? 0}. {l("Leg een nieuwe versie vast.", "Record a new version.")}
                                 </p>
                             )}
                             {latest ? (
                                 <div className="mt-5 grid gap-3 text-sm">
                                     <Info
-                                        label="Laatste versie"
-                                        value={`Versie ${latest.version}`}
+                                        label={l("Laatste versie", "Latest version")}
+                                        value={`${l("Versie", "Version")} ${latest.version}`}
                                     />
                                     <Info
-                                        label="Vastgelegd"
+                                        label={l("Vastgelegd", "Recorded")}
                                         value={new Date(
                                             latest.createdAt,
-                                        ).toLocaleString("nl-NL")}
+                                        ).toLocaleString(locale)}
                                     />
                                     <div>
                                         <p className="text-xs text-muted">
-                                            SHA-256 vingerafdruk
+                                            {l("SHA-256 vingerafdruk", "SHA-256 fingerprint")}
                                         </p>
                                         <code className="mt-1 block break-all bg-background p-3 text-[11px]">
                                             {latest.entryHash}
@@ -1112,9 +1145,7 @@ function Passport({
                                 </div>
                             ) : (
                                 <p className="mt-5 text-sm text-muted">
-                                    Er is nog geen woningpaspoort vastgelegd.
-                                    Vul de onderdelen aan om een eerste versie
-                                    te maken.
+                                    {l("Er is nog geen woningpaspoort vastgelegd. Vul de onderdelen aan om een eerste versie te maken.", "No property passport has been recorded yet. Complete the items to create the first version.")}
                                 </p>
                             )}
                             {latest && (
@@ -1131,7 +1162,7 @@ function Passport({
                                     ) : (
                                         <Download size={16} />
                                     )}{" "}
-                                    PDF in documentkluis zetten
+                                    {l("PDF in documentkluis zetten", "Add PDF to document vault")}
                                 </button>
                             )}
                             {savedFeedback && (
@@ -1142,7 +1173,7 @@ function Passport({
                                             onClick={onOpenDocuments}
                                             className="underline"
                                         >
-                                            Openen
+                                            {l("Openen", "Open")}
                                         </button>
                                     )}
                                 </p>
@@ -1155,13 +1186,13 @@ function Passport({
                         </>
                     ) : (
                         <p className="text-sm text-muted">
-                            Het paspoort wordt geladen.
+                            {l("Het paspoort wordt geladen.", "The passport is loading.")}
                         </p>
                     )}
                 </Panel>
                 <Panel
-                    title="Checklist"
-                    description="Dit bepaalt de volledigheid. Ontbrekende onderdelen kun je als verkoper/verhuurder direct aanvullen."
+                    title={l("Checklist", "Checklist")}
+                    description={l("Dit bepaalt de volledigheid. Ontbrekende onderdelen kun je als verkoper/verhuurder direct aanvullen.", "This determines completeness. As the seller or landlord, you can add missing items directly.")}
                 >
                     <div className="grid gap-3">
                         {completeness?.items.map((item) => (
@@ -1195,7 +1226,7 @@ function Passport({
                     )}
                     {!completeness && (
                         <p className="text-sm text-muted">
-                            Het paspoort wordt geladen.
+                            {l("Het paspoort wordt geladen.", "The passport is loading.")}
                         </p>
                     )}
                 </Panel>
@@ -1203,8 +1234,8 @@ function Passport({
 
             {isSeller && !closed && (
                 <Panel
-                    title="Gegevens aanvullen"
-                    description="Vul de staat, verduurzaming en VvE-gegevens in. Elke wijziging legt automatisch een nieuwe versie vast."
+                    title={l("Gegevens aanvullen", "Add details")}
+                    description={l("Vul de staat, verduurzaming en VvE-gegevens in. Elke wijziging legt automatisch een nieuwe versie vast.", "Enter the condition, sustainability and owners' association details. Every change automatically records a new version.")}
                 >
                     <DraftEditor
                         initialValues={draft?.editableFields ?? {}}
@@ -1222,8 +1253,8 @@ function Passport({
             )}
 
             <Panel
-                title="Versiegeschiedenis"
-                description="Elke versie verwijst naar de vorige. Daardoor zijn latere wijzigingen aantoonbaar en onveranderlijk."
+                title={l("Versiegeschiedenis", "Version history")}
+                description={l("Elke versie verwijst naar de vorige. Daardoor zijn latere wijzigingen aantoonbaar en onveranderlijk.", "Each version refers to the previous one, making later changes traceable and immutable.")}
             >
                 {isSeller && !closed && draft?.hasChangesSinceLatest && (
                     <form
@@ -1241,14 +1272,14 @@ function Passport({
                             minLength={3}
                             maxLength={500}
                             required
-                            placeholder="Wat is er gewijzigd?"
+                            placeholder={l("Wat is er gewijzigd?", "What changed?")}
                             className="input"
                         />
                         <button
                             disabled={publishMutation.isPending}
                             className="inline-flex h-12 shrink-0 items-center justify-center gap-2 bg-brand px-5 text-sm font-semibold text-white"
                         >
-                            <ShieldCheck size={16} /> Nieuwe versie vastleggen
+                            <ShieldCheck size={16} /> {l("Nieuwe versie vastleggen", "Record new version")}
                         </button>
                     </form>
                 )}
@@ -1272,18 +1303,18 @@ function Passport({
                                         <p className="font-semibold">
                                             {version.snapshot.changeNote ??
                                                 (version.version === 1
-                                                    ? "Eerste versie"
-                                                    : "Nieuwe dossiermomentopname")}
+                                                    ? l("Eerste versie", "First version")
+                                                    : l("Nieuwe dossiermomentopname", "New file snapshot"))}
                                         </p>
                                         <span className="text-xs text-muted">
                                             {version.completenessScore}%
-                                            compleet
+                                            {l("compleet", "complete")}
                                         </span>
                                     </div>
                                     <p className="mt-1 text-xs text-muted">
                                         {new Date(
                                             version.createdAt,
-                                        ).toLocaleString("nl-NL")}
+                                        ).toLocaleString(locale)}
                                     </p>
                                     <div className="mt-2 grid gap-1">
                                         <p className="truncate font-mono text-[10px] text-muted">
@@ -1291,7 +1322,7 @@ function Passport({
                                         </p>
                                         {version.previousHash && (
                                             <p className="truncate font-mono text-[10px] text-muted">
-                                                vorige: {version.previousHash}
+                                                {l("vorige", "previous")}: {version.previousHash}
                                             </p>
                                         )}
                                     </div>
@@ -1301,7 +1332,7 @@ function Passport({
                     </div>
                 ) : (
                     <p className="py-8 text-center text-sm text-muted">
-                        Nog geen versies vastgelegd.
+                        {l("Nog geen versies vastgelegd.", "No versions recorded yet.")}
                     </p>
                 )}
             </Panel>
@@ -1326,6 +1357,7 @@ function ChecklistItem({
     onUpload: () => void;
     uploading: boolean;
 }) {
+    const { language } = useLanguage();
     const tone = passportStatusTones[item.status] ?? "bg-background text-muted";
     const icon =
         item.status === "SATISFIED" ? (
@@ -1344,7 +1376,7 @@ function ChecklistItem({
                     <span
                         className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold ${tone}`}
                     >
-                        {passportStatusNames[item.status] ?? item.status}
+                        {(language === "en" ? englishPassportStatusNames : passportStatusNames)[item.status] ?? item.status}
                     </span>
                 </div>
                 <p className="mt-1 text-xs leading-5 text-muted">
@@ -1388,7 +1420,7 @@ function ChecklistItem({
                                 ) : (
                                     <Upload size={14} />
                                 )}{" "}
-                                Uploaden
+                                {language === "en" ? "Upload" : "Uploaden"}
                             </button>
                         </form>
                     )}
@@ -1454,6 +1486,8 @@ function DraftEditor({
     isApartment: boolean;
     onSubmit: (form: FormData) => void;
 }) {
+    const { language } = useLanguage();
+    const l = (nl: string, en: string) => (language === "en" ? en : nl);
     const vve =
         initialValues.vve && typeof initialValues.vve === "object"
             ? (initialValues.vve as Record<string, unknown>)
@@ -1471,7 +1505,7 @@ function DraftEditor({
         >
             <div className="grid content-start gap-4">
                 <label className="text-sm font-semibold">
-                    Algemene staat
+                    {l("Algemene staat", "General condition")}
                     <select
                         name="condition"
                         defaultValue={String(initialValues.condition ?? "")}
@@ -1479,13 +1513,15 @@ function DraftEditor({
                     >
                         {conditionOptions.map(([value, label]) => (
                             <option key={value} value={value}>
-                                {label}
+                                {language === "en"
+                                    ? ({ "": "Not specified", EXCELLENT: "Excellent", GOOD: "Good", REASONABLE: "Fair", POOR: "Poor" } as Record<string, string>)[value]
+                                    : label}
                             </option>
                         ))}
                     </select>
                 </label>
                 <label className="text-sm font-semibold">
-                    Laatste bouwkundige keuring
+                    {l("Laatste bouwkundige keuring", "Latest building inspection")}
                     <input
                         type="date"
                         name="lastInspectionAt"
@@ -1496,7 +1532,7 @@ function DraftEditor({
                     />
                 </label>
                 <label className="text-sm font-semibold">
-                    Renovatiejaar
+                    {l("Renovatiejaar", "Renovation year")}
                     <input
                         type="number"
                         name="renovationYear"
@@ -1515,10 +1551,10 @@ function DraftEditor({
                         defaultChecked={Boolean(initialValues.heatPump)}
                         className="size-4 accent-brand"
                     />{" "}
-                    Warmtepomp aanwezig
+                    {l("Warmtepomp aanwezig", "Heat pump present")}
                 </label>
                 <label className="text-sm font-semibold">
-                    CV-ketel bouwjaar
+                    {l("CV-ketel bouwjaar", "Boiler year")}
                     <input
                         type="number"
                         name="boilerYear"
@@ -1529,7 +1565,7 @@ function DraftEditor({
                     />
                 </label>
                 <label className="text-sm font-semibold">
-                    Zonnepanelen (Wp)
+                    {l("Zonnepanelen (Wp)", "Solar panels (Wp)")}
                     <input
                         type="number"
                         name="solarPanelWattage"
@@ -1543,7 +1579,7 @@ function DraftEditor({
             </div>
             <div className="grid content-start gap-4">
                 <div>
-                    <p className="text-sm font-semibold">Isolatie</p>
+                    <p className="text-sm font-semibold">{l("Isolatie", "Insulation")}</p>
                     <div className="mt-2 grid gap-2">
                         {insulationOptions.map(([value, label]) => (
                             <label
@@ -1557,7 +1593,9 @@ function DraftEditor({
                                     defaultChecked={insulation.includes(value)}
                                     className="size-4 accent-brand"
                                 />{" "}
-                                {label}
+                                {language === "en"
+                                    ? ({ DAK: "Roof insulation", SPOUWMUUR: "Cavity wall insulation", VLOER: "Floor insulation", DUBBEL_GLAS: "Double glazing", HR_GLAS: "HR++ glazing", HRP_GLAS: "HR+++ glazing" } as Record<string, string>)[value]
+                                    : label}
                             </label>
                         ))}
                     </div>
@@ -1566,11 +1604,11 @@ function DraftEditor({
             {isApartment && (
                 <div className="grid gap-4 sm:col-span-2">
                     <p className="text-xs font-semibold uppercase tracking-wide text-muted">
-                        VvE-gegevens
+                        {l("VvE-gegevens", "Owners' association details")}
                     </p>
                     <div className="grid gap-4 sm:grid-cols-2">
                         <label className="text-sm font-semibold">
-                            VvE-naam
+                            {l("VvE-naam", "Association name")}
                             <input
                                 name="vveName"
                                 defaultValue={String(vve.name ?? "")}
@@ -1578,7 +1616,7 @@ function DraftEditor({
                             />
                         </label>
                         <label className="text-sm font-semibold">
-                            Contact (e-mail)
+                            {l("Contact (e-mail)", "Contact (email)")}
                             <input
                                 type="email"
                                 name="vveContactEmail"
@@ -1587,7 +1625,7 @@ function DraftEditor({
                             />
                         </label>
                         <label className="text-sm font-semibold">
-                            Maandelijkse bijdrage (€)
+                            {l("Maandelijkse bijdrage (€)", "Monthly contribution (€)")}
                             <input
                                 type="number"
                                 name="vveMonthly"
@@ -1605,7 +1643,7 @@ function DraftEditor({
                             />
                         </label>
                         <label className="text-sm font-semibold">
-                            Reserveringsfonds (€)
+                            {l("Reserveringsfonds (€)", "Reserve fund (€)")}
                             <input
                                 type="number"
                                 name="vveReserve"
@@ -1625,7 +1663,7 @@ function DraftEditor({
                 </div>
             )}
             <label className="text-sm font-semibold sm:col-span-2">
-                Bijzondere kenmerken
+                {l("Bijzondere kenmerken", "Special features")}
                 <textarea
                     name="features"
                     defaultValue={String(initialValues.features ?? "")}
@@ -1635,7 +1673,7 @@ function DraftEditor({
                 />
             </label>
             <label className="text-sm font-semibold sm:col-span-2">
-                Toelichting / eigen verklaring
+                {l("Toelichting / eigen verklaring", "Notes / owner's statement")}
                 <textarea
                     name="notes"
                     defaultValue={String(initialValues.notes ?? "")}
@@ -1650,7 +1688,7 @@ function DraftEditor({
                     disabled={false}
                     className="inline-flex h-11 items-center gap-2 bg-brand px-5 text-sm font-semibold text-white"
                 >
-                    <Save size={16} /> Opslaan en versie vastleggen
+                    <Save size={16} /> {l("Opslaan en versie vastleggen", "Save and record version")}
                 </button>
             </div>
         </form>
@@ -1668,6 +1706,9 @@ function Contract({
     closed: boolean;
     refresh: () => Promise<void>;
 }) {
+    const { language } = useLanguage();
+    const l = (nl: string, en: string) => (language === "en" ? en : nl);
+    const locale = language === "en" ? "en-NL" : "nl-NL";
     const currentTerms = room.contractTerms ?? {};
     const [additionalTerms, setAdditionalTerms] = useState(
         String(currentTerms.additionalTerms ?? ""),
@@ -1682,8 +1723,8 @@ function Contract({
         String(Number(currentTerms.securityDepositCents ?? 0) / 100 || ""),
     );
     const isSale = room.listing.purpose === "SALE";
-    const sellerRole = isSale ? "Verkoper" : "Verhuurder";
-    const buyerRole = isSale ? "Koper" : "Huurder";
+    const sellerRole = isSale ? l("Verkoper", "Seller") : l("Verhuurder", "Landlord");
+    const buyerRole = isSale ? l("Koper", "Buyer") : l("Huurder", "Tenant");
     const confirmed =
         currentUserId === room.sellerUserId
             ? room.sellerContractConfirmedAt
@@ -1722,23 +1763,23 @@ function Contract({
             <Panel
                 title={
                     isSale
-                        ? "Afspraken voor de koopovereenkomst"
-                        : "Afspraken voor de huurovereenkomst"
+                        ? l("Afspraken voor de koopovereenkomst", "Purchase agreement terms")
+                        : l("Afspraken voor de huurovereenkomst", "Rental agreement terms")
                 }
                 description={
                     isSale
-                        ? "Deze gestructureerde afspraken vormen het overdrachtsdossier voor de uiteindelijke overeenkomst en notaris."
-                        : "Deze gestructureerde afspraken vormen de basis voor de huurovereenkomst. De stap wordt automatisch afgerond zodra beide partijen hebben bevestigd."
+                        ? l("Deze gestructureerde afspraken vormen het overdrachtsdossier voor de uiteindelijke overeenkomst en notaris.", "These structured terms form the transfer file for the final agreement and notary.")
+                        : l("Deze gestructureerde afspraken vormen de basis voor de huurovereenkomst. De stap wordt automatisch afgerond zodra beide partijen hebben bevestigd.", "These structured terms form the basis of the rental agreement. The step completes automatically once both parties confirm.")
                 }
             >
                 <div className="grid gap-5">
                     <Info
                         label={
                             isSale
-                                ? "Geaccepteerde koopsom"
-                                : "Afgesproken maandhuur"
+                                ? l("Geaccepteerde koopsom", "Accepted purchase price")
+                                : l("Afgesproken maandhuur", "Agreed monthly rent")
                         }
-                        value={new Intl.NumberFormat("nl-NL", {
+                        value={new Intl.NumberFormat(locale, {
                             style: "currency",
                             currency: "EUR",
                         }).format(Number(room.purchasePriceCents) / 100)}
@@ -1753,7 +1794,7 @@ function Contract({
                             className="size-4 accent-brand"
                             disabled={closed}
                         />{" "}
-                        Voorbehoud van financiering
+                        {l("Voorbehoud van financiering", "Subject to financing")}
                     </label>
                     <label className="flex items-center gap-3 text-sm">
                         <input
@@ -1765,10 +1806,10 @@ function Contract({
                             className="size-4 accent-brand"
                             disabled={closed}
                         />{" "}
-                        Voorbehoud bouwkundige keuring
+                        {l("Voorbehoud bouwkundige keuring", "Subject to building inspection")}
                     </label>
                     <label className="text-sm font-semibold">
-                        {isSale ? "Waarborgsom / bankgarantie (€)" : "Borg (€)"}
+                        {isSale ? l("Waarborgsom / bankgarantie (€)", "Deposit / bank guarantee (€)") : l("Borg (€)", "Deposit (€)")}
                         <input
                             type="number"
                             min="0"
@@ -1782,7 +1823,7 @@ function Contract({
                         />
                     </label>
                     <label className="text-sm font-semibold">
-                        Aanvullende afspraken
+                        {l("Aanvullende afspraken", "Additional terms")}
                         <textarea
                             value={additionalTerms}
                             onChange={(event) =>
@@ -1802,14 +1843,14 @@ function Contract({
                             disabled={mutation.isPending}
                             className="inline-flex h-11 items-center gap-2 border border-brand px-4 text-sm font-semibold text-brand"
                         >
-                            <FileText size={16} /> Afspraken opslaan
+                            <FileText size={16} /> {l("Afspraken opslaan", "Save terms")}
                         </button>
                         <button
                             onClick={() => mutation.mutate(true)}
                             disabled={mutation.isPending}
                             className="inline-flex h-11 items-center gap-2 bg-brand px-4 text-sm font-semibold text-white"
                         >
-                            <Check size={16} /> Opslaan en bevestigen
+                            <Check size={16} /> {l("Opslaan en bevestigen", "Save and confirm")}
                         </button>
                     </div>
                 )}
@@ -1820,8 +1861,8 @@ function Contract({
                 )}
             </Panel>
             <Panel
-                title="Bevestigingen"
-                description="Bij een inhoudelijke wijziging vervallen eerdere bevestigingen."
+                title={l("Bevestigingen", "Confirmations")}
+                description={l("Bij een inhoudelijke wijziging vervallen eerdere bevestigingen.", "Previous confirmations expire after a substantive change.")}
             >
                 <div className="grid gap-3">
                     <Confirmation
@@ -1838,21 +1879,15 @@ function Contract({
                 {room.sellerContractConfirmedAt &&
                     room.buyerContractConfirmedAt && (
                         <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-brand">
-                            <CheckCircle2 size={17} /> De overeenkomst is door
-                            beide partijen bevestigd — de stap wordt automatisch
-                            afgerond.
+                            <CheckCircle2 size={17} /> {l("De overeenkomst is door beide partijen bevestigd — de stap wordt automatisch afgerond.", "Both parties have confirmed the agreement—the step will complete automatically.")}
                         </p>
                     )}
                 <div className="mt-6 border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-900">
-                    Deze bevestiging legt instemming in het transactiedossier
-                    vast. Voor een juridisch gekwalificeerde elektronische
-                    handtekening moet in productie een gecertificeerde
-                    ondertekenprovider worden aangesloten.
+                    {l("Deze bevestiging legt instemming in het transactiedossier vast. Voor een juridisch gekwalificeerde elektronische handtekening moet in productie een gecertificeerde ondertekenprovider worden aangesloten.", "This confirmation records consent in the transaction file. A certified signing provider must be connected in production for a legally qualified electronic signature.")}
                 </div>
                 {confirmed && (
                     <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-brand">
-                        <CheckCircle2 size={17} /> Jij hebt de huidige afspraken
-                        bevestigd
+                        <CheckCircle2 size={17} /> {l("Jij hebt de huidige afspraken bevestigd", "You confirmed the current terms")}
                     </p>
                 )}
                 {room.sellerContractConfirmedAt &&
@@ -1862,7 +1897,7 @@ function Contract({
                             disabled={pdfMutation.isPending}
                             className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 bg-brand-dark px-4 text-sm font-semibold text-white"
                         >
-                            <FileText size={16} /> Overeenkomst-PDF genereren
+                            <FileText size={16} /> {l("Overeenkomst-PDF genereren", "Generate agreement PDF")}
                         </button>
                     )}
                 {pdfMutation.error && (
@@ -1883,6 +1918,8 @@ function Confirmation({
     role: string;
     date: string | null;
 }) {
+    const { language } = useLanguage();
+    const locale = language === "en" ? "en-NL" : "nl-NL";
     return (
         <div
             className={`flex items-center gap-3 border p-4 ${date ? "border-brand/30 bg-brand/5" : "border-line"}`}
@@ -1897,8 +1934,8 @@ function Confirmation({
                 <p className="text-xs text-muted">
                     {role} ·{" "}
                     {date
-                        ? `bevestigd ${new Date(date).toLocaleString("nl-NL")}`
-                        : "nog niet bevestigd"}
+                        ? `${language === "en" ? "confirmed" : "bevestigd"} ${new Date(date).toLocaleString(locale)}`
+                        : language === "en" ? "not confirmed yet" : "nog niet bevestigd"}
                 </p>
             </div>
         </div>
@@ -1906,6 +1943,7 @@ function Confirmation({
 }
 
 function NotaryDetailsGrid({ details }: { details: Record<string, string> }) {
+    const { language } = useLanguage();
     const rows = [
         ["contactName", "Contactpersoon"],
         ["email", "E-mailadres"],
@@ -1915,17 +1953,23 @@ function NotaryDetailsGrid({ details }: { details: Record<string, string> }) {
         ["clientAccountHolder", "Rekeninghouder (kwaliteitsrekening)"],
         ["clientAccountIban", "IBAN (kwaliteitsrekening)"],
     ] as const;
+    const englishLabels: Record<string, string> = {
+        contactName: "Contact person", email: "Email address", phone: "Phone",
+        address: "Address", reference: "File number",
+        clientAccountHolder: "Account holder (client account)",
+        clientAccountIban: "IBAN (client account)",
+    };
     return (
         <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
             <div className="sm:col-span-2">
-                <p className="text-xs text-muted">Notariskantoor</p>
+                <p className="text-xs text-muted">{language === "en" ? "Notary office" : "Notariskantoor"}</p>
                 <p className="font-semibold">{details.officeName}</p>
             </div>
             {rows
                 .filter(([key]) => details[key])
                 .map(([key, label]) => (
                     <div key={key}>
-                        <p className="text-xs text-muted">{label}</p>
+                        <p className="text-xs text-muted">{language === "en" ? englishLabels[key] : label}</p>
                         <p className="break-words">{details[key]}</p>
                     </div>
                 ))}
@@ -1988,6 +2032,8 @@ function Notary({
     closed: boolean;
     refresh: () => Promise<void>;
 }) {
+    const { language } = useLanguage();
+    const l = (nl: string, en: string) => (language === "en" ? en : nl);
     const action = isSeller ? "PROPOSE" : "CONFIRM";
     const confirmed = room.notaryDetails ?? null;
     const proposal = room.notaryProposal ?? null;
@@ -2010,8 +2056,8 @@ function Notary({
     if (!isSale)
         return (
             <Panel
-                title="Notaris en levering"
-                description="Bij verhuur is geen notaris nodig voor de overdracht."
+                title={l("Notaris en levering", "Notary and transfer")}
+                description={l("Bij verhuur is geen notaris nodig voor de overdracht.", "A notary is not required for a rental handover.")}
             >
                 <div className="flex items-start gap-3 border border-line bg-background p-4 text-sm leading-6 text-muted">
                     <Landmark
@@ -2019,9 +2065,7 @@ function Notary({
                         size={18}
                     />
                     <p>
-                        Voor een huurovereenkomst is geen notaris vereist. De
-                        ingangsdatum en overige afspraken worden vastgelegd in
-                        de huurovereenkomst.
+                        {l("Voor een huurovereenkomst is geen notaris vereist. De ingangsdatum en overige afspraken worden vastgelegd in de huurovereenkomst.", "A notary is not required for a rental agreement. The start date and other terms are recorded in the rental agreement.")}
                     </p>
                 </div>
             </Panel>
@@ -2029,11 +2073,11 @@ function Notary({
     return (
         <div className="grid gap-5">
             <Panel
-                title="Notaris en levering"
+                title={l("Notaris en levering", "Notary and transfer")}
                 description={
                     isSeller
-                        ? "Je kunt een notaris voorstellen aan de koper. Alleen de koper bevestigt uiteindelijk de notaris."
-                        : "Jij kiest en bevestigt de notaris. Een voorstel van de verkoper kun je direct bevestigen."
+                        ? l("Je kunt een notaris voorstellen aan de koper. Alleen de koper bevestigt uiteindelijk de notaris.", "You can propose a notary to the buyer. Only the buyer can give final confirmation.")
+                        : l("Jij kiest en bevestigt de notaris. Een voorstel van de verkoper kun je direct bevestigen.", "You choose and confirm the notary. You can confirm the seller's proposal directly.")
                 }
             >
                 {confirmed && (
@@ -2049,8 +2093,8 @@ function Notary({
                                 </p>
                                 <p className="text-xs text-muted">
                                     {isSeller
-                                        ? "De koper heeft deze notaris bevestigd."
-                                        : "Jij hebt deze notaris bevestigd."}
+                                        ? l("De koper heeft deze notaris bevestigd.", "The buyer confirmed this notary.")
+                                        : l("Jij hebt deze notaris bevestigd.", "You confirmed this notary.")}
                                 </p>
                             </div>
                         </div>
@@ -2063,19 +2107,18 @@ function Notary({
                 {!confirmed && isSeller && proposal && (
                     <div className="mb-5 border border-line p-4 text-sm">
                         <p className="text-xs font-semibold uppercase tracking-wide text-muted">
-                            Jouw voorstel
+                            {l("Jouw voorstel", "Your proposal")}
                         </p>
                         <NotaryDetailsGrid details={proposal} />
                         <p className="mt-3 text-xs text-muted">
-                            De koper moet dit voorstel nog bevestigen of
-                            wijzigen.
+                            {l("De koper moet dit voorstel nog bevestigen of wijzigen.", "The buyer still needs to confirm or change this proposal.")}
                         </p>
                     </div>
                 )}
                 {!confirmed && !isSeller && proposal && (
                     <div className="mb-5 border border-dashed border-brand/40 bg-background p-4 text-sm">
                         <p className="text-xs font-semibold uppercase tracking-wide text-brand">
-                            Voorstel van de verkoper
+                            {l("Voorstel van de verkoper", "Seller's proposal")}
                         </p>
                         <NotaryDetailsGrid details={proposal} />
                         {!closed && (
@@ -2084,7 +2127,7 @@ function Notary({
                                 disabled={mutation.isPending}
                                 className="mt-4 inline-flex h-11 items-center gap-2 bg-brand px-4 font-semibold text-white"
                             >
-                                <Check size={16} /> Bevestig dit voorstel
+                                <Check size={16} /> {l("Bevestig dit voorstel", "Confirm this proposal")}
                             </button>
                         )}
                     </div>
@@ -2099,7 +2142,7 @@ function Notary({
                     >
                         <Field
                             name="officeName"
-                            label="Notariskantoor"
+                            label={l("Notariskantoor", "Notary office")}
                             defaultValue={
                                 confirmed
                                     ? confirmed.officeName
@@ -2109,7 +2152,7 @@ function Notary({
                         />
                         <Field
                             name="contactName"
-                            label="Contactpersoon"
+                            label={l("Contactpersoon", "Contact person")}
                             defaultValue={
                                 confirmed
                                     ? confirmed.contactName
@@ -2118,7 +2161,7 @@ function Notary({
                         />
                         <Field
                             name="email"
-                            label="E-mailadres"
+                            label={l("E-mailadres", "Email address")}
                             type="email"
                             defaultValue={
                                 confirmed
@@ -2128,7 +2171,7 @@ function Notary({
                         />
                         <Field
                             name="phone"
-                            label="Telefoon"
+                            label={l("Telefoon", "Phone")}
                             defaultValue={
                                 confirmed
                                     ? confirmed.phone
@@ -2137,7 +2180,7 @@ function Notary({
                         />
                         <Field
                             name="address"
-                            label="Adres"
+                            label={l("Adres", "Address")}
                             defaultValue={
                                 confirmed
                                     ? confirmed.address
@@ -2146,7 +2189,7 @@ function Notary({
                         />
                         <Field
                             name="reference"
-                            label="Dossiernummer"
+                            label={l("Dossiernummer", "File number")}
                             defaultValue={
                                 confirmed
                                     ? confirmed.reference
@@ -2155,7 +2198,7 @@ function Notary({
                         />
                         <Field
                             name="clientAccountHolder"
-                            label="Rekeninghouder (kwaliteitsrekening)"
+                            label={l("Rekeninghouder (kwaliteitsrekening)", "Account holder (client account)")}
                             defaultValue={
                                 confirmed
                                     ? confirmed.clientAccountHolder
@@ -2164,7 +2207,7 @@ function Notary({
                         />
                         <Field
                             name="clientAccountIban"
-                            label="IBAN (kwaliteitsrekening)"
+                            label={l("IBAN (kwaliteitsrekening)", "IBAN (client account)")}
                             defaultValue={
                                 confirmed
                                     ? confirmed.clientAccountIban
@@ -2177,8 +2220,8 @@ function Notary({
                         >
                             <Landmark size={17} />{" "}
                             {isSeller
-                                ? "Stel notaris voor"
-                                : "Bevestig notaris"}
+                                ? l("Stel notaris voor", "Propose notary")
+                                : l("Bevestig notaris", "Confirm notary")}
                         </button>
                     </form>
                 )}
@@ -2343,6 +2386,8 @@ function Handover({
     closed: boolean;
     refresh: () => Promise<void>;
 }) {
+    const { language } = useLanguage();
+    const l = (nl: string, en: string) => (language === "en" ? en : nl);
     const current = room.handoverDetails ?? {};
     const mutation = useMutation({
         mutationFn: (form: FormData) =>
@@ -2371,8 +2416,8 @@ function Handover({
     return (
         <div className="grid gap-5 lg:grid-cols-[1fr_0.6fr]">
             <Panel
-                title="Eindinspectie en meterstanden"
-                description="Registreer de feitelijke oplevering voordat de transactie wordt afgesloten."
+                title={l("Eindinspectie en meterstanden", "Final inspection and meter readings")}
+                description={l("Registreer de feitelijke oplevering voordat de transactie wordt afgesloten.", "Record the actual handover before closing the transaction.")}
             >
                 <form
                     action={(form) => mutation.mutate(form)}
@@ -2380,7 +2425,7 @@ function Handover({
                 >
                     <Field
                         name="inspectedAt"
-                        label="Inspectiedatum"
+                        label={l("Inspectiedatum", "Inspection date")}
                         type="datetime-local"
                         defaultValue={
                             current.inspectedAt
@@ -2391,31 +2436,31 @@ function Handover({
                     />
                     <Field
                         name="keyCount"
-                        label="Aantal sleutels"
+                        label={l("Aantal sleutels", "Number of keys")}
                         type="number"
                         defaultValue={current.keyCount}
                         disabled={closed}
                     />
                     <Field
                         name="electricityMeter"
-                        label="Elektriciteitsmeter"
+                        label={l("Elektriciteitsmeter", "Electricity meter")}
                         defaultValue={current.electricityMeter}
                         disabled={closed}
                     />
                     <Field
                         name="gasMeter"
-                        label="Gasmeter"
+                        label={l("Gasmeter", "Gas meter")}
                         defaultValue={current.gasMeter}
                         disabled={closed}
                     />
                     <Field
                         name="waterMeter"
-                        label="Watermeter"
+                        label={l("Watermeter", "Water meter")}
                         defaultValue={current.waterMeter}
                         disabled={closed}
                     />
                     <label className="text-sm font-semibold sm:col-span-2">
-                        Opmerkingen
+                        {l("Opmerkingen", "Notes")}
                         <textarea
                             name="notes"
                             defaultValue={String(current.notes ?? "")}
@@ -2429,30 +2474,30 @@ function Handover({
                             disabled={mutation.isPending}
                             className="inline-flex h-12 items-center justify-center gap-2 bg-brand px-5 font-semibold text-white sm:col-span-2"
                         >
-                            <KeyRound size={17} /> Oplevering opslaan
+                            <KeyRound size={17} /> {l("Oplevering opslaan", "Save handover")}
                         </button>
                     )}
                 </form>
             </Panel>
             <Panel
-                title="Transactie afronden"
-                description="Afronden markeert de woning als verkocht of verhuurd."
+                title={l("Transactie afronden", "Complete transaction")}
+                description={l("Afronden markeert de woning als verkocht of verhuurd.", "Completing marks the home as sold or rented.")}
             >
                 <div className="grid gap-3 text-sm">
                     <Requirement
-                        label="Verkoper heeft contract bevestigd"
+                        label={l("Verkoper heeft contract bevestigd", "Seller confirmed the contract")}
                         done={Boolean(room.sellerContractConfirmedAt)}
                     />
                     <Requirement
-                        label="Koper heeft contract bevestigd"
+                        label={l("Koper heeft contract bevestigd", "Buyer confirmed the contract")}
                         done={Boolean(room.buyerContractConfirmedAt)}
                     />
                     <Requirement
-                        label="Notaris vastgelegd"
+                        label={l("Notaris vastgelegd", "Notary recorded")}
                         done={Boolean(room.notaryDetails)}
                     />
                     <Requirement
-                        label="Oplevering ingevuld"
+                        label={l("Oplevering ingevuld", "Handover completed")}
                         done={Boolean(room.handoverDetails)}
                     />
                 </div>
@@ -2462,7 +2507,7 @@ function Handover({
                         disabled={finish.isPending}
                         className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 bg-brand-dark px-5 font-semibold text-white"
                     >
-                        <Handshake size={18} /> Overdracht afronden
+                        <Handshake size={18} /> {l("Overdracht afronden", "Complete transfer")}
                     </button>
                 )}
                 {finish.error && (
@@ -2472,7 +2517,7 @@ function Handover({
                 )}
                 {room.status === "COMPLETED" && (
                     <p className="mt-5 inline-flex items-center gap-2 font-semibold text-brand">
-                        <CheckCircle2 size={19} /> Transactie afgerond
+                        <CheckCircle2 size={19} /> {l("Transactie afgerond", "Transaction completed")}
                     </p>
                 )}
             </Panel>
@@ -2534,6 +2579,8 @@ function Documents({
     closed: boolean;
     refresh: () => Promise<void>;
 }) {
+    const { language } = useLanguage();
+    const l = (nl: string, en: string) => (language === "en" ? en : nl);
     const [category, setCategory] = useState("OTHER");
     const [file, setFile] = useState<File | null>(null);
     const mutation = useMutation({
@@ -2553,8 +2600,8 @@ function Documents({
     });
     return (
         <Panel
-            title="Beveiligde documentkluis"
-            description="Documenten zijn niet publiek bereikbaar en worden met SHA-256 gecontroleerd."
+            title={l("Beveiligde documentkluis", "Secure document vault")}
+            description={l("Documenten zijn niet publiek bereikbaar en worden met SHA-256 gecontroleerd.", "Documents are not publicly accessible and are verified with SHA-256.")}
         >
             {!closed && (
                 <form
@@ -2565,7 +2612,7 @@ function Documents({
                     className="grid gap-3 border border-dashed border-brand/30 bg-background p-4 sm:grid-cols-[1fr_220px_auto] sm:items-end"
                 >
                     <label className="text-sm font-semibold">
-                        Document
+                        {l("Document", "Document")}
                         <input
                             type="file"
                             accept="application/pdf,image/jpeg,image/png,image/webp"
@@ -2577,7 +2624,7 @@ function Documents({
                         />
                     </label>
                     <label className="text-sm font-semibold">
-                        Categorie
+                        {l("Categorie", "Category")}
                         <select
                             value={category}
                             onChange={(event) =>
@@ -2589,7 +2636,7 @@ function Documents({
                                 .filter(([key]) => key !== "CHAT_ATTACHMENT")
                                 .map(([key, label]) => (
                                     <option key={key} value={key}>
-                                        {label}
+                                        {language === "en" ? englishDocumentNames[key] : label}
                                     </option>
                                 ))}
                         </select>
@@ -2598,7 +2645,7 @@ function Documents({
                         disabled={mutation.isPending || !file}
                         className="inline-flex h-12 items-center justify-center gap-2 bg-brand px-5 text-sm font-semibold text-white"
                     >
-                        <Upload size={16} /> Uploaden
+                        <Upload size={16} /> {l("Uploaden", "Upload")}
                     </button>
                 </form>
             )}
@@ -2618,7 +2665,7 @@ function Documents({
                     ))
                 ) : (
                     <p className="py-8 text-center text-sm text-muted">
-                        Nog geen documenten uitgewisseld.
+                        {l("Nog geen documenten uitgewisseld.", "No documents have been exchanged yet.")}
                     </p>
                 )}
             </div>
@@ -2632,6 +2679,7 @@ function DocumentRow({
     roomId: string;
     document: DocumentItem;
 }) {
+    const { language } = useLanguage();
     return (
         <div className="flex items-center gap-3 py-4 first:pt-0 last:pb-0">
             <span className="grid size-10 shrink-0 place-items-center bg-background text-brand">
@@ -2640,7 +2688,7 @@ function DocumentRow({
             <div className="min-w-0 flex-1">
                 <p className="truncate font-semibold">{document.fileName}</p>
                 <p className="mt-1 text-xs text-muted">
-                    {documentNames[document.category]} ·{" "}
+                    {(language === "en" ? englishDocumentNames : documentNames)[document.category]} ·{" "}
                     {(Number(document.sizeBytes) / 1024 / 1024).toFixed(1)} MB ·{" "}
                     {document.uploadedBy.name}
                 </p>
@@ -2648,7 +2696,7 @@ function DocumentRow({
             <a
                 href={`/api/transactions/${roomId}/documents/${document.id}`}
                 className="grid size-10 shrink-0 place-items-center border border-line text-brand"
-                aria-label={`${document.fileName} downloaden`}
+                aria-label={`${language === "en" ? "Download" : "Downloaden"} ${document.fileName}`}
             >
                 <Download size={17} />
             </a>
@@ -2667,6 +2715,9 @@ function Chat({
     closed: boolean;
     refresh: () => Promise<void>;
 }) {
+    const { language } = useLanguage();
+    const l = (nl: string, en: string) => (language === "en" ? en : nl);
+    const locale = language === "en" ? "en-NL" : "nl-NL";
     const [body, setBody] = useState("");
     const [file, setFile] = useState<File | null>(null);
     const bottomRef = useRef<HTMLDivElement>(null);
@@ -2681,7 +2732,7 @@ function Chat({
                     method: "POST",
                     headers: { "content-type": "application/json" },
                     body: JSON.stringify({
-                        body: body || (file ? `Bijlage: ${file.name}` : ""),
+                        body: body || (file ? `${l("Bijlage", "Attachment")}: ${file.name}` : ""),
                     }),
                 },
             );
@@ -2704,8 +2755,8 @@ function Chat({
     });
     return (
         <Panel
-            title="Chat tussen koper en verkoper"
-            description="Berichten en bijlagen blijven gekoppeld aan deze transactie."
+            title={l("Chat tussen koper en verkoper", "Buyer and seller chat")}
+            description={l("Berichten en bijlagen blijven gekoppeld aan deze transactie.", "Messages and attachments remain linked to this transaction.")}
         >
             <div className="max-h-130 min-h-80 space-y-3 overflow-y-auto bg-background p-4">
                 {room.messages.map((message) => {
@@ -2759,7 +2810,7 @@ function Chat({
                                     className={`mt-2 text-right text-[10px] ${own ? "text-white/60" : "text-muted"}`}
                                 >
                                     {new Date(message.createdAt).toLocaleString(
-                                        "nl-NL",
+                                        locale,
                                         {
                                             day: "2-digit",
                                             month: "2-digit",
@@ -2787,7 +2838,7 @@ function Chat({
                         onChange={(event) => setBody(event.target.value)}
                         rows={3}
                         maxLength={4000}
-                        placeholder="Schrijf een bericht…"
+                        placeholder={l("Schrijf een bericht…", "Write a message…")}
                         className="w-full resize-none bg-transparent text-sm outline-none"
                     />
                     {file && (
@@ -2798,7 +2849,7 @@ function Chat({
                                 type="button"
                                 onClick={() => setFile(null)}
                                 className="ml-auto"
-                                aria-label="Bijlage verwijderen"
+                                aria-label={l("Bijlage verwijderen", "Remove attachment")}
                             >
                                 <X size={15} />
                             </button>
@@ -2807,7 +2858,7 @@ function Chat({
                     <div className="flex items-center justify-between">
                         <label
                             className="grid size-10 cursor-pointer place-items-center border border-line text-brand"
-                            title="Document toevoegen"
+                            title={l("Document toevoegen", "Add document")}
                         >
                             <Paperclip size={17} />
                             <input
@@ -2833,7 +2884,7 @@ function Chat({
                             ) : (
                                 <Send size={16} />
                             )}{" "}
-                            Versturen
+                            {l("Versturen", "Send")}
                         </button>
                     </div>
                 </form>

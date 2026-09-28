@@ -3,16 +3,26 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { useLanguage } from "@/components/providers/language-provider";
 
 // Roterende voorbeeldvragen die laten zien dat er in natuurlijke taal
 // gezocht kan worden (plaats, straat of vrije omschrijving).
-const EXAMPLE_QUERIES = [
-    "Huizen te koop in Utrecht met een tuin",
-    "Iets energiezuinigs in de buurt van Rotterdam",
-    "Appartementen te huur in Amsterdam onder € 2.000",
-    "Iets dichtbij supermarkten en scholen in Zwolle",
-    "Laat me woningen zien in een rustige buurt bij het station",
-];
+const EXAMPLE_QUERIES = {
+    nl: [
+        "Huizen te koop in Utrecht met een tuin",
+        "Iets energiezuinigs in de buurt van Rotterdam",
+        "Appartementen te huur in Amsterdam onder € 2.000",
+        "Iets dichtbij supermarkten en scholen in Zwolle",
+        "Laat me woningen zien in een rustige buurt bij het station",
+    ],
+    en: [
+        "Houses for sale in Utrecht with a garden",
+        "An energy-efficient home near Rotterdam",
+        "Apartments for rent in Amsterdam under €2,000",
+        "Something close to supermarkets and schools in Zwolle",
+        "Show me homes in a quiet area near the station",
+    ],
+} as const;
 
 // Snelheden voor de typ-/verwijderanimatie van de voorbeeldvragen.
 const TYPE_MS_PER_CHAR = 42;
@@ -28,6 +38,8 @@ const READ_PAUSE_MS = 1900;
  * volledig leeg om zelf in te typen.
  */
 export function AiSearchBar() {
+    const { language } = useLanguage();
+    const examples = EXAMPLE_QUERIES[language];
     const router = useRouter();
     const [value, setValue] = useState("");
     const [focused, setFocused] = useState(false);
@@ -38,7 +50,7 @@ export function AiSearchBar() {
     const [isDeleting, setIsDeleting] = useState(false);
     const formRef = useRef<HTMLFormElement>(null);
     const showExample = !focused && !value && !pending;
-    const activeExample = EXAMPLE_QUERIES[exampleIndex];
+    const activeExample = examples[exampleIndex];
 
     useEffect(() => {
         if (!showExample) return;
@@ -62,13 +74,13 @@ export function AiSearchBar() {
             // Voorbeeld volledig verwijderd: verder met de volgende vraag.
             timer = setTimeout(() => {
                 setExampleIndex(
-                    (index) => (index + 1) % EXAMPLE_QUERIES.length,
+                    (index) => (index + 1) % examples.length,
                 );
                 setIsDeleting(false);
             }, DELETE_MS_PER_CHAR);
         }
         return () => clearTimeout(timer);
-    }, [showExample, isDeleting, typedLength, activeExample]);
+    }, [showExample, isDeleting, typedLength, activeExample, examples.length]);
 
     async function submitQuery() {
         const query = value.trim();
@@ -88,7 +100,9 @@ export function AiSearchBar() {
             if (payload.data?.redirectUrl) {
                 if (payload.data.degraded) {
                     setError(
-                        "AI-zoeken is tijdelijk niet beschikbaar; er is gezocht op de tekst zelf.",
+                        language === "en"
+                            ? "AI search is temporarily unavailable; we searched for the text itself."
+                            : "AI-zoeken is tijdelijk niet beschikbaar; er is gezocht op de tekst zelf.",
                     );
                 }
                 router.push(payload.data.redirectUrl);
@@ -98,11 +112,15 @@ export function AiSearchBar() {
             }
             setError(
                 payload.error?.message ??
-                    "De zoekopdracht kon niet worden verwerkt.",
+                    (language === "en"
+                        ? "The search query could not be processed."
+                        : "De zoekopdracht kon niet worden verwerkt."),
             );
         } catch {
             setError(
-                "Er ging iets mis bij het interpreteren van je zoekopdracht.",
+                language === "en"
+                    ? "Something went wrong while interpreting your search query."
+                    : "Er ging iets mis bij het interpreteren van je zoekopdracht.",
             );
         } finally {
             setPending(false);
@@ -119,8 +137,9 @@ export function AiSearchBar() {
         >
             <label className="relative block">
                 <span className="sr-only">
-                    Waar ben je naar op zoek? Bijv. plaats, straat of
-                    omschrijving
+                    {language === "en"
+                        ? "What are you looking for? For example, a city, street or description"
+                        : "Waar ben je naar op zoek? Bijv. plaats, straat of omschrijving"}
                 </span>
                 {pending ? (
                     <span className="absolute left-4 top-1/2 size-4 -translate-y-1/2 animate-spin rounded-full border-2 border-muted border-t-transparent" />
@@ -152,8 +171,16 @@ export function AiSearchBar() {
                 <button
                     type="submit"
                     disabled={pending || !value.trim()}
-                    aria-label="Zoekopdracht versturen"
-                    title="Zoekopdracht versturen"
+                    aria-label={
+                        language === "en"
+                            ? "Submit search query"
+                            : "Zoekopdracht versturen"
+                    }
+                    title={
+                        language === "en"
+                            ? "Submit search query"
+                            : "Zoekopdracht versturen"
+                    }
                     className="absolute right-1.5 top-1/2 inline-flex size-10 -translate-y-1/2 items-center justify-center rounded-md bg-accent text-brand-dark transition hover:bg-accent/80 disabled:opacity-60"
                 >
                     {pending ? (

@@ -1,5 +1,10 @@
 # ZelfWonen inbound aggregator
 
+[Documentation](../docs/README.md) · [Architecture](../docs/architecture.md)
+
+> This optional service shares the project's [limited support status](../README.md).
+> Live source access and completeness require operator validation.
+
 A standalone Python/uv worker that scrapes, parses and normalizes rental/sale
 listings from **Funda** and **Kamernet**. More sources are added through a pluggable adapter
 pattern without touching the pipeline.
@@ -12,7 +17,7 @@ reads/writes PostgreSQL (the same database the web app uses) and image storage.
 - **Scraping resilience** — rotating residential proxies, rotating User-Agent
   strings, exponential backoff with jitter, bounded retries, and a polite delay
   between requests.
-- **Extreme normalization** — chaotic HTML/JSON from each source is mapped onto
+- **Schema normalization** — chaotic HTML/JSON from each source is mapped onto
   one strict internal schema (`app/models.py`).
 - **Image hosting** — source images are downloaded and re-hosted in
   a persistent local volume on the VM (or optionally S3/R2). The
@@ -44,6 +49,9 @@ stays in its previous state when absence-based expiry is disabled.
 
 ## Local development
 
+First initialize the shared database using the [web setup guide](../docs/getting-started.md).
+A sync writes real imported records and downloads media; it is not a dry run.
+
 ```bash
 cd aggregator
 uv sync --python 3.12
@@ -58,7 +66,7 @@ Set the environment via `AGGREGATOR_`-prefixed variables (or a `.env` file):
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `AGGREGATOR_DATABASE_URL` | `postgresql://houser:houser_dev_password@localhost:5432/houser` | Postgres DSN |
-| `AGGREGATOR_SYNC_INTERVAL_SECONDS` | `21600` | cron cadence |
+| `AGGREGATOR_SYNC_INTERVAL_SECONDS` | `21600` | development loop interval; the production timer is separate |
 | `AGGREGATOR_STATUS_FILE` | `.state/status.json` | private per-source run results; `/app/state/status.json` in production |
 | `AGGREGATOR_EXPIRE_MISSING` | `false` | opt in only after verifying exhaustive discovery |
 | `AGGREGATOR_MAX_LISTINGS_PER_SOURCE` | `10000` | fail safely if a source exceeds this limit |
@@ -103,7 +111,6 @@ provider specifics.
 
 ## Legal note
 
-Scraping Funda and Kamernet is adversarial and may violate their terms of
-service. Confirm lawful access (licensed feeds, robots policy, or contractual
-agreements) before enabling production scraping, and review redistribution and
-image-hosting rights with counsel.
+Confirm source-access, redistribution and image-hosting permissions before
+enabling imports. Adapter availability does not establish permission to collect
+or republish a provider's content. Obtain an appropriate review for your deployment.

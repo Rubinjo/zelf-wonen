@@ -4,8 +4,11 @@ import { useState, type FormEvent } from "react";
 import { KeyRound, LoaderCircle, ShieldCheck } from "lucide-react";
 import QRCode from "react-qr-code";
 import { authClient, useSession } from "@/lib/auth-client";
+import { useLanguage } from "@/components/providers/language-provider";
 
 export function TwoFactorSettings() {
+    const { language } = useLanguage();
+    const l = (nl: string, en: string) => (language === "en" ? en : nl);
     const { data: session, refetch } = useSession();
     const [totpUri, setTotpUri] = useState("");
     const [backupCodes, setBackupCodes] = useState<string[]>([]);
@@ -23,7 +26,7 @@ export function TwoFactorSettings() {
         const result = await authClient.twoFactor.enable({ password });
         setBusy(false);
         if (result.error)
-            return setError(result.error.message ?? "2FA activeren is mislukt");
+            return setError(result.error.message ?? l("2FA activeren is mislukt", "Could not enable 2FA"));
         setTotpUri(result.data.totpURI);
         setBackupCodes(result.data.backupCodes);
     }
@@ -41,7 +44,7 @@ export function TwoFactorSettings() {
         });
         setBusy(false);
         if (result.error)
-            return setError(result.error.message ?? "De code is ongeldig");
+            return setError(result.error.message ?? l("De code is ongeldig", "The code is invalid"));
         setTotpUri("");
         await refetch();
     }
@@ -57,7 +60,7 @@ export function TwoFactorSettings() {
         setBusy(false);
         if (result.error)
             return setError(
-                result.error.message ?? "2FA uitschakelen is mislukt",
+                result.error.message ?? l("2FA uitschakelen is mislukt", "Could not disable 2FA"),
             );
         setBackupCodes([]);
         await refetch();
@@ -74,8 +77,7 @@ export function TwoFactorSettings() {
                         Authenticator-app (TOTP)
                     </h2>
                     <p className="mt-2 text-sm leading-6 text-muted">
-                        Beveilig je account met een tweede factor. Een vertrouwd
-                        apparaat kan 30 dagen worden onthouden.
+                        {l("Beveilig je account met een tweede factor. Een vertrouwd apparaat kan 30 dagen worden onthouden.", "Protect your account with a second factor. A trusted device can be remembered for 30 days.")}
                     </p>
                 </div>
             </div>
@@ -84,8 +86,8 @@ export function TwoFactorSettings() {
                 className={`mt-7 rounded-2xl p-4 text-sm font-semibold ${enabled ? "bg-brand/8 text-brand" : "bg-amber-50 text-amber-900"}`}
             >
                 {enabled
-                    ? "Tweestapsverificatie is actief"
-                    : "Tweestapsverificatie is nog niet actief"}
+                    ? l("Tweestapsverificatie is actief", "Two-step verification is active")
+                    : l("Tweestapsverificatie is nog niet actief", "Two-step verification is not active yet")}
             </div>
 
             {error ? (
@@ -97,7 +99,7 @@ export function TwoFactorSettings() {
             {!enabled && !totpUri ? (
                 <form onSubmit={enable} className="mt-7 max-w-md">
                     <label className="text-sm font-semibold">
-                        Bevestig je huidige wachtwoord
+                        {l("Bevestig je huidige wachtwoord", "Confirm your current password")}
                         <input
                             name="password"
                             type="password"
@@ -115,7 +117,7 @@ export function TwoFactorSettings() {
                         ) : (
                             <KeyRound size={17} />
                         )}{" "}
-                        2FA instellen
+                        {l("2FA instellen", "Set up 2FA")}
                     </button>
                 </form>
             ) : null}
@@ -127,11 +129,10 @@ export function TwoFactorSettings() {
                     </div>
                     <div>
                         <h3 className="text-xl font-semibold">
-                            Scan en bevestig
+                            {l("Scan en bevestig", "Scan and confirm")}
                         </h3>
                         <p className="mt-2 text-sm leading-6 text-muted">
-                            Scan de QR-code met je authenticator-app en voer de
-                            zescijferige code in.
+                            {l("Scan de QR-code met je authenticator-app en voer de zescijferige code in.", "Scan the QR code with your authenticator app and enter the six-digit code.")}
                         </p>
                         <form onSubmit={verify} className="mt-5">
                             <input
@@ -146,7 +147,7 @@ export function TwoFactorSettings() {
                                 disabled={busy}
                                 className="mt-3 block h-12 rounded-full bg-brand px-6 font-semibold text-white disabled:opacity-60"
                             >
-                                Code verifiëren
+                                {l("Code verifiëren", "Verify code")}
                             </button>
                         </form>
                     </div>
@@ -156,11 +157,10 @@ export function TwoFactorSettings() {
             {backupCodes.length > 0 ? (
                 <div className="mt-8 rounded-3xl bg-background p-6">
                     <h3 className="font-semibold">
-                        Herstelcodes — bewaar deze nu veilig
+                        {l("Herstelcodes — bewaar deze nu veilig", "Recovery codes — store these securely now")}
                     </h3>
                     <p className="mt-2 text-sm text-muted">
-                        Elke code kan één keer worden gebruikt. Deel ze met
-                        niemand.
+                        {l("Elke code kan één keer worden gebruikt. Deel ze met niemand.", "Each code can be used once. Do not share them with anyone.")}
                     </p>
                     <div className="mt-4 grid grid-cols-2 gap-2 font-mono text-sm sm:grid-cols-3">
                         {backupCodes.map((code) => (
@@ -180,21 +180,21 @@ export function TwoFactorSettings() {
                     onSubmit={disable}
                     className="mt-8 border-t border-line pt-7"
                 >
-                    <h3 className="font-semibold">2FA uitschakelen</h3>
+                    <h3 className="font-semibold">{l("2FA uitschakelen", "Disable 2FA")}</h3>
                     <div className="mt-3 flex max-w-lg flex-col gap-3 sm:flex-row">
                         <input
                             name="password"
                             type="password"
                             autoComplete="current-password"
                             required
-                            placeholder="Huidig wachtwoord"
+                            placeholder={l("Huidig wachtwoord", "Current password")}
                             className="input"
                         />
                         <button
                             disabled={busy}
                             className="shrink-0 rounded-full border border-red-200 px-5 py-3 text-sm font-semibold text-red-700 disabled:opacity-60"
                         >
-                            Uitschakelen
+                            {l("Uitschakelen", "Disable")}
                         </button>
                     </div>
                 </form>

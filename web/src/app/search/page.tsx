@@ -217,6 +217,34 @@ export default async function SearchPage({
               neighborhoodFacilities: "Neighborhood facilities",
               sale: "For sale",
               rent: "For rent",
+              purposeHelp: "Choose whether to search homes for sale or rent and which prices are shown.",
+              statusSaleHelp: "Also shows sold homes with their final price.",
+              statusRentHelp: "Also shows rented homes with their final rent.",
+              availabilityHelp: "Useful for rentals: shows homes becoming available within the selected period.",
+              orMore: "or more",
+              applySort: "Sort",
+              sortLabel: "Sort:",
+              sortNewest: "Newest",
+              sortPriceAsc: "Price ascending",
+              sortPriceDesc: "Price descending",
+              sortArea: "Living area",
+              page: "Page",
+              of: "of",
+              previousPage: "Previous page",
+              nextPage: "Next page",
+              resultPages: "Result pages",
+              homesForSale: "homes for sale",
+              homesForRent: "homes for rent",
+              aroundQuery: "in or around",
+              gardenOnly: "Only homes with a garden",
+              gardenHelp: "The orientation is provided by the owner. Homes without a known orientation remain visible when the garden is explicitly mentioned elsewhere.",
+              parking: "Parking",
+              builtFrom: "Built from",
+              buildYearMin: "Minimum year built",
+              buildYearMax: "Maximum year built",
+              exampleYear: "E.g. 2000",
+              groundSituation: "Land ownership",
+              erfpachtHelp: "Leasehold shows homes where the land is held on leasehold, whether or not the ground rent has been bought out.",
           }
         : {
               navSearch: "Woning zoeken",
@@ -261,6 +289,34 @@ export default async function SearchPage({
               neighborhoodFacilities: "Voorzieningen in de buurt",
               sale: "Te koop",
               rent: "Te huur",
+              purposeHelp: "Bepaalt of je koop- of huurwoningen zoekt en welke prijzen worden getoond.",
+              statusSaleHelp: "Toont ook verkochte woningen met de uiteindelijke prijs.",
+              statusRentHelp: "Toont ook verhuurde woningen met de uiteindelijke huurprijs.",
+              availabilityHelp: "Handig voor huurwoningen: toont woningen die binnen de gekozen periode beschikbaar komen.",
+              orMore: "of meer",
+              applySort: "Sorteer",
+              sortLabel: "Sorteer:",
+              sortNewest: "Nieuwste",
+              sortPriceAsc: "Prijs oplopend",
+              sortPriceDesc: "Prijs aflopend",
+              sortArea: "Woonoppervlak",
+              page: "Pagina",
+              of: "van",
+              previousPage: "Vorige pagina",
+              nextPage: "Volgende pagina",
+              resultPages: "Resultaatpagina's",
+              homesForSale: "koopwoningen",
+              homesForRent: "huurwoningen",
+              aroundQuery: "in of rond",
+              gardenOnly: "Alleen woningen met een tuin",
+              gardenHelp: "De oriëntatie wordt door de eigenaar opgegeven; woningen zonder bekende oriëntatie blijven bij een voorkeur zichtbaar als de tuin elders expliciet genoemd wordt.",
+              parking: "Parkeren",
+              builtFrom: "Gebouwd vanaf",
+              buildYearMin: "Minimaal bouwjaar",
+              buildYearMax: "Maximaal bouwjaar",
+              exampleYear: "Bijv. 2000",
+              groundSituation: "Grondsituatie",
+              erfpachtHelp: "Erfpacht toont woningen waarvan de grond in erfpacht is (met of zonder afgekochte canon).",
           };
     const [result, session] = await Promise.all([
         searchMarketplaceListings(params),
@@ -365,16 +421,15 @@ export default async function SearchPage({
                         className="group relative shrink-0"
                     >
                         <summary className="marketplace-filter-trigger">
-                            Koop of huur
+                            {ui.saleOrRent}
                         </summary>
                         <div className="marketplace-filter-panel w-56">
                             <PurposeToggle value={result.filters.purpose} />
                             <p className="mt-3 text-xs leading-5 text-muted">
-                                Bepaalt of je koop- of huurwoningen zoekt en
-                                welke prijzen worden getoond.
+                                {ui.purposeHelp}
                             </p>
                             <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
-                                Toepassen
+                                {ui.apply}
                             </button>
                         </div>
                     </details>
@@ -383,11 +438,11 @@ export default async function SearchPage({
                         className="group relative shrink-0"
                     >
                         <summary className="marketplace-filter-trigger">
-                            Prijs
+                            {ui.price}
                         </summary>
                         <div className="marketplace-filter-panel grid w-72 grid-cols-2 gap-3">
                             <label className="text-xs font-semibold text-muted">
-                                Van
+                                {ui.from}
                                 <input
                                     type="number"
                                     name="priceMin"
@@ -399,7 +454,7 @@ export default async function SearchPage({
                                 />
                             </label>
                             <label className="text-xs font-semibold text-muted">
-                                Tot
+                                {ui.to}
                                 <input
                                     type="number"
                                     name="priceMax"
@@ -411,7 +466,7 @@ export default async function SearchPage({
                                 />
                             </label>
                             <button className="col-span-2 h-10 rounded-md bg-brand text-sm font-semibold text-white">
-                                Toepassen
+                                {ui.apply}
                             </button>
                         </div>
                     </details>
@@ -433,11 +488,11 @@ export default async function SearchPage({
                             />
                             <p className="mt-3 text-xs leading-5 text-muted">
                                 {result.filters.purpose === "SALE"
-                                    ? '{isEn ? "Also shows sold homes with their final price." : "Toont ook verkochte woningen met de uiteindelijke prijs."}'
-                                    : '{isEn ? "Also shows rented homes with their final rent." : "Toont ook verhuurde woningen met de uiteindelijke huurprijs."}'}
+                                    ? ui.statusSaleHelp
+                                    : ui.statusRentHelp}
                             </p>
                             <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
-                                Toepassen
+                                {ui.apply}
                             </button>
                         </div>
                     </details>
@@ -446,14 +501,14 @@ export default async function SearchPage({
                         className="group relative shrink-0"
                     >
                         <summary className="marketplace-filter-trigger">
-                            Beschikbaarheid
+                            {ui.availability}
                             {availabilityFilterCount
                                 ? ` · ${availabilityFilterCount}`
                                 : ""}
                         </summary>
                         <div className="marketplace-filter-panel w-64">
                             <label className="text-xs font-semibold text-muted">
-                                Beschikbaar vanaf
+                                {ui.availableFrom}
                                 <select
                                     name="availableFrom"
                                     defaultValue={
@@ -465,18 +520,17 @@ export default async function SearchPage({
                                 >
                                     <option value="">{ui.anyHome}</option>
                                     <option value="now">
-                                        Direct beschikbaar
+                                        {ui.immediate}
                                     </option>
                                     <option value="1m">{ui.within1m}</option>
                                     <option value="3m">{ui.within3m}</option>
                                 </select>
                             </label>
                             <p className="mt-3 text-xs leading-5 text-muted">
-                                Handig voor huurwoningen: toont woningen die
-                                binnen de gekozen periode beschikbaar komen.
+                                {ui.availabilityHelp}
                             </p>
                             <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
-                                Toepassen
+                                {ui.apply}
                             </button>
                         </div>
                     </details>
@@ -485,7 +539,7 @@ export default async function SearchPage({
                         className="group relative shrink-0"
                     >
                         <summary className="marketplace-filter-trigger">
-                            Woningtype
+                            {ui.propertyType}
                             {selectedPropertyTypes.length
                                 ? ` · ${selectedPropertyTypes.length}`
                                 : ""}
@@ -497,7 +551,7 @@ export default async function SearchPage({
                                 selected={selectedPropertyTypes}
                             />
                             <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
-                                Toepassen
+                                {ui.apply}
                             </button>
                         </div>
                     </details>
@@ -506,12 +560,12 @@ export default async function SearchPage({
                         className="group relative shrink-0"
                     >
                         <summary className="marketplace-filter-trigger">
-                            Oppervlakte & kamers
+                            {ui.areaRooms}
                         </summary>
                         <div className="marketplace-filter-panel grid w-80 gap-3">
                             <div className="grid grid-cols-2 gap-3">
                                 <label className="text-xs font-semibold text-muted">
-                                    Minimaal woonoppervlak
+                                    {ui.minLivingArea}
                                     <select
                                         name="livingAreaMin"
                                         defaultValue={
@@ -525,14 +579,14 @@ export default async function SearchPage({
                                         {[50, 75, 100, 125, 150, 200].map(
                                             (area) => (
                                                 <option key={area} value={area}>
-                                                    {area} m² of meer
+                                                    {area} m² {ui.orMore}
                                                 </option>
                                             ),
                                         )}
                                     </select>
                                 </label>
                                 <label className="text-xs font-semibold text-muted">
-                                    Minimaal perceel
+                                    {ui.minPlot}
                                     <select
                                         name="plotAreaMin"
                                         defaultValue={
@@ -549,7 +603,7 @@ export default async function SearchPage({
                                                     {area.toLocaleString(
                                                         "nl-NL",
                                                     )}{" "}
-                                                    m² of meer
+                                                    m² {ui.orMore}
                                                 </option>
                                             ),
                                         )}
@@ -616,7 +670,7 @@ export default async function SearchPage({
                                 </label>
                             </div>
                             <button className="h-10 rounded-md bg-brand text-sm font-semibold text-white">
-                                Toepassen
+                                {ui.apply}
                             </button>
                         </div>
                     </details>
@@ -625,7 +679,7 @@ export default async function SearchPage({
                         className="group relative shrink-0"
                     >
                         <summary className="marketplace-filter-trigger">
-                            Energielabel
+                            {ui.energyLabel}
                             {selectedEnergyLabels.length
                                 ? ` · ${selectedEnergyLabels.length}`
                                 : ""}
@@ -637,7 +691,7 @@ export default async function SearchPage({
                                 selected={selectedEnergyLabels}
                             />
                             <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
-                                Toepassen
+                                {ui.apply}
                             </button>
                         </div>
                     </details>
@@ -646,7 +700,7 @@ export default async function SearchPage({
                         className="group relative shrink-0"
                     >
                         <summary className="marketplace-filter-trigger">
-                            Voorzieningen
+                            {ui.amenities}
                             {selectedAmenities.length
                                 ? ` · ${selectedAmenities.length}`
                                 : ""}
@@ -658,7 +712,7 @@ export default async function SearchPage({
                                 selected={selectedAmenities}
                             />
                             <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
-                                Toepassen
+                                {ui.apply}
                             </button>
                         </div>
                     </details>
@@ -667,7 +721,7 @@ export default async function SearchPage({
                         className="group relative shrink-0"
                     >
                         <summary className="marketplace-filter-trigger">
-                            Tuin
+                            {ui.garden}
                             {gardenFilterCount ? ` · ${gardenFilterCount}` : ""}
                         </summary>
                         <div className="marketplace-filter-panel w-64">
@@ -681,10 +735,10 @@ export default async function SearchPage({
                                     }
                                     className="size-4 accent-brand"
                                 />
-                                Alleen woningen met een tuin
+                                {ui.gardenOnly}
                             </label>
                             <label className="mt-4 block text-xs font-semibold text-muted">
-                                Tuinoriëntatie
+                                {ui.gardenOrientation}
                                 <select
                                     name="gardenOrientation"
                                     defaultValue={
@@ -697,19 +751,18 @@ export default async function SearchPage({
                                         gardenOrientationLabels,
                                     ).map(([value, label]) => (
                                         <option key={value} value={value}>
-                                            {label}
+                                            {isEn
+                                                ? ({ N: "North", NE: "Northeast", E: "East", SE: "Southeast", S: "South", SW: "Southwest", W: "West", NW: "Northwest" } as Record<string, string>)[value]
+                                                : label}
                                         </option>
                                     ))}
                                 </select>
                             </label>
                             <p className="mt-3 text-xs leading-5 text-muted">
-                                De oriëntatie wordt door de eigenaar opgegeven;
-                                woningen zonder bekende oriëntatie blijven bij
-                                een voorkeur zichtbaar als de tuin elders
-                                expliciet genoemd wordt.
+                                {ui.gardenHelp}
                             </p>
                             <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
-                                Toepassen
+                                {ui.apply}
                             </button>
                         </div>
                     </details>
@@ -718,7 +771,7 @@ export default async function SearchPage({
                         className="group relative shrink-0"
                     >
                         <summary className="marketplace-filter-trigger">
-                            Parkeren
+                            {ui.parking}
                             {selectedParking.length
                                 ? ` · ${selectedParking.length}`
                                 : ""}
@@ -730,7 +783,7 @@ export default async function SearchPage({
                                 selected={selectedParking}
                             />
                             <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
-                                Toepassen
+                                {ui.apply}
                             </button>
                         </div>
                     </details>
@@ -739,14 +792,14 @@ export default async function SearchPage({
                         className="group relative shrink-0"
                     >
                         <summary className="marketplace-filter-trigger">
-                            Gebouwd vanaf
+                            {ui.builtFrom}
                             {buildingFilterCount
                                 ? ` · ${buildingFilterCount}`
                                 : ""}
                         </summary>
                         <div className="marketplace-filter-panel marketplace-filter-panel-right grid w-72 gap-3">
                             <label className="text-xs font-semibold text-muted">
-                                Minimaal bouwjaar
+                                {ui.buildYearMin}
                                 <input
                                     type="number"
                                     name="constructionYearMin"
@@ -755,12 +808,12 @@ export default async function SearchPage({
                                     defaultValue={
                                         result.filters.constructionYearMin ?? ""
                                     }
-                                    placeholder="Bijv. 2000"
+                                    placeholder={ui.exampleYear}
                                     className="marketplace-filter-input mt-1.5"
                                 />
                             </label>
                             <label className="text-xs font-semibold text-muted">
-                                Maximaal bouwjaar
+                                {ui.buildYearMax}
                                 <input
                                     type="number"
                                     name="constructionYearMax"
@@ -769,13 +822,13 @@ export default async function SearchPage({
                                     defaultValue={
                                         result.filters.constructionYearMax ?? ""
                                     }
-                                    placeholder="Bijv. 2000"
+                                    placeholder={ui.exampleYear}
                                     className="marketplace-filter-input mt-1.5"
                                 />
                             </label>
                             <div>
                                 <p className="text-xs font-semibold text-muted">
-                                    Monumentstatus
+                                    {ui.monumentStatus}
                                 </p>
                                 <div className="mt-1.5">
                                     <MonumentToggle
@@ -784,7 +837,7 @@ export default async function SearchPage({
                                 </div>
                             </div>
                             <button className="h-10 rounded-md bg-brand text-sm font-semibold text-white">
-                                Toepassen
+                                {ui.apply}
                             </button>
                         </div>
                     </details>
@@ -793,7 +846,7 @@ export default async function SearchPage({
                         className="group relative shrink-0"
                     >
                         <summary className="marketplace-filter-trigger">
-                            Buurt
+                            {ui.neighborhood}
                             {neighborhoodFilterCount
                                 ? ` · ${neighborhoodFilterCount}`
                                 : ""}
@@ -847,7 +900,7 @@ export default async function SearchPage({
                             </div>
                             <div>
                                 <p className="text-xs font-semibold text-muted">
-                                    Voorzieningen in de buurt
+                                    {ui.neighborhoodFacilities}
                                 </p>
                                 <div className="mt-2 grid gap-2.5">
                                     <label className="flex cursor-pointer items-center gap-3 text-sm">
@@ -965,7 +1018,7 @@ export default async function SearchPage({
                                 </select>
                             </label>
                             <button className="h-10 rounded-md bg-brand text-sm font-semibold text-white">
-                                Toepassen
+                                {ui.apply}
                             </button>
                         </div>
                     </details>
@@ -974,7 +1027,7 @@ export default async function SearchPage({
                         className="group relative shrink-0"
                     >
                         <summary className="marketplace-filter-trigger">
-                            Erfpacht
+                            {ui.erfpacht}
                             {erfpachtFilterCount
                                 ? ` · ${erfpachtFilterCount}`
                                 : ""}
@@ -982,7 +1035,7 @@ export default async function SearchPage({
                         <div className="marketplace-filter-panel marketplace-filter-panel-right w-64">
                             <div>
                                 <p className="text-xs font-semibold text-muted">
-                                    Grondsituatie
+                                    {ui.groundSituation}
                                 </p>
                                 <div className="mt-1.5">
                                     <ErfpachtToggle
@@ -991,11 +1044,10 @@ export default async function SearchPage({
                                 </div>
                             </div>
                             <p className="mt-4 text-xs leading-5 text-muted">
-                                Erfpacht toont woningen waarvan de grond in
-                                erfpacht is (met of zonder afgekochte canon).
+                                {ui.erfpachtHelp}
                             </p>
                             <button className="mt-4 h-10 w-full rounded-md bg-brand text-sm font-semibold text-white">
-                                Toepassen
+                                {ui.apply}
                             </button>
                         </div>
                     </details>
@@ -1011,12 +1063,12 @@ export default async function SearchPage({
                                     "nl-NL",
                                 )}{" "}
                                 {result.filters.purpose === "SALE"
-                                    ? "koopwoningen"
-                                    : "huurwoningen"}
+                                    ? ui.homesForSale
+                                    : ui.homesForRent}
                             </p>
                             {result.filters.query ? (
                                 <p className="mt-0.5 text-sm text-muted">
-                                    in of rond “{result.filters.query}”
+                                    {ui.aroundQuery} “{result.filters.query}”
                                 </p>
                             ) : null}
                         </div>
@@ -1040,26 +1092,26 @@ export default async function SearchPage({
                             )}
                             <label className="flex items-center gap-2 text-sm text-muted">
                                 <span className="hidden sm:inline">
-                                    Sorteer:
+                                    {ui.sortLabel}
                                 </span>
                                 <select
                                     name="sort"
                                     defaultValue={result.filters.sort}
                                     className="h-10 rounded-md border border-line bg-surface px-3 font-semibold text-foreground"
                                 >
-                                    <option value="newest">Nieuwste</option>
+                                    <option value="newest">{ui.sortNewest}</option>
                                     <option value="price_asc">
-                                        Prijs oplopend
+                                        {ui.sortPriceAsc}
                                     </option>
                                     <option value="price_desc">
-                                        Prijs aflopend
+                                        {ui.sortPriceDesc}
                                     </option>
                                     <option value="area_desc">
-                                        Woonoppervlak
+                                        {ui.sortArea}
                                     </option>
                                 </select>
                                 <button className="h-10 rounded-md bg-brand px-3 font-semibold text-white">
-                                    Sorteer
+                                    {ui.applySort}
                                 </button>
                             </label>
                         </form>
@@ -1071,7 +1123,7 @@ export default async function SearchPage({
                 />
                 {result.pagination.pageCount > 1 ? (
                     <nav
-                        aria-label="Resultaatpagina's"
+                        aria-label={ui.resultPages}
                         className="border-t border-line bg-surface px-4 py-7"
                     >
                         <div className="mx-auto flex max-w-2xl items-center justify-center gap-3">
@@ -1082,13 +1134,13 @@ export default async function SearchPage({
                                         result.pagination.page - 1,
                                     )}
                                     className="marketplace-page-button"
-                                    aria-label="Vorige pagina"
+                                    aria-label={ui.previousPage}
                                 >
                                     <ChevronLeft size={18} />
                                 </Link>
                             ) : null}
                             <span className="px-3 text-sm font-semibold">
-                                Pagina {result.pagination.page} van{" "}
+                                {ui.page} {result.pagination.page} {ui.of}{" "}
                                 {result.pagination.pageCount}
                             </span>
                             {result.pagination.page <
@@ -1099,7 +1151,7 @@ export default async function SearchPage({
                                         result.pagination.page + 1,
                                     )}
                                     className="marketplace-page-button"
-                                    aria-label="Volgende pagina"
+                                    aria-label={ui.nextPage}
                                 >
                                     <ChevronRight size={18} />
                                 </Link>

@@ -1,5 +1,11 @@
 # Deploy to a VPS with Docker Compose
 
+[Documentation](../../docs/README.md) · [Release readiness](../../docs/release-readiness.md)
+
+> This is an operator runbook for the supplied configuration, not a managed hosting
+> commitment. The project is not actively maintained; review release gaps before
+> serving real users.
+
 The production stack is `web/compose.yaml`. It runs Caddy, Next.js, PostgreSQL
 and the estimator; the aggregator remains opt-in. Run the commands below from
 `web/` on the Linux VPS with Docker Engine and the Compose plugin installed.
@@ -19,9 +25,9 @@ Edit `.env.production`. Set `APP_DOMAIN` to your hostname only (for example
 above, because Compose embeds it in database URLs. Configure email delivery:
 production sign-up requires a Brevo API key in `EMAIL_DELIVERY_TOKEN`.
 `EMAIL_DELIVERY_WEBHOOK_URL` defaults to `https://api.brevo.com/v3/smtp/email`;
-if provided, it must match that URL. The sender defaults to the verified
-`Redaxa Support <support@redaxa.nl>`; override it with `EMAIL_FROM_NAME` and
-`EMAIL_FROM_ADDRESS` only after verifying the new sender in Brevo. Authenticate
+if provided, it must match that URL. Set `EMAIL_FROM_NAME` and `EMAIL_FROM_ADDRESS` to your own sender identity after
+verifying it in Brevo; the example configuration's existing sender is not a
+shared delivery service. Authenticate
 the sender domain in Brevo and ensure transactional sending is enabled.
 The application supplies the email content directly, so no Brevo template is
 needed. Without an API key, local development logs verification links; production
@@ -29,13 +35,14 @@ fails instead. Set `NEXT_PUBLIC_EMAIL_DELIVERY_MODE=console` to show the local
 development hint when using console delivery.
 
 Fill in the other
-provider settings for features you intend to enable; example/simulated
-integrations are not replaced by this deployment.
+provider settings for features you intend to enable. Creating containers does not
+provision external provider accounts or validate their configuration.
 
 For listing identity verification, configure Didit as described in
 [Didit setup](didit-setup.md). The credentials are server-only and loaded through
 the existing `.env.production` container env file. A production deployment
-requires live Didit credentials, its webhook secret, and a free KYC workflow.
+requires live Didit credentials, its webhook secret, and a configured KYC workflow.
+Verify the provider's current allowance and pricing before enabling traffic.
 
 Always pass `--env-file .env.production`: it supplies Compose interpolation as
 well as the web container's environment. Local secrets and runtime files are
@@ -44,7 +51,7 @@ mode are set at build time; rebuild the web image after changing the hostname.
 
 Point the domain's DNS A record to the VPS IPv4 address. Only add an AAAA record
 if IPv6 reaches this VPS too. Allow inbound TCP 80 and 443 and restrict SSH as
-appropriate in the Leaseweb firewall. Caddy obtains/renews HTTPS certificates
+appropriate in your VPS firewall. Caddy obtains/renews HTTPS certificates
 and redirects HTTP to HTTPS once DNS and these ports are reachable. Certificates
 persist in `caddy_data`.
 
@@ -81,7 +88,7 @@ reviewing and updating that pin. The index expires after 180 days. Sales older
 than three years are excluded, so the static research sample also needs eventual
 replacement. Normal service startup and prediction need no external network.
 
-Both artifacts enter the model version and invalidate cached valuations when
+All three artifacts enter the model version and invalidate cached valuations when
 changed. The health check requires valid loaded artifacts. Missing or invalid
 data makes estimates return 503; sparse/unsupported requests return 422.
 Health confirms loading, not accuracy or address coverage.
@@ -139,7 +146,7 @@ of jitter. A missed run is caught up after boot. Weekly-only operation can use
 stale rental data. No host crontab or continuously running aggregator is needed.
 
 The current provider endpoints and parsers still require live validation from
-your Leaseweb VM. A healthy process is not proof that those sites are accessible.
+your VM. A healthy process is not proof that those sites are accessible.
 First initialize the database as above, build the aggregator, then run a bounded
 import with absence-based expiry disabled (the default):
 
@@ -202,7 +209,7 @@ metadata, separate from public images and not included in content backups.
 
 ## Persistence and updates
 
-The Leaseweb portfolio deployment uses the VM's filesystem and persistent Docker
+The supplied single-VM deployment uses the VM's filesystem and persistent Docker
 volumes. No S3 account, separate storage server, or media hostname is needed.
 The shared `src/lib/storage.ts` module handles owner media, transaction uploads,
 generated agreement/passport PDFs, and bid logbooks. Writes publish complete files
