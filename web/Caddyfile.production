@@ -1,0 +1,5 @@
+www.zelf-wonen.online {
+    redir https://zelf-wonen.online{uri} permanent
+}
+
+# The release workflow appends Caddyfile to this redirect configuration.

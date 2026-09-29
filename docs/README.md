@@ -9,8 +9,6 @@
 | Run and explore the application | [Getting started](getting-started.md) and [sample data](../web/docs/dev-seed.md) |
 | Understand the design | [Architecture](architecture.md) and [repository map](directory-structure.md) |
 | Review the AI engineering | [AI engineering](ai-engineering.md), [estimator](../estimator/README.md) and [valuation method](../estimator/METHOD.md) |
-| Make a contribution | [Contributing](../CONTRIBUTING.md) |
-| Assess public or operational readiness | [Release readiness](release-readiness.md) and [secret/history audit](release-audit.md) |
 
 ## Service and operations guides
 

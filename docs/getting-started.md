@@ -109,5 +109,4 @@ commands live in the [estimator](../estimator/README.md) and
 | Estimate unavailable | Check estimator logs, PDOK connectivity, supported property inputs and artifact age. Health confirms loading, not valuation coverage. |
 | AI unavailable | Check the provider key and model availability; the configured fallbacks are not an availability guarantee. |
 
-For a public deployment, continue with [release readiness](release-readiness.md)
-and the [VPS runbook](../web/docs/deployment.md).
+For a public deployment, continue with the [VPS runbook](../web/docs/deployment.md).

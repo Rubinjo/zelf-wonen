@@ -14,8 +14,7 @@ their original platforms; ZelfWonen does not publish advertisements to external 
 > ZelfWonen has minimal financial backing and is **not actively maintained**.
 > Support, fixes, provider availability and data refreshes are not guaranteed.
 > It is available as a platform to explore and self-host, and as an AI engineering
-> portfolio project; operating it for real users requires the work described in
-> [release readiness](docs/release-readiness.md).
+> portfolio project.
 >
 > I am open to being contacted by people interested in helping make ZelfWonen
 > commercially viable.
@@ -94,10 +93,6 @@ The [architecture guide](docs/architecture.md) explains service boundaries and t
 controls. The [repository map](docs/directory-structure.md) points to the code.
 
 ## Contributing and release status
-
-Focused improvements and reproducible bug reports are welcome, with no guaranteed
-review timeline. Start with [contributing](CONTRIBUTING.md) and the
-[public-release gaps](docs/release-readiness.md).
 
 The application code and documentation are licensed under the [MIT License](LICENSE).
 Bundled datasets retain their separate [attribution and license notices](estimator/data/NOTICE.md).

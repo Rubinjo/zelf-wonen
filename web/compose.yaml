@@ -24,7 +24,7 @@ services:
       context: .
       args:
         NEXT_PUBLIC_APP_URL: https://${APP_DOMAIN:?Set APP_DOMAIN}
-    image: houser-web:local
+    image: ${WEB_IMAGE:-houser-web:local}
     restart: unless-stopped
     init: true
     env_file: .env.production
@@ -46,7 +46,7 @@ services:
       postgres:
         condition: service_healthy
       estimator:
-        condition: service_started
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
       interval: 10s
@@ -75,7 +75,7 @@ services:
   estimator:
     build:
       context: ../estimator
-    image: houser-estimator:local
+    image: ${ESTIMATOR_IMAGE:-houser-estimator:local}
     restart: unless-stopped
     init: true
     environment:
@@ -92,7 +92,7 @@ services:
 
   # Explicit backup/restore helper; never started with the application stack.
   storage-maintenance:
-    image: houser-web:local
+    image: ${WEB_IMAGE:-houser-web:local}
     profiles: ["maintenance"]
     user: "0:0"
     entrypoint: ["tar"]
@@ -107,7 +107,7 @@ services:
   aggregator:
     build:
       context: ../aggregator
-    image: houser-aggregator:local
+    image: ${AGGREGATOR_IMAGE:-houser-aggregator:local}
     restart: "no"
     command: ["sync"]
     init: true

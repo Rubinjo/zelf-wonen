@@ -1,0 +1,205 @@
+name: Validate, publish and deploy
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: Deploy to the production VPS after publishing
+        type: boolean
+        default: true
+      initialize_database:
+        description: First launch only - initialize an EMPTY database (never seeds data)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# Never interrupt an in-progress production deployment.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  APP_DOMAIN: zelf-wonen.online
+
+jobs:
+  web-checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run db:generate
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npx tsx --test tests/*.test.ts tests/*.test.tsx src/features/admin/access.test.ts
+      - name: Check deployment scripts
+        run: |
+          bash -n scripts/deploy-vps.sh scripts/sync-aggregator.sh
+          bash tests/deploy-vps.test.sh
+
+  python-checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        service: [estimator, aggregator]
+    defaults:
+      run:
+        working-directory: ${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.9.5'
+          python-version: '3.12'
+          enable-cache: true
+      - run: uv sync --frozen
+      - run: uv run pytest -q
+
+  images:
+    needs: [web-checks, python-checks]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      web: ${{ steps.web.outputs.digest }}
+      estimator: ${{ steps.estimator.outputs.digest }}
+      aggregator: ${{ steps.aggregator.outputs.digest }}
+      prefix: ${{ steps.names.outputs.prefix }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Image names
+        id: names
+        env:
+          REPOSITORY: ${{ github.repository }}
+        run: echo "prefix=ghcr.io/${REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v7
+        id: web
+        with:
+          context: web
+          platforms: linux/amd64
+          push: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+          tags: ${{ steps.names.outputs.prefix }}-web:${{ github.sha }}
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          build-args: NEXT_PUBLIC_APP_URL=https://${{ env.APP_DOMAIN }}
+          cache-from: type=gha,scope=web
+          cache-to: type=gha,mode=max,scope=web
+      - uses: docker/build-push-action@v7
+        id: estimator
+        with:
+          context: estimator
+          platforms: linux/amd64
+          push: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+          tags: ${{ steps.names.outputs.prefix }}-estimator:${{ github.sha }}
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          cache-from: type=gha,scope=estimator
+          cache-to: type=gha,mode=max,scope=estimator
+      - uses: docker/build-push-action@v7
+        id: aggregator
+        with:
+          context: aggregator
+          platforms: linux/amd64
+          push: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+          tags: ${{ steps.names.outputs.prefix }}-aggregator:${{ github.sha }}
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          cache-from: type=gha,scope=aggregator
+          cache-to: type=gha,mode=max,scope=aggregator
+
+  deploy:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.deploy
+    needs: images
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    environment:
+      name: production
+      url: https://zelf-wonen.online
+    concurrency:
+      group: production-deploy
+      cancel-in-progress: false
+    env:
+      RELEASE_ID: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+      IMAGE_PREFIX: ${{ needs.images.outputs.prefix }}
+      WEB_DIGEST: ${{ needs.images.outputs.web }}
+      ESTIMATOR_DIGEST: ${{ needs.images.outputs.estimator }}
+      AGGREGATOR_DIGEST: ${{ needs.images.outputs.aggregator }}
+      INITIALIZE_DATABASE: ${{ inputs.initialize_database }}
+      VPS_HOST: ${{ secrets.VPS_HOST }}
+      VPS_USER: ${{ secrets.VPS_USER }}
+      VPS_PORT: ${{ secrets.VPS_PORT }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Prepare release bundle
+        run: |
+          mkdir -p bundle/web/{scripts,prisma,systemd}
+          cp web/compose.yaml bundle/web/
+          cat web/Caddyfile.production web/Caddyfile > bundle/web/Caddyfile
+          cp web/scripts/deploy-vps.sh web/scripts/sync-aggregator.sh bundle/web/scripts/
+          cp web/prisma/schema.prisma web/prisma/immutability.sql bundle/web/prisma/
+          cp web/systemd/zelfwonen-aggregator* bundle/web/systemd/
+          printf 'WEB_IMAGE=%s-web@%s\nESTIMATOR_IMAGE=%s-estimator@%s\nAGGREGATOR_IMAGE=%s-aggregator@%s\nAPP_DOMAIN=%s\n' \
+            "$IMAGE_PREFIX" "$WEB_DIGEST" "$IMAGE_PREFIX" "$ESTIMATOR_DIGEST" \
+            "$IMAGE_PREFIX" "$AGGREGATOR_DIGEST" "$APP_DOMAIN" > bundle/web/.release.env
+          tar -czf release.tgz -C bundle web
+      - name: Configure verified SSH access
+        env:
+          SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          [[ "$VPS_HOST" =~ ^[a-zA-Z0-9.-]+$ && "$VPS_USER" =~ ^[a-z_][a-z0-9_-]*$ && "$VPS_PORT" =~ ^[0-9]+$ ]]
+          test -n "$SSH_KEY" && test -n "$KNOWN_HOSTS"
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/deploy_key ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<EOF
+          Host production
+            HostName $VPS_HOST
+            User $VPS_USER
+            Port $VPS_PORT
+            IdentityFile ~/.ssh/deploy_key
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+            BatchMode yes
+            ConnectTimeout 15
+            ServerAliveInterval 30
+            ServerAliveCountMax 6
+          EOF
+      - name: Upload and deploy immutable release
+        run: |
+          ssh production "mkdir -p zelf-wonen/releases/$RELEASE_ID && tar -xzf - -C zelf-wonen/releases/$RELEASE_ID" < release.tgz
+          ssh production "bash zelf-wonen/releases/$RELEASE_ID/web/scripts/deploy-vps.sh $INITIALIZE_DATABASE"
+      - name: Verify public HTTPS from outside the VPS
+        run: curl --fail --silent --show-error --retry 3 --max-time 30 https://zelf-wonen.online/ > /dev/null
+      - name: Remove SSH credentials
+        if: always()
+        run: rm -f ~/.ssh/deploy_key ~/.ssh/known_hosts ~/.ssh/config

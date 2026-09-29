@@ -1,6 +1,6 @@
 # Deploy to a VPS with Docker Compose
 
-[Documentation](../../docs/README.md) · [Release readiness](../../docs/release-readiness.md)
+[Documentation](../../docs/README.md)
 
 > This is an operator runbook for the supplied configuration, not a managed hosting
 > commitment. The project is not actively maintained; review release gaps before
@@ -9,6 +9,11 @@
 The production stack is `web/compose.yaml`. It runs Caddy, Next.js, PostgreSQL
 and the estimator; the aggregator remains opt-in. Run the commands below from
 `web/` on the Linux VPS with Docker Engine and the Compose plugin installed.
+
+For the GitHub Actions deployment to `zelf-wonen.online`, follow
+[GitHub Actions deployment](github-actions-deployment.md) instead of the local-build
+commands below. It uses published image digests and release directories under the
+deployment account's home, with an explicit empty-database initialization step.
 
 ## Configure the deployment
 

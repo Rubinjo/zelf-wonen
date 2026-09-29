@@ -158,10 +158,3 @@ Shared shortlists use bearer tokens stored as hashes, with expiry and revocation
 Private notes are included only when the owner opts in.
 The [operator dashboard](../web/docs/admin-dashboard.md) provides metrics for a
 configured administrator; it is not a complete moderation system.
-
-## Remaining hardening
-
-Endpoint abuse controls, malware scanning, immutable archival, privacy workflows,
-independent security review and operational monitoring need further work.
-[Release readiness](release-readiness.md) distinguishes those gaps from implemented
-controls; this document is not a security or legal certification.
