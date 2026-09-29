@@ -7,11 +7,19 @@ trap 'rm -rf -- "$scratch"' EXIT
 mkdir "$scratch/bin"
 export PATH="$scratch/bin:$PATH"
 export MOCK_TABLES=0 MOCK_FAIL_UP=false MOCK_FAIL_CURL=false
+export MOCK_FAIL_CONFIG=false MOCK_FAIL_PULL=false MOCK_VOLUMES=
 
 cat > "$scratch/bin/docker" <<'EOF'
 #!/usr/bin/env bash
 echo "$*" >> "$MOCK_LOG"
-if [[ "$*" == *'psql -U houser'* ]]; then
+if [[ "$*" == 'volume ls '* ]]; then
+  printf '%s\n' "$MOCK_VOLUMES"
+elif [[ "$*" == *'config --quiet'* && "$MOCK_FAIL_CONFIG" == true ]]; then
+  echo 'parser-error-containing-a-secret' >&2
+  exit 1
+elif [[ "$*" == *'pull web estimator'* && "$MOCK_FAIL_PULL" == true ]]; then
+  exit 1
+elif [[ "$*" == *'psql -U zelfwonen'* ]]; then
   echo "$MOCK_TABLES"
 elif [[ "$*" == *'--wait-timeout 180'* && "$MOCK_FAIL_UP" == true ]]; then
   exit 1
@@ -37,9 +45,9 @@ fixture() {
   export MOCK_LOG="$root/docker.log"
   : > "$MOCK_LOG"
 }
-deploy() { bash "$release/scripts/deploy-vps.sh" "$1" > "$root/output" 2>&1; }
+deploy() { bash "$release/scripts/deploy-vps.sh" "$@" > "$root/output" 2>&1; }
 refuse() {
-  if deploy "$1"; then
+  if deploy "$@"; then
     echo "Expected deployment refusal: $root" >&2
     exit 1
   fi
@@ -99,5 +107,59 @@ fixture mutable-image
 echo 'WEB_IMAGE=ghcr.io/rubinjo/example:latest' > "$release/.release.env"
 refuse true
 test ! -s "$MOCK_LOG"
+
+fixture transferred-env
+rm "$root/.env.production"
+cat > "$root/expected" <<'EOF'
+APP_DOMAIN=zelf-wonen.online
+SPECIAL='spaces $dollar #hash "quotes" $(touch should-not-exist)'
+MULTILINE='first line
+second line'
+EOF
+sed 's/$/\r/' "$root/expected" | deploy true --env-stdin
+cmp "$root/expected" "$root/.env.production"
+test "$(stat -c %a "$root/.env.production")" == 600
+test ! -e "$release/should-not-exist"
+! compgen -G "$root/.env.production.*" > /dev/null
+! grep -q 'SPECIAL=' "$root/output" "$MOCK_LOG"
+
+fixture empty-transfer
+cp "$root/.env.production" "$root/original"
+refuse true --env-stdin < /dev/null
+cmp "$root/original" "$root/.env.production"
+! compgen -G "$root/.env.production.*" > /dev/null
+
+fixture forbidden-transfer
+cp "$root/.env.production" "$root/original"
+printf 'VPS_PASSWORD=secret-do-not-log\n' | refuse true --env-stdin
+cmp "$root/original" "$root/.env.production"
+! grep -q 'secret-do-not-log' "$root/output"
+! compgen -G "$root/.env.production.*" > /dev/null
+
+fixture invalid-config
+cp "$root/.env.production" "$root/original"
+export MOCK_FAIL_CONFIG=true
+printf 'INVALID=configuration\n' | refuse true --env-stdin
+cmp "$root/original" "$root/.env.production"
+! grep -q 'parser-error-containing-a-secret' "$root/output"
+! compgen -G "$root/.env.production.*" > /dev/null
+export MOCK_FAIL_CONFIG=false
+
+fixture failed-pull
+cp "$root/.env.production" "$root/original"
+export MOCK_FAIL_PULL=true
+printf 'APP_DOMAIN=zelf-wonen.online\nUPDATED=true\n' | refuse true --env-stdin
+cmp "$root/original" "$root/.env.production"
+! compgen -G "$root/.env.production.*" > /dev/null
+export MOCK_FAIL_PULL=false
+
+fixture legacy-storage
+cp "$root/.env.production" "$root/original"
+export MOCK_VOLUMES=zelfwonen-production_houser_postgres_data
+printf 'APP_DOMAIN=zelf-wonen.online\nUPDATED=true\n' | refuse true --env-stdin
+cmp "$root/original" "$root/.env.production"
+! grep -q 'up -d' "$MOCK_LOG"
+grep -q 'Legacy PostgreSQL storage found' "$root/output"
+export MOCK_VOLUMES=
 
 echo 'Deployment safety checks passed.'

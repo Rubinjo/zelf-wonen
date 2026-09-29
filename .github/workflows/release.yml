@@ -195,9 +195,16 @@ jobs:
             ServerAliveCountMax 6
           EOF
       - name: Upload and deploy immutable release
+        env:
+          PRODUCTION_ENV: ${{ secrets.PRODUCTION_ENV }}
         run: |
+          if [[ -z "${PRODUCTION_ENV//[[:space:]]/}" ]]; then
+            echo 'Set PRODUCTION_ENV in the production GitHub environment.' >&2
+            exit 1
+          fi
           ssh production "mkdir -p zelf-wonen/releases/$RELEASE_ID && tar -xzf - -C zelf-wonen/releases/$RELEASE_ID" < release.tgz
-          ssh production "bash zelf-wonen/releases/$RELEASE_ID/web/scripts/deploy-vps.sh $INITIALIZE_DATABASE"
+          printf '%s\n' "$PRODUCTION_ENV" | ssh production \
+            "bash zelf-wonen/releases/$RELEASE_ID/web/scripts/deploy-vps.sh $INITIALIZE_DATABASE --env-stdin"
       - name: Verify public HTTPS from outside the VPS
         run: curl --fail --silent --show-error --retry 3 --max-time 30 https://zelf-wonen.online/ > /dev/null
       - name: Remove SSH credentials

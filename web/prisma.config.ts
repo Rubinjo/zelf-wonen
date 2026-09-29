@@ -14,6 +14,6 @@ export default defineConfig({
         // The fallback lets `prisma generate` run in CI without opening a connection.
         url:
             process.env.DATABASE_URL ??
-            "postgresql://houser:houser_dev_password@localhost:5432/houser?schema=public",
+            "postgresql://zelfwonen:zelfwonen_dev_password@localhost:5432/zelfwonen?schema=public",
     },
 });

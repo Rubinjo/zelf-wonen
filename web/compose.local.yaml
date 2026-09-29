@@ -2,18 +2,18 @@
 services:
   postgres:
     image: postgres:17-alpine
-    container_name: houser-postgres
+    container_name: zelfwonen-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: houser
-      POSTGRES_USER: houser
-      POSTGRES_PASSWORD: houser_dev_password
+      POSTGRES_DB: zelfwonen
+      POSTGRES_USER: zelfwonen
+      POSTGRES_PASSWORD: zelfwonen_dev_password
     ports:
       - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
     volumes:
-      - houser_postgres_data:/var/lib/postgresql/data
+      - zelfwonen_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U houser -d houser"]
+      test: ["CMD-SHELL", "pg_isready -U zelfwonen -d zelfwonen"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -23,8 +23,8 @@ services:
     build:
       context: ../estimator
       dockerfile: Dockerfile
-    image: houser-estimator:local
-    container_name: houser-estimator
+    image: zelfwonen-estimator:local
+    container_name: zelfwonen-estimator
     restart: unless-stopped
     init: true
     environment:
@@ -53,14 +53,14 @@ services:
     build:
       context: ../aggregator
       dockerfile: Dockerfile
-    image: houser-aggregator:local
-    container_name: houser-aggregator
+    image: zelfwonen-aggregator:local
+    container_name: zelfwonen-aggregator
     command: ["run"]
     restart: unless-stopped
     init: true
     profiles: ["aggregator"]
     environment:
-      AGGREGATOR_DATABASE_URL: postgresql://houser:houser_dev_password@postgres:5432/houser
+      AGGREGATOR_DATABASE_URL: postgresql://zelfwonen:zelfwonen_dev_password@postgres:5432/zelfwonen
       AGGREGATOR_SYNC_INTERVAL_SECONDS: ${AGGREGATOR_SYNC_INTERVAL_SECONDS:-21600}
       AGGREGATOR_PROXY_URLS: ${AGGREGATOR_PROXY_URLS:-}
       AGGREGATOR_ENABLED_SOURCES: ${AGGREGATOR_ENABLED_SOURCES:-FUNDA,KAMERNET}
@@ -79,4 +79,4 @@ services:
         condition: service_healthy
 
 volumes:
-  houser_postgres_data:
+  zelfwonen_postgres_data:

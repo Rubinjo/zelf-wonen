@@ -27,7 +27,7 @@ config();
 const SEED_PASSWORD = "DevPassw0rd!";
 const SEED_EMAIL = "jan.devries@example.dev";
 const DEV_FALLBACK_URL =
-    "postgresql://houser:houser_dev_password@localhost:5432/houser?schema=public";
+    "postgresql://zelfwonen:zelfwonen_dev_password@localhost:5432/zelfwonen?schema=public";
 
 function assertLocalDb() {
     const url = process.env.DATABASE_URL ?? DEV_FALLBACK_URL;

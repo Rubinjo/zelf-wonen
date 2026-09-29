@@ -69,7 +69,7 @@ config();
  * a production/staging database.                                       *
  * ------------------------------------------------------------------ */
 const DEV_FALLBACK_URL =
-    "postgresql://houser:houser_dev_password@localhost:5432/houser?schema=public";
+    "postgresql://zelfwonen:zelfwonen_dev_password@localhost:5432/zelfwonen?schema=public";
 
 function assertDevEnvironment() {
     const nodeEnv = process.env.NODE_ENV;

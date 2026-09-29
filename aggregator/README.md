@@ -65,7 +65,7 @@ Set the environment via `AGGREGATOR_`-prefixed variables (or a `.env` file):
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `AGGREGATOR_DATABASE_URL` | `postgresql://houser:houser_dev_password@localhost:5432/houser` | Postgres DSN |
+| `AGGREGATOR_DATABASE_URL` | `postgresql://zelfwonen:zelfwonen_dev_password@localhost:5432/zelfwonen` | Postgres DSN |
 | `AGGREGATOR_SYNC_INTERVAL_SECONDS` | `21600` | development loop interval; the production timer is separate |
 | `AGGREGATOR_STATUS_FILE` | `.state/status.json` | private per-source run results; `/app/state/status.json` in production |
 | `AGGREGATOR_EXPIRE_MISSING` | `false` | opt in only after verifying exhaustive discovery |

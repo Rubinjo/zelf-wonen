@@ -287,7 +287,7 @@ backup_dir=/absolute/path/to/completed-backup
 docker compose --env-file .env.production build web
 docker compose --env-file .env.production up -d --wait postgres
 docker compose --env-file .env.production exec -T postgres \
-  pg_restore -U houser -d houser --exit-on-error --no-owner < "$backup_dir/database.dump"
+  pg_restore -U zelfwonen -d zelfwonen --exit-on-error --no-owner < "$backup_dir/database.dump"
 docker compose --env-file .env.production --profile maintenance run --rm --no-deps -T \
   storage-maintenance -xzpf - --numeric-owner < "$backup_dir/files.tar.gz"
 docker compose --env-file .env.production up -d --wait

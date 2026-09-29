@@ -25,7 +25,7 @@ trap restart_writers EXIT
 if ((${#writers[@]})); then
     "${compose[@]}" stop "${writers[@]}"
 fi
-"${compose[@]}" exec -T postgres pg_dump -U houser -d houser -Fc > "$backup_dir/database.dump"
+"${compose[@]}" exec -T postgres pg_dump -U zelfwonen -d zelfwonen -Fc > "$backup_dir/database.dump"
 "${compose[@]}" run --rm --no-deps -T storage-maintenance \
     -czf - .data public/uploads public/aggregated-media > "$backup_dir/files.tar.gz"
 "${compose[@]}" exec -T postgres pg_restore --list < "$backup_dir/database.dump" > /dev/null

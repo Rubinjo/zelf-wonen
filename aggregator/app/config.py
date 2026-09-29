@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
 
     # --- Database -----------------------------------------------------------
-    database_url: str = "postgresql://houser:houser_dev_password@localhost:5432/houser"
+    database_url: str = "postgresql://zelfwonen:zelfwonen_dev_password@localhost:5432/zelfwonen"
 
     # --- Scheduling / locking ----------------------------------------------
     # Cron interval. The advisory lock guarantees a scrape that runs longer than

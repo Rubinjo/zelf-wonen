@@ -24,17 +24,18 @@ services:
       context: .
       args:
         NEXT_PUBLIC_APP_URL: https://${APP_DOMAIN:?Set APP_DOMAIN}
-    image: ${WEB_IMAGE:-houser-web:local}
+    image: ${WEB_IMAGE:-zelfwonen-web:local}
     restart: unless-stopped
     init: true
-    env_file: .env.production
+    # Deployment validates a staged secret file before promoting it atomically.
+    env_file: ${APP_ENV_FILE:-.env.production}
     environment:
       NODE_ENV: production
       NEXT_PUBLIC_APP_URL: https://${APP_DOMAIN:?Set APP_DOMAIN}
       BETTER_AUTH_URL: https://${APP_DOMAIN:?Set APP_DOMAIN}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?Set a random Better Auth secret}
       IP_HASH_SALT: ${IP_HASH_SALT:?Set an independent random IP hash salt}
-      DATABASE_URL: postgresql://houser:${POSTGRES_PASSWORD:?Set a URL-safe database password}@postgres:5432/houser?schema=public
+      DATABASE_URL: postgresql://zelfwonen:${POSTGRES_PASSWORD:?Set a URL-safe database password}@postgres:5432/zelfwonen?schema=public
       ML_ESTIMATOR_URL: http://estimator:8000
       ML_ESTIMATOR_TOKEN: ${ML_ESTIMATOR_TOKEN:?Set an estimator service token}
       AGGREGATED_MEDIA_BASE_URL: ${AGGREGATED_MEDIA_BASE_URL:-/aggregated-media}
@@ -59,13 +60,13 @@ services:
     image: postgres:17-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: houser
-      POSTGRES_USER: houser
+      POSTGRES_DB: zelfwonen
+      POSTGRES_USER: zelfwonen
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a URL-safe database password}
     volumes:
-      - houser_postgres_data:/var/lib/postgresql/data
+      - zelfwonen_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U houser -d houser"]
+      test: ["CMD-SHELL", "pg_isready -U zelfwonen -d zelfwonen"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -75,7 +76,7 @@ services:
   estimator:
     build:
       context: ../estimator
-    image: ${ESTIMATOR_IMAGE:-houser-estimator:local}
+    image: ${ESTIMATOR_IMAGE:-zelfwonen-estimator:local}
     restart: unless-stopped
     init: true
     environment:
@@ -92,7 +93,7 @@ services:
 
   # Explicit backup/restore helper; never started with the application stack.
   storage-maintenance:
-    image: ${WEB_IMAGE:-houser-web:local}
+    image: ${WEB_IMAGE:-zelfwonen-web:local}
     profiles: ["maintenance"]
     user: "0:0"
     entrypoint: ["tar"]
@@ -107,13 +108,13 @@ services:
   aggregator:
     build:
       context: ../aggregator
-    image: ${AGGREGATOR_IMAGE:-houser-aggregator:local}
+    image: ${AGGREGATOR_IMAGE:-zelfwonen-aggregator:local}
     restart: "no"
     command: ["sync"]
     init: true
     profiles: ["aggregator"]
     environment:
-      AGGREGATOR_DATABASE_URL: postgresql://houser:${POSTGRES_PASSWORD:?Set a URL-safe database password}@postgres:5432/houser
+      AGGREGATOR_DATABASE_URL: postgresql://zelfwonen:${POSTGRES_PASSWORD:?Set a URL-safe database password}@postgres:5432/zelfwonen
       AGGREGATOR_SYNC_INTERVAL_SECONDS: ${AGGREGATOR_SYNC_INTERVAL_SECONDS:-21600}
       AGGREGATOR_PROXY_URLS: ${AGGREGATOR_PROXY_URLS:-}
       AGGREGATOR_ENABLED_SOURCES: ${AGGREGATOR_ENABLED_SOURCES:-FUNDA,KAMERNET}
@@ -146,7 +147,7 @@ networks:
 
 volumes:
   aggregator_state:
-  houser_postgres_data:
+  zelfwonen_postgres_data:
   web_data:
   web_uploads:
   aggregated_media:
