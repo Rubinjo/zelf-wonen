@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import Image from "next/image";
+import { ListingImage } from "@/components/listing/listing-image";
 import Link from "next/link";
 import {
     DoorOpen,
@@ -277,7 +277,7 @@ export function MarketplaceMap({
                                     href={`/property/${listing.slug}`}
                                     className="relative mb-3 block h-32 overflow-hidden rounded-md bg-background"
                                 >
-                                    <Image
+                                    <ListingImage
                                         src={listing.imageUrl}
                                         alt={listing.imageAlt}
                                         fill

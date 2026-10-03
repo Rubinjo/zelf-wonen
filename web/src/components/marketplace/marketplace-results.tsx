@@ -3,7 +3,7 @@
 import { startTransition, useState, useSyncExternalStore } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
-import Image from "next/image";
+import { ListingImage } from "@/components/listing/listing-image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -385,7 +385,7 @@ export function MarketplaceResults({
                                         className="relative block h-full w-full"
                                     >
                                         {listing.imageUrl ? (
-                                            <Image
+                                            <ListingImage
                                                 src={listing.imageUrl}
                                                 alt={listing.imageAlt}
                                                 fill

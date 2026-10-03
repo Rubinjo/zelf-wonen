@@ -4,7 +4,7 @@ import { loadAggregatedNeighborhood } from "@/features/listings/enrich-aggregate
 import { getLanguage } from "@/lib/language";
 import { PublicHeader } from "@/components/platform/public-header";
 import Link from "next/link";
-import Image from "next/image";
+import { ListingImage } from "@/components/listing/listing-image";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import {
@@ -732,7 +732,7 @@ export default async function PublicListingPage({
                 <div className="mx-auto max-w-7xl px-5 py-6 lg:px-8">
                     {photos.length > 0 ? (
                         <div className="grid h-[55vh] min-h-96 gap-2 overflow-hidden rounded-4xl md:grid-cols-2">
-                            <Image
+                            <ListingImage
                                 src={`/${photos[0].storageKey}`}
                                 alt={title ?? "Woning"}
                                 width={1600}
@@ -742,7 +742,7 @@ export default async function PublicListingPage({
                             />
                             <div className="hidden grid-cols-2 gap-2 md:grid">
                                 {photos.slice(1, 5).map((photo) => (
-                                    <Image
+                                    <ListingImage
                                         key={photo.id}
                                         src={`/${photo.storageKey}`}
                                         alt=""
@@ -1208,7 +1208,7 @@ export default async function PublicListingPage({
                                                     Open PDF-plattegrond
                                                 </a>
                                             ) : (
-                                                <Image
+                                                <ListingImage
                                                     key={item.id}
                                                     src={`/${item.storageKey}`}
                                                     alt="Plattegrond"

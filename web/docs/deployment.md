@@ -264,6 +264,17 @@ next request; imported content-hashed images have a one-day browser cache.
 Temporary upload files are hidden by Caddy. Local development uses the same
 directory layout with Next.js serving `public/`.
 
+Listing photos and floor plans use `ListingImage` with Next.js's `unoptimized`
+option so the browser requests media directly from Caddy. Keep this behavior for
+runtime uploads and imports: the optimizer resolves relative URLs internally,
+bypassing Caddy, and the production public-file index does not discover files
+added after server startup. This can cause `/_next/image` to return HTTP 400
+("The requested resource isn't a valid image") even when the direct media URL
+returns HTTP 200. Static brand assets can continue using normal `next/image`.
+Direct media requests retain image layout and lazy loading, but download the
+original file without Next.js resizing; thumbnails would require a separate
+media pipeline or a runtime-aware image service.
+
 The estimator checks ownership of READY media records, reads photo bytes from
 disk, verifies their stored SHA-256 hashes, and sends them to the configured AI
 provider. It also works on localhost without a publicly reachable image URL.

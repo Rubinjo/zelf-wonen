@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import type { Metadata } from "next";
-import Image from "next/image";
+import { ListingImage } from "@/components/listing/listing-image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -139,7 +139,7 @@ export default async function PublicShortlistPage({
                                 <Link href={`/property/${listing.publicSlug}`}>
                                     <div className="relative aspect-4/3 bg-background">
                                         {listing.media[0] ? (
-                                            <Image
+                                            <ListingImage
                                                 src={`/${listing.media[0].storageKey}`}
                                                 alt=""
                                                 fill

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import { ListingImage } from "@/components/listing/listing-image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -745,7 +745,7 @@ function FavoriteCard({
                     {checked ? <Check size={17} /> : <Share2 size={16} />}
                 </button>
                 {favorite.listing.imageUrl ? (
-                    <Image
+                    <ListingImage
                         src={favorite.listing.imageUrl}
                         alt=""
                         fill
@@ -1408,7 +1408,7 @@ function ListingCard({
         <>
             <div className="relative aspect-video bg-background">
                 {listing.imageUrl ? (
-                    <Image
+                    <ListingImage
                         src={listing.imageUrl}
                         alt=""
                         fill

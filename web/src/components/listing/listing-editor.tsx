@@ -6,7 +6,7 @@ import { translateListingIssue } from "@/lib/messages/listing-copy";
 import { useState, type ChangeEvent } from "react";
 import type { EstimateResponse } from "@/lib/schemas/estimator";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Image from "next/image";
+import { ListingImage } from "@/components/listing/listing-image";
 import {
     BadgeEuro,
     Bot,
@@ -2165,7 +2165,7 @@ function MediaGrid({
                     className="group relative overflow-hidden rounded-2xl border border-line bg-background"
                 >
                     {item.mimeType.startsWith("image/") ? (
-                        <Image
+                        <ListingImage
                             src={`/${item.storageKey}`}
                             alt=""
                             width={800}

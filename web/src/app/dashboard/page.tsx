@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { ListingImage } from "@/components/listing/listing-image";
 import { ArrowRight, Building2, Clock3, Plus, ShieldCheck } from "lucide-react";
 import { requireEmailVerifiedUser } from "@/features/auth/guards";
 import { listOwnerListings } from "@/features/listings/listing-service";
@@ -124,7 +124,7 @@ export default async function DashboardPage() {
                             >
                                 <div className="relative h-48 bg-brand-dark/8">
                                     {photo ? (
-                                        <Image
+                                        <ListingImage
                                             src={`/${photo.storageKey}`}
                                             alt=""
                                             width={800}
