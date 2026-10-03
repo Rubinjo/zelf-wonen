@@ -1,4 +1,12 @@
 import { PublicHeader } from "@/components/platform/public-header";
+import type { Prisma } from "@/generated/prisma/client";
+import type { ReactNode } from "react";
+import { PropertyLocation } from "@/components/listing/property-location";
+import { DetailGroup, DetailTags } from "@/components/listing/property-detail-groups";
+import { aggregatedAddress, mapAggregatedPropertyDetails } from "@/features/listings/aggregated-property-details";
+import { gardenOrientationLabels } from "@/features/listings/garden";
+import { erfpachtOptions, parkingOptions, propertyAmenityOptions, roofTypeOptions } from "@/lib/property-options";
+import { translateListingCopy } from "@/lib/messages/listing-copy";
 import {
     BadgeCheck,
     BedDouble,
@@ -7,6 +15,10 @@ import {
     DoorOpen,
     ExternalLink,
     Info,
+    Home,
+    Layers3,
+    Check,
+    CircleParking,
     MapPin,
     Ruler,
 } from "lucide-react";
@@ -78,6 +90,20 @@ const copy = {
         plotArea: "Perceeloppervlak",
         amenities: "Voorzieningen",
         backToSearch: "Terug naar zoeken",
+        allPhotos: "Alle foto's",
+        general: "Algemeen",
+        dimensions: "Oppervlakten en inhoud",
+        layout: "Indeling",
+        province: "Provincie",
+        volume: "Inhoud",
+        externalStorage: "Externe bergruimte",
+        bathrooms: "Badkamers",
+        floors: "Verdiepingen",
+        roof: "Daktype",
+        garden: "Tuin",
+        gardenOrientation: "Ligging tuin",
+        leasehold: "Erfpacht",
+        parking: "Parkeren",
     },
     en: {
         forSale: "For sale",
@@ -105,6 +131,20 @@ const copy = {
         plotArea: "Plot area",
         amenities: "Amenities",
         backToSearch: "Back to search",
+        allPhotos: "All photos",
+        general: "General",
+        dimensions: "Areas and volume",
+        layout: "Layout",
+        province: "Province",
+        volume: "Volume",
+        externalStorage: "External storage",
+        bathrooms: "Bathrooms",
+        floors: "Floors",
+        roof: "Roof type",
+        garden: "Garden",
+        gardenOrientation: "Garden orientation",
+        leasehold: "Ground lease",
+        parking: "Parking",
     },
 };
 
@@ -122,15 +162,20 @@ export type AggregatedListingView = {
     houseNumberAddition: string | null;
     city: string;
     municipality: string | null;
+    province: string | null;
+    latitude: number | null;
+    longitude: number | null;
     propertyType: string;
     livingAreaSqm: number | null;
     plotAreaSqm: number | null;
+    volumeCubicMeters: number | null;
     roomCount: number | null;
     bedroomCount: number | null;
     bathroomCount: number | null;
     constructionYear: number | null;
     energyLabel: string | null;
     amenities: string[];
+    interior?: Prisma.JsonValue;
     availableFrom: string | null;
     images: Array<{ id: string; storageKey: string; sortOrder: number }>;
     platformLinks: Array<{
@@ -145,7 +190,6 @@ function mediaUrl(storageKey: string): string {
     const base = process.env.AGGREGATED_MEDIA_BASE_URL ?? "/aggregated-media";
     return `${base.replace(/\/+$/, "")}/${storageKey}`;
 }
-
 function formatPrice(cents: string | null, locale: string): string {
     if (!cents) return "—";
     return new Intl.NumberFormat(locale, {
@@ -169,9 +213,11 @@ function formatDate(iso: string | null, locale: string): string | null {
 export function AggregatedListingDetail({
     listing,
     language,
+    neighborhood,
 }: {
     listing: AggregatedListingView;
     language: "nl" | "en";
+    neighborhood?: ReactNode;
 }) {
     const t = copy[language];
     const locale = language === "nl" ? "nl-NL" : "en-NL";
@@ -180,7 +226,7 @@ export function AggregatedListingDetail({
         listing.purpose === "SALE"
             ? listing.askingPriceCents
             : listing.monthlyRentCents;
-    const fullAddress = `${listing.street} ${listing.houseNumber}${listing.houseNumberAddition ? ` ${listing.houseNumberAddition}` : ""}, ${listing.postcode ?? ""} ${listing.city}`;
+    const fullAddress = aggregatedAddress(listing);
     const activeLinks = listing.platformLinks.filter(
         (link) => link.status === "ACTIVE",
     );
@@ -211,6 +257,21 @@ export function AggregatedListingDetail({
                                 ))}
                             </div>
                         </div>
+                    ) : null}
+                    {listing.images.length > 1 ? (
+                        <details className="mt-4 rounded-2xl border border-line p-4">
+                            <summary className="cursor-pointer font-semibold">
+                                {t.allPhotos} ({listing.images.length})
+                            </summary>
+                            <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+                                {listing.images.map((image) => (
+                                    <a key={image.id} href={mediaUrl(image.storageKey)} target="_blank" rel="noopener noreferrer">
+                                        <img src={mediaUrl(image.storageKey)} alt={title} loading="lazy"
+                                            className="aspect-4/3 w-full rounded-xl object-cover" />
+                                    </a>
+                                ))}
+                            </div>
+                        </details>
                     ) : null}
                     <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_380px]">
                         <article>
@@ -267,6 +328,16 @@ export function AggregatedListingDetail({
                                     label={t.built}
                                 />
                             </div>
+                            {listing.energyLabel ? (
+                                <div className="mt-7 flex items-center gap-4 rounded-2xl bg-background p-5">
+                                    <span className="grid size-12 place-items-center rounded-xl bg-brand text-lg font-bold text-white">
+                                        {energyNames[listing.energyLabel] ?? listing.energyLabel}
+                                    </span>
+                                    <p className="font-semibold">
+                                        {t.energy} {energyNames[listing.energyLabel] ?? listing.energyLabel}
+                                    </p>
+                                </div>
+                            ) : null}
                             {listing.descriptionNl ? (
                                 <>
                                     <h2 className="mt-10 text-2xl font-semibold">
@@ -277,83 +348,8 @@ export function AggregatedListingDetail({
                                     </div>
                                 </>
                             ) : null}
-                            <section className="mt-10">
-                                <h2 className="text-2xl font-semibold">
-                                    {t.details}
-                                </h2>
-                                <dl className="mt-5 divide-y divide-line border-y border-line">
-                                    <Detail
-                                        label={t.address}
-                                        value={fullAddress}
-                                    />
-                                    <Detail
-                                        label={t.propertyType}
-                                        value={
-                                            propertyTypeNames[language][
-                                                listing.propertyType as keyof (typeof propertyTypeNames)["nl"]
-                                            ] ?? listing.propertyType
-                                        }
-                                    />
-                                    <Detail
-                                        label={t.municipality}
-                                        value={listing.municipality}
-                                    />
-                                    <Detail
-                                        label={t.living}
-                                        value={
-                                            listing.livingAreaSqm
-                                                ? `${listing.livingAreaSqm} m²`
-                                                : null
-                                        }
-                                    />
-                                    <Detail
-                                        label={t.plotArea}
-                                        value={
-                                            listing.plotAreaSqm
-                                                ? `${listing.plotAreaSqm} m²`
-                                                : null
-                                        }
-                                    />
-                                    {listing.energyLabel ? (
-                                        <Detail
-                                            label={t.energy}
-                                            value={
-                                                energyNames[
-                                                    listing.energyLabel
-                                                ] ?? listing.energyLabel
-                                            }
-                                        />
-                                    ) : null}
-                                    {listing.serviceCostsCents ? (
-                                        <Detail
-                                            label={t.serviceCosts}
-                                            value={formatPrice(
-                                                listing.serviceCostsCents,
-                                                locale,
-                                            )}
-                                        />
-                                    ) : null}
-                                    <Detail
-                                        label={t.availableFrom}
-                                        value={formatDate(
-                                            listing.availableFrom,
-                                            locale,
-                                        )}
-                                    />
-                                </dl>
-                                {listing.amenities.length > 0 ? (
-                                    <div className="mt-6 flex flex-wrap gap-2">
-                                        {listing.amenities.map((amenity) => (
-                                            <span
-                                                key={amenity}
-                                                className="rounded-full border border-line px-3 py-1 text-sm"
-                                            >
-                                                {amenity}
-                                            </span>
-                                        ))}
-                                    </div>
-                                ) : null}
-                            </section>
+                            <AggregatedPropertyDetails listing={listing} language={language} />
+                            {neighborhood}
                         </article>
                         <aside className="h-fit lg:sticky lg:top-6">
                             <div className="mb-4 rounded-3xl bg-accent p-6 text-brand-dark">
@@ -399,6 +395,12 @@ export function AggregatedListingDetail({
                             ) : null}
                         </aside>
                     </div>
+                    <PropertyLocation
+                        latitude={listing.latitude}
+                        longitude={listing.longitude}
+                        address={fullAddress}
+                        language={language}
+                    />
                 </div>
             </main>
         </div>
@@ -427,18 +429,72 @@ function Stat({
     );
 }
 
-function Detail({
-    label,
-    value,
-}: {
-    label: string;
-    value: string | null | undefined;
+export function AggregatedPropertyDetails({ listing, language }: {
+    listing: AggregatedListingView;
+    language: "nl" | "en";
 }) {
-    if (!value) return null;
+    const t = copy[language];
+    const locale = language === "nl" ? "nl-NL" : "en-NL";
+    const details = mapAggregatedPropertyDetails(listing.interior, listing.amenities);
+    const measurement = (value: number | null, unit: string) => value === null ? null
+        : `${new Intl.NumberFormat(locale).format(value)} ${unit}`;
+    const optionName = (options: readonly { value: string; label: string }[], value: string | null) => {
+        const label = options.find(option => option.value === value)?.label;
+        return label ? translateListingCopy(language, label) : null;
+    };
+    const serviceCosts = listing.serviceCostsCents ?? details.serviceCostsCents?.toString() ?? null;
+    const isFunda = listing.platformLinks.some(link => link.source === "FUNDA");
+    const rentalFact = (key: string) => {
+        if (isFunda || !listing.interior || typeof listing.interior !== "object"
+            || Array.isArray(listing.interior)) return null;
+        const value = listing.interior[key];
+        return typeof value === "string" ? value : null;
+    };
+    const amenities = isFunda ? details.amenities.map(value =>
+        optionName(propertyAmenityOptions, value)!,
+    ) : listing.amenities;
     return (
-        <div className="grid gap-2 py-4 sm:grid-cols-[220px_1fr]">
-            <dt className="text-xs font-semibold text-muted">{label}</dt>
-            <dd className="text-sm font-medium">{value}</dd>
-        </div>
+        <section className="mt-10">
+            <h2 className="text-2xl font-semibold">{t.details}</h2>
+            <div className="mt-5 divide-y divide-line border-y border-line">
+                <DetailGroup icon={Home} title={t.general} items={[
+                    [t.address, aggregatedAddress(listing)],
+                    [t.propertyType, propertyTypeNames[language][
+                        listing.propertyType as keyof typeof propertyTypeNames.nl
+                    ] ?? listing.propertyType],
+                    [t.built, listing.constructionYear],
+                    [t.municipality, listing.municipality],
+                    [t.province, listing.province],
+                    [t.leasehold, optionName(erfpachtOptions, details.erfpachtType)],
+                    [t.serviceCosts, serviceCosts === null ? null : formatPrice(serviceCosts, locale)],
+                    [t.availableFrom, formatDate(listing.availableFrom, locale)],
+                    ...(!isFunda ? ["Borg", "Bemiddelingskosten", "Extra internetkosten",
+                        "Beschikbaar tot", "Aantal huurders", "Inclusief vaste lasten",
+                        "Huisdieren toegestaan", "Roken toegestaan", "Inschrijving mogelijk",
+                    ].map(label => [translateListingCopy(language, label), rentalFact(label)] as const) : []),
+                ]} />
+                <DetailGroup icon={Ruler} title={t.dimensions} items={[
+                    [t.living, measurement(listing.livingAreaSqm, "m²")],
+                    [t.plotArea, measurement(listing.plotAreaSqm, "m²")],
+                    [t.volume, measurement(listing.volumeCubicMeters, "m³")],
+                    [t.externalStorage, measurement(details.externalStorageAreaSqm, "m²")],
+                ]} />
+                <DetailGroup icon={Layers3} title={t.layout} items={[
+                    [t.rooms, listing.roomCount],
+                    [t.bedrooms, listing.bedroomCount],
+                    [t.bathrooms, listing.bathroomCount],
+                    [t.floors, details.floorCount],
+                    [t.roof, optionName(roofTypeOptions, details.roofType)],
+                    [translateListingCopy(language, "Inrichting"), rentalFact("Inrichting")],
+                    [t.garden, details.garden ? language === "nl" ? "Ja" : "Yes" : null],
+                    [t.gardenOrientation, details.garden?.orientation
+                        ? translateListingCopy(language, gardenOrientationLabels[details.garden.orientation]) : null],
+                ]} />
+                <DetailTags icon={Check} title={t.amenities} values={amenities} />
+                <DetailTags icon={CircleParking} title={t.parking} values={details.parkingOptions.map(value =>
+                    optionName(parkingOptions, value)!,
+                )} />
+            </div>
+        </section>
     );
 }

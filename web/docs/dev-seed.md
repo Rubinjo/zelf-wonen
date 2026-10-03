@@ -24,7 +24,6 @@ not proof that its data is disposable.
 ```bash
 # From web/
 npm run db:seed            # tsx prisma/seed.ts
-npx prisma db seed         # explicit alternative
 npm run db:verify-seed     # sanity-checks the seeded data (credentials + hash chains)
 ```
 

@@ -25,6 +25,9 @@ def extract_json_ld(html: str) -> list[dict[str, Any]]:
             continue
         if isinstance(parsed, dict):
             objects.append(parsed)
+            graph = parsed.get("@graph")
+            if isinstance(graph, list):
+                objects.extend(item for item in graph if isinstance(item, dict))
         elif isinstance(parsed, list):
             objects.extend(item for item in parsed if isinstance(item, dict))
     return objects
@@ -58,20 +61,85 @@ def extract_embedded_json(html: str, var_names: tuple[str, ...]) -> dict[str, An
     tree = HTMLParser(html)
     for script in tree.css("script"):
         text = script.text() or ""
+        if script.attributes.get("id") in var_names:
+            try:
+                parsed = json.loads(text)
+                if isinstance(parsed, dict):
+                    return parsed
+            except json.JSONDecodeError:
+                continue
         for var_name in var_names:
             marker = f"{var_name}"
             if marker not in text:
                 continue
-            match = re.search(
-                rf"{re.escape(var_name)}\s*=\s*(\{{.*?\}}|\[.*?\])\s*;?", text, re.DOTALL
-            )
+            match = re.search(rf"{re.escape(var_name)}\s*=\s*", text)
             if not match:
                 continue
             try:
-                return json.loads(match.group(1))
+                parsed, _ = json.JSONDecoder().raw_decode(text[match.end() :])
+                if isinstance(parsed, dict):
+                    return parsed
             except json.JSONDecodeError:
                 continue
     return {}
+
+
+def extract_nuxt_data(html: str) -> dict[str, Any]:
+    """Decode Nuxt's devalue reference table without evaluating page scripts."""
+    node = HTMLParser(html).css_first("script#__NUXT_DATA__")
+    if node is None:
+        return {}
+    try:
+        table = json.loads(node.text())
+        if not isinstance(table, list):
+            return {}
+        cache: dict[int, Any] = {}
+
+        def resolve(index: int) -> Any:
+            if index < 0:
+                return None
+            if index in cache:
+                return cache[index]
+            value = table[index]
+            if isinstance(value, dict):
+                result: dict[str, Any] = {}
+                cache[index] = result
+                result.update({key: resolve(ref) for key, ref in value.items()})
+                return result
+            if isinstance(value, list):
+                if value and isinstance(value[0], str):
+                    if value[0] in {"Reactive", "ShallowReactive", "Ref", "ShallowRef"}:
+                        result = resolve(value[1])
+                        cache[index] = result
+                        return result
+                    return None  # Unneeded custom types (e.g. Set/Date).
+                items: list[Any] = []
+                cache[index] = items
+                items.extend(resolve(ref) for ref in value)
+                return items
+            cache[index] = value
+            return value
+
+        result = resolve(0)
+        return result if isinstance(result, dict) else {}
+    except (ValueError, IndexError, TypeError, RecursionError):
+        return {}
+
+
+def extract_labelled_facts(html: str) -> dict[str, str]:
+    from ..normalizer import clean_text
+
+    facts: dict[str, str] = {}
+    for term in HTMLParser(html).css("dt"):
+        value = term.next
+        while value is not None and value.tag != "dd":
+            value = value.next
+        if value is not None:
+            label = clean_text(term.text()).lower()
+            text = clean_text(value.text(separator=" "))
+            if text:
+                facts[label] = text
+    return facts
 
 
 def first_number(value: Any) -> int | float | None:

@@ -1,5 +1,10 @@
 import { Prisma } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
+import {
+    aggregatedMarketplaceWhere,
+    compareMarketplaceListings,
+    toMarketplaceListing,
+} from "./aggregated-marketplace";
 
 export const MARKETPLACE_PAGE_SIZE = 18;
 
@@ -59,6 +64,7 @@ export type MarketplaceListing = {
     liveAt: string | null;
     bidWindowOpensAt: string | null;
     bidWindowClosesAt: string | null;
+    externalSource?: string;
 };
 
 export type MarketplaceFilters = {
@@ -244,12 +250,13 @@ export function parseMarketplaceFilters(
         west < east
             ? { north, east, south, west }
             : null;
+    const purpose = first(searchParams.purpose) === "RENT" ? "RENT" : "SALE";
     const selectedStatuses = allowedValues(
         searchParams.status,
-        marketplaceStatuses,
+        marketplaceStatuses.filter((status) => status !== (purpose === "RENT" ? "SOLD" : "RENTED")),
     ) as MarketplaceStatus[];
     return {
-        purpose: first(searchParams.purpose) === "RENT" ? "RENT" : "SALE",
+        purpose,
         query: first(searchParams.q)?.trim().slice(0, 100) ?? "",
         city: first(searchParams.city)?.trim().slice(0, 80) || null,
         keywords: selected(searchParams.keyword)
@@ -263,7 +270,7 @@ export function parseMarketplaceFilters(
         gardenOrientation: gardenOrientation(
             first(searchParams.gardenOrientation),
         ),
-        statuses: selectedStatuses.length > 0 ? selectedStatuses : ["LIVE"],
+        statuses: selectedStatuses.length > 0 ? selectedStatuses : ["LIVE", "UNDER_OFFER"],
         priceMin: positiveNumber(first(searchParams.priceMin), MAX_PRICE_EUROS),
         priceMax: positiveNumber(first(searchParams.priceMax), MAX_PRICE_EUROS),
         propertyTypes: allowedValues(searchParams.propertyType, propertyTypes),
@@ -705,16 +712,28 @@ export async function searchMarketplaceListings(
             : filters.sort === "price_desc"
               ? [{ [priceField]: { sort: "desc", nulls: "last" } }]
               : filters.sort === "area_desc"
-                ? [{ property: { livingAreaSqm: "desc" } }]
+                ? [{ property: { livingAreaSqm: { sort: "desc", nulls: "last" } } }]
                 : [{ liveAt: { sort: "desc", nulls: "last" } }];
+    orderBy.push({ id: "asc" });
 
-    const [total, listings] = await Promise.all([
+    // Each source contributes its first N rows; merging those prefixes gives
+    // the correct combined page without loading the entire catalog.
+    const take = filters.page * MARKETPLACE_PAGE_SIZE;
+    const aggregatedWhere = aggregatedMarketplaceWhere(filters, priceFilter, propertyFilter);
+    const aggregatedOrder: Prisma.AggregatedListingOrderByWithRelationInput[] =
+        filters.sort === "price_asc" || filters.sort === "price_desc"
+            ? [{ [priceField]: { sort: filters.sort === "price_asc" ? "asc" : "desc", nulls: "last" } }]
+            : filters.sort === "area_desc"
+              ? [{ livingAreaSqm: { sort: "desc", nulls: "last" } }]
+              : [{ firstSeenAt: "desc" }];
+    aggregatedOrder.push({ id: "asc" });
+
+    const [ownerTotal, listings, importedTotal, imported] = await Promise.all([
         db.listing.count({ where }),
         db.listing.findMany({
             where,
             orderBy,
-            skip: (filters.page - 1) * MARKETPLACE_PAGE_SIZE,
-            take: MARKETPLACE_PAGE_SIZE,
+            take,
             include: {
                 property: {
                     include: {
@@ -735,6 +754,16 @@ export async function searchMarketplaceListings(
                     take: 1,
                     select: { purchasePriceCents: true },
                 },
+            },
+        }),
+        db.aggregatedListing.count({ where: aggregatedWhere }),
+        db.aggregatedListing.findMany({
+            where: aggregatedWhere,
+            orderBy: aggregatedOrder,
+            take,
+            include: {
+                images: { orderBy: { sortOrder: "asc" }, take: 3 },
+                platformLinks: { where: { status: "ACTIVE" }, orderBy: { source: "asc" } },
             },
         }),
     ]);
@@ -780,7 +809,7 @@ export async function searchMarketplaceListings(
             energyLabel: listing.property.energyLabels[0]?.labelClass ?? null,
             priceCents:
                 (
-                    listing.askingPriceCents ?? listing.monthlyRentCents
+                    filters.purpose === "RENT" ? listing.monthlyRentCents : listing.askingPriceCents
                 )?.toString() ?? null,
             finalPriceCents,
             serviceCostsCents: listing.serviceCostsCents?.toString() ?? null,
@@ -795,8 +824,11 @@ export async function searchMarketplaceListings(
         };
     });
 
+    const total = ownerTotal + importedTotal;
     return {
-        data,
+        data: [...data, ...imported.map(toMarketplaceListing)]
+            .sort((a, b) => compareMarketplaceListings(a, b, filters.sort))
+            .slice((filters.page - 1) * MARKETPLACE_PAGE_SIZE, take),
         filters,
         pagination: {
             page: filters.page,

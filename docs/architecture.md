@@ -103,7 +103,14 @@ Live source access and completeness still need validation.
 
 Imported properties are a discovery layer with links back to the source;
 viewings, bids and transactions occur there. Native owner listings use ZelfWonen's
-own workflows. See [sync code](../aggregator/app/sync.py) and the
+own workflows. `/search` combines active imports and native listings with shared
+sorting, pagination and supported filters. Each purpose defaults to available
+and under-offer native listings; sold/rented listings are opt-in. Imports have
+only broad availability states, so expired/offline imports are never inferred
+to be sold or rented. Filters requiring absent import data (neighborhood,
+monument, land ownership or parking details) exclude imports. Imported cards
+show their source and omit account favorites, which reference native listings.
+See [sync code](../aggregator/app/sync.py) and the
 [aggregator guide](../aggregator/README.md).
 
 ## Files and privacy boundaries

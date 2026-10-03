@@ -1,4 +1,18 @@
--- Apply after `prisma db push`. Prisma does not model PostgreSQL triggers.
+-- Apply after `prisma db push`. Prisma does not model triggers or check constraints.
+-- Every neighborhood profile belongs to exactly one native or imported property.
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conrelid = 'neighborhood_profiles'::regclass
+      AND conname = 'neighborhood_profiles_one_owner'
+  ) THEN
+    ALTER TABLE neighborhood_profiles
+      ADD CONSTRAINT neighborhood_profiles_one_owner
+      CHECK (num_nonnulls("propertyId", "aggregatedListingId") = 1);
+  END IF;
+END $$;
+
 -- The application role may INSERT, but cannot rewrite legally significant history.
 CREATE OR REPLACE FUNCTION reject_immutable_mutation()
 RETURNS trigger AS $$

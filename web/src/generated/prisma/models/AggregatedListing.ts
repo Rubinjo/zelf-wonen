@@ -537,6 +537,7 @@ export type AggregatedListingWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"AggregatedListing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AggregatedListing"> | Date | string
   platformLinks?: Prisma.AggregatedPlatformLinkListRelationFilter
+  neighborhoodProfile?: Prisma.XOR<Prisma.NeighborhoodProfileNullableScalarRelationFilter, Prisma.NeighborhoodProfileWhereInput> | null
   images?: Prisma.AggregatedListingImageListRelationFilter
   rawPayloads?: Prisma.RawPayloadListRelationFilter
 }
@@ -583,6 +584,7 @@ export type AggregatedListingOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   platformLinks?: Prisma.AggregatedPlatformLinkOrderByRelationAggregateInput
+  neighborhoodProfile?: Prisma.NeighborhoodProfileOrderByWithRelationInput
   images?: Prisma.AggregatedListingImageOrderByRelationAggregateInput
   rawPayloads?: Prisma.RawPayloadOrderByRelationAggregateInput
 }
@@ -632,6 +634,7 @@ export type AggregatedListingWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"AggregatedListing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AggregatedListing"> | Date | string
   platformLinks?: Prisma.AggregatedPlatformLinkListRelationFilter
+  neighborhoodProfile?: Prisma.XOR<Prisma.NeighborhoodProfileNullableScalarRelationFilter, Prisma.NeighborhoodProfileWhereInput> | null
   images?: Prisma.AggregatedListingImageListRelationFilter
   rawPayloads?: Prisma.RawPayloadListRelationFilter
 }, "id" | "dedupKey" | "publicSlug">
@@ -772,6 +775,7 @@ export type AggregatedListingCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   platformLinks?: Prisma.AggregatedPlatformLinkCreateNestedManyWithoutListingInput
+  neighborhoodProfile?: Prisma.NeighborhoodProfileCreateNestedOneWithoutAggregatedListingInput
   images?: Prisma.AggregatedListingImageCreateNestedManyWithoutListingInput
   rawPayloads?: Prisma.RawPayloadCreateNestedManyWithoutListingInput
 }
@@ -818,6 +822,7 @@ export type AggregatedListingUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   platformLinks?: Prisma.AggregatedPlatformLinkUncheckedCreateNestedManyWithoutListingInput
+  neighborhoodProfile?: Prisma.NeighborhoodProfileUncheckedCreateNestedOneWithoutAggregatedListingInput
   images?: Prisma.AggregatedListingImageUncheckedCreateNestedManyWithoutListingInput
   rawPayloads?: Prisma.RawPayloadUncheckedCreateNestedManyWithoutListingInput
 }
@@ -864,6 +869,7 @@ export type AggregatedListingUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   platformLinks?: Prisma.AggregatedPlatformLinkUpdateManyWithoutListingNestedInput
+  neighborhoodProfile?: Prisma.NeighborhoodProfileUpdateOneWithoutAggregatedListingNestedInput
   images?: Prisma.AggregatedListingImageUpdateManyWithoutListingNestedInput
   rawPayloads?: Prisma.RawPayloadUpdateManyWithoutListingNestedInput
 }
@@ -910,6 +916,7 @@ export type AggregatedListingUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   platformLinks?: Prisma.AggregatedPlatformLinkUncheckedUpdateManyWithoutListingNestedInput
+  neighborhoodProfile?: Prisma.NeighborhoodProfileUncheckedUpdateOneWithoutAggregatedListingNestedInput
   images?: Prisma.AggregatedListingImageUncheckedUpdateManyWithoutListingNestedInput
   rawPayloads?: Prisma.RawPayloadUncheckedUpdateManyWithoutListingNestedInput
 }
@@ -1041,6 +1048,11 @@ export type AggregatedListingUncheckedUpdateManyInput = {
   lastSyncAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AggregatedListingNullableScalarRelationFilter = {
+  is?: Prisma.AggregatedListingWhereInput | null
+  isNot?: Prisma.AggregatedListingWhereInput | null
 }
 
 export type StringNullableListFilter<$PrismaModel = never> = {
@@ -1213,9 +1225,20 @@ export type AggregatedListingScalarRelationFilter = {
   isNot?: Prisma.AggregatedListingWhereInput
 }
 
-export type AggregatedListingNullableScalarRelationFilter = {
-  is?: Prisma.AggregatedListingWhereInput | null
-  isNot?: Prisma.AggregatedListingWhereInput | null
+export type AggregatedListingCreateNestedOneWithoutNeighborhoodProfileInput = {
+  create?: Prisma.XOR<Prisma.AggregatedListingCreateWithoutNeighborhoodProfileInput, Prisma.AggregatedListingUncheckedCreateWithoutNeighborhoodProfileInput>
+  connectOrCreate?: Prisma.AggregatedListingCreateOrConnectWithoutNeighborhoodProfileInput
+  connect?: Prisma.AggregatedListingWhereUniqueInput
+}
+
+export type AggregatedListingUpdateOneWithoutNeighborhoodProfileNestedInput = {
+  create?: Prisma.XOR<Prisma.AggregatedListingCreateWithoutNeighborhoodProfileInput, Prisma.AggregatedListingUncheckedCreateWithoutNeighborhoodProfileInput>
+  connectOrCreate?: Prisma.AggregatedListingCreateOrConnectWithoutNeighborhoodProfileInput
+  upsert?: Prisma.AggregatedListingUpsertWithoutNeighborhoodProfileInput
+  disconnect?: Prisma.AggregatedListingWhereInput | boolean
+  delete?: Prisma.AggregatedListingWhereInput | boolean
+  connect?: Prisma.AggregatedListingWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AggregatedListingUpdateToOneWithWhereWithoutNeighborhoodProfileInput, Prisma.AggregatedListingUpdateWithoutNeighborhoodProfileInput>, Prisma.AggregatedListingUncheckedUpdateWithoutNeighborhoodProfileInput>
 }
 
 export type AggregatedListingCreateamenitiesInput = {
@@ -1279,6 +1302,206 @@ export type AggregatedListingUpdateOneWithoutRawPayloadsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AggregatedListingUpdateToOneWithWhereWithoutRawPayloadsInput, Prisma.AggregatedListingUpdateWithoutRawPayloadsInput>, Prisma.AggregatedListingUncheckedUpdateWithoutRawPayloadsInput>
 }
 
+export type AggregatedListingCreateWithoutNeighborhoodProfileInput = {
+  id?: string
+  dedupKey: string
+  postcodeHouseKey?: string | null
+  streetHouseKey?: string | null
+  purpose: $Enums.ListingPurpose
+  status?: $Enums.AggregatedListingStatus
+  publicSlug: string
+  titleNl?: string | null
+  descriptionNl?: string | null
+  askingPriceCents?: bigint | number | null
+  monthlyRentCents?: bigint | number | null
+  serviceCostsCents?: bigint | number | null
+  postcode?: string | null
+  houseNumber: number
+  houseNumberAddition?: string | null
+  street: string
+  city: string
+  municipality?: string | null
+  province?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  propertyType: $Enums.PropertyType
+  livingAreaSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  plotAreaSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volumeCubicMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  roomCount?: number | null
+  bedroomCount?: number | null
+  bathroomCount?: number | null
+  constructionYear?: number | null
+  energyLabel?: $Enums.EnergyLabelClass | null
+  interior?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  amenities?: Prisma.AggregatedListingCreateamenitiesInput | string[]
+  availableFrom?: Date | string | null
+  summaryHash?: string | null
+  firstSeenAt?: Date | string
+  lastSeenAt: Date | string
+  expiredAt?: Date | string | null
+  lastSyncAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  platformLinks?: Prisma.AggregatedPlatformLinkCreateNestedManyWithoutListingInput
+  images?: Prisma.AggregatedListingImageCreateNestedManyWithoutListingInput
+  rawPayloads?: Prisma.RawPayloadCreateNestedManyWithoutListingInput
+}
+
+export type AggregatedListingUncheckedCreateWithoutNeighborhoodProfileInput = {
+  id?: string
+  dedupKey: string
+  postcodeHouseKey?: string | null
+  streetHouseKey?: string | null
+  purpose: $Enums.ListingPurpose
+  status?: $Enums.AggregatedListingStatus
+  publicSlug: string
+  titleNl?: string | null
+  descriptionNl?: string | null
+  askingPriceCents?: bigint | number | null
+  monthlyRentCents?: bigint | number | null
+  serviceCostsCents?: bigint | number | null
+  postcode?: string | null
+  houseNumber: number
+  houseNumberAddition?: string | null
+  street: string
+  city: string
+  municipality?: string | null
+  province?: string | null
+  latitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  propertyType: $Enums.PropertyType
+  livingAreaSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  plotAreaSqm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volumeCubicMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  roomCount?: number | null
+  bedroomCount?: number | null
+  bathroomCount?: number | null
+  constructionYear?: number | null
+  energyLabel?: $Enums.EnergyLabelClass | null
+  interior?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  amenities?: Prisma.AggregatedListingCreateamenitiesInput | string[]
+  availableFrom?: Date | string | null
+  summaryHash?: string | null
+  firstSeenAt?: Date | string
+  lastSeenAt: Date | string
+  expiredAt?: Date | string | null
+  lastSyncAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  platformLinks?: Prisma.AggregatedPlatformLinkUncheckedCreateNestedManyWithoutListingInput
+  images?: Prisma.AggregatedListingImageUncheckedCreateNestedManyWithoutListingInput
+  rawPayloads?: Prisma.RawPayloadUncheckedCreateNestedManyWithoutListingInput
+}
+
+export type AggregatedListingCreateOrConnectWithoutNeighborhoodProfileInput = {
+  where: Prisma.AggregatedListingWhereUniqueInput
+  create: Prisma.XOR<Prisma.AggregatedListingCreateWithoutNeighborhoodProfileInput, Prisma.AggregatedListingUncheckedCreateWithoutNeighborhoodProfileInput>
+}
+
+export type AggregatedListingUpsertWithoutNeighborhoodProfileInput = {
+  update: Prisma.XOR<Prisma.AggregatedListingUpdateWithoutNeighborhoodProfileInput, Prisma.AggregatedListingUncheckedUpdateWithoutNeighborhoodProfileInput>
+  create: Prisma.XOR<Prisma.AggregatedListingCreateWithoutNeighborhoodProfileInput, Prisma.AggregatedListingUncheckedCreateWithoutNeighborhoodProfileInput>
+  where?: Prisma.AggregatedListingWhereInput
+}
+
+export type AggregatedListingUpdateToOneWithWhereWithoutNeighborhoodProfileInput = {
+  where?: Prisma.AggregatedListingWhereInput
+  data: Prisma.XOR<Prisma.AggregatedListingUpdateWithoutNeighborhoodProfileInput, Prisma.AggregatedListingUncheckedUpdateWithoutNeighborhoodProfileInput>
+}
+
+export type AggregatedListingUpdateWithoutNeighborhoodProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  dedupKey?: Prisma.StringFieldUpdateOperationsInput | string
+  postcodeHouseKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streetHouseKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.EnumListingPurposeFieldUpdateOperationsInput | $Enums.ListingPurpose
+  status?: Prisma.EnumAggregatedListingStatusFieldUpdateOperationsInput | $Enums.AggregatedListingStatus
+  publicSlug?: Prisma.StringFieldUpdateOperationsInput | string
+  titleNl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionNl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  askingPriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  monthlyRentCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  serviceCostsCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  postcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  houseNumberAddition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  street?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  propertyType?: Prisma.EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
+  livingAreaSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  plotAreaSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volumeCubicMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  roomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  energyLabel?: Prisma.NullableEnumEnergyLabelClassFieldUpdateOperationsInput | $Enums.EnergyLabelClass | null
+  interior?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  amenities?: Prisma.AggregatedListingUpdateamenitiesInput | string[]
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  summaryHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  platformLinks?: Prisma.AggregatedPlatformLinkUpdateManyWithoutListingNestedInput
+  images?: Prisma.AggregatedListingImageUpdateManyWithoutListingNestedInput
+  rawPayloads?: Prisma.RawPayloadUpdateManyWithoutListingNestedInput
+}
+
+export type AggregatedListingUncheckedUpdateWithoutNeighborhoodProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  dedupKey?: Prisma.StringFieldUpdateOperationsInput | string
+  postcodeHouseKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  streetHouseKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  purpose?: Prisma.EnumListingPurposeFieldUpdateOperationsInput | $Enums.ListingPurpose
+  status?: Prisma.EnumAggregatedListingStatusFieldUpdateOperationsInput | $Enums.AggregatedListingStatus
+  publicSlug?: Prisma.StringFieldUpdateOperationsInput | string
+  titleNl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  descriptionNl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  askingPriceCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  monthlyRentCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  serviceCostsCents?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  postcode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  houseNumberAddition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  street?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  municipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  longitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  propertyType?: Prisma.EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
+  livingAreaSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  plotAreaSqm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  volumeCubicMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  roomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bedroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bathroomCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  constructionYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  energyLabel?: Prisma.NullableEnumEnergyLabelClassFieldUpdateOperationsInput | $Enums.EnergyLabelClass | null
+  interior?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  amenities?: Prisma.AggregatedListingUpdateamenitiesInput | string[]
+  availableFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  summaryHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  expiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  platformLinks?: Prisma.AggregatedPlatformLinkUncheckedUpdateManyWithoutListingNestedInput
+  images?: Prisma.AggregatedListingImageUncheckedUpdateManyWithoutListingNestedInput
+  rawPayloads?: Prisma.RawPayloadUncheckedUpdateManyWithoutListingNestedInput
+}
+
 export type AggregatedListingCreateWithoutPlatformLinksInput = {
   id?: string
   dedupKey: string
@@ -1320,6 +1543,7 @@ export type AggregatedListingCreateWithoutPlatformLinksInput = {
   lastSyncAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  neighborhoodProfile?: Prisma.NeighborhoodProfileCreateNestedOneWithoutAggregatedListingInput
   images?: Prisma.AggregatedListingImageCreateNestedManyWithoutListingInput
   rawPayloads?: Prisma.RawPayloadCreateNestedManyWithoutListingInput
 }
@@ -1365,6 +1589,7 @@ export type AggregatedListingUncheckedCreateWithoutPlatformLinksInput = {
   lastSyncAt?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  neighborhoodProfile?: Prisma.NeighborhoodProfileUncheckedCreateNestedOneWithoutAggregatedListingInput
   images?: Prisma.AggregatedListingImageUncheckedCreateNestedManyWithoutListingInput
   rawPayloads?: Prisma.RawPayloadUncheckedCreateNestedManyWithoutListingInput
 }
@@ -1426,6 +1651,7 @@ export type AggregatedListingUpdateWithoutPlatformLinksInput = {
   lastSyncAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  neighborhoodProfile?: Prisma.NeighborhoodProfileUpdateOneWithoutAggregatedListingNestedInput
   images?: Prisma.AggregatedListingImageUpdateManyWithoutListingNestedInput
   rawPayloads?: Prisma.RawPayloadUpdateManyWithoutListingNestedInput
 }
@@ -1471,6 +1697,7 @@ export type AggregatedListingUncheckedUpdateWithoutPlatformLinksInput = {
   lastSyncAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  neighborhoodProfile?: Prisma.NeighborhoodProfileUncheckedUpdateOneWithoutAggregatedListingNestedInput
   images?: Prisma.AggregatedListingImageUncheckedUpdateManyWithoutListingNestedInput
   rawPayloads?: Prisma.RawPayloadUncheckedUpdateManyWithoutListingNestedInput
 }
@@ -1517,6 +1744,7 @@ export type AggregatedListingCreateWithoutImagesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   platformLinks?: Prisma.AggregatedPlatformLinkCreateNestedManyWithoutListingInput
+  neighborhoodProfile?: Prisma.NeighborhoodProfileCreateNestedOneWithoutAggregatedListingInput
   rawPayloads?: Prisma.RawPayloadCreateNestedManyWithoutListingInput
 }
 
@@ -1562,6 +1790,7 @@ export type AggregatedListingUncheckedCreateWithoutImagesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   platformLinks?: Prisma.AggregatedPlatformLinkUncheckedCreateNestedManyWithoutListingInput
+  neighborhoodProfile?: Prisma.NeighborhoodProfileUncheckedCreateNestedOneWithoutAggregatedListingInput
   rawPayloads?: Prisma.RawPayloadUncheckedCreateNestedManyWithoutListingInput
 }
 
@@ -1623,6 +1852,7 @@ export type AggregatedListingUpdateWithoutImagesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   platformLinks?: Prisma.AggregatedPlatformLinkUpdateManyWithoutListingNestedInput
+  neighborhoodProfile?: Prisma.NeighborhoodProfileUpdateOneWithoutAggregatedListingNestedInput
   rawPayloads?: Prisma.RawPayloadUpdateManyWithoutListingNestedInput
 }
 
@@ -1668,6 +1898,7 @@ export type AggregatedListingUncheckedUpdateWithoutImagesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   platformLinks?: Prisma.AggregatedPlatformLinkUncheckedUpdateManyWithoutListingNestedInput
+  neighborhoodProfile?: Prisma.NeighborhoodProfileUncheckedUpdateOneWithoutAggregatedListingNestedInput
   rawPayloads?: Prisma.RawPayloadUncheckedUpdateManyWithoutListingNestedInput
 }
 
@@ -1713,6 +1944,7 @@ export type AggregatedListingCreateWithoutRawPayloadsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   platformLinks?: Prisma.AggregatedPlatformLinkCreateNestedManyWithoutListingInput
+  neighborhoodProfile?: Prisma.NeighborhoodProfileCreateNestedOneWithoutAggregatedListingInput
   images?: Prisma.AggregatedListingImageCreateNestedManyWithoutListingInput
 }
 
@@ -1758,6 +1990,7 @@ export type AggregatedListingUncheckedCreateWithoutRawPayloadsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   platformLinks?: Prisma.AggregatedPlatformLinkUncheckedCreateNestedManyWithoutListingInput
+  neighborhoodProfile?: Prisma.NeighborhoodProfileUncheckedCreateNestedOneWithoutAggregatedListingInput
   images?: Prisma.AggregatedListingImageUncheckedCreateNestedManyWithoutListingInput
 }
 
@@ -1819,6 +2052,7 @@ export type AggregatedListingUpdateWithoutRawPayloadsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   platformLinks?: Prisma.AggregatedPlatformLinkUpdateManyWithoutListingNestedInput
+  neighborhoodProfile?: Prisma.NeighborhoodProfileUpdateOneWithoutAggregatedListingNestedInput
   images?: Prisma.AggregatedListingImageUpdateManyWithoutListingNestedInput
 }
 
@@ -1864,6 +2098,7 @@ export type AggregatedListingUncheckedUpdateWithoutRawPayloadsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   platformLinks?: Prisma.AggregatedPlatformLinkUncheckedUpdateManyWithoutListingNestedInput
+  neighborhoodProfile?: Prisma.NeighborhoodProfileUncheckedUpdateOneWithoutAggregatedListingNestedInput
   images?: Prisma.AggregatedListingImageUncheckedUpdateManyWithoutListingNestedInput
 }
 
@@ -1958,6 +2193,7 @@ export type AggregatedListingSelect<ExtArgs extends runtime.Types.Extensions.Int
   createdAt?: boolean
   updatedAt?: boolean
   platformLinks?: boolean | Prisma.AggregatedListing$platformLinksArgs<ExtArgs>
+  neighborhoodProfile?: boolean | Prisma.AggregatedListing$neighborhoodProfileArgs<ExtArgs>
   images?: boolean | Prisma.AggregatedListing$imagesArgs<ExtArgs>
   rawPayloads?: boolean | Prisma.AggregatedListing$rawPayloadsArgs<ExtArgs>
   _count?: boolean | Prisma.AggregatedListingCountOutputTypeDefaultArgs<ExtArgs>
@@ -2095,6 +2331,7 @@ export type AggregatedListingSelectScalar = {
 export type AggregatedListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "dedupKey" | "postcodeHouseKey" | "streetHouseKey" | "purpose" | "status" | "publicSlug" | "titleNl" | "descriptionNl" | "askingPriceCents" | "monthlyRentCents" | "serviceCostsCents" | "postcode" | "houseNumber" | "houseNumberAddition" | "street" | "city" | "municipality" | "province" | "latitude" | "longitude" | "propertyType" | "livingAreaSqm" | "plotAreaSqm" | "volumeCubicMeters" | "roomCount" | "bedroomCount" | "bathroomCount" | "constructionYear" | "energyLabel" | "interior" | "amenities" | "availableFrom" | "summaryHash" | "firstSeenAt" | "lastSeenAt" | "expiredAt" | "lastSyncAt" | "createdAt" | "updatedAt", ExtArgs["result"]["aggregatedListing"]>
 export type AggregatedListingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   platformLinks?: boolean | Prisma.AggregatedListing$platformLinksArgs<ExtArgs>
+  neighborhoodProfile?: boolean | Prisma.AggregatedListing$neighborhoodProfileArgs<ExtArgs>
   images?: boolean | Prisma.AggregatedListing$imagesArgs<ExtArgs>
   rawPayloads?: boolean | Prisma.AggregatedListing$rawPayloadsArgs<ExtArgs>
   _count?: boolean | Prisma.AggregatedListingCountOutputTypeDefaultArgs<ExtArgs>
@@ -2106,6 +2343,7 @@ export type $AggregatedListingPayload<ExtArgs extends runtime.Types.Extensions.I
   name: "AggregatedListing"
   objects: {
     platformLinks: Prisma.$AggregatedPlatformLinkPayload<ExtArgs>[]
+    neighborhoodProfile: Prisma.$NeighborhoodProfilePayload<ExtArgs> | null
     images: Prisma.$AggregatedListingImagePayload<ExtArgs>[]
     rawPayloads: Prisma.$RawPayloadPayload<ExtArgs>[]
   }
@@ -2545,6 +2783,7 @@ readonly fields: AggregatedListingFieldRefs;
 export interface Prisma__AggregatedListingClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   platformLinks<T extends Prisma.AggregatedListing$platformLinksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AggregatedListing$platformLinksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AggregatedPlatformLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  neighborhoodProfile<T extends Prisma.AggregatedListing$neighborhoodProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AggregatedListing$neighborhoodProfileArgs<ExtArgs>>): Prisma.Prisma__NeighborhoodProfileClient<runtime.Types.Result.GetResult<Prisma.$NeighborhoodProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   images<T extends Prisma.AggregatedListing$imagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AggregatedListing$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AggregatedListingImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   rawPayloads<T extends Prisma.AggregatedListing$rawPayloadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AggregatedListing$rawPayloadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RawPayloadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -3030,6 +3269,25 @@ export type AggregatedListing$platformLinksArgs<ExtArgs extends runtime.Types.Ex
   take?: number
   skip?: number
   distinct?: Prisma.AggregatedPlatformLinkScalarFieldEnum | Prisma.AggregatedPlatformLinkScalarFieldEnum[]
+}
+
+/**
+ * AggregatedListing.neighborhoodProfile
+ */
+export type AggregatedListing$neighborhoodProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the NeighborhoodProfile
+   */
+  select?: Prisma.NeighborhoodProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the NeighborhoodProfile
+   */
+  omit?: Prisma.NeighborhoodProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NeighborhoodProfileInclude<ExtArgs> | null
+  where?: Prisma.NeighborhoodProfileWhereInput
 }
 
 /**

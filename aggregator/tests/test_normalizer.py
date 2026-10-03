@@ -30,6 +30,8 @@ def test_normalize_price_cents():
     assert normalize_price_cents("1.250,-") == 125_000
     assert normalize_price_cents("1250") == 125_000
     assert normalize_price_cents("1.250,50") == 125_050
+    assert normalize_price_cents("750.50") == 75_050
+    assert normalize_price_cents("750.5") == 75_050
     assert normalize_price_cents(None) is None
 
 

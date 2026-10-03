@@ -61,9 +61,26 @@ services:
     profiles: ["aggregator"]
     environment:
       AGGREGATOR_DATABASE_URL: postgresql://zelfwonen:zelfwonen_dev_password@postgres:5432/zelfwonen
+      AGGREGATOR_NEIGHBORHOOD_ENRICHMENT_URL: http://host.docker.internal:3000/api/internal/aggregator/neighborhood
+      AGGREGATOR_NEIGHBORHOOD_ENRICHMENT_TOKEN: ${AGGREGATOR_ENRICHMENT_TOKEN:-zelfwonen-local-aggregator}
       AGGREGATOR_SYNC_INTERVAL_SECONDS: ${AGGREGATOR_SYNC_INTERVAL_SECONDS:-21600}
       AGGREGATOR_PROXY_URLS: ${AGGREGATOR_PROXY_URLS:-}
       AGGREGATOR_ENABLED_SOURCES: ${AGGREGATOR_ENABLED_SOURCES:-FUNDA,KAMERNET}
+      AGGREGATOR_FUNDA_SEARCH_URLS: ${AGGREGATOR_FUNDA_SEARCH_URLS:-https://www.funda.nl/zoeken/koop?selected_area=%5B%22nl%22%5D|https://www.funda.nl/zoeken/huur?selected_area=%5B%22nl%22%5D}
+      AGGREGATOR_FUNDA_TRANSPORT: ${AGGREGATOR_FUNDA_TRANSPORT:-chrome}
+      AGGREGATOR_KAMERNET_SEARCH_URLS: ${AGGREGATOR_KAMERNET_SEARCH_URLS:-https://kamernet.nl/huren/kamer-nederland|https://kamernet.nl/huren/appartement-nederland|https://kamernet.nl/huren/studio-nederland}
+      AGGREGATOR_STATUS_FILE: /app/state/status.json
+      AGGREGATOR_POLITE_DELAY_SECONDS: ${AGGREGATOR_POLITE_DELAY_SECONDS:-5}
+      AGGREGATOR_USER_AGENTS: ${AGGREGATOR_USER_AGENTS:-zelfwonen-aggregator/0.1}
+      AGGREGATOR_RESPECT_ROBOTS: "true"
+      AGGREGATOR_DISCOVERY_PAGE_BATCH_SIZE: ${AGGREGATOR_DISCOVERY_PAGE_BATCH_SIZE:-20}
+      AGGREGATOR_MAX_PAGES_PER_SEARCH: ${AGGREGATOR_MAX_PAGES_PER_SEARCH:-1000}
+      AGGREGATOR_MAX_LISTINGS_PER_SOURCE: ${AGGREGATOR_MAX_LISTINGS_PER_SOURCE:-100000}
+      AGGREGATOR_DETAIL_BATCH_SIZE: ${AGGREGATOR_DETAIL_BATCH_SIZE:-500}
+      AGGREGATOR_MAX_IMAGES_PER_LISTING: ${AGGREGATOR_MAX_IMAGES_PER_LISTING:-50}
+      AGGREGATOR_SOURCE_TIMEOUT_SECONDS: ${AGGREGATOR_SOURCE_TIMEOUT_SECONDS:-14400}
+      AGGREGATOR_SOURCE_COOLDOWN_SECONDS: ${AGGREGATOR_SOURCE_COOLDOWN_SECONDS:-21600}
+      AGGREGATOR_MAX_SOURCE_COOLDOWN_SECONDS: ${AGGREGATOR_MAX_SOURCE_COOLDOWN_SECONDS:-604800}
       AGGREGATOR_IMAGE_STORAGE_MODE: ${AGGREGATOR_IMAGE_STORAGE_MODE:-local}
       AGGREGATOR_LOCAL_MEDIA_DIR: ${AGGREGATOR_LOCAL_MEDIA_DIR:-/app/media}
       AGGREGATOR_OBJECT_STORAGE_ENDPOINT_URL: ${AGGREGATOR_OBJECT_STORAGE_ENDPOINT_URL:-}
@@ -74,9 +91,11 @@ services:
     volumes:
       # Local-mode images land in web/public so Next.js can serve them.
       - ./public/aggregated-media:/app/media
+      - aggregator_state:/app/state
     depends_on:
       postgres:
         condition: service_healthy
 
 volumes:
+  aggregator_state:
   zelfwonen_postgres_data:

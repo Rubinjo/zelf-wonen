@@ -8,7 +8,8 @@ One run per source:
 4. normalize and upsert master records + ``platform_links`` using stable source
    identity and conservative postcode matching for Funda,
 5. download images into platform-controlled storage,
-6. optionally expire absent links, only after complete successful discovery.
+6. enrich neighborhoods using the web app's shared public-data clients,
+7. optionally expire absent links, only after complete successful discovery.
 
 The whole run is guarded by a PostgreSQL advisory lock, so a scrape that runs
 longer than the cron interval can never overlap with itself.
@@ -16,21 +17,25 @@ longer than the cron interval can never overlap with itself.
 
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import logging
 from datetime import UTC, datetime
 
 import asyncpg
+import httpx
 
 from .adapters import AdapterRegistry, ListingGone, SourceAdapter
+from .checkpoint import Checkpoint
 from .config import Settings
 from .db import Repository
 from .dedup import postcode_house_key, slugify
-from .http_client import ScrapeError, ScraperClient
+from .http_client import ScrapeError, ScraperClient, SourceUnavailable
 from .lock import advisory_lock
 from .models import ListingAvailability
+from .neighborhood import enrich_neighborhood
 from .normalizer import clean_text, normalize_availability, normalize_price_cents, normalize_purpose
-from .status import record_status
+from .status import record_status, source_last_error, source_retry_at
 from .storage import ImageStorage
 
 logger = logging.getLogger(__name__)
@@ -62,7 +67,7 @@ async def run_sync(settings: Settings) -> None:
             repo = Repository(pool, settings)
             storage = ImageStorage(settings)
             registry = AdapterRegistry.default(settings)
-            async with ScraperClient(settings) as client:
+            async with ScraperClient(settings) as client, httpx.AsyncClient() as enrichment_client:
                 adapters = registry.enabled(settings.source_names)
                 if {a.source.value for a in adapters} != set(settings.source_names) or not adapters:
                     raise ScrapeError("enabled sources are empty or contain unknown sources")
@@ -70,19 +75,52 @@ async def run_sync(settings: Settings) -> None:
                 for adapter in adapters:
                     counts = {"seen": 0, "processed": 0, "failed": 0}
                     try:
-                        await sync_source(adapter, client, repo, storage, settings, counts)
-                    except Exception:  # one source must never take down the whole run
+                        retry_at = source_retry_at(settings.status_file, adapter.source.value)
+                        if retry_at and retry_at > datetime.now(UTC):
+                            logger.warning(
+                                "source %s cooling down until %s; last error: %s",
+                                adapter.source.value,
+                                retry_at.isoformat(),
+                                source_last_error(settings.status_file, adapter.source.value)
+                                or "unknown",
+                            )
+                            failed.append(adapter.source.value)
+                            continue
+                        async with asyncio.timeout(settings.source_timeout_seconds):
+                            await sync_source(
+                                adapter,
+                                client,
+                                repo,
+                                storage,
+                                settings,
+                                counts,
+                                checkpoint=Checkpoint(settings, adapter.source.value),
+                                enrichment_client=enrichment_client,
+                            )
+                    except Exception as exc:  # one source must never take down the whole run
                         logger.exception("source %s failed", adapter.source.value)
                         failed.append(adapter.source.value)
                         record_status(
                             settings.status_file,
                             adapter.source.value,
                             counts=counts,
-                            error="Source failed; inspect the service journal",
+                            error=f"{type(exc).__name__}: {exc}"
+                            if isinstance(exc, ScrapeError)
+                            else f"{type(exc).__name__}: inspect the service journal",
+                            cooldown_seconds=settings.source_cooldown_seconds,
+                            max_cooldown_seconds=settings.max_source_cooldown_seconds,
+                            retry_after=exc.retry_after
+                            if isinstance(exc, SourceUnavailable)
+                            else 0,
                         )
                     else:
                         record_status(
-                            settings.status_file, adapter.source.value, counts=counts, error=None
+                            settings.status_file,
+                            adapter.source.value,
+                            counts=counts,
+                            error=None,
+                            completed=counts.get("pending", 0) == 0
+                            and bool(counts.get("discovery_complete", 1)),
                         )
                 if failed:
                     raise ScrapeError(f"sources failed: {', '.join(failed)}")
@@ -97,35 +135,126 @@ async def sync_source(
     storage: ImageStorage,
     settings: Settings,
     counts: dict[str, int] | None = None,
+    *,
+    checkpoint: Checkpoint | None = None,
+    enrichment_client: httpx.AsyncClient | None = None,
 ) -> int:
     counts = counts if counts is not None else {"seen": 0, "processed": 0, "failed": 0}
-    seen_ids: set[str] = set()
-    failures = 0
-    async for summary in adapter.discover(client):
-        external_id = str(summary.get("external_id") or "")
-        if not external_id:
-            continue
-        seen_ids.add(external_id)
-        counts["seen"] = len(seen_ids)
-        try:
-            await process_listing(adapter, client, repo, storage, settings, summary)
-            counts["processed"] += 1
-        except ScrapeError:
-            failures += 1
-            counts["failed"] += 1
-            logger.warning("scrape failed for %s %s", adapter.source.value, summary.get("url"))
-        except Exception:
-            failures += 1
-            counts["failed"] += 1
-            logger.exception("unhandled error for %s %s", adapter.source.value, external_id)
+    snapshot = checkpoint.load() if checkpoint else None
+    summaries = list(snapshot.pending) if snapshot else []
+    discovered = set(snapshot.seen_ids) if snapshot else set()
+    discovery_complete = snapshot.discovery_complete if snapshot else False
+    # Drain backlog before discovering more pages. This bounds memory, disk and
+    # network work while retaining source order across scheduled invocations.
+    if not discovery_complete and len(summaries) < settings.detail_batch_size:
+        if snapshot:
+            adapter.discovery_cursor = snapshot.discovery_cursor
+        async for summary in adapter.discover(client):
+            external_id = str(summary.get("external_id") or "")
+            if not external_id:
+                raise ScrapeError("discovered listing has no source identity")
+            if external_id in discovered:
+                continue
+            discovered.add(external_id)
+            summaries.append(summary)
+            counts["seen"] = len(discovered)
+            if len(discovered) > settings.max_listings_per_source:
+                raise ScrapeError("listing limit reached; discovery incomplete")
+        discovery_complete = adapter.discovery_complete
+        if not discovered and discovery_complete:
+            raise ScrapeError(f"{adapter.source.value}: empty discovery")
+        if checkpoint:
+            snapshot = snapshot or checkpoint.create(summaries)
+            snapshot.pending = summaries
+            snapshot.seen_ids = sorted(discovered)
+            snapshot.discovery_cursor = adapter.discovery_cursor
+            snapshot.discovery_complete = discovery_complete
+            checkpoint.save(snapshot)
+    seen_ids = discovered
+    counts["discovery_complete"] = int(discovery_complete)
+    counts["seen"] = len(seen_ids)
+    remaining = list(summaries)
+    failures = []
+    consecutive_errors = 0
+    batch = summaries[: settings.detail_batch_size] if checkpoint else summaries
+    try:
+        for summary in batch:
+            try:
+                await process_listing(
+                    adapter,
+                    client,
+                    repo,
+                    storage,
+                    settings,
+                    summary,
+                    enrichment_client=enrichment_client,
+                )
+                counts["processed"] += 1
+                consecutive_errors = 0
+            except SourceUnavailable:
+                # Do not turn a block into hundreds of per-listing retries.
+                raise
+            except Exception:
+                counts["failed"] += 1
+                consecutive_errors += 1
+                external_id = str(summary["external_id"])
+                attempts = snapshot.detail_attempts.get(external_id, 0) + 1 if snapshot else 1
+                if snapshot:
+                    snapshot.detail_attempts[external_id] = attempts
+                if snapshot and attempts >= 3:
+                    if external_id not in snapshot.rejected_ids:
+                        snapshot.rejected_ids.append(external_id)
+                    logger.error(
+                        "deferring malformed %s listing %s until the next crawl",
+                        adapter.source.value,
+                        external_id,
+                    )
+                else:
+                    failures.append(summary)
+                logger.exception(
+                    "listing failed for %s %s", adapter.source.value, summary.get("external_id")
+                )
+            remaining.pop(0)
+            if snapshot and checkpoint and (counts["processed"] + counts["failed"]) % 25 == 0:
+                snapshot.pending = remaining + failures
+                checkpoint.save(snapshot)
+            if consecutive_errors >= 3:
+                raise ScrapeError("three consecutive listing errors; stopping source")
+    finally:
+        counts["pending"] = len(remaining) + len(failures)
+        if snapshot and checkpoint:
+            counts["rejected"] = len(snapshot.rejected_ids)
+            snapshot.pending = remaining + failures
+            checkpoint.save(snapshot)
+    if counts["failed"]:
+        raise ScrapeError(f"{adapter.source.value}: {counts['failed']} listing failures")
+    if remaining or not discovery_complete:
+        logger.info("source %s batch complete: %d pending", adapter.source.value, len(remaining))
+        return len(seen_ids)
 
-    if not seen_ids or failures:
-        raise ScrapeError(f"{adapter.source.value}: {len(seen_ids)} seen, {failures} failed")
+    if checkpoint and snapshot:
+        # Search ordering and filters can hide still-active listings. Resolve
+        # their status from detail pages in bounded batches at the end of a crawl.
+        cutoff = datetime.fromisoformat(snapshot.created_at).astimezone(UTC).replace(tzinfo=None)
+        stale = await repo.source_links_due_for_refresh(
+            adapter.source, cutoff, settings.detail_batch_size, snapshot.rejected_ids
+        )
+        if stale:
+            snapshot.pending = stale
+            checkpoint.save(snapshot)
+            counts["pending"] = len(stale)
+            return len(seen_ids)
+        if snapshot.rejected_ids:
+            checkpoint.clear()
+            raise ScrapeError(
+                f"crawl finished with {len(snapshot.rejected_ids)} rejected listings; "
+                "next run will start a fresh crawl"
+            )
 
     # Absence is not proof of removal unless discovery is known to be exhaustive.
     affected_masters = (
         await repo.mark_links_offline_for_source(adapter.source, seen_ids)
-        if settings.expire_missing
+        if settings.expire_missing and adapter.supports_missing_expiry
         else []
     )
     for master_id in affected_masters:
@@ -136,6 +265,8 @@ async def sync_source(
         len(seen_ids),
         len(affected_masters),
     )
+    if checkpoint:
+        checkpoint.clear()
     return len(seen_ids)
 
 
@@ -146,6 +277,8 @@ async def process_listing(
     storage: ImageStorage,
     settings: Settings,
     summary: dict,
+    *,
+    enrichment_client: httpx.AsyncClient | None = None,
 ) -> None:
     now = utcnow()
     source = adapter.source
@@ -239,10 +372,12 @@ async def process_listing(
     )
 
     # --- Image hosting ------------------------------------------------------
-    if listing.images and (is_new or await repo.count_images(master_id) == 0):
+    if listing.images:
         await _download_images(
             adapter, client, storage, repo, settings, master_id, listing.url, listing.images
         )
+    if enrichment_client is not None:
+        await enrich_neighborhood(enrichment_client, settings, master_id)
 
 
 async def _create_master_with_slug_retry(
@@ -296,9 +431,19 @@ async def _download_images(
     referer: str,
     images,
 ) -> None:
+    def image_key(url: str) -> str:
+        # Funda's OpenGraph thumbnail and gallery photo can differ only in
+        # resize options. Reuse the hosted thumbnail instead of adding a duplicate.
+        return url.split("?", 1)[0] if adapter.source.value == "FUNDA" else url
+
+    existing_urls = {image_key(url) for url in await repo.image_source_urls(master_id)}
     for index, image in enumerate(images[: settings.max_images_per_listing]):
+        if image_key(image.url) in existing_urls:
+            continue
         try:
             stored = await storage.download_and_store(client, image.url, referer=referer)
+        except SourceUnavailable:
+            raise
         except Exception:
             logger.warning("image store failed for %s", image.url)
             continue

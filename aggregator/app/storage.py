@@ -1,6 +1,6 @@
 """Image hosting: download source images into platform-controlled storage.
 
-We never hotlink source images. Each image uses the source proxy/User-Agent pool,
+We never hotlink source images. Each image uses the shared, rate-limited session,
 is content-hashed, and is written either to S3-compatible object
 storage (AWS S3 / Cloudflare R2) or to a persistent local directory on the VM. The
 UI only ever references the returned ``storage_key``.
@@ -104,9 +104,7 @@ class ImageStorage:
             target.parent.mkdir(parents=True, exist_ok=True)
             if not target.exists():
                 # Publish only complete files; Caddy reads this volume concurrently.
-                descriptor, temporary_name = tempfile.mkstemp(
-                    dir=target.parent, prefix=".upload-"
-                )
+                descriptor, temporary_name = tempfile.mkstemp(dir=target.parent, prefix=".upload-")
                 temporary_path = Path(temporary_name)
                 try:
                     with os.fdopen(descriptor, "wb") as temporary:
@@ -130,25 +128,7 @@ class ImageStorage:
     async def _download_bytes(
         self, client: ScraperClient, source_url: str, referer: str | None
     ) -> bytes | None:
-        headers = {"User-Agent": client._user_agents.next()}  # noqa: SLF001
-        if referer:
-            headers["Referer"] = referer
-        proxy = client._proxies.next()  # noqa: SLF001
         try:
-            async with httpx.AsyncClient(
-                timeout=self._settings.request_timeout_seconds,
-                follow_redirects=True,
-                headers=headers,
-                proxy=proxy,
-            ) as session:
-                async with session.stream("GET", source_url) as response:
-                    if response.status_code >= 400:
-                        return None
-                    body = bytearray()
-                    async for chunk in response.aiter_bytes():
-                        body.extend(chunk)
-                        if len(body) > MAX_IMAGE_BYTES:
-                            return None
-                    return bytes(body)
+            return await client.fetch_bytes(source_url, referer=referer, max_bytes=MAX_IMAGE_BYTES)
         except httpx.HTTPError:
             return None

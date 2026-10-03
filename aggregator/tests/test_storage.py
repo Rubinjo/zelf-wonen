@@ -37,11 +37,10 @@ async def test_image_download_uses_supported_httpx_api_and_caps_size(tmp_path: P
     settings = Settings(local_media_dir=str(tmp_path))
     storage = ImageStorage(settings)
     async with ScraperClient(settings) as client:
-        real_client = httpx.AsyncClient
         transport = httpx.MockTransport(lambda request: httpx.Response(200, content=b"12345"))
-        with patch("app.storage.httpx.AsyncClient", side_effect=lambda **kwargs: real_client(
-            **kwargs, transport=transport
-        )):
+        await client._client.aclose()
+        async with httpx.AsyncClient(transport=transport) as session:
+            client._client = session
             url = "https://example.com/photo"
             assert await storage._download_bytes(client, url, None) == b"12345"
             with patch("app.storage.MAX_IMAGE_BYTES", 4):
@@ -53,8 +52,8 @@ async def test_source_fetch_uses_supported_httpx_api():
     settings = Settings(polite_delay_seconds=0)
     async with ScraperClient(settings) as client:
         await client._client.aclose()
-        client._client = httpx.AsyncClient(transport=httpx.MockTransport(
-            lambda request: httpx.Response(200, text="listing")
-        ))
+        client._client = httpx.AsyncClient(
+            transport=httpx.MockTransport(lambda request: httpx.Response(200, text="listing"))
+        )
         response = await client.fetch("https://example.com/listing")
         assert response.text == "listing"

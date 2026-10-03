@@ -111,8 +111,8 @@ docker compose --env-file .env.production build
 docker compose --env-file .env.production up -d --wait postgres
 ```
 
-For a **new, empty database**, initialize the current schema and immutable-history
-triggers explicitly (there are no committed Prisma migrations yet):
+For a **new, empty database**, initialize the current Prisma schema, ownership
+constraint and immutable-history triggers directly:
 
 ```bash
 docker compose --env-file .env.production run --rm --no-deps web npm run db:push
@@ -120,10 +120,15 @@ docker compose --env-file .env.production run --rm --no-deps web npm run db:immu
 docker compose --env-file .env.production up -d --wait
 ```
 
-For an existing database, back it up and review the schema transition first.
-Do not use reset or accept-data-loss flags. Once versioned migrations are
-introduced, deploy them with `npm run db:deploy` instead. Database changes are
-not run automatically on container startup.
+The schema includes native and imported neighborhood profiles; no migrations or
+separate upgrade SQL are required. The aggregator calls the web service's
+authenticated neighborhood endpoint; Compose shares `AGGREGATOR_ENRICHMENT_TOKEN`, falling back
+to `ML_ESTIMATOR_TOKEN`. Run `npm run neighborhood:backfill` in the web container
+to enrich older imports without scraping them again.
+
+Database changes are not run automatically on container startup. For an existing
+database, back it up and review the schema transition first; do not use reset or
+accept-data-loss flags in production.
 
 Existing PostgreSQL volumes retain their original credentials:
 changing `POSTGRES_PASSWORD` does not change an initialized database user's
@@ -152,23 +157,58 @@ stale rental data. No host crontab or continuously running aggregator is needed.
 
 The current provider endpoints and parsers still require live validation from
 your VM. A healthy process is not proof that those sites are accessible.
-First initialize the database as above, build the aggregator, then run a bounded
-import with absence-based expiry disabled (the default):
+Build the aggregator and first check one public search result/detail per source
+without database or media writes. Remove the old Funda sitemap/Kamernet API URL
+overrides from existing environment files; the new defaults use public HTML:
 
 ```bash
 docker compose --env-file .env.production --profile aggregator stop aggregator
 docker compose --env-file .env.production --profile aggregator run --rm -T \
-  -e AGGREGATOR_MAX_LISTINGS_PER_SOURCE=5 aggregator sync
+  aggregator check-sources
 ```
 
-This writes up to five listings per source to the real database. Hitting the cap
-deliberately returns a failure because discovery is incomplete; inspect the
-imported addresses, prices, links and images, as well as the logs. A blocked
-endpoint or changed response schema must be fixed before unattended deployment.
-The cap is not pagination: if your intended complete feed exceeds 10,000 records,
-increase `AGGREGATOR_MAX_LISTINGS_PER_SOURCE` and measure runtime/storage usage.
-Keep `AGGREGATOR_EXPIRE_MISSING=false` until exhaustive discovery is demonstrated.
-Confirmed detail-page 404/410 responses can still mark listings offline.
+After initializing the database, a small resumable import can use
+`-e AGGREGATOR_DISCOVERY_PAGE_BATCH_SIZE=1 -e AGGREGATOR_DETAIL_BATCH_SIZE=5 aggregator sync`.
+This writes at most five detail results per source and saves remaining work for
+the next invocation. Hard listing/page caps are failure thresholds, not batch sizes.
+Search scopes can be configured with pipe-separated `AGGREGATOR_FUNDA_SEARCH_URLS`
+and `AGGREGATOR_KAMERNET_SEARCH_URLS`. Defaults cover national searches; tune scope
+and batch size for freshness without increasing request rate.
+
+Public-search adapters never infer removal from absence, even if
+`AGGREGATOR_EXPIRE_MISSING=true`. Active links missed by search receive explicit
+detail checks after discovery completes. Confirmed detail 404/410 responses can
+mark records offline. On 2026-09-29 Kamernet's bounded check passed, while Funda
+returned a verification page from this development host. Verify VM access; no
+scraper can promise permanent access or zero parser maintenance.
+
+Funda now defaults to `AGGREGATOR_FUNDA_TRANSPORT=chrome` in production Compose.
+The locked curl_cffi dependency ships inside the Linux amd64 aggregator image
+and supplies Chrome-compatible TLS/HTTP and headers. Chrome, a display server,
+personal browser cookies and extra VPS packages are not needed. The existing
+outbound network provides HTTPS access; state/media volumes and five-second
+request pacing remain in use. Set `AGGREGATOR_FUNDA_TRANSPORT=http` only to
+diagnose the previous httpx behavior.
+
+For GitHub Actions deployments, publish and deploy the updated image through the
+existing manual release workflow. An old image digest will keep running the old
+transport. The workflow also checks that curl_cffi's native library loads in the
+Linux production image. From the deployed `~/zelf-wonen/web` directory, validate
+Funda and recover a cooldown left by the previous transport with:
+
+```bash
+bash scripts/sync-aggregator.sh check-sources --sources FUNDA --check-images --reset-cooldown
+bash scripts/sync-aggregator.sh sync --sources FUNDA
+```
+
+The wrapper selects `.release.env` and the production Compose project, and takes
+the same maintenance lock as imports/backups. The first command validates one
+detail and its first image if available, without importing database records or
+writing media. It clears only Funda's saved cooldown after all checks succeed;
+failure leaves state unchanged. The second resumes its import queue. Timer runs
+still use the configured sources and the default `sync` command. A VPS-specific
+IP restriction would still be reported and cooled down; local access alone does
+not establish that the Leaseweb egress address is accepted.
 
 Install the units after a successful full manual run:
 
@@ -190,25 +230,29 @@ share `.maintenance.lock`, so scheduled imports and backups do not write at the
 same time. Use the wrapper for manual production imports too. Stop the timer
 before deployment/schema maintenance and restart it afterwards.
 
-Any source/listing failure or incomplete discovery makes the service fail, while
+Source/listing failures, hard caps and active cooldowns make the service fail, while
 the other source is still attempted. `zelfwonen-aggregator-alert.service` writes
 an error-priority **local journal/syslog alert**. This does not send email or
 notify a phone: connect that unit to your existing monitoring/notification
 handler before relying on unattended operation. An external dead-man monitor is
 also needed to notice when the VM itself or its timer stops running.
 
-Per-source counts (`seen`, `processed`, `failed`), last attempt, last successful
-completion and failure state persist in the private `aggregator_state` volume:
+Queues, search-page cursors and cooldowns persist in the private `aggregator_state`
+volume. Successful partial batches exit zero but do not update full-crawl success.
+Per-source status includes counts (`seen`, `processed`, `failed`, `pending`),
+`discovery_complete`, `outcome`, `last_progress`, `last_success`, and `next_retry_at`:
 
 ```bash
 docker compose --env-file .env.production --profile aggregator run --rm --no-deps -T \
   --entrypoint cat aggregator /app/state/status.json
 ```
 
-`processed` includes confirmed gone listings. A failure preserves the previous
-last-success timestamp. Alert if either source has never succeeded or has not
-succeeded for seven days; for the daily schedule, investigating after 26 hours
-is preferable. Database/startup failures appear in the service journal even if
+`processed` includes confirmed gone listings. A failure or partial batch preserves
+the previous full-crawl success timestamp. Monitor stalled `last_progress` and
+completed-crawl age against the configured scope and schedule; a nationwide crawl
+may require many invocations. HTTP restrictions stop the source immediately and
+persist an exponential cooldown; Retry-After takes precedence when longer.
+Database/startup failures appear in the service journal even if
 the worker cannot update its status file. The state volume is operational
 metadata, separate from public images and not included in content backups.
 

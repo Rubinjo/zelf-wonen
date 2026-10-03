@@ -1,4 +1,5 @@
 import type { AddressLookup } from "@/lib/schemas/property";
+import type { NeighborhoodLookup } from "@/lib/integrations/neighborhood-data-client";
 
 const PDOK_FREE_URL = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/free";
 
@@ -26,7 +27,7 @@ type PdokDocument = {
 };
 
 type PdokResponse = {
-    response?: { docs?: PdokDocument[] };
+    response?: { docs?: PdokDocument[]; numFound?: number };
 };
 
 function parsePoint(value?: string) {
@@ -36,6 +37,39 @@ function parsePoint(value?: string) {
 }
 
 export class PdokClient {
+    async lookupNeighborhoodByPostcode(postcode: string): Promise<NeighborhoodLookup | null> {
+        const url = new URL(PDOK_FREE_URL);
+        url.searchParams.set("q", postcode);
+        url.searchParams.append("fq", "type:adres");
+        url.searchParams.append("fq", `postcode:${postcode}`);
+        url.searchParams.set("rows", "100");
+        const response = await fetch(url, {
+            signal: AbortSignal.timeout(5_000),
+            next: { revalidate: 86_400 },
+        });
+        if (!response.ok) throw new Error(`PDOK lookup failed with status ${response.status}`);
+        const payload = await response.json() as PdokResponse;
+        const docs = payload.response?.docs ?? [];
+        const first = docs[0];
+        // A hidden house number can still identify a neighborhood when every
+        // address in the postcode belongs to it. Never choose a guessed address.
+        if (!first?.buurtcode || !first.buurtnaam || !first.gemeentecode ||
+            (payload.response?.numFound ?? 0) > docs.length ||
+            docs.some((doc) => doc.postcode?.replace(/\s/g, "") !== postcode ||
+                doc.buurtcode !== first.buurtcode || doc.gemeentecode !== first.gemeentecode)) {
+            return null;
+        }
+        return {
+            neighborhoodCode: first.buurtcode,
+            neighborhoodName: first.buurtnaam,
+            districtCode: first.wijkcode ?? null,
+            districtName: first.wijknaam ?? null,
+            municipalityCode: `GM${first.gemeentecode.replace(/^GM/, "").padStart(4, "0")}`,
+            latitude: null,
+            longitude: null,
+        };
+    }
+
     async lookupAddress(input: AddressLookup) {
         const url = new URL(PDOK_FREE_URL);
         const addition = input.addition ? ` ${input.addition}` : "";

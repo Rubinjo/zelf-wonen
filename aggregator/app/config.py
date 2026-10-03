@@ -13,18 +13,6 @@ from typing import Literal
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-DEFAULT_USER_AGENTS = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-    "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 "
-    "(KHTML, like Gecko) Version/17.4 Safari/605.1.15",
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-    "(KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
-    "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-]
-
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="AGGREGATOR_", env_file=".env", extra="ignore")
@@ -34,6 +22,8 @@ class Settings(BaseSettings):
 
     # --- Database -----------------------------------------------------------
     database_url: str = "postgresql://zelfwonen:zelfwonen_dev_password@localhost:5432/zelfwonen"
+    neighborhood_enrichment_url: str = "http://localhost:3000/api/internal/aggregator/neighborhood"
+    neighborhood_enrichment_token: str = "zelfwonen-local-aggregator"
 
     # --- Scheduling / locking ----------------------------------------------
     # Cron interval. The advisory lock guarantees a scrape that runs longer than
@@ -46,25 +36,45 @@ class Settings(BaseSettings):
     expire_missing: bool = False
 
     # --- Scraping resilience ------------------------------------------------
-    # Comma-separated list of residential proxy URLs, e.g.
-    # "http://user:pass@host:8000,http://user:pass@host2:8000".
+    # Legacy list settings accept multiple values but only the first is used.
+    # Identity remains stable across retries and scheduled runs.
     proxy_urls: str = ""
-    user_agents: str = "|".join(DEFAULT_USER_AGENTS)
-    request_timeout_seconds: float = 30.0
-    max_retries: int = 4
-    retry_backoff_base_seconds: float = 2.0
-    retry_backoff_max_seconds: float = 60.0
-    # Pause between individual outbound requests to look like a human.
-    polite_delay_seconds: float = 0.5
+    user_agents: str = "zelfwonen-aggregator/0.1"
+    # Legacy setting name: true checks and warns; false skips advisory checks.
+    respect_robots: bool = True
+    request_timeout_seconds: float = Field(default=30.0, gt=0)
+    max_retries: int = Field(default=3, ge=0, le=10)
+    retry_backoff_base_seconds: float = Field(default=2.0, ge=0)
+    retry_backoff_max_seconds: float = Field(default=60.0, ge=0)
+    # A single session and low request rate reduce load; never rotate after a block.
+    polite_delay_seconds: float = Field(default=5.0, ge=0)
+    source_timeout_seconds: float = Field(default=14400, gt=0)
+    source_cooldown_seconds: int = Field(default=21600, ge=60)
+    max_source_cooldown_seconds: int = Field(default=604800, ge=60)
+    max_pages_per_search: int = Field(default=1000, ge=1)
+    discovery_page_batch_size: int = Field(default=20, ge=1)
+    detail_batch_size: int = Field(default=500, ge=1)
     # Hard cap per run per source (safety valve for development).
-    max_listings_per_source: int = Field(default=10_000, ge=1)
+    max_listings_per_source: int = Field(default=100_000, ge=1)
 
     # --- Sources ------------------------------------------------------------
     enabled_sources: str = "FUNDA,KAMERNET"
     funda_base_url: str = "https://www.funda.nl"
-    funda_sitemap_url: str = "https://www.funda.nl/sitemap/v1/huizen.xml"
+    # Chrome-compatible TLS/HTTP and headers avoid the observed httpx challenge.
+    funda_transport: Literal["chrome", "http"] = "chrome"
+    # Optional legacy discovery contracts; empty selects public search HTML.
+    funda_sitemap_url: str = ""
+    funda_search_urls: str = (
+        "https://www.funda.nl/zoeken/koop?selected_area=%5B%22nl%22%5D|"
+        "https://www.funda.nl/zoeken/huur?selected_area=%5B%22nl%22%5D"
+    )
     kamernet_base_url: str = "https://kamernet.nl"
-    kamernet_search_url: str = "https://kamernet.nl/api/listing/search"
+    kamernet_search_url: str = ""
+    kamernet_search_urls: str = (
+        "https://kamernet.nl/huren/kamer-nederland|"
+        "https://kamernet.nl/huren/appartement-nederland|"
+        "https://kamernet.nl/huren/studio-nederland"
+    )
 
     # --- Image hosting ------------------------------------------------------
     # "s3" uploads to S3-compatible object storage (AWS S3 / Cloudflare R2);
@@ -78,7 +88,7 @@ class Settings(BaseSettings):
     object_storage_bucket: str = "zelfwonen-listings"
     object_storage_access_key_id: str | None = None
     object_storage_secret_access_key: str | None = None
-    max_images_per_listing: int = 40
+    max_images_per_listing: int = Field(default=50, ge=0)
 
     @property
     def proxy_list(self) -> list[str]:

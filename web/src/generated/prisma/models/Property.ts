@@ -1222,6 +1222,11 @@ export type PropertySumOrderByAggregateInput = {
   erfpachtCanonCents?: Prisma.SortOrder
 }
 
+export type PropertyNullableScalarRelationFilter = {
+  is?: Prisma.PropertyWhereInput | null
+  isNot?: Prisma.PropertyWhereInput | null
+}
+
 export type PropertyScalarRelationFilter = {
   is?: Prisma.PropertyWhereInput
   isNot?: Prisma.PropertyWhereInput
@@ -1329,10 +1334,12 @@ export type PropertyCreateNestedOneWithoutNeighborhoodProfileInput = {
   connect?: Prisma.PropertyWhereUniqueInput
 }
 
-export type PropertyUpdateOneRequiredWithoutNeighborhoodProfileNestedInput = {
+export type PropertyUpdateOneWithoutNeighborhoodProfileNestedInput = {
   create?: Prisma.XOR<Prisma.PropertyCreateWithoutNeighborhoodProfileInput, Prisma.PropertyUncheckedCreateWithoutNeighborhoodProfileInput>
   connectOrCreate?: Prisma.PropertyCreateOrConnectWithoutNeighborhoodProfileInput
   upsert?: Prisma.PropertyUpsertWithoutNeighborhoodProfileInput
+  disconnect?: Prisma.PropertyWhereInput | boolean
+  delete?: Prisma.PropertyWhereInput | boolean
   connect?: Prisma.PropertyWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.PropertyUpdateToOneWithWhereWithoutNeighborhoodProfileInput, Prisma.PropertyUpdateWithoutNeighborhoodProfileInput>, Prisma.PropertyUncheckedUpdateWithoutNeighborhoodProfileInput>
 }

@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { NeighborhoodDataClient } from "@/lib/integrations/neighborhood-data-client";
 import { PdokClient } from "@/lib/integrations/property-data/pdok-client";
+import { enrichAggregatedNeighborhood } from "@/features/listings/enrich-aggregated-neighborhood";
 
 const pdok = new PdokClient();
 const neighborhoodData = new NeighborhoodDataClient();
@@ -67,6 +68,20 @@ async function main() {
         } catch (error) {
             failed += 1;
             console.error(`Failed to enrich property ${property.id}`, error);
+        }
+    }
+
+    // Use the same lookup for imports, including listings collected before
+    // neighborhood enrichment was added to the aggregator.
+    const imports = await db.aggregatedListing.findMany({ select: { id: true } });
+    for (const listing of imports) {
+        try {
+            const result = await enrichAggregatedNeighborhood(listing.id);
+            if (result === "enriched" || result === "cached") enriched += 1;
+            else unavailable += 1;
+        } catch (error) {
+            failed += 1;
+            console.error(`Failed to enrich imported listing ${listing.id}`, error);
         }
     }
 

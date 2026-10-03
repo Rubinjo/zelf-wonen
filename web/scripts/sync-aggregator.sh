@@ -19,5 +19,8 @@ compose=(docker compose --env-file .env.production)
 if [[ -f .release.env ]]; then
   compose+=(--env-file .release.env -p zelfwonen-production)
 fi
+if [[ $# == 0 ]]; then
+  set -- sync
+fi
 "${compose[@]}" --profile aggregator \
-  run --rm --no-deps -T --name "$container_name" aggregator sync
+  run --rm --no-deps -T --name "$container_name" aggregator "$@"

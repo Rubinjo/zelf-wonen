@@ -1,3 +1,6 @@
+from pathlib import Path
+
+from app.adapters import DetailPayload
 from app.adapters.kamernet import KamernetAdapter
 from app.models import ListingPurpose
 
@@ -33,3 +36,30 @@ def test_kamernet_normalize():
     assert listing.street == "Kalverstraat"
     assert listing.postcode == "1012AB"
     assert listing.room_count == 1
+
+
+def test_current_kamernet_detail_preserves_facilities_and_rental_terms():
+    html = (Path(__file__).parent / "fixtures/kamernet-detail.html").read_text(encoding="utf-8")
+    adapter = KamernetAdapter()
+    summary = {
+        "external_id": "2408944",
+        "url": "https://kamernet.nl/huren/kamer-arnhem/de-houtmanstraat/kamer-2408944",
+        "purpose_raw": "rent",
+    }
+    listing = adapter.normalize(
+        adapter.parse_detail(summary, DetailPayload(summary["url"], "text/html", html))
+    )
+    assert listing.monthly_rent_cents == 47500
+    assert listing.living_area_sqm == 12
+    assert len(listing.images) == 5
+    assert "Gedeelde keuken" in listing.amenities
+    assert "Gedeelde badkamer" in listing.amenities
+    assert "Internet beschikbaar" in listing.amenities
+    assert listing.energy_label is None
+    assert listing.bathroom_count is None  # A shared bathroom is not a private bathroom count.
+    assert listing.service_costs_cents is None
+    assert listing.interior["Inrichting"] == "Gemeubileerd"
+    assert listing.interior["Huisdieren toegestaan"] == "Nee"
+    assert listing.interior["Borg"] == "€ 500"
+    assert listing.interior["Inclusief vaste lasten"] == "Ja"
+    assert listing.interior["Beschikbaar tot"] == "2027-07-01T00:00:00"

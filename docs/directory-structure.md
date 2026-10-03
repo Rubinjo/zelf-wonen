@@ -35,8 +35,8 @@ zelf-wonen/
 ```
 
 The application schema lives at [web/prisma/schema.prisma](../web/prisma/schema.prisma).
-There are no committed Prisma migrations yet. Generated code and runtime folders
-are not the starting point for manual changes.
+Database setup uses the current Prisma schema directly, without migrations.
+Generated code and runtime folders are not the starting point for manual changes.
 
 ## Useful entry points
 

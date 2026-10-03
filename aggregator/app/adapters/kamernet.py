@@ -1,17 +1,20 @@
 """Kamernet adapter.
 
-Kamernet is a JavaScript SPA: search results come back as JSON and detail pages
-embed JSON-LD plus a ``window.__INITIAL_STATE__`` blob. This adapter reads the
-JSON search endpoint for discovery and parses the detail page's JSON-LD /
-embedded state for the full record.
+Public search and detail HTML embed structured Next.js page data. Discovery
+checks page numbers and listing links; details must match the discovered ID.
+Legacy configured JSON discovery and JSON-LD details remain supported.
 """
 
 from __future__ import annotations
 
 import json
+import math
+import re
 from collections.abc import AsyncIterator
 from typing import Any
 from urllib.parse import urljoin
+
+from selectolax.parser import HTMLParser
 
 from ..config import Settings
 from ..http_client import ScrapeError, ScraperClient
@@ -31,6 +34,9 @@ from ..normalizer import (
 )
 from . import DetailPayload, ListingGone, SourceAdapter
 from .parsing import deep_get, extract_embedded_json, extract_json_ld, extract_meta
+from .search import listing_links, page_url, source_url
+
+_KAMERNET_ID = re.compile(r"/(?:kamer|appartement|studio|room|apartment)-(\d+)(?:/|$)")
 
 
 class KamernetAdapter(SourceAdapter):
@@ -40,8 +46,111 @@ class KamernetAdapter(SourceAdapter):
 
     def __init__(self, settings: Settings | None = None) -> None:
         self.settings = settings or Settings()
+        self.discovery_cursor = {}
 
     async def discover(self, client: ScraperClient) -> AsyncIterator[dict[str, Any]]:
+        if not self.settings.kamernet_search_url:
+            async for summary in self._discover_search(client):
+                yield summary
+            return
+        async for summary in self._discover_json(client):
+            yield summary
+
+    async def _discover_search(self, client: ScraperClient) -> AsyncIterator[dict[str, Any]]:
+        self.discovery_complete = False
+        seen: set[str] = set()
+        seeds = [u.strip() for u in self.settings.kamernet_search_urls.split("|") if u.strip()]
+        if not seeds:
+            raise ScrapeError("Kamernet search URLs are empty")
+        resume = dict(self.discovery_cursor)
+        fetched = 0
+        for seed_index, seed in enumerate(seeds):
+            if seed_index < resume.get("seed", 0):
+                continue
+            source_url(seed, self.settings.kamernet_base_url)
+            pages_seen: set[tuple[str, ...]] = set()
+            start = resume.get("page", 1) if seed_index == resume.get("seed", 0) else 1
+            for page in range(start, self.settings.max_pages_per_search + 1):
+                self.discovery_cursor = {"seed": seed_index, "page": page}
+                response = await client.fetch(page_url(seed, "pageNo", page))
+                fetched += 1
+                response.require_success()
+                target = self._page_data(response.text)
+                result = target.get("findListingsResponse")
+                filters = target.get("allFilters", {})
+                if not isinstance(result, dict) or not isinstance(filters, dict):
+                    raise ScrapeError("Kamernet search lacks structured listing data")
+                cards = result.get("listings")
+                total, size = result.get("total"), filters.get("listingsPerPage")
+                if (
+                    not isinstance(cards, list)
+                    or not isinstance(total, int)
+                    or isinstance(total, bool)
+                    or total < 0
+                    or not isinstance(size, int)
+                    or isinstance(size, bool)
+                    or size < 1
+                    or filters.get("pageNo") != page
+                ):
+                    raise ScrapeError("invalid Kamernet pagination data")
+                operation = result.get("OpResponse", {})
+                if operation.get("HttpStatusCode", 200) != 200:
+                    raise ScrapeError("Kamernet search reported an upstream error")
+                if total == 0 and page == 1 and not cards:
+                    break
+                if not cards:
+                    if page > math.ceil(total / size):
+                        break
+                    raise ScrapeError("Kamernet search ended before its reported total")
+                links = listing_links(response.text, self.settings.kamernet_base_url, _KAMERNET_ID)
+                ids: list[str] = []
+                for card in cards:
+                    if not isinstance(card, dict) or not card.get("listingId"):
+                        raise ScrapeError("invalid Kamernet search card")
+                    external_id = str(card["listingId"])
+                    if external_id not in links:
+                        raise ScrapeError("Kamernet search card lacks a matching detail link")
+                    ids.append(external_id)
+                fingerprint = tuple(sorted(ids))
+                if fingerprint in pages_seen:
+                    raise ScrapeError("Kamernet search repeated a page")
+                pages_seen.add(fingerprint)
+                for external_id in ids:
+                    if external_id in seen:
+                        continue
+                    seen.add(external_id)
+                    if len(seen) > self.settings.max_listings_per_source:
+                        raise ScrapeError("Kamernet listing limit reached; discovery incomplete")
+                    yield {
+                        "external_id": external_id,
+                        "url": links[external_id],
+                        "purpose_raw": "rent",
+                    }
+                if page >= math.ceil(total / size):
+                    break
+                self.discovery_cursor = {"seed": seed_index, "page": page + 1}
+                if fetched >= self.settings.discovery_page_batch_size:
+                    return
+            else:
+                raise ScrapeError("Kamernet page limit reached; discovery incomplete")
+            self.discovery_cursor = {"seed": seed_index + 1, "page": 1}
+            if fetched >= self.settings.discovery_page_batch_size and seed_index < len(seeds) - 1:
+                return
+        self.discovery_complete = True
+        self.discovery_cursor = {}
+
+    @staticmethod
+    def _page_data(html: str) -> dict[str, Any]:
+        state = extract_embedded_json(html, ("__NEXT_DATA__",))
+        props = deep_get(state, "props", "pageProps")
+        if not isinstance(props, dict) or props.get("hasError404") or props.get("hasError500"):
+            raise ScrapeError("Kamernet returned an error or unrecognized page")
+        target = props.get("targetPageProps")
+        if not isinstance(target, dict):
+            raise ScrapeError("Kamernet page lacks targetPageProps")
+        return target
+
+    async def _discover_json(self, client: ScraperClient) -> AsyncIterator[dict[str, Any]]:
         base = self.settings.kamernet_search_url
         if not base:
             raise ScrapeError("Kamernet discovery URL is empty")
@@ -101,6 +210,47 @@ class KamernetAdapter(SourceAdapter):
 
     def parse_detail(self, summary: dict[str, Any], payload: DetailPayload) -> dict[str, Any]:
         html = payload.body
+        state = extract_embedded_json(html, ("__NEXT_DATA__",))
+        if state:
+            detail = self._page_data(html).get("listingDetails")
+            if not isinstance(detail, dict):
+                raise ScrapeError("Kamernet detail lacks listingDetails")
+            if str(detail.get("listingId")) != str(summary.get("external_id")):
+                raise ScrapeError("Kamernet detail identity does not match discovery")
+            if not isinstance(detail.get("isActive"), bool) or detail.get("isBlocked"):
+                raise ScrapeError("Kamernet detail availability cannot be established")
+            images = detail.get("imageList") or []
+            if not isinstance(images, list) or not all(isinstance(i, str) for i in images):
+                raise ScrapeError("invalid Kamernet image list")
+            return {
+                **summary,
+                **_detail_features(html, detail),
+                "title": detail.get("dutchTitle") or detail.get("englishTitle"),
+                "description": detail.get("dutchDescription") or detail.get("englishDescription"),
+                "street": detail.get("computedStreetName"),
+                "city": detail.get("computedCityName"),
+                "postcode": detail.get("postalCode"),
+                "house_number": detail.get("houseNumber"),
+                "house_number_addition": detail.get("houseNumberAddition"),
+                "price_raw": detail.get("totalRentalPrice"),
+                "living_area_sqm": detail.get("surfaceArea"),
+                "room_count": detail.get("numOfRooms"),
+                "bedroom_count": detail.get("numOfBedrooms"),
+                "available_from": detail.get("availabilityStartDate"),
+                "latitude": detail.get("postalCodeLat"),
+                "longitude": detail.get("postalCodeLong"),
+                "property_type": "appartement"
+                if "/appartement-" in payload.url
+                else "studio"
+                if "/studio-" in payload.url
+                else "room",
+                "status_raw": "active" if detail["isActive"] else "expired",
+                "images": [
+                    {"url": f"https://resources.kamernet.nl/image/{key}"}
+                    for key in images
+                    if re.fullmatch(r"[a-fA-F0-9-]{36}", key)
+                ],
+            }
         result: dict[str, Any] = dict(summary)
         meta = extract_meta(html)
 
@@ -178,9 +328,13 @@ class KamernetAdapter(SourceAdapter):
             purpose=purpose,
             availability=availability,
             title=clean_text(merged.get("title")) or None,
-            description=clean_text(merged.get("description")) or None,
+            description="\n".join(
+                clean_text(line) for line in str(merged.get("description") or "").splitlines()
+            ).strip()
+            or None,
             asking_price_cents=price_cents if purpose == ListingPurpose.SALE else None,
             monthly_rent_cents=price_cents if purpose == ListingPurpose.RENT else None,
+            service_costs_cents=normalize_price_cents(merged.get("service_costs_raw")),
             street=street,
             house_number=house_number,
             house_number_addition=merged.get("house_number_addition")
@@ -208,6 +362,7 @@ class KamernetAdapter(SourceAdapter):
             interior=self._interior(merged),
             amenities=self._amenities(merged),
             images=normalize_images(merged.get("images")),
+            available_from=merged.get("available_from"),
         )
 
     # --- helpers ------------------------------------------------------------
@@ -254,7 +409,7 @@ class KamernetAdapter(SourceAdapter):
 
     @staticmethod
     def _interior(merged: dict[str, Any]) -> dict[str, str]:
-        interior: dict[str, str] = {}
+        interior: dict[str, str] = dict(merged.get("interior") or {})
         for key in ("furnished", "balcony", "garden", "storage"):
             value = clean_text(merged.get(key))
             if value:
@@ -286,3 +441,64 @@ def _int(value: Any) -> int | None:
         return int(float(str(value).replace(",", ".")))
     except (TypeError, ValueError):
         return None
+
+
+def _detail_features(html: str, detail: dict[str, Any]) -> dict[str, Any]:
+    """Read rendered facility labels rather than guessing Kamernet's enum IDs."""
+    tree = HTMLParser(html)
+    amenities: list[str] = []
+    interior: dict[str, str] = {}
+    energy_label = detail.get("energyLabel")
+    for heading in tree.css("h2, h3, h4, h5"):
+        if clean_text(heading.text()).lower() in {"wat je krijgt", "what you get"}:
+            for node in heading.parent.css("p"):
+                value = clean_text(node.text())
+                if not value:
+                    continue
+                if "energielabel" in value.lower() or "energy label" in value.lower():
+                    match = re.search(r"\b([A-G]\+{0,5})\b", value)
+                    if match:
+                        energy_label = match[1]
+                else:
+                    amenities.append(value)
+            break
+    for heading in tree.css("h6"):
+        match = re.search(
+            r"\b(gemeubileerd|gestoffeerd|kaal|furnished|unfurnished)\b",
+            heading.text(),
+            re.IGNORECASE,
+        )
+        if match:
+            interior["Inrichting"] = match[1].capitalize()
+            break
+    for key, label in {
+        "utilitiesIncluded": "Inclusief vaste lasten",
+        "candidatePetsAllowed": "Huisdieren toegestaan",
+        "candidateSmokingAllowed": "Roken toegestaan",
+        "isRegistrationAllowed": "Inschrijving mogelijk",
+    }.items():
+        value = detail.get(key)
+        if isinstance(value, bool):
+            interior[label] = "Ja" if value else "Nee"
+    for key, label in {
+        "deposit": "Borg",
+        "agencyFee": "Bemiddelingskosten",
+        "internetAdditionalCosts": "Extra internetkosten",
+    }.items():
+        value = detail.get(key)
+        if value is not None:
+            interior[label] = f"€ {value}"
+    for key, label in {
+        "availabilityEndDate": "Beschikbaar tot",
+        "suitableForNumberOfPersons": "Aantal huurders",
+    }.items():
+        if detail.get(key) is not None:
+            interior[label] = str(detail[key])
+    return {
+        "amenities": amenities,
+        "interior": interior,
+        "energy_label": energy_label,
+        "construction_year": detail.get("constructionYear"),
+        "bathroom_count": detail.get("numOfBathrooms"),
+        "service_costs_raw": detail.get("serviceCosts"),
+    }

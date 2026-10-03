@@ -129,6 +129,7 @@ export type NeighborhoodProfileSumAggregateOutputType = {
 export type NeighborhoodProfileMinAggregateOutputType = {
   id: string | null
   propertyId: string | null
+  aggregatedListingId: string | null
   neighborhoodCode: string | null
   neighborhoodName: string | null
   districtCode: string | null
@@ -204,6 +205,7 @@ export type NeighborhoodProfileMinAggregateOutputType = {
 export type NeighborhoodProfileMaxAggregateOutputType = {
   id: string | null
   propertyId: string | null
+  aggregatedListingId: string | null
   neighborhoodCode: string | null
   neighborhoodName: string | null
   districtCode: string | null
@@ -279,6 +281,7 @@ export type NeighborhoodProfileMaxAggregateOutputType = {
 export type NeighborhoodProfileCountAggregateOutputType = {
   id: number
   propertyId: number
+  aggregatedListingId: number
   neighborhoodCode: number
   neighborhoodName: number
   districtCode: number
@@ -456,6 +459,7 @@ export type NeighborhoodProfileSumAggregateInputType = {
 export type NeighborhoodProfileMinAggregateInputType = {
   id?: true
   propertyId?: true
+  aggregatedListingId?: true
   neighborhoodCode?: true
   neighborhoodName?: true
   districtCode?: true
@@ -531,6 +535,7 @@ export type NeighborhoodProfileMinAggregateInputType = {
 export type NeighborhoodProfileMaxAggregateInputType = {
   id?: true
   propertyId?: true
+  aggregatedListingId?: true
   neighborhoodCode?: true
   neighborhoodName?: true
   districtCode?: true
@@ -606,6 +611,7 @@ export type NeighborhoodProfileMaxAggregateInputType = {
 export type NeighborhoodProfileCountAggregateInputType = {
   id?: true
   propertyId?: true
+  aggregatedListingId?: true
   neighborhoodCode?: true
   neighborhoodName?: true
   districtCode?: true
@@ -767,7 +773,8 @@ export type NeighborhoodProfileGroupByArgs<ExtArgs extends runtime.Types.Extensi
 
 export type NeighborhoodProfileGroupByOutputType = {
   id: string
-  propertyId: string
+  propertyId: string | null
+  aggregatedListingId: string | null
   neighborhoodCode: string
   neighborhoodName: string
   districtCode: string | null
@@ -865,7 +872,8 @@ export type NeighborhoodProfileWhereInput = {
   OR?: Prisma.NeighborhoodProfileWhereInput[]
   NOT?: Prisma.NeighborhoodProfileWhereInput | Prisma.NeighborhoodProfileWhereInput[]
   id?: Prisma.UuidFilter<"NeighborhoodProfile"> | string
-  propertyId?: Prisma.UuidFilter<"NeighborhoodProfile"> | string
+  propertyId?: Prisma.UuidNullableFilter<"NeighborhoodProfile"> | string | null
+  aggregatedListingId?: Prisma.UuidNullableFilter<"NeighborhoodProfile"> | string | null
   neighborhoodCode?: Prisma.StringFilter<"NeighborhoodProfile"> | string
   neighborhoodName?: Prisma.StringFilter<"NeighborhoodProfile"> | string
   districtCode?: Prisma.StringNullableFilter<"NeighborhoodProfile"> | string | null
@@ -936,12 +944,14 @@ export type NeighborhoodProfileWhereInput = {
   osmRetrievedAt?: Prisma.DateTimeNullableFilter<"NeighborhoodProfile"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"NeighborhoodProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"NeighborhoodProfile"> | Date | string
-  property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
+  property?: Prisma.XOR<Prisma.PropertyNullableScalarRelationFilter, Prisma.PropertyWhereInput> | null
+  aggregatedListing?: Prisma.XOR<Prisma.AggregatedListingNullableScalarRelationFilter, Prisma.AggregatedListingWhereInput> | null
 }
 
 export type NeighborhoodProfileOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  propertyId?: Prisma.SortOrder
+  propertyId?: Prisma.SortOrderInput | Prisma.SortOrder
+  aggregatedListingId?: Prisma.SortOrderInput | Prisma.SortOrder
   neighborhoodCode?: Prisma.SortOrder
   neighborhoodName?: Prisma.SortOrder
   districtCode?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -1013,11 +1023,13 @@ export type NeighborhoodProfileOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   property?: Prisma.PropertyOrderByWithRelationInput
+  aggregatedListing?: Prisma.AggregatedListingOrderByWithRelationInput
 }
 
 export type NeighborhoodProfileWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   propertyId?: string
+  aggregatedListingId?: string
   AND?: Prisma.NeighborhoodProfileWhereInput | Prisma.NeighborhoodProfileWhereInput[]
   OR?: Prisma.NeighborhoodProfileWhereInput[]
   NOT?: Prisma.NeighborhoodProfileWhereInput | Prisma.NeighborhoodProfileWhereInput[]
@@ -1091,12 +1103,14 @@ export type NeighborhoodProfileWhereUniqueInput = Prisma.AtLeast<{
   osmRetrievedAt?: Prisma.DateTimeNullableFilter<"NeighborhoodProfile"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"NeighborhoodProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"NeighborhoodProfile"> | Date | string
-  property?: Prisma.XOR<Prisma.PropertyScalarRelationFilter, Prisma.PropertyWhereInput>
-}, "id" | "propertyId">
+  property?: Prisma.XOR<Prisma.PropertyNullableScalarRelationFilter, Prisma.PropertyWhereInput> | null
+  aggregatedListing?: Prisma.XOR<Prisma.AggregatedListingNullableScalarRelationFilter, Prisma.AggregatedListingWhereInput> | null
+}, "id" | "propertyId" | "aggregatedListingId">
 
 export type NeighborhoodProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  propertyId?: Prisma.SortOrder
+  propertyId?: Prisma.SortOrderInput | Prisma.SortOrder
+  aggregatedListingId?: Prisma.SortOrderInput | Prisma.SortOrder
   neighborhoodCode?: Prisma.SortOrder
   neighborhoodName?: Prisma.SortOrder
   districtCode?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -1179,7 +1193,8 @@ export type NeighborhoodProfileScalarWhereWithAggregatesInput = {
   OR?: Prisma.NeighborhoodProfileScalarWhereWithAggregatesInput[]
   NOT?: Prisma.NeighborhoodProfileScalarWhereWithAggregatesInput | Prisma.NeighborhoodProfileScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"NeighborhoodProfile"> | string
-  propertyId?: Prisma.UuidWithAggregatesFilter<"NeighborhoodProfile"> | string
+  propertyId?: Prisma.UuidNullableWithAggregatesFilter<"NeighborhoodProfile"> | string | null
+  aggregatedListingId?: Prisma.UuidNullableWithAggregatesFilter<"NeighborhoodProfile"> | string | null
   neighborhoodCode?: Prisma.StringWithAggregatesFilter<"NeighborhoodProfile"> | string
   neighborhoodName?: Prisma.StringWithAggregatesFilter<"NeighborhoodProfile"> | string
   districtCode?: Prisma.StringNullableWithAggregatesFilter<"NeighborhoodProfile"> | string | null
@@ -1324,12 +1339,14 @@ export type NeighborhoodProfileCreateInput = {
   osmRetrievedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  property: Prisma.PropertyCreateNestedOneWithoutNeighborhoodProfileInput
+  property?: Prisma.PropertyCreateNestedOneWithoutNeighborhoodProfileInput
+  aggregatedListing?: Prisma.AggregatedListingCreateNestedOneWithoutNeighborhoodProfileInput
 }
 
 export type NeighborhoodProfileUncheckedCreateInput = {
   id?: string
-  propertyId: string
+  propertyId?: string | null
+  aggregatedListingId?: string | null
   neighborhoodCode: string
   neighborhoodName: string
   districtCode?: string | null
@@ -1474,12 +1491,14 @@ export type NeighborhoodProfileUpdateInput = {
   osmRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  property?: Prisma.PropertyUpdateOneRequiredWithoutNeighborhoodProfileNestedInput
+  property?: Prisma.PropertyUpdateOneWithoutNeighborhoodProfileNestedInput
+  aggregatedListing?: Prisma.AggregatedListingUpdateOneWithoutNeighborhoodProfileNestedInput
 }
 
 export type NeighborhoodProfileUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aggregatedListingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   neighborhoodCode?: Prisma.StringFieldUpdateOperationsInput | string
   neighborhoodName?: Prisma.StringFieldUpdateOperationsInput | string
   districtCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1554,7 +1573,8 @@ export type NeighborhoodProfileUncheckedUpdateInput = {
 
 export type NeighborhoodProfileCreateManyInput = {
   id?: string
-  propertyId: string
+  propertyId?: string | null
+  aggregatedListingId?: string | null
   neighborhoodCode: string
   neighborhoodName: string
   districtCode?: string | null
@@ -1703,7 +1723,8 @@ export type NeighborhoodProfileUpdateManyMutationInput = {
 
 export type NeighborhoodProfileUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  propertyId?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  aggregatedListingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   neighborhoodCode?: Prisma.StringFieldUpdateOperationsInput | string
   neighborhoodName?: Prisma.StringFieldUpdateOperationsInput | string
   districtCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1784,6 +1805,7 @@ export type NeighborhoodProfileNullableScalarRelationFilter = {
 export type NeighborhoodProfileCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   propertyId?: Prisma.SortOrder
+  aggregatedListingId?: Prisma.SortOrder
   neighborhoodCode?: Prisma.SortOrder
   neighborhoodName?: Prisma.SortOrder
   districtCode?: Prisma.SortOrder
@@ -1909,6 +1931,7 @@ export type NeighborhoodProfileAvgOrderByAggregateInput = {
 export type NeighborhoodProfileMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   propertyId?: Prisma.SortOrder
+  aggregatedListingId?: Prisma.SortOrder
   neighborhoodCode?: Prisma.SortOrder
   neighborhoodName?: Prisma.SortOrder
   districtCode?: Prisma.SortOrder
@@ -1984,6 +2007,7 @@ export type NeighborhoodProfileMaxOrderByAggregateInput = {
 export type NeighborhoodProfileMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   propertyId?: Prisma.SortOrder
+  aggregatedListingId?: Prisma.SortOrder
   neighborhoodCode?: Prisma.SortOrder
   neighborhoodName?: Prisma.SortOrder
   districtCode?: Prisma.SortOrder
@@ -2142,6 +2166,38 @@ export type NullableEnumFoundationRiskLevelFieldUpdateOperationsInput = {
   set?: $Enums.FoundationRiskLevel | null
 }
 
+export type NeighborhoodProfileCreateNestedOneWithoutAggregatedListingInput = {
+  create?: Prisma.XOR<Prisma.NeighborhoodProfileCreateWithoutAggregatedListingInput, Prisma.NeighborhoodProfileUncheckedCreateWithoutAggregatedListingInput>
+  connectOrCreate?: Prisma.NeighborhoodProfileCreateOrConnectWithoutAggregatedListingInput
+  connect?: Prisma.NeighborhoodProfileWhereUniqueInput
+}
+
+export type NeighborhoodProfileUncheckedCreateNestedOneWithoutAggregatedListingInput = {
+  create?: Prisma.XOR<Prisma.NeighborhoodProfileCreateWithoutAggregatedListingInput, Prisma.NeighborhoodProfileUncheckedCreateWithoutAggregatedListingInput>
+  connectOrCreate?: Prisma.NeighborhoodProfileCreateOrConnectWithoutAggregatedListingInput
+  connect?: Prisma.NeighborhoodProfileWhereUniqueInput
+}
+
+export type NeighborhoodProfileUpdateOneWithoutAggregatedListingNestedInput = {
+  create?: Prisma.XOR<Prisma.NeighborhoodProfileCreateWithoutAggregatedListingInput, Prisma.NeighborhoodProfileUncheckedCreateWithoutAggregatedListingInput>
+  connectOrCreate?: Prisma.NeighborhoodProfileCreateOrConnectWithoutAggregatedListingInput
+  upsert?: Prisma.NeighborhoodProfileUpsertWithoutAggregatedListingInput
+  disconnect?: Prisma.NeighborhoodProfileWhereInput | boolean
+  delete?: Prisma.NeighborhoodProfileWhereInput | boolean
+  connect?: Prisma.NeighborhoodProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.NeighborhoodProfileUpdateToOneWithWhereWithoutAggregatedListingInput, Prisma.NeighborhoodProfileUpdateWithoutAggregatedListingInput>, Prisma.NeighborhoodProfileUncheckedUpdateWithoutAggregatedListingInput>
+}
+
+export type NeighborhoodProfileUncheckedUpdateOneWithoutAggregatedListingNestedInput = {
+  create?: Prisma.XOR<Prisma.NeighborhoodProfileCreateWithoutAggregatedListingInput, Prisma.NeighborhoodProfileUncheckedCreateWithoutAggregatedListingInput>
+  connectOrCreate?: Prisma.NeighborhoodProfileCreateOrConnectWithoutAggregatedListingInput
+  upsert?: Prisma.NeighborhoodProfileUpsertWithoutAggregatedListingInput
+  disconnect?: Prisma.NeighborhoodProfileWhereInput | boolean
+  delete?: Prisma.NeighborhoodProfileWhereInput | boolean
+  connect?: Prisma.NeighborhoodProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.NeighborhoodProfileUpdateToOneWithWhereWithoutAggregatedListingInput, Prisma.NeighborhoodProfileUpdateWithoutAggregatedListingInput>, Prisma.NeighborhoodProfileUncheckedUpdateWithoutAggregatedListingInput>
+}
+
 export type NeighborhoodProfileCreateWithoutPropertyInput = {
   id?: string
   neighborhoodCode: string
@@ -2214,10 +2270,12 @@ export type NeighborhoodProfileCreateWithoutPropertyInput = {
   osmRetrievedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  aggregatedListing?: Prisma.AggregatedListingCreateNestedOneWithoutNeighborhoodProfileInput
 }
 
 export type NeighborhoodProfileUncheckedCreateWithoutPropertyInput = {
   id?: string
+  aggregatedListingId?: string | null
   neighborhoodCode: string
   neighborhoodName: string
   districtCode?: string | null
@@ -2378,10 +2436,328 @@ export type NeighborhoodProfileUpdateWithoutPropertyInput = {
   osmRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  aggregatedListing?: Prisma.AggregatedListingUpdateOneWithoutNeighborhoodProfileNestedInput
 }
 
 export type NeighborhoodProfileUncheckedUpdateWithoutPropertyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  aggregatedListingId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  neighborhoodCode?: Prisma.StringFieldUpdateOperationsInput | string
+  neighborhoodName?: Prisma.StringFieldUpdateOperationsInput | string
+  districtCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  districtName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipalityCode?: Prisma.StringFieldUpdateOperationsInput | string
+  statisticsYear?: Prisma.IntFieldUpdateOperationsInput | number
+  population?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  populationDensityPerKm2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  nationalPopulationDensityPerKm2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  age0To14Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  age15To24Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  age25To44Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  age45To64Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  age65PlusPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge0To14Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge15To24Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge25To44Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge45To64Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge65PlusPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  housingCorporationPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalHousingCorporationPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  registeredCrimesPer1000?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalRegisteredCrimesPer1000?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  crimeStatisticsYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  supermarketDistanceKm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  primarySchoolDistanceKm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  daycareDistanceKm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  generalPracticeDistanceKm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  primarySchoolsWithin3Km?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  supermarketsWithin1Km?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  schoolsWithin1Km?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  busStopDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tramStopDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  metroStationDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  trainStationDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  noiseRoadLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  noiseSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  noiseRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  foundationRiskLevel?: Prisma.NullableEnumFoundationRiskLevelFieldUpdateOperationsInput | $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  malePercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  demographicsSourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  demographicsRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cbsDataset?: Prisma.StringFieldUpdateOperationsInput | string
+  cbsSourceUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  cbsRetrievedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  crimeDataset?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  crimeSourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  osmSourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  osmRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type NeighborhoodProfileCreateWithoutAggregatedListingInput = {
+  id?: string
+  neighborhoodCode: string
+  neighborhoodName: string
+  districtCode?: string | null
+  districtName?: string | null
+  municipalityCode: string
+  statisticsYear: number
+  population?: number | null
+  populationDensityPerKm2?: number | null
+  nationalPopulationDensityPerKm2?: number | null
+  age0To14Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  age15To24Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  age25To44Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  age45To64Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  age65PlusPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge0To14Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge15To24Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge25To44Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge45To64Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge65PlusPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  housingCorporationPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalHousingCorporationPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  registeredCrimesPer1000?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalRegisteredCrimesPer1000?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  crimeStatisticsYear?: number | null
+  supermarketDistanceKm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  primarySchoolDistanceKm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  daycareDistanceKm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  generalPracticeDistanceKm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  primarySchoolsWithin3Km?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  supermarketsWithin1Km?: number | null
+  schoolsWithin1Km?: number | null
+  busStopDistanceMeters?: number | null
+  tramStopDistanceMeters?: number | null
+  metroStationDistanceMeters?: number | null
+  trainStationDistanceMeters?: number | null
+  noiseRoadLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: number | null
+  noiseSource?: string | null
+  noiseRetrievedAt?: Date | string | null
+  foundationRiskLevel?: $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: string | null
+  foundationRiskDetail?: string | null
+  foundationRiskSource?: string | null
+  foundationRiskRetrievedAt?: Date | string | null
+  malePercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: number | null
+  demographicsSourceUrl?: string | null
+  demographicsRetrievedAt?: Date | string | null
+  cbsDataset: string
+  cbsSourceUrl: string
+  cbsRetrievedAt: Date | string
+  crimeDataset?: string | null
+  crimeSourceUrl?: string | null
+  osmSourceUrl?: string | null
+  osmRetrievedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  property?: Prisma.PropertyCreateNestedOneWithoutNeighborhoodProfileInput
+}
+
+export type NeighborhoodProfileUncheckedCreateWithoutAggregatedListingInput = {
+  id?: string
+  propertyId?: string | null
+  neighborhoodCode: string
+  neighborhoodName: string
+  districtCode?: string | null
+  districtName?: string | null
+  municipalityCode: string
+  statisticsYear: number
+  population?: number | null
+  populationDensityPerKm2?: number | null
+  nationalPopulationDensityPerKm2?: number | null
+  age0To14Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  age15To24Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  age25To44Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  age45To64Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  age65PlusPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge0To14Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge15To24Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge25To44Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge45To64Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge65PlusPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  housingCorporationPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalHousingCorporationPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  registeredCrimesPer1000?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalRegisteredCrimesPer1000?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  crimeStatisticsYear?: number | null
+  supermarketDistanceKm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  primarySchoolDistanceKm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  daycareDistanceKm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  generalPracticeDistanceKm?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  primarySchoolsWithin3Km?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  supermarketsWithin1Km?: number | null
+  schoolsWithin1Km?: number | null
+  busStopDistanceMeters?: number | null
+  tramStopDistanceMeters?: number | null
+  metroStationDistanceMeters?: number | null
+  trainStationDistanceMeters?: number | null
+  noiseRoadLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: number | null
+  noiseSource?: string | null
+  noiseRetrievedAt?: Date | string | null
+  foundationRiskLevel?: $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: string | null
+  foundationRiskDetail?: string | null
+  foundationRiskSource?: string | null
+  foundationRiskRetrievedAt?: Date | string | null
+  malePercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: number | null
+  demographicsSourceUrl?: string | null
+  demographicsRetrievedAt?: Date | string | null
+  cbsDataset: string
+  cbsSourceUrl: string
+  cbsRetrievedAt: Date | string
+  crimeDataset?: string | null
+  crimeSourceUrl?: string | null
+  osmSourceUrl?: string | null
+  osmRetrievedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type NeighborhoodProfileCreateOrConnectWithoutAggregatedListingInput = {
+  where: Prisma.NeighborhoodProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.NeighborhoodProfileCreateWithoutAggregatedListingInput, Prisma.NeighborhoodProfileUncheckedCreateWithoutAggregatedListingInput>
+}
+
+export type NeighborhoodProfileUpsertWithoutAggregatedListingInput = {
+  update: Prisma.XOR<Prisma.NeighborhoodProfileUpdateWithoutAggregatedListingInput, Prisma.NeighborhoodProfileUncheckedUpdateWithoutAggregatedListingInput>
+  create: Prisma.XOR<Prisma.NeighborhoodProfileCreateWithoutAggregatedListingInput, Prisma.NeighborhoodProfileUncheckedCreateWithoutAggregatedListingInput>
+  where?: Prisma.NeighborhoodProfileWhereInput
+}
+
+export type NeighborhoodProfileUpdateToOneWithWhereWithoutAggregatedListingInput = {
+  where?: Prisma.NeighborhoodProfileWhereInput
+  data: Prisma.XOR<Prisma.NeighborhoodProfileUpdateWithoutAggregatedListingInput, Prisma.NeighborhoodProfileUncheckedUpdateWithoutAggregatedListingInput>
+}
+
+export type NeighborhoodProfileUpdateWithoutAggregatedListingInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  neighborhoodCode?: Prisma.StringFieldUpdateOperationsInput | string
+  neighborhoodName?: Prisma.StringFieldUpdateOperationsInput | string
+  districtCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  districtName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  municipalityCode?: Prisma.StringFieldUpdateOperationsInput | string
+  statisticsYear?: Prisma.IntFieldUpdateOperationsInput | number
+  population?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  populationDensityPerKm2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  nationalPopulationDensityPerKm2?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  age0To14Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  age15To24Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  age25To44Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  age45To64Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  age65PlusPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge0To14Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge15To24Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge25To44Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge45To64Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalAge65PlusPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  housingCorporationPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalHousingCorporationPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  registeredCrimesPer1000?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nationalRegisteredCrimesPer1000?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  crimeStatisticsYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  supermarketDistanceKm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  primarySchoolDistanceKm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  daycareDistanceKm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  generalPracticeDistanceKm?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  primarySchoolsWithin3Km?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  supermarketsWithin1Km?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  schoolsWithin1Km?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  busStopDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tramStopDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  metroStationDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  trainStationDistanceMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  noiseRoadLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseRailLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseIndustryLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseAircraftLden?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  noiseGridMeters?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  noiseSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  noiseRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  foundationRiskLevel?: Prisma.NullableEnumFoundationRiskLevelFieldUpdateOperationsInput | $Enums.FoundationRiskLevel | null
+  foundationRiskAreaShare?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationPre1970Percent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  foundationGroundClass?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskDetail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  foundationRiskRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  malePercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  femalePercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  averageHouseholdSize?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  singleHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  coupleHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  familyHouseholdPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationLowPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationMediumPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationHighPercent?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  educationStatisticsYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  demographicsSourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  demographicsRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cbsDataset?: Prisma.StringFieldUpdateOperationsInput | string
+  cbsSourceUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  cbsRetrievedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  crimeDataset?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  crimeSourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  osmSourceUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  osmRetrievedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  property?: Prisma.PropertyUpdateOneWithoutNeighborhoodProfileNestedInput
+}
+
+export type NeighborhoodProfileUncheckedUpdateWithoutAggregatedListingInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  propertyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   neighborhoodCode?: Prisma.StringFieldUpdateOperationsInput | string
   neighborhoodName?: Prisma.StringFieldUpdateOperationsInput | string
   districtCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2459,6 +2835,7 @@ export type NeighborhoodProfileUncheckedUpdateWithoutPropertyInput = {
 export type NeighborhoodProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   propertyId?: boolean
+  aggregatedListingId?: boolean
   neighborhoodCode?: boolean
   neighborhoodName?: boolean
   districtCode?: boolean
@@ -2529,12 +2906,14 @@ export type NeighborhoodProfileSelect<ExtArgs extends runtime.Types.Extensions.I
   osmRetrievedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  property?: boolean | Prisma.NeighborhoodProfile$propertyArgs<ExtArgs>
+  aggregatedListing?: boolean | Prisma.NeighborhoodProfile$aggregatedListingArgs<ExtArgs>
 }, ExtArgs["result"]["neighborhoodProfile"]>
 
 export type NeighborhoodProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   propertyId?: boolean
+  aggregatedListingId?: boolean
   neighborhoodCode?: boolean
   neighborhoodName?: boolean
   districtCode?: boolean
@@ -2605,12 +2984,14 @@ export type NeighborhoodProfileSelectCreateManyAndReturn<ExtArgs extends runtime
   osmRetrievedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  property?: boolean | Prisma.NeighborhoodProfile$propertyArgs<ExtArgs>
+  aggregatedListing?: boolean | Prisma.NeighborhoodProfile$aggregatedListingArgs<ExtArgs>
 }, ExtArgs["result"]["neighborhoodProfile"]>
 
 export type NeighborhoodProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   propertyId?: boolean
+  aggregatedListingId?: boolean
   neighborhoodCode?: boolean
   neighborhoodName?: boolean
   districtCode?: boolean
@@ -2681,12 +3062,14 @@ export type NeighborhoodProfileSelectUpdateManyAndReturn<ExtArgs extends runtime
   osmRetrievedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  property?: boolean | Prisma.NeighborhoodProfile$propertyArgs<ExtArgs>
+  aggregatedListing?: boolean | Prisma.NeighborhoodProfile$aggregatedListingArgs<ExtArgs>
 }, ExtArgs["result"]["neighborhoodProfile"]>
 
 export type NeighborhoodProfileSelectScalar = {
   id?: boolean
   propertyId?: boolean
+  aggregatedListingId?: boolean
   neighborhoodCode?: boolean
   neighborhoodName?: boolean
   districtCode?: boolean
@@ -2759,25 +3142,30 @@ export type NeighborhoodProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type NeighborhoodProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "neighborhoodCode" | "neighborhoodName" | "districtCode" | "districtName" | "municipalityCode" | "statisticsYear" | "population" | "populationDensityPerKm2" | "nationalPopulationDensityPerKm2" | "age0To14Percent" | "age15To24Percent" | "age25To44Percent" | "age45To64Percent" | "age65PlusPercent" | "nationalAge0To14Percent" | "nationalAge15To24Percent" | "nationalAge25To44Percent" | "nationalAge45To64Percent" | "nationalAge65PlusPercent" | "housingCorporationPercent" | "nationalHousingCorporationPercent" | "registeredCrimesPer1000" | "nationalRegisteredCrimesPer1000" | "crimeStatisticsYear" | "supermarketDistanceKm" | "primarySchoolDistanceKm" | "daycareDistanceKm" | "generalPracticeDistanceKm" | "primarySchoolsWithin3Km" | "supermarketsWithin1Km" | "schoolsWithin1Km" | "busStopDistanceMeters" | "tramStopDistanceMeters" | "metroStationDistanceMeters" | "trainStationDistanceMeters" | "noiseRoadLden" | "noiseRailLden" | "noiseIndustryLden" | "noiseAircraftLden" | "noiseGridMeters" | "noiseSource" | "noiseRetrievedAt" | "foundationRiskLevel" | "foundationRiskAreaShare" | "foundationPre1970Percent" | "foundationGroundClass" | "foundationRiskDetail" | "foundationRiskSource" | "foundationRiskRetrievedAt" | "malePercent" | "femalePercent" | "averageHouseholdSize" | "singleHouseholdPercent" | "coupleHouseholdPercent" | "familyHouseholdPercent" | "educationLowPercent" | "educationMediumPercent" | "educationHighPercent" | "educationStatisticsYear" | "demographicsSourceUrl" | "demographicsRetrievedAt" | "cbsDataset" | "cbsSourceUrl" | "cbsRetrievedAt" | "crimeDataset" | "crimeSourceUrl" | "osmSourceUrl" | "osmRetrievedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["neighborhoodProfile"]>
+export type NeighborhoodProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "propertyId" | "aggregatedListingId" | "neighborhoodCode" | "neighborhoodName" | "districtCode" | "districtName" | "municipalityCode" | "statisticsYear" | "population" | "populationDensityPerKm2" | "nationalPopulationDensityPerKm2" | "age0To14Percent" | "age15To24Percent" | "age25To44Percent" | "age45To64Percent" | "age65PlusPercent" | "nationalAge0To14Percent" | "nationalAge15To24Percent" | "nationalAge25To44Percent" | "nationalAge45To64Percent" | "nationalAge65PlusPercent" | "housingCorporationPercent" | "nationalHousingCorporationPercent" | "registeredCrimesPer1000" | "nationalRegisteredCrimesPer1000" | "crimeStatisticsYear" | "supermarketDistanceKm" | "primarySchoolDistanceKm" | "daycareDistanceKm" | "generalPracticeDistanceKm" | "primarySchoolsWithin3Km" | "supermarketsWithin1Km" | "schoolsWithin1Km" | "busStopDistanceMeters" | "tramStopDistanceMeters" | "metroStationDistanceMeters" | "trainStationDistanceMeters" | "noiseRoadLden" | "noiseRailLden" | "noiseIndustryLden" | "noiseAircraftLden" | "noiseGridMeters" | "noiseSource" | "noiseRetrievedAt" | "foundationRiskLevel" | "foundationRiskAreaShare" | "foundationPre1970Percent" | "foundationGroundClass" | "foundationRiskDetail" | "foundationRiskSource" | "foundationRiskRetrievedAt" | "malePercent" | "femalePercent" | "averageHouseholdSize" | "singleHouseholdPercent" | "coupleHouseholdPercent" | "familyHouseholdPercent" | "educationLowPercent" | "educationMediumPercent" | "educationHighPercent" | "educationStatisticsYear" | "demographicsSourceUrl" | "demographicsRetrievedAt" | "cbsDataset" | "cbsSourceUrl" | "cbsRetrievedAt" | "crimeDataset" | "crimeSourceUrl" | "osmSourceUrl" | "osmRetrievedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["neighborhoodProfile"]>
 export type NeighborhoodProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  property?: boolean | Prisma.NeighborhoodProfile$propertyArgs<ExtArgs>
+  aggregatedListing?: boolean | Prisma.NeighborhoodProfile$aggregatedListingArgs<ExtArgs>
 }
 export type NeighborhoodProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  property?: boolean | Prisma.NeighborhoodProfile$propertyArgs<ExtArgs>
+  aggregatedListing?: boolean | Prisma.NeighborhoodProfile$aggregatedListingArgs<ExtArgs>
 }
 export type NeighborhoodProfileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  property?: boolean | Prisma.PropertyDefaultArgs<ExtArgs>
+  property?: boolean | Prisma.NeighborhoodProfile$propertyArgs<ExtArgs>
+  aggregatedListing?: boolean | Prisma.NeighborhoodProfile$aggregatedListingArgs<ExtArgs>
 }
 
 export type $NeighborhoodProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "NeighborhoodProfile"
   objects: {
-    property: Prisma.$PropertyPayload<ExtArgs>
+    property: Prisma.$PropertyPayload<ExtArgs> | null
+    aggregatedListing: Prisma.$AggregatedListingPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    propertyId: string
+    propertyId: string | null
+    aggregatedListingId: string | null
     neighborhoodCode: string
     neighborhoodName: string
     districtCode: string | null
@@ -3242,7 +3630,8 @@ readonly fields: NeighborhoodProfileFieldRefs;
  */
 export interface Prisma__NeighborhoodProfileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  property<T extends Prisma.PropertyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PropertyDefaultArgs<ExtArgs>>): Prisma.Prisma__PropertyClient<runtime.Types.Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  property<T extends Prisma.NeighborhoodProfile$propertyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.NeighborhoodProfile$propertyArgs<ExtArgs>>): Prisma.Prisma__PropertyClient<runtime.Types.Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  aggregatedListing<T extends Prisma.NeighborhoodProfile$aggregatedListingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.NeighborhoodProfile$aggregatedListingArgs<ExtArgs>>): Prisma.Prisma__AggregatedListingClient<runtime.Types.Result.GetResult<Prisma.$AggregatedListingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3274,6 +3663,7 @@ export interface Prisma__NeighborhoodProfileClient<T, Null = never, ExtArgs exte
 export interface NeighborhoodProfileFieldRefs {
   readonly id: Prisma.FieldRef<"NeighborhoodProfile", 'String'>
   readonly propertyId: Prisma.FieldRef<"NeighborhoodProfile", 'String'>
+  readonly aggregatedListingId: Prisma.FieldRef<"NeighborhoodProfile", 'String'>
   readonly neighborhoodCode: Prisma.FieldRef<"NeighborhoodProfile", 'String'>
   readonly neighborhoodName: Prisma.FieldRef<"NeighborhoodProfile", 'String'>
   readonly districtCode: Prisma.FieldRef<"NeighborhoodProfile", 'String'>
@@ -3742,6 +4132,44 @@ export type NeighborhoodProfileDeleteManyArgs<ExtArgs extends runtime.Types.Exte
    * Limit how many NeighborhoodProfiles to delete.
    */
   limit?: number
+}
+
+/**
+ * NeighborhoodProfile.property
+ */
+export type NeighborhoodProfile$propertyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Property
+   */
+  select?: Prisma.PropertySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Property
+   */
+  omit?: Prisma.PropertyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PropertyInclude<ExtArgs> | null
+  where?: Prisma.PropertyWhereInput
+}
+
+/**
+ * NeighborhoodProfile.aggregatedListing
+ */
+export type NeighborhoodProfile$aggregatedListingArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AggregatedListing
+   */
+  select?: Prisma.AggregatedListingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AggregatedListing
+   */
+  omit?: Prisma.AggregatedListingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AggregatedListingInclude<ExtArgs> | null
+  where?: Prisma.AggregatedListingWhereInput
 }
 
 /**

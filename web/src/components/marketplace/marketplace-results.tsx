@@ -353,13 +353,13 @@ export function MarketplaceResults({
                                 className={`group overflow-hidden rounded-lg border bg-surface transition ${selectedId === listing.id ? "border-brand shadow-[0_12px_30px_rgba(16,40,32,.1)]" : "border-line hover:border-brand/40"}`}
                             >
                                 <div className="relative aspect-4/3 overflow-hidden bg-[#dde9e1] dark:bg-[#1a2621]">
-                                    <FavoriteButton
-                                        listingId={listing.id}
-                                        active={activeFavorites.includes(
-                                            listing.id,
-                                        )}
-                                        onToggle={toggleFavorite}
-                                    />
+                                    {!listing.externalSource && (
+                                        <FavoriteButton
+                                            listingId={listing.id}
+                                            active={activeFavorites.includes(listing.id)}
+                                            onToggle={toggleFavorite}
+                                        />
+                                    )}
                                     <div className="absolute left-3 top-3 z-10 flex flex-col items-start gap-1.5">
                                         <StatusBadge
                                             status={listing.status}
@@ -368,6 +368,11 @@ export function MarketplaceResults({
                                                 listing,
                                             )}
                                         />
+                                        {listing.externalSource && (
+                                            <span className="rounded-sm bg-white/95 px-2.5 py-1 text-xs font-semibold text-brand shadow-sm">
+                                                {listing.externalSource}
+                                            </span>
+                                        )}
                                         {listing.isMonument ? (
                                             <span className="inline-flex items-center gap-1.5 rounded-sm bg-white/95 px-2.5 py-1 text-xs font-semibold text-brand shadow-sm">
                                                 <Landmark size={13} /> Monument

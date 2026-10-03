@@ -1,3 +1,6 @@
+import { Suspense } from "react";
+import { DetailGroup, DetailTags } from "@/components/listing/property-detail-groups";
+import { loadAggregatedNeighborhood } from "@/features/listings/enrich-aggregated-neighborhood";
 import { getLanguage } from "@/lib/language";
 import { PublicHeader } from "@/components/platform/public-header";
 import Link from "next/link";
@@ -483,12 +486,24 @@ export default async function PublicListingPage({
         include: {
             images: { orderBy: { sortOrder: "asc" } },
             platformLinks: { orderBy: { source: "asc" } },
+            neighborhoodProfile: true,
         },
     });
     if (aggregated) {
         return (
             <AggregatedListingDetail
                 language={language}
+                neighborhood={
+                    <Suspense fallback={<p className="mt-10 text-sm text-muted">
+                        {language === "nl" ? "Buurtgegevens laden…" : "Loading neighborhood data…"}
+                    </p>}>
+                        <AggregatedNeighborhood
+                            listingId={aggregated.id}
+                            municipality={aggregated.municipality ?? aggregated.city}
+                            language={language}
+                        />
+                    </Suspense>
+                }
                 listing={{
                     titleNl: aggregated.titleNl,
                     descriptionNl: aggregated.descriptionNl,
@@ -506,6 +521,9 @@ export default async function PublicListingPage({
                     houseNumberAddition: aggregated.houseNumberAddition,
                     city: aggregated.city,
                     municipality: aggregated.municipality,
+                    province: aggregated.province,
+                    latitude: aggregated.latitude === null ? null : Number(aggregated.latitude),
+                    longitude: aggregated.longitude === null ? null : Number(aggregated.longitude),
                     propertyType: aggregated.propertyType,
                     livingAreaSqm:
                         aggregated.livingAreaSqm !== null
@@ -515,12 +533,15 @@ export default async function PublicListingPage({
                         aggregated.plotAreaSqm !== null
                             ? Number(aggregated.plotAreaSqm)
                             : null,
+                    volumeCubicMeters: aggregated.volumeCubicMeters === null
+                        ? null : Number(aggregated.volumeCubicMeters),
                     roomCount: aggregated.roomCount,
                     bedroomCount: aggregated.bedroomCount,
                     bathroomCount: aggregated.bathroomCount,
                     constructionYear: aggregated.constructionYear,
                     energyLabel: aggregated.energyLabel,
                     amenities: aggregated.amenities,
+                    interior: aggregated.interior,
                     availableFrom:
                         aggregated.availableFrom?.toISOString() ?? null,
                     images: aggregated.images,
@@ -1369,73 +1390,20 @@ function InteractionNotice({
     );
 }
 
-function DetailGroup({
-    icon: Icon,
-    title,
-    items,
-}: {
-    icon: typeof Ruler;
-    title: string;
-    items: (readonly [string, string | number | null | undefined])[];
+
+async function AggregatedNeighborhood({ listingId, municipality, language }: {
+    listingId: string;
+    municipality: string;
+    language: "nl" | "en";
 }) {
-    const availableItems = items.filter(([, value]) => value !== null);
-    if (availableItems.length === 0) return null;
-
-    return (
-        <div className="grid gap-5 py-6 sm:grid-cols-[180px_1fr]">
-            <h3 className="flex items-center gap-2 font-semibold">
-                <Icon size={18} className="text-brand" /> {title}
-            </h3>
-            <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
-                {availableItems.map(([label, value]) => (
-                    <div key={label}>
-                        <dt className="text-xs font-semibold text-muted">
-                            {label}
-                        </dt>
-                        <dd className="mt-1 text-sm font-medium">
-                            {value ?? "—"}
-                        </dd>
-                    </div>
-                ))}
-            </dl>
-        </div>
-    );
-}
-
-function DetailTags({
-    icon: Icon,
-    title,
-    values,
-    extra,
-}: {
-    icon: typeof Ruler;
-    title: string;
-    values: string[];
-    extra?: string | null;
-}) {
-    if (values.length === 0 && !extra) return null;
-
-    return (
-        <div className="grid gap-5 py-6 sm:grid-cols-[180px_1fr]">
-            <h3 className="flex items-center gap-2 font-semibold">
-                <Icon size={18} className="text-brand" /> {title}
-            </h3>
-            <div>
-                <div className="flex flex-wrap gap-2">
-                    {values.map((value) => (
-                        <span
-                            key={value}
-                            className="rounded-md bg-background px-3 py-2 text-sm"
-                        >
-                            {value}
-                        </span>
-                    ))}
-                </div>
-                {extra ? (
-                    <p className="mt-3 text-sm font-medium">{extra}</p>
-                ) : null}
-            </div>
-        </div>
+    const profile = await loadAggregatedNeighborhood(listingId);
+    return profile ? (
+        <NeighborhoodDetails profile={profile} municipality={municipality} language={language} />
+    ) : (
+        <p className="mt-10 text-sm text-muted">
+            {language === "nl" ? "Buurtgegevens voor dit adres zijn nog niet beschikbaar."
+                : "Neighborhood data for this address is not available yet."}
+        </p>
     );
 }
 

@@ -127,11 +127,18 @@ jobs:
         with:
           context: aggregator
           platforms: linux/amd64
+          load: true
           push: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
           tags: ${{ steps.names.outputs.prefix }}-aggregator:${{ github.sha }}
           labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
           cache-from: type=gha,scope=aggregator
           cache-to: type=gha,mode=max,scope=aggregator
+      - name: Check aggregator native transport in the production image
+        env:
+          IMAGE: ${{ steps.names.outputs.prefix }}-aggregator:${{ github.sha }}
+        run: |
+          docker run --rm --network none --entrypoint /app/.venv/bin/python "$IMAGE" -c \
+            'from curl_cffi import Curl; from app.config import Settings; from app.http_client import ScraperClient; assert Settings().funda_transport == "chrome"; curl = Curl(); curl.close()'
 
   deploy:
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.deploy

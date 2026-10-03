@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from app.adapters import DetailPayload
 from app.adapters.funda import FundaAdapter
 from app.models import ListingAvailability, ListingPurpose
@@ -86,3 +88,56 @@ def test_nested_offer_sold_status():
     adapter = FundaAdapter()
     parsed = adapter.parse_detail({}, DetailPayload("https://example.org", "text/html", html))
     assert adapter.normalize(parsed).availability == ListingAvailability.EXPIRED
+
+
+def test_current_nuxt_detail_keeps_gallery_description_and_features():
+    html = (Path(__file__).parent / "fixtures/funda-detail.html").read_text(encoding="utf-8")
+    adapter = FundaAdapter()
+    summary = {"external_id": "44522879", "url": "https://www.funda.nl/detail/koop/x/44522879/"}
+    listing = adapter.normalize(
+        adapter.parse_detail(summary, DetailPayload(summary["url"], "text/html", html))
+    )
+    assert len(listing.images) == 44
+    assert listing.images[0].url == "https://cloud.funda.nl/valentina_media/235/802/920.jpg"
+    assert listing.images[1].url == "https://cloud.funda.nl/valentina_media/235/802/902.jpg"
+    assert "\n\nTweede verdieping\n" in listing.description
+    assert listing.description.endswith("cv-ketel en zonnepanelen.")
+    assert listing.postcode == "8939AR"
+    assert listing.house_number == 11
+    assert listing.living_area_sqm == 144
+    assert listing.plot_area_sqm == 315
+    assert listing.volume_cubic_meters == 555
+    assert listing.bedroom_count == 4
+    assert listing.bathroom_count == 1
+    assert listing.energy_label.value == "A"
+    assert listing.interior["verwarming"] == "Cv-ketel"
+    assert listing.interior["tuin"] == "Achtertuin"
+    assert "zonnepanelen" in listing.amenities
+    assert listing.latitude == 53.18501
+
+
+def test_html_description_and_gallery_fallback_excludes_unrelated_media():
+    html = FUNDA_HTML.replace(
+        "<body></body>",
+        """<body>
+      <section><h2>Omschrijving</h2><div data-testid="expandable-panel-header">
+      Volledige omschrijving.<br>Tweede alinea met de indeling.</div></section>
+      <div id="media">
+        <a href="/media/fotos"><img src="https://img.example/1.jpg"></a>
+        <a href="/media/fotos"><img src="https://img.example/2.jpg"></a>
+        <a href="/media/videos"><img src="https://img.example/video.jpg"></a>
+      </div><img src="https://img.example/broker.jpg">
+      <dl><dt>Inhoud</dt><dd>250 m³</dd><dt>Isolatie</dt><dd>Dubbel glas</dd></dl>
+    </body>""",
+    )
+    adapter = FundaAdapter()
+    listing = adapter.normalize(
+        adapter.parse_detail({}, DetailPayload("https://example.org", "text/html", html))
+    )
+    assert [image.url for image in listing.images] == [
+        "https://img.example/1.jpg",
+        "https://img.example/2.jpg",
+    ]
+    assert "Tweede alinea" in listing.description
+    assert listing.volume_cubic_meters == 250
+    assert listing.interior["isolatie"] == "Dubbel glas"

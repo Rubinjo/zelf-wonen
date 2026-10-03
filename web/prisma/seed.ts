@@ -29,7 +29,6 @@
  *
  * Run with:
  *   npm run db:seed
- *   # or: npx prisma db seed
  */
 import { config } from "dotenv";
 import { createHash, randomUUID } from "node:crypto";

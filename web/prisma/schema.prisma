@@ -490,7 +490,8 @@ model Property {
 
 model NeighborhoodProfile {
   id                           String   @id @default(uuid()) @db.Uuid
-  propertyId                   String   @unique @db.Uuid
+  propertyId                   String?  @unique @db.Uuid
+  aggregatedListingId          String?  @unique @db.Uuid
   neighborhoodCode             String   @db.VarChar(10)
   neighborhoodName             String
   districtCode                 String?  @db.VarChar(8)
@@ -564,7 +565,8 @@ model NeighborhoodProfile {
   osmRetrievedAt               DateTime?
   createdAt                    DateTime @default(now())
   updatedAt                    DateTime @updatedAt
-  property                     Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  property                     Property? @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  aggregatedListing            AggregatedListing? @relation(fields: [aggregatedListingId], references: [id], onDelete: Cascade)
 
   @@index([neighborhoodCode])
   @@index([housingCorporationPercent])
@@ -1371,6 +1373,7 @@ model AggregatedListing {
   updatedAt            DateTime                  @updatedAt @map("updated_at")
 
   platformLinks        AggregatedPlatformLink[]
+  neighborhoodProfile  NeighborhoodProfile?
   images               AggregatedListingImage[]
   rawPayloads          RawPayload[]
 

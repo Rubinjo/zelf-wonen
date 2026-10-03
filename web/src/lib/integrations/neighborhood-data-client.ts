@@ -422,21 +422,20 @@ function facilityKind(element: OverpassElement): FacilityKind | null {
 }
 
 async function lookupFacilities(latitude: number, longitude: number) {
-    const query = `[out:json][timeout:12];(nwr(around:5000,${latitude},${longitude})[shop=supermarket];nwr(around:5000,${latitude},${longitude})[amenity=school];nwr(around:5000,${latitude},${longitude})[highway=bus_stop];nwr(around:5000,${latitude},${longitude})[public_transport=platform][bus=yes];nwr(around:5000,${latitude},${longitude})[railway=tram_stop];nwr(around:10000,${latitude},${longitude})[station=subway];nwr(around:10000,${latitude},${longitude})[subway=yes];nwr(around:15000,${latitude},${longitude})[railway=station];);out center;`;
+    const query = `[out:json][timeout:25];(nwr(around:5000,${latitude},${longitude})[shop=supermarket];nwr(around:5000,${latitude},${longitude})[amenity=school];nwr(around:5000,${latitude},${longitude})[highway=bus_stop];nwr(around:5000,${latitude},${longitude})[public_transport=platform][bus=yes];nwr(around:5000,${latitude},${longitude})[railway=tram_stop];nwr(around:10000,${latitude},${longitude})[station=subway];nwr(around:10000,${latitude},${longitude})[subway=yes];nwr(around:15000,${latitude},${longitude})[railway=station];);out center;`;
     let payload: { elements?: OverpassElement[] } | null = null;
     let lastStatus: number | null = null;
     for (const endpoint of OVERPASS_URLS) {
-        const response = await fetch(endpoint, {
-            method: "POST",
-            body: new URLSearchParams({ data: query }),
+        const url = new URL(endpoint);
+        url.searchParams.set("data", query);
+        // Public Overpass servers can reject POST requests with HTTP 406.
+        const response = await fetch(url, {
             headers: {
                 accept: "application/json",
-                "content-type":
-                    "application/x-www-form-urlencoded;charset=UTF-8",
                 "user-agent":
                     "ZelfWonen/0.1 (public listing neighborhood enrichment)",
             },
-            signal: AbortSignal.timeout(20_000),
+            signal: AbortSignal.timeout(30_000),
         }).catch(() => null);
         if (!response) continue;
         lastStatus = response.status;

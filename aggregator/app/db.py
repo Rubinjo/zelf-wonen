@@ -97,6 +97,24 @@ class Repository:
             external_id,
         )
 
+    async def source_links_due_for_refresh(
+        self, source: ListingSource, before: datetime, limit: int, exclude_ids: list[str]
+    ) -> list[dict[str, str]]:
+        """Recheck active links missing from search instead of assuming removal."""
+        rows = await self.pool.fetch(
+            "SELECT p.external_id, p.url, a.purpose::text AS purpose_raw "
+            "FROM aggregated_platform_links p JOIN aggregated_listings a ON a.id = p.listing_id "
+            "WHERE p.source = $1 AND p.status = 'ACTIVE' "
+            "AND (p.last_seen_at IS NULL OR p.last_seen_at < $2) "
+            "AND NOT (p.external_id = ANY($4::text[])) "
+            "ORDER BY p.last_seen_at NULLS FIRST, p.id LIMIT $3",
+            source.value,
+            before,
+            limit,
+            exclude_ids,
+        )
+        return [dict(row) for row in rows]
+
     # --- Writes -------------------------------------------------------------
 
     async def create_master(
@@ -220,7 +238,10 @@ class Repository:
                 last_sync_at = $27,
                 expired_at = NULL,
                 postcode_house_key = COALESCE($28, postcode_house_key),
-                street_house_key = COALESCE($29, street_house_key)
+                street_house_key = COALESCE($29, street_house_key),
+                house_number = CASE WHEN $30 > 0 THEN $30 ELSE house_number END,
+                house_number_addition = COALESCE(NULLIF($31, ''), house_number_addition),
+                street = COALESCE(NULLIF($32, ''), street)
             WHERE id = $1
             """,
             master_id,
@@ -252,6 +273,9 @@ class Repository:
             now,
             postcode_house_key,
             street_house_key,
+            listing.house_number,
+            listing.house_number_addition,
+            listing.street,
         )
 
     async def count_images(self, master_id: str) -> int:
@@ -260,6 +284,12 @@ class Repository:
             master_id,
         )
         return int(row["count"]) if row else 0
+
+    async def image_source_urls(self, master_id: str) -> set[str]:
+        rows = await self.pool.fetch(
+            "SELECT source_url FROM aggregated_listing_images WHERE listing_id = $1", master_id
+        )
+        return {row["source_url"] for row in rows}
 
     async def touch_master(
         self, master_id: str, status: ListingAvailability, now: datetime

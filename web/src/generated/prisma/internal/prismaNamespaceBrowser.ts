@@ -233,6 +233,7 @@ export type PropertyScalarFieldEnum = (typeof PropertyScalarFieldEnum)[keyof typ
 export const NeighborhoodProfileScalarFieldEnum = {
   id: 'id',
   propertyId: 'propertyId',
+  aggregatedListingId: 'aggregatedListingId',
   neighborhoodCode: 'neighborhoodCode',
   neighborhoodName: 'neighborhoodName',
   districtCode: 'districtCode',

@@ -180,7 +180,7 @@ export default async function SearchPage({
               favorites: "Favorites",
               myHomes: "My homes",
               offerProperty: "List a property",
-              eyebrow: "Listings from private owners",
+              eyebrow: "Listings from private owners, Funda and Kamernet",
               h1: "Find a place that fits you",
               welcomeBack: "Welcome back, ",
               welcomeBody:
@@ -252,7 +252,7 @@ export default async function SearchPage({
               favorites: "Favorieten",
               myHomes: "Mijn woningen",
               offerProperty: "Woning aanbieden",
-              eyebrow: "Aanbod van particuliere verkopers",
+              eyebrow: "Aanbod van particulieren, Funda en Kamernet",
               h1: "Vind een plek die bij je past",
               welcomeBack: "Welkom terug, ",
               welcomeBody:
@@ -323,7 +323,7 @@ export default async function SearchPage({
         auth.api.getSession({ headers: await headers() }),
     ]);
     const selectedPropertyTypes = values(params.propertyType);
-    const selectedStatuses = values(params.status);
+    const selectedStatuses = result.filters.statuses;
     const statusFilterOptions = statusOptions(result.filters.purpose, language);
     const activeStatusValues = statusFilterOptions.map(([value]) => value);
     const visibleSelectedStatuses = selectedStatuses.filter((value) =>

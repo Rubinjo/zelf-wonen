@@ -43,6 +43,10 @@ class SourceAdapter(ABC):
     display_name: str
     # Brand color used by the web UI for the "view original listing" buttons.
     brand_hex: str = "#000000"
+    # Public search pages cannot prove that an absent listing was removed.
+    supports_missing_expiry: bool = False
+    discovery_complete: bool = True
+    discovery_cursor: dict[str, int]
 
     @abstractmethod
     def discover(self, client: ScraperClient) -> AsyncIterator[dict[str, Any]]:

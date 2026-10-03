@@ -32,8 +32,8 @@ npm run dev
 ```
 
 Visit [localhost:3000](http://localhost:3000). `db:setup` starts PostgreSQL, pushes
-the schema, installs append-only triggers and generates Prisma Client. It is a
-fresh-development setup: there are no committed Prisma migrations. See the
+the schema, installs ownership constraints and append-only triggers, and generates
+Prisma Client. Setup uses the current schema directly, without migrations. See the
 [deployment guide](../web/docs/deployment.md#first-launch) for existing databases.
 
 The estimator starts with bundled data; a separate dataset download is unnecessary.

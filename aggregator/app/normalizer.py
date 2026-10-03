@@ -131,7 +131,7 @@ def normalize_price_cents(value: Any) -> int | None:
         raw = raw.replace(".", "").replace(",", ".")
     elif "," in raw and not raw.endswith(",00"):
         raw = raw.replace(",", ".")
-    else:
+    elif not re.fullmatch(r"\d+\.\d{1,2}", raw):
         raw = raw.replace(".", "").replace(",", ".")
     try:
         return int(round(float(raw) * 100))

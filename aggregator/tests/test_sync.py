@@ -11,6 +11,8 @@ from tests.test_funda import FUNDA_HTML
 
 
 class Feed(FundaAdapter):
+    supports_missing_expiry = True
+
     def __init__(self, summaries, error=None):
         super().__init__()
         self.summaries = summaries
@@ -132,7 +134,7 @@ async def test_missing_postcode_uses_source_identity_not_street():
         return_value=DetailPayload(
             "https://example.org",
             "text/html",
-            FUNDA_HTML.replace('"postalCode": "1012AB",', ""),
+            FUNDA_HTML.replace('"postalCode": "1012AB",', "").replace("1012 AB", ""),
         )
     )
     repo = AsyncMock()
@@ -154,3 +156,34 @@ async def test_missing_postcode_uses_source_identity_not_street():
         )
     repo.find_master_by_keys.assert_awaited_once_with(None, None)
     assert repo.create_master.call_args.kwargs["dedup_key"] == "source:FUNDA:123"
+
+
+async def test_existing_import_receives_missing_images_and_neighborhood():
+    adapter = FundaAdapter()
+    html = FUNDA_HTML.replace(
+        '"https://img.funda.example/1.jpg"',
+        '"https://img.funda.example/1.jpg", "https://img.funda.example/2.jpg"',
+    )
+    adapter.fetch_detail = AsyncMock(
+        return_value=DetailPayload("https://example.org", "text/html", html)
+    )
+    repo = AsyncMock()
+    repo.find_platform_link.return_value = {"listing_id": "existing"}
+    repo.image_source_urls.return_value = {"https://img.funda.example/1.jpg?options=width=640"}
+    storage = AsyncMock()
+    storage.download_and_store.return_value = None
+    enrichment_client = AsyncMock()
+    with patch("app.sync.enrich_neighborhood", new_callable=AsyncMock) as enrich:
+        settings = Settings()
+        await process_listing(
+            adapter,
+            AsyncMock(),
+            repo,
+            storage,
+            settings,
+            {"external_id": "1", "url": "https://example.org"},
+            enrichment_client=enrichment_client,
+        )
+    storage.download_and_store.assert_awaited_once()
+    assert storage.download_and_store.call_args.args[1] == "https://img.funda.example/2.jpg"
+    enrich.assert_awaited_once_with(enrichment_client, settings, "existing")
