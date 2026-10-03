@@ -86,7 +86,10 @@ elif [[ "$initialize" != true ]]; then
 fi
 
 # Pull everything before any service is replaced. GHCR packages must be public.
-"${compose[@]}" --profile aggregator pull web estimator aggregator postgres caddy
+"${compose[@]}" pull web estimator aggregator postgres caddy
+# Pause imports before changing secrets or replacing their database/web services.
+# On the next up, the worker starts an immediate sync using the new release.
+"${compose[@]}" stop -t 60 aggregator
 if [[ -n "$staged_env" ]]; then
   mv -f -- "$staged_env" "$deploy_root/.env.production"
   staged_env=
@@ -113,7 +116,7 @@ fi
 curl --fail --silent --show-error --retry 12 --retry-delay 5 --retry-all-errors \
   --connect-timeout 10 --max-time 30 https://zelf-wonen.online/ > /dev/null
 
-# Timer invocations resolve this link only after a successful deployment.
+# Manual import invocations resolve this link only after a successful deployment.
 ln -sfn "$release_web" "$deploy_root/.web-next"
 mv -Tf "$deploy_root/.web-next" "$deploy_root/web"
 if [[ -f "$deploy_root/current-release" ]]; then

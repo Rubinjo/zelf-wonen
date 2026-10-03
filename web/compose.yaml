@@ -105,20 +105,19 @@ services:
       - web_uploads:/app/public/uploads
       - aggregated_media:/app/public/aggregated-media
 
-  # Enable explicitly with --profile aggregator; this worker makes outbound requests.
+  # Start importing with the production stack, then repeat daily without host setup.
   aggregator:
     build:
       context: ../aggregator
     image: ${AGGREGATOR_IMAGE:-zelfwonen-aggregator:local}
-    restart: "no"
-    command: ["sync"]
+    restart: unless-stopped
+    command: ["run"]
     init: true
-    profiles: ["aggregator"]
     environment:
       AGGREGATOR_DATABASE_URL: postgresql://zelfwonen:${POSTGRES_PASSWORD:?Set a URL-safe database password}@postgres:5432/zelfwonen
       AGGREGATOR_NEIGHBORHOOD_ENRICHMENT_URL: http://web:3000/api/internal/aggregator/neighborhood
       AGGREGATOR_NEIGHBORHOOD_ENRICHMENT_TOKEN: ${AGGREGATOR_ENRICHMENT_TOKEN:-${ML_ESTIMATOR_TOKEN}}
-      AGGREGATOR_SYNC_INTERVAL_SECONDS: ${AGGREGATOR_SYNC_INTERVAL_SECONDS:-21600}
+      AGGREGATOR_SYNC_INTERVAL_SECONDS: ${AGGREGATOR_SYNC_INTERVAL_SECONDS:-86400}
       AGGREGATOR_PROXY_URLS: ${AGGREGATOR_PROXY_URLS:-}
       AGGREGATOR_ENABLED_SOURCES: ${AGGREGATOR_ENABLED_SOURCES:-FUNDA,KAMERNET}
       AGGREGATOR_FUNDA_TRANSPORT: ${AGGREGATOR_FUNDA_TRANSPORT:-chrome}
@@ -151,6 +150,8 @@ services:
       - aggregator_state:/app/state
     depends_on:
       postgres:
+        condition: service_healthy
+      web:
         condition: service_healthy
     networks: [backend, outbound]
 

@@ -6,8 +6,8 @@
 > commitment. The project is not actively maintained; review release gaps before
 > serving real users.
 
-The production stack is `web/compose.yaml`. It runs Caddy, Next.js, PostgreSQL
-and the estimator; the aggregator remains opt-in. Run the commands below from
+The production stack is `web/compose.yaml`. It runs Caddy, Next.js, PostgreSQL,
+the estimator and the automatic daily aggregator. Run the commands below from
 `web/` on the Linux VPS with Docker Engine and the Compose plugin installed.
 
 For the GitHub Actions deployment to `zelf-wonen.online`, follow
@@ -62,7 +62,7 @@ persist in `caddy_data`.
 
 Only Caddy publishes host ports. PostgreSQL and the estimator use an internal
 Docker network with no external connectivity. Next.js can reach external
-providers through its frontend network, and the optional aggregator has a
+providers through its frontend network, and the aggregator has a
 separate network for outbound requests.
 
 ## Public estimator data
@@ -136,34 +136,32 @@ password. Retain the established Compose project name when reusing volumes;
 changing it creates a different set of volumes. A new VPS starts empty unless
 you restore database and media backups.
 
-Build the opt-in aggregator separately. Production uses a host timer and one-shot
-containers; do not start a second continuous worker:
-
-```bash
-docker compose --env-file .env.production --profile aggregator build aggregator
-```
+The production stack starts the aggregator after database initialization and web
+readiness. It imports immediately, then every 24 hours by default. Docker restarts
+it after a crash or VPS reboot. The local development stack keeps imports opt-in.
 
 Default local aggregator media is shared with Caddy and served at
 `/aggregated-media/*`. Existing S3 settings remain supported; set
 `AGGREGATOR_IMAGE_STORAGE_MODE=s3`, its object-storage settings and
 `AGGREGATED_MEDIA_BASE_URL` together if using that option.
 
-### Scheduled listing imports (systemd)
+### Automatic daily listing imports
 
-The supplied timer runs daily at **04:20 Europe/Amsterdam**, with up to ten minutes
-of jitter. A missed run is caught up after boot. Weekly-only operation can use
-`OnCalendar=Tue *-*-* 04:20:00 Europe/Amsterdam` instead, but daily imports reduce
-stale rental data. No host crontab or continuously running aggregator is needed.
+The worker repeats according to `AGGREGATOR_SYNC_INTERVAL_SECONDS` (default
+`86400`), relative to startup rather than a fixed time of day. No host timer
+installation is required. Source failures are logged and retried on the next
+interval without stopping the web app. If a previous installation enabled the
+supplied systemd timer, disable it so only Docker schedules imports.
 
 The current provider endpoints and parsers still require live validation from
 your VM. A healthy process is not proof that those sites are accessible.
-Build the aggregator and first check one public search result/detail per source
+For diagnosis, stop the worker and check one public search result/detail per source
 without database or media writes. Remove the old Funda sitemap/Kamernet API URL
 overrides from existing environment files; the new defaults use public HTML:
 
 ```bash
-docker compose --env-file .env.production --profile aggregator stop aggregator
-docker compose --env-file .env.production --profile aggregator run --rm -T \
+docker compose --env-file .env.production stop -t 60 aggregator
+docker compose --env-file .env.production run --rm --no-deps -T \
   aggregator check-sources
 ```
 
@@ -205,37 +203,25 @@ The wrapper selects `.release.env` and the production Compose project, and takes
 the same maintenance lock as imports/backups. The first command validates one
 detail and its first image if available, without importing database records or
 writing media. It clears only Funda's saved cooldown after all checks succeed;
-failure leaves state unchanged. The second resumes its import queue. Timer runs
-still use the configured sources and the default `sync` command. A VPS-specific
+failure leaves state unchanged. The second resumes its import queue. Stop the
+background worker before either command to avoid concurrent access to private
+state, then restart it with Compose after diagnosis. A VPS-specific
 IP restriction would still be reported and cooled down; local access alone does
 not establish that the Leaseweb egress address is accepted.
 
-Install the units after a successful full manual run:
+Restart the background worker after manual checks:
 
 ```bash
-bash scripts/sync-aggregator.sh
-# Unit paths assume the repository is /opt/zelf-wonen; edit the .service if different.
-sudo install -m 644 systemd/zelfwonen-aggregator.* /etc/systemd/system/
-sudo install -m 644 systemd/zelfwonen-aggregator-alert.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable --now zelfwonen-aggregator.timer
-systemctl list-timers zelfwonen-aggregator.timer
-journalctl -u zelfwonen-aggregator.service -n 100 --no-pager
+docker compose --env-file .env.production up -d --no-build aggregator
+docker compose --env-file .env.production logs --tail 100 aggregator
 ```
 
-The service runs under the host system manager, requires Docker, and has a
-20-hour run timeout. The database must already be running. It stops its named
-one-shot container on timeout or service stop. The wrapper and backup script
-share `.maintenance.lock`, so scheduled imports and backups do not write at the
-same time. Use the wrapper for manual production imports too. Stop the timer
-before deployment/schema maintenance and restart it afterwards.
-
-Source/listing failures, hard caps and active cooldowns make the service fail, while
-the other source is still attempted. `zelfwonen-aggregator-alert.service` writes
-an error-priority **local journal/syslog alert**. This does not send email or
-notify a phone: connect that unit to your existing monitoring/notification
-handler before relying on unattended operation. An external dead-man monitor is
-also needed to notice when the VM itself or its timer stops running.
+For Actions deployments, also pass `--env-file .release.env -p zelfwonen-production`
+to these Compose commands. Deployment stops the worker before replacing services,
+and backup scripts stop active web/aggregator writers before copying data. Stop
+the worker before manual schema maintenance too. Source failures and cooldowns
+are logged while the loop keeps running. Inspect status as well as process
+liveness; no external failure notification is configured.
 
 Queues, search-page cursors and cooldowns persist in the private `aggregator_state`
 volume. Successful partial batches exit zero but do not update full-crawl success.
@@ -243,8 +229,7 @@ Per-source status includes counts (`seen`, `processed`, `failed`, `pending`),
 `discovery_complete`, `outcome`, `last_progress`, `last_success`, and `next_retry_at`:
 
 ```bash
-docker compose --env-file .env.production --profile aggregator run --rm --no-deps -T \
-  --entrypoint cat aggregator /app/state/status.json
+docker compose --env-file .env.production exec -T aggregator cat /app/state/status.json
 ```
 
 `processed` includes confirmed gone listings. A failure or partial batch preserves
@@ -252,7 +237,7 @@ the previous full-crawl success timestamp. Monitor stalled `last_progress` and
 completed-crawl age against the configured scope and schedule; a nationwide crawl
 may require many invocations. HTTP restrictions stop the source immediately and
 persist an exponential cooldown; Retry-After takes precedence when longer.
-Database/startup failures appear in the service journal even if
+Database/startup failures appear in the container logs even if
 the worker cannot update its status file. The state volume is operational
 metadata, separate from public images and not included in content backups.
 

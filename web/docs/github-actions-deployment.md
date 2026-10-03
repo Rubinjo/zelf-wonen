@@ -66,7 +66,9 @@ bash scripts/sync-aggregator.sh check-sources --sources FUNDA --check-images --r
 
 This checks a detail and its first available image, then clears only Funda's
 old cooldown on success. It preserves import queues and other sources' status.
-The daily timer continues to run `sync` using the new release's image digest.
+Stop the background worker before this recovery check, then start it again with
+the Compose commands in the scheduled imports section. The worker uses the new
+release's image digest.
 
 The PostgreSQL database and role are both `zelfwonen`. Use this URL in the secret
 for consistency (Compose also supplies it explicitly to the web container):
@@ -168,35 +170,46 @@ the cause and rerun with **initialize_database=false**.
 
 ## Scheduled listing imports
 
-Images are published for the aggregator, but deployment does not silently enable
-outbound imports. Follow the bounded and full manual validation in
-[the deployment runbook](deployment.md#scheduled-listing-imports-systemd), adding
-`--env-file .release.env -p zelfwonen-production` to its Compose commands. Run from
-`~/zelf-wonen/web`; images are already pulled, so skip build instructions.
+Every successful deployment starts the aggregator automatically after PostgreSQL
+and the web app are healthy. It imports immediately, then repeats every 24 hours
+by default (`AGGREGATOR_SYNC_INTERVAL_SECONDS=86400`). Docker restarts the worker
+after a process failure or VPS reboot; each process start also imports immediately.
+No sudo, cron configuration or systemd installation is required. The schedule is
+relative to worker startup, rather than a fixed time of day.
 
-After a successful full manual run, install the supplied units on the VPS:
+Deployment pulls all images, stops the existing worker before changing secrets
+or replacing services, and starts it with the new immutable image. Import queues,
+cooldowns, media and existing listings persist across releases. Source failures
+are logged and retried on the next interval; they do not fail website deployment.
+Listings appear as individual records are imported. A nationwide crawl can take
+many daily batches, and source access still depends on the VPS being accepted by
+the providers.
+
+Inspect progress on the VPS without interrupting the worker:
 
 ```bash
 cd ~/zelf-wonen/web
-sudo install -m 644 systemd/zelfwonen-aggregator.service \
-  systemd/zelfwonen-aggregator.timer systemd/zelfwonen-aggregator-alert.service \
-  /etc/systemd/system/
-sudo mkdir -p /etc/systemd/system/zelfwonen-aggregator.service.d
-sudo tee /etc/systemd/system/zelfwonen-aggregator.service.d/deployment.conf > /dev/null <<'EOF'
-[Service]
-User=deploy
-WorkingDirectory=/home/deploy/zelf-wonen/web
-ExecStart=
-ExecStart=/usr/bin/bash /home/deploy/zelf-wonen/web/scripts/sync-aggregator.sh
-EOF
-sudo systemctl daemon-reload
-sudo systemctl enable --now zelfwonen-aggregator.timer
-systemctl list-timers zelfwonen-aggregator.timer
+docker compose --env-file .env.production --env-file .release.env \
+  -p zelfwonen-production logs --tail 100 aggregator
+docker compose --env-file .env.production --env-file .release.env \
+  -p zelfwonen-production exec -T aggregator cat /app/state/status.json
 ```
 
-The wrapper reads the current release's image manifest and shares the deployment
-lock. Imports run daily at 04:20 Europe/Amsterdam with jitter. A provider failure
-is recorded locally; this setup does not configure external alert delivery.
+For manual recovery or a bounded source check, stop the background worker first
+to avoid sharing its status/queue files concurrently:
+
+```bash
+docker compose --env-file .env.production --env-file .release.env \
+  -p zelfwonen-production stop -t 60 aggregator
+bash scripts/sync-aggregator.sh check-sources --check-images --reset-cooldown
+docker compose --env-file .env.production --env-file .release.env \
+  -p zelfwonen-production up -d --no-build aggregator
+```
+
+If an earlier installation enabled `zelfwonen-aggregator.timer`, disable that
+legacy timer once so Docker is the only scheduler. Fresh Actions deployments
+require no manual scheduler setup. Logs and status are local; external alert
+delivery is not configured.
 
 ## Verification boundaries
 

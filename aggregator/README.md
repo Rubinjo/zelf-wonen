@@ -23,10 +23,11 @@ the native listing data sources.
 - **Image hosting** — source images are downloaded and re-hosted in
   a persistent local volume on the VM (or optionally S3/R2). The
   UI never hotlinks source images.
-- **Scheduled one-shot runs** — production uses a host systemd timer, daily at
-  04:20 Europe/Amsterdam with up to ten minutes of jitter and missed-run catch-up.
-  A PostgreSQL advisory lock prevents overlapping imports; a host lock coordinates
-  imports with VM backups. The continuous loop remains available for development.
+- **Automatic daily imports** — production starts the continuous worker after
+  PostgreSQL and the web app are healthy. It imports immediately and every 24 hours
+  by default, and Docker restarts it after a crash or VPS reboot. A PostgreSQL
+  advisory lock prevents overlapping imports; deployment and backup scripts stop
+  the worker before replacing services or copying data.
 - **Conservative identity** — existing source links retain their master record.
   New Funda records may match a postcode, positive house number and suffix;
   other records use source + external ID. No street-only matching across cities
@@ -43,7 +44,7 @@ the native listing data sources.
   atomically to a private status file. systemd retains logs and emits local alerts.
 
 Deployment commands, bounded live validation, timer installation and monitoring
-are in [the VM deployment guide](../web/docs/deployment.md#scheduled-listing-imports-systemd).
+are in [the VM deployment guide](../web/docs/deployment.md#automatic-daily-listing-imports).
 Unit tests do not certify live access or coverage. On 2026-09-29, the bounded live
 check validated Kamernet search and one detail. On 2026-10-02, Funda discovery and
 one detail passed using the Chrome-compatible transport; the previous httpx
@@ -276,8 +277,8 @@ The design takes inspiration from the search/detail split in
 property facts in [khpeek/funda-scraper](https://github.com/khpeek/funda-scraper).
 Their source code and dependencies are not incorporated.
 
-Production keeps the existing daily systemd timer; local Compose uses the existing
-continuous loop. Both Compose stacks mount private state at `/app/state`.
+Production uses the continuous loop with a 24-hour default interval; local Compose
+keeps its six-hour interval. Both Compose stacks mount private state at `/app/state`.
 Keep that volume across upgrades. Direct uv runs keep state in `.state` relative
 to the aggregator working directory. Do not alternate runners with separate state
 directories: the database lock prevents overlap, but cooldowns/queues must also be shared.

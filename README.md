@@ -87,7 +87,7 @@ and troubleshooting. For a server deployment, use the [VPS guide](web/docs/deplo
 | [AI integration](web/src/lib/integrations/openrouter.ts) | Vercel AI SDK with OpenRouter, structured outputs and configured model fallbacks. |
 | [Estimator](estimator/README.md) | Python 3.12, FastAPI and Pydantic; comparable sales, indexed WOZ fallbacks and bundled public-data artifacts. |
 | [Aggregator](aggregator/README.md) | Python 3.12, HTTPX, Pydantic and asyncpg; optional discovery, normalization and media ingestion. |
-| [Deployment](web/docs/deployment.md) | Docker Compose, Caddy HTTPS and persistent local volumes; systemd timer for optional imports. |
+| [Deployment](web/docs/deployment.md) | Docker Compose, Caddy HTTPS and persistent local volumes; automatic daily listing imports. |
 
 The [architecture guide](docs/architecture.md) explains service boundaries and trust
 controls. The [repository map](docs/directory-structure.md) points to the code.

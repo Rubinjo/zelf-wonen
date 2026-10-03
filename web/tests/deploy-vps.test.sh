@@ -80,11 +80,25 @@ test -L "$root/web"
 test -f "$root/schema.sha256"
 grep -q 'db:push' "$MOCK_LOG"
 grep -q 'db:immutability' "$MOCK_LOG"
+grep -q 'pull web estimator aggregator postgres caddy' "$MOCK_LOG"
+grep -q 'stop -t 60 aggregator' "$MOCK_LOG"
+# Pull first, stop imports before database replacement, and start the full stack
+# only after initialization. No optional profile should exclude the worker.
+pull_line=$(grep -n 'pull web estimator aggregator postgres caddy' "$MOCK_LOG" | cut -d: -f1)
+stop_line=$(grep -n 'stop -t 60 aggregator' "$MOCK_LOG" | cut -d: -f1)
+postgres_line=$(grep -n 'up -d.*120 postgres' "$MOCK_LOG" | cut -d: -f1)
+setup_line=$(grep -n 'db:immutability' "$MOCK_LOG" | cut -d: -f1)
+stack_line=$(grep -n 'up -d.*180$' "$MOCK_LOG" | cut -d: -f1)
+test "$pull_line" -lt "$stop_line"
+test "$stop_line" -lt "$postgres_line"
+test "$setup_line" -lt "$stack_line"
+! grep -q -- '--profile' "$MOCK_LOG"
 ! grep -Eq 'db:seed|db:reset|accept-data-loss' "$MOCK_LOG"
 refuse true
 : > "$MOCK_LOG"
 deploy false
 ! grep -q 'db:push' "$MOCK_LOG"
+grep -q 'stop -t 60 aggregator' "$MOCK_LOG"
 echo 'changed schema' >> "$release/prisma/schema.prisma"
 refuse false
 grep -q 'Schema changed' "$root/output"
@@ -152,6 +166,7 @@ printf 'APP_DOMAIN=zelf-wonen.online\nUPDATED=true\n' | refuse true --env-stdin
 cmp "$root/original" "$root/.env.production"
 ! compgen -G "$root/.env.production.*" > /dev/null
 export MOCK_FAIL_PULL=false
+! grep -q 'stop -t 60 aggregator' "$MOCK_LOG"
 
 fixture legacy-storage
 cp "$root/.env.production" "$root/original"
