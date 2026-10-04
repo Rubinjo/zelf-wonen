@@ -1,3 +1,4 @@
+import { PropertyPhotoGallery } from "@/components/listing/property-photo-gallery";
 import { PublicHeader } from "@/components/platform/public-header";
 import type { Prisma } from "@/generated/prisma/client";
 import type { ReactNode } from "react";
@@ -90,7 +91,6 @@ const copy = {
         plotArea: "Perceeloppervlak",
         amenities: "Voorzieningen",
         backToSearch: "Terug naar zoeken",
-        allPhotos: "Alle foto's",
         general: "Algemeen",
         dimensions: "Oppervlakten en inhoud",
         layout: "Indeling",
@@ -131,7 +131,6 @@ const copy = {
         plotArea: "Plot area",
         amenities: "Amenities",
         backToSearch: "Back to search",
-        allPhotos: "All photos",
         general: "General",
         dimensions: "Areas and volume",
         layout: "Layout",
@@ -237,42 +236,15 @@ export function AggregatedListingDetail({
             <PublicHeader language={language} />
             <main>
                 <div className="mx-auto max-w-7xl px-5 py-6 lg:px-8">
-                    {listing.images.length > 0 ? (
-                        <div className="grid h-[50vh] min-h-80 gap-2 overflow-hidden rounded-4xl md:grid-cols-2">
-                            <img
-                                src={mediaUrl(listing.images[0].storageKey)}
-                                alt={title}
-                                referrerPolicy="no-referrer"
-                                className="size-full object-cover"
-                            />
-                            <div className="hidden grid-cols-2 gap-2 md:grid">
-                                {listing.images.slice(1, 5).map((image) => (
-                                    <img
-                                        key={image.id}
-                                        src={mediaUrl(image.storageKey)}
-                                        alt=""
-                                        referrerPolicy="no-referrer"
-                                        className="size-full object-cover"
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    ) : null}
-                    {listing.images.length > 1 ? (
-                        <details className="mt-4 rounded-2xl border border-line p-4">
-                            <summary className="cursor-pointer font-semibold">
-                                {t.allPhotos} ({listing.images.length})
-                            </summary>
-                            <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
-                                {listing.images.map((image) => (
-                                    <a key={image.id} href={mediaUrl(image.storageKey)} target="_blank" rel="noopener noreferrer">
-                                        <img src={mediaUrl(image.storageKey)} alt={title} loading="lazy"
-                                            className="aspect-4/3 w-full rounded-xl object-cover" />
-                                    </a>
-                                ))}
-                            </div>
-                        </details>
-                    ) : null}
+                    <PropertyPhotoGallery
+                        photos={listing.images.map((image) => ({
+                            id: image.id,
+                            src: mediaUrl(image.storageKey),
+                        }))}
+                        title={title}
+                        language={language}
+                        className="h-[50vh] min-h-80"
+                    />
                     <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_380px]">
                         <article>
                             <p className="text-sm font-semibold uppercase tracking-wider text-brand">

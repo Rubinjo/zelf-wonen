@@ -5,13 +5,13 @@ import { getLanguage } from "@/lib/language";
 import { PublicHeader } from "@/components/platform/public-header";
 import Link from "next/link";
 import { ListingImage } from "@/components/listing/listing-image";
+import { PropertyPhotoGallery } from "@/components/listing/property-photo-gallery";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import {
     BadgeCheck,
     BedDouble,
     BusFront,
-    Building2,
     Calendar,
     Check,
     CircleParking,
@@ -730,35 +730,14 @@ export default async function PublicListingPage({
             <PublicHeader language={language} />
             <main>
                 <div className="mx-auto max-w-7xl px-5 py-6 lg:px-8">
-                    {photos.length > 0 ? (
-                        <div className="grid h-[55vh] min-h-96 gap-2 overflow-hidden rounded-4xl md:grid-cols-2">
-                            <ListingImage
-                                src={`/${photos[0].storageKey}`}
-                                alt={title ?? "Woning"}
-                                width={1600}
-                                height={1000}
-                                priority
-                                className="size-full object-cover"
-                            />
-                            <div className="hidden grid-cols-2 gap-2 md:grid">
-                                {photos.slice(1, 5).map((photo) => (
-                                    <ListingImage
-                                        key={photo.id}
-                                        src={`/${photo.storageKey}`}
-                                        alt=""
-                                        width={800}
-                                        height={500}
-                                        className="size-full object-cover"
-                                    />
-                                ))}
-                                {photos.length === 1 ? (
-                                    <div className="col-span-2 grid size-full place-items-center bg-background text-brand/30">
-                                        <Building2 size={60} />
-                                    </div>
-                                ) : null}
-                            </div>
-                        </div>
-                    ) : null}
+                    <PropertyPhotoGallery
+                        photos={photos.map((photo) => ({
+                            id: photo.id,
+                            src: `/${photo.storageKey}`,
+                        }))}
+                        title={title ?? "Woning"}
+                        language={language}
+                    />
                     <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_380px]">
                         <article>
                             <p className="text-sm font-semibold uppercase tracking-wider text-brand">
