@@ -215,6 +215,18 @@ export default async function SearchPage({
               monumentStatus: "Monument status",
               availableFrom: "Available from",
               neighborhoodFacilities: "Neighborhood facilities",
+              supermarketNearby: "Supermarket within 1 km",
+              primarySchoolNearby: "Primary school within 1 km",
+              busStopNearby: "Bus stop within 500 m",
+              trainStationNearby: "Train station within 2 km",
+              safety: "Safety",
+              lowCrime: "Low crime (max 40 per 1,000 residents)",
+              foundationRisk: "Foundation risk",
+              lowRiskOnly: "Low risk only",
+              noElevatedRisk: "No elevated risk",
+              roadTrafficNoise: "Road traffic noise",
+              quietRoadNoise: "Quiet (max 50 dB)",
+              guidelineRoadNoise: "Max 55 dB (guideline)",
               sale: "For sale",
               rent: "For rent",
               purposeHelp: "Choose whether to search homes for sale or rent and which prices are shown.",
@@ -287,6 +299,18 @@ export default async function SearchPage({
               monumentStatus: "Monumentstatus",
               availableFrom: "Beschikbaar vanaf",
               neighborhoodFacilities: "Voorzieningen in de buurt",
+              supermarketNearby: "Supermarkt binnen 1 km",
+              primarySchoolNearby: "Basisschool binnen 1 km",
+              busStopNearby: "Bushalte binnen 500 m",
+              trainStationNearby: "Treinstation binnen 2 km",
+              safety: "Veiligheid",
+              lowCrime: "Weinig misdrijven (max 40/1.000 inw.)",
+              foundationRisk: "Funderingsrisico",
+              lowRiskOnly: "Alleen laag risico",
+              noElevatedRisk: "Geen verhoogd risico",
+              roadTrafficNoise: "Geluid van wegverkeer",
+              quietRoadNoise: "Rustig (max 50 dB)",
+              guidelineRoadNoise: "Max 55 dB (richtwaarde)",
               sale: "Te koop",
               rent: "Te huur",
               purposeHelp: "Bepaalt of je koop- of huurwoningen zoekt en welke prijzen worden getoond.",
@@ -612,7 +636,7 @@ export default async function SearchPage({
                             </div>
                             <div className="grid grid-cols-3 gap-3">
                                 <label className="text-xs font-semibold text-muted">
-                                    Kamers
+                                    {ui.rooms}
                                     <select
                                         name="roomsMin"
                                         defaultValue={
@@ -631,7 +655,7 @@ export default async function SearchPage({
                                     </select>
                                 </label>
                                 <label className="text-xs font-semibold text-muted">
-                                    Slaapkamers
+                                    {ui.bedrooms}
                                     <select
                                         name="bedroomsMin"
                                         defaultValue={
@@ -650,7 +674,7 @@ export default async function SearchPage({
                                     </select>
                                 </label>
                                 <label className="text-xs font-semibold text-muted">
-                                    Badkamers
+                                    {ui.bathrooms}
                                     <select
                                         name="bathroomsMin"
                                         defaultValue={
@@ -915,7 +939,7 @@ export default async function SearchPage({
                                             }
                                             className="size-4 accent-brand"
                                         />
-                                        Supermarkt binnen 1 km
+                                        {ui.supermarketNearby}
                                     </label>
                                     <label className="flex cursor-pointer items-center gap-3 text-sm">
                                         <input
@@ -929,7 +953,7 @@ export default async function SearchPage({
                                             }
                                             className="size-4 accent-brand"
                                         />
-                                        Basisschool binnen 1 km
+                                        {ui.primarySchoolNearby}
                                     </label>
                                     <label className="flex cursor-pointer items-center gap-3 text-sm">
                                         <input
@@ -943,7 +967,7 @@ export default async function SearchPage({
                                             }
                                             className="size-4 accent-brand"
                                         />
-                                        Bushalte binnen 500 m
+                                        {ui.busStopNearby}
                                     </label>
                                     <label className="flex cursor-pointer items-center gap-3 text-sm">
                                         <input
@@ -957,12 +981,12 @@ export default async function SearchPage({
                                             }
                                             className="size-4 accent-brand"
                                         />
-                                        Treinstation binnen 2 km
+                                        {ui.trainStationNearby}
                                     </label>
                                 </div>
                             </div>
                             <label className="text-xs font-semibold text-muted">
-                                Veiligheid
+                                {ui.safety}
                                 <select
                                     name="registeredCrimesPer1000Max"
                                     defaultValue={
@@ -973,12 +997,12 @@ export default async function SearchPage({
                                 >
                                     <option value="">{ui.noPreference}</option>
                                     <option value="40">
-                                        Weinig misdrijven (max 40/1.000 inw.)
+                                        {ui.lowCrime}
                                     </option>
                                 </select>
                             </label>
                             <label className="text-xs font-semibold text-muted">
-                                Funderingsrisico
+                                {ui.foundationRisk}
                                 <select
                                     name="foundationRisk"
                                     defaultValue={
@@ -992,15 +1016,15 @@ export default async function SearchPage({
                                 >
                                     <option value="">{ui.noPreference}</option>
                                     <option value="low">
-                                        Alleen laag risico
+                                        {ui.lowRiskOnly}
                                     </option>
                                     <option value="none_low">
-                                        Geen verhoogd risico
+                                        {ui.noElevatedRisk}
                                     </option>
                                 </select>
                             </label>
                             <label className="text-xs font-semibold text-muted">
-                                Geluid van wegverkeer
+                                {ui.roadTrafficNoise}
                                 <select
                                     name="noiseRoadLdenMax"
                                     defaultValue={
@@ -1010,10 +1034,10 @@ export default async function SearchPage({
                                 >
                                     <option value="">{ui.noPreference}</option>
                                     <option value="50">
-                                        Rustig (max 50 dB)
+                                        {ui.quietRoadNoise}
                                     </option>
                                     <option value="55">
-                                        Max 55 dB (richtwaarde)
+                                        {ui.guidelineRoadNoise}
                                     </option>
                                 </select>
                             </label>

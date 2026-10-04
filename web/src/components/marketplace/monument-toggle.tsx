@@ -1,22 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import { useLanguage } from "@/components/providers/language-provider";
 
 export type MonumentFilter = "all" | "only" | "exclude";
 
-const options = [
-    { value: "", label: "Alle panden", state: "all" },
-    { value: "true", label: "Alleen monumenten", state: "only" },
-    { value: "false", label: "Geen monumenten", state: "exclude" },
-] as const;
-
 export function MonumentToggle({ value }: { value: MonumentFilter }) {
+    const { language } = useLanguage();
     const [selected, setSelected] = useState<MonumentFilter>(value);
+
+    const options = [
+        { value: "", label: language === "en" ? "All properties" : "Alle panden", state: "all" },
+        { value: "true", label: language === "en" ? "Listed monuments only" : "Alleen monumenten", state: "only" },
+        { value: "false", label: language === "en" ? "Exclude listed monuments" : "Geen monumenten", state: "exclude" },
+    ] as const;
 
     return (
         <div
             role="radiogroup"
-            aria-label="Monumentstatus"
+            aria-label={language === "en" ? "Monument status" : "Monumentstatus"}
             className="grid grid-cols-3 gap-1 rounded-lg border border-line bg-background p-1"
         >
             {options.map((option) => (
