@@ -1,81 +1,78 @@
-# National estimation method
+# Estimation method
 
-[Estimator](README.md) · [AI engineering](../docs/ai-engineering.md)
+[Estimator guide](README.md) · [Data attribution](data/NOTICE.md)
 
-Coverage counts below describe the bundled September 2026 artifacts.
+## Choosing the evidence
 
-## Evidence hierarchy
+The estimator uses the first supported method:
 
-1. At least five similar local completed sales: existing weighted comparable model.
-2. Otherwise, owner-supplied property WOZ, if supplied with its assessment year.
-3. Otherwise, CBS municipal median WOZ €/m² multiplied by subject living area.
+1. At least five similar local completed sales.
+2. Owner-supplied property WOZ with an assessment year.
+3. Municipal median WOZ per square metre multiplied by living area.
 
-The third branch covers all 342 municipalities. It is a statistical indication,
-not a nationally trained or validated transaction-price model. WOZ medians mix
-property types and cannot account for plot, leasehold, condition, energy labels
-or micro-location. Adding untrained premiums for those features would imply
-accuracy that the available data cannot establish.
+Municipal WOZ mixes property types and lacks property-specific condition and
+location detail. Its nationwide coverage is a statistical fallback.
 
-## Time adjustment
+## Comparable sales
 
-2025 WOZ values have a **January 2024 value reference date**. The national monthly
-CBS index moves this value to the latest available completed month. Where
-available, regional quarterly growth relative to national quarterly growth
-corrects the factor for the municipality (four large cities) or province:
+The model selects same-type sales within 5 km, from the previous three years and
+strictly before valuation. It compares area, room count, age, distance and recency,
+then uses 5–20 distinct homes to calculate a weighted median price per square metre.
 
-`monthly national growth × regional quarterly growth / national quarterly growth`.
+PDOK coordinates locate the subject. Direct API calls without coordinates use an
+approximate postcode-sector center. Custom sales without coordinates must share
+the postcode sector. Anonymized sales in the subject's full postcode are excluded
+to avoid using the subject as its own comparable.
 
-Both quarterly growth factors use the reference quarter and latest common
-completed quarter. National monthly movement interpolates the remaining months;
-this is not an observed monthly regional series. The response names the region
-and quarter, or warns that national growth was used. Index data must be less
-than 180 days old; WOZ references older than four years are rejected.
+CBS indices adjust sale prices to the latest completed month in the data.
+The result is scaled to the subject's area. This is a deterministic comparable
+model with no separate regression training step.
 
-## Uncertainty and asking-price cross-check
+## WOZ and time adjustment
 
-WOZ methods return zero comparables and apply no photo adjustment. Indicative
-initial ranges are ±30% for property WOZ and ±45% for municipal WOZ. These are
-policy choices, not fitted error quantiles. Confidence is a support score, never
-a probability; the UI shows method and support rather than a certainty percentage.
+A WOZ assessment refers to an earlier value date. For example, the bundled 2025
+assessment refers to January 2024. National monthly CBS growth updates that value,
+with regional quarterly correction where available.
 
-Residentievinder municipal asking medians (338 municipalities, July–August 2026)
-are a plausibility check only, usable for 180 days after publication. A difference
-over 25% expands the range to include ±15% around the asking benchmark. The
-central estimate remains unchanged. Differences may reflect property mix or
-seller expectations; asking prices are never used as completed-sale labels.
+Indices older than 180 days and WOZ references older than four years are rejected.
+Responses identify the method, region, reference dates, sources and warnings.
+Owner-supplied WOZ remains marked unverified.
 
-No nationwide accuracy metric is claimed. The existing forward evaluation tests
-the regional completed-sales branch only. The 2026 aggregate releases must not
-be used to claim a 2024 historical backtest. Publication and staleness guards
-prevent future municipal and asking snapshots from entering historical predictions;
-CBS revised index vintages still preclude a strict point-in-time backtest.
+Property WOZ starts with a ±30% range, and municipal WOZ with ±45%.
+These are policy choices. Confidence describes evidence support rather than
+a probability of accuracy.
 
-## Integration
+A recent municipal asking-price benchmark can widen the range when it differs
+by more than 25%. It does not change the estimate or become a completed-sale label.
 
-Next.js verifies the full address with PDOK, including house-number addition, and
-passes municipality, province and exact coordinates to the internal estimator.
-Internal fields are stripped from public requests and resolved by the server.
-If PDOK cannot verify the address, the API returns 422; a PDOK outage returns 503.
-Location context and all three artifact content hashes enter the cache key.
+## Photo assessment
 
-Direct Python service callers should supply `municipalityCode` (e.g. `GM0363`),
-`provinceCode` (e.g. `PV27`), and paired `latitude`/`longitude`. Only trusted callers
-should access this internal API. Optional `wozValueCents` and `wozAssessmentYear`
-must be supplied together. The user value is explicitly marked unverified.
+The web app checks uploaded photo ownership and file hashes before sending photos
+to the AI provider. If assessment fails, estimation continues without photo scores.
 
-Responses add `method`, `warnings`, `sourceUrl`, `referenceMonth`,
-`askingBenchmarkCents`, `askingSourceUrl`, and `calibrated: false`.
-The existing cents, bounds, version and valuation month contract remains.
-The UI offers optional WOZ inputs and displays the method, dates and source links.
+Comparable-sales estimates can receive a visible-condition adjustment capped at
+±4%. Unknown dimensions are neutral. Low-confidence assessments make no adjustment.
+Photos can widen bounds and never increase confidence.
+WOZ methods receive no photo adjustment. This rule is a heuristic rather than
+a learned renovation premium.
 
-## Refresh
+## API integration
 
-From `estimator/`, run `uv run python scripts/fetch_national.py` and
-`uv run python scripts/fetch_cbs.py`,
-then restart the service (rebuild production Docker). The national importer
-validates all municipal medians, all 12 provincial series, 338 exact asking
-joins and the pinned asking CSV hash before atomically replacing the artifact.
-Changing the WOZ release requires reviewing its assessment year, reference date,
-publication date and coverage assertions in the importer.
+The web app resolves the full address with PDOK and supplies municipality,
+province and coordinates. Unresolved addresses return 422, and PDOK outages return 503.
+The cache includes location, inputs, photo hashes and the model's data version.
 
-Data provenance and licenses: [data/NOTICE.md](data/NOTICE.md).
+Trusted direct Python callers should supply `municipalityCode`, `provinceCode`
+and paired `latitude`/`longitude`. Optional `wozValueCents` and
+`wozAssessmentYear` must be supplied together.
+See the [API contract](../web/docs/estimator-openapi.yaml).
+
+## Validation limits
+
+The regional forward evaluation is described in the [estimator guide](README.md#refresh-and-evaluate).
+It does not validate national accuracy. Future municipal snapshots are excluded
+from historical predictions, but revised CBS indices still prevent a strict
+point-in-time backtest. Bounds remain uncalibrated.
+
+Use the [refresh commands](README.md#refresh-and-evaluate) after reviewing new data
+releases and their reference dates, coverage and licenses.

@@ -1,55 +1,50 @@
 # Repository map
 
-[Documentation](README.md) · [Architecture](architecture.md)
+[Project overview](../README.md) · [Architecture](architecture.md)
 
 ```text
 zelf-wonen/
-├── README.md                 Project introduction and quick start
-├── CONTRIBUTING.md           Contribution scope and validation
-├── AGENTS.md                 Coding-agent instructions
-├── docs/                     Project-wide guides and release readiness
+├── README.md              Overview and documentation links
+├── docs/                  Setup, architecture and repository guides
 ├── web/
-│   ├── docs/                 Web operations, seed and identity guides; API contract
-│   ├── prisma/               Authoritative schema, seed and append-only SQL triggers
-│   ├── scripts/              Backups, import wrapper and seed verification
-│   ├── systemd/              Scheduled import and local alert units
+│   ├── docs/              Deployment, identity and sample-data guides
+│   ├── prisma/            Database schema, seed and history protections
+│   ├── scripts/           Deployment, backup and maintenance tools
 │   ├── src/
-│   │   ├── app/              Pages and API route handlers
-│   │   ├── components/       React UI by feature
-│   │   ├── features/         Domain services and access rules
-│   │   ├── lib/              Schemas, provider adapters, auth, storage and translations
-│   │   ├── generated/prisma/ Generated Prisma Client
-│   │   └── types/            Shared API types
-│   ├── tests/                Focused Node/TypeScript tests
-│   ├── public/               Public assets and development media
-│   ├── compose.local.yaml    Local PostgreSQL, estimator and optional aggregator
-│   └── compose.yaml          VPS stack behind Caddy
+│   │   ├── app/           Pages and API routes
+│   │   ├── components/    User interface
+│   │   ├── features/      Workflow rules and services
+│   │   └── lib/           Shared utilities and provider integrations
+│   ├── tests/             Web tests
+│   ├── public/            Logos and public assets
+│   ├── compose.local.yaml Local services
+│   └── compose.yaml       Production services
 ├── estimator/
-│   ├── app/                  FastAPI, Pydantic and deterministic valuation
-│   ├── data/                 Bundled public artifacts and attribution
-│   ├── scripts/              Import, refresh and evaluation tools
-│   └── tests/                Model, API and data-pipeline tests
+│   ├── app/               Valuation API and model
+│   ├── data/              Bundled data and attribution
+│   ├── scripts/           Data refresh and evaluation
+│   └── tests/             Estimator tests
 └── aggregator/
-    ├── app/                  Adapters, normalization, sync, database and storage
-    └── tests/                Parser and pipeline tests
+    ├── app/               Source adapters and import pipeline
+    └── tests/             Aggregator tests
 ```
 
-The application schema lives at [web/prisma/schema.prisma](../web/prisma/schema.prisma).
-Database setup uses the current Prisma schema directly, without migrations.
-Generated code and runtime folders are not the starting point for manual changes.
+## Where to start
 
-## Useful entry points
-
-| Task | Start here |
+| Task | Location |
 | --- | --- |
-| Owner drafts and publication | [listing services](../web/src/features/listings/), [listing UI](../web/src/components/listing/) |
-| Search and AI interpretation | [marketplace service](../web/src/features/listings/marketplace-service.ts), [AI search](../web/src/features/listings/ai-search.ts) |
-| Identity verification | [identity services](../web/src/features/identity/), [webhook route](../web/src/app/api/identity/didit/webhook/route.ts) |
-| AI writing | [listing-description route](../web/src/app/api/ai/listing-description/route.ts) |
-| Price estimation | [web orchestrator](../web/src/features/estimator/service.ts), [Python hierarchy](../estimator/app/national.py) |
-| Files and downloads | [storage](../web/src/lib/storage.ts), [transaction routes](../web/src/app/api/transactions/) |
-| Imported listings | [sync orchestrator](../aggregator/app/sync.py), [source adapters](../aggregator/app/adapters/) |
+| Listings and search | [web/src/features/listings/](../web/src/features/listings/) |
+| Identity verification | [web/src/features/identity/](../web/src/features/identity/) |
+| Bids | [web/src/features/bidding/](../web/src/features/bidding/) |
+| Transactions and dossiers | [web/src/features/transactions/](../web/src/features/transactions/) |
+| Price estimates | [estimator guide](../estimator/README.md) |
+| Listing imports | [aggregator guide](../aggregator/README.md) |
+| Database changes | [Prisma schema](../web/prisma/schema.prisma) |
 
-Local private documents live under `web/.data/`; listing uploads under
-`web/public/uploads/` are public. Container volumes preserve these paths.
-See [storage and backups](../web/docs/deployment.md#persistence-and-updates).
+Database setup applies the current Prisma schema directly. Review changes before
+applying them to an existing database.
+
+Local listing uploads live in `web/public/uploads/` and are public.
+Private documents live in `web/.data/`. See
+[deployment storage](../web/docs/deployment.md#persistence-and-updates) before
+moving or backing up an installation.

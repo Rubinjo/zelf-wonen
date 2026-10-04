@@ -1,17 +1,35 @@
-# Admin metrics dashboard
+# Admin dashboard
 
-[Documentation](../../docs/README.md) · [Deployment](deployment.md)
+[Project overview](../../README.md) · [Deployment](deployment.md)
 
-This dashboard reports operational metrics; it does not provide a moderation console.
+The dashboard shows metrics for this installation. It has no moderation tools.
 
-Set `ADMIN_USER_ID` to the immutable `users.id` of your own email-verified account in the server environment (`web/.env.local` locally, `web/.env.production` with Docker Compose). Restart the web service after changing it. Find the ID using Prisma Studio (`npm run db:studio`) and the users table. Do not use an email address or a public `NEXT_PUBLIC_` variable.
+## Enable access
 
-Visit `/dashboard/admin`, or use the Admin link in the dashboard header, on desktop or mobile. Alternatively, set `ADMIN_EMAIL` to your owner email address. The account must verify that email before access is granted. `ADMIN_USER_ID` takes precedence if both are set. Leaving both settings empty disables access. Other accounts and signed-out requests cannot access dashboard metrics: the server checks the session, email verification and configured owner before querying data. The page is dynamic and provider requests bypass the cache.
+Set `ADMIN_USER_ID` to your account's `users.id` in `.env.local` or
+`.env.production`, then restart the web service.
+Find the ID with `npm run db:studio`. Use the server setting, rather than a
+public `NEXT_PUBLIC_` variable.
 
-- Accounts: all users, email-verified users, new users in the current UTC month, and unique users with an unexpired session. Active sessions are a proxy, not historical monthly active users.
-- Listings: native listings by status, active aggregated listings separately, and transactions currently in ACTIVE status.
-- OpenRouter: reported total, daily and monthly USD credit usage for `OPENROUTER_API_KEY`, plus the remaining key spending limit. This is key-scoped, not account-wide; a shared key includes other applications. A missing key or provider failure displays unavailable, never zero. External BYOK provider charges are excluded. See the [provider API reference](https://openrouter.ai/docs/api/api-reference/api-keys/get-current-key).
-- Didit: locally recorded attempts by current status, live/sandbox starts this UTC month, and remaining app quota using the same budget predicate as verification creation. The budget includes pending and uncertain reservations carried from previous months. These counts are not an invoice or Didit account-wide usage.
+Alternatively, set `ADMIN_EMAIL`. The account must have verified email.
+`ADMIN_USER_ID` takes precedence. Leaving both settings empty disables access.
 
-The dashboard reads the existing application tables. Counts describe this deployment;
-provider usage is not a complete billing or service-health view.
+Open `/dashboard/admin` or use the dashboard's Admin link.
+The server checks access before loading metrics.
+
+## Metrics
+
+| Metric | Meaning |
+| --- | --- |
+| Accounts | Total, verified, new this UTC month and users with unexpired sessions |
+| Listings | Native listings by status, active imports and active transactions |
+| OpenRouter | Reported usage and spending limit for the configured API key |
+| Didit | Local attempts, monthly starts and remaining application quota |
+
+Active sessions do not measure historical monthly activity.
+OpenRouter usage includes other apps sharing the key and excludes external BYOK
+charges. Missing credentials or provider failures show unavailable.
+
+Didit counts include pending reservations from previous months.
+They describe the app's quota, rather than the provider's invoice.
+See [Didit setup](didit-setup.md).

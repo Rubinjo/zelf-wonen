@@ -11,7 +11,7 @@ appraisal dataset**, Sieuwert van Otterloo and Pavlo Burda, ICT Institute (2025)
 The Kaggle release is licensed **[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)**.
 This adapted data artifact is distributed under that same license. Retain this
 notice and the artifact's attribution when redistributing the data. The data
-authors do not endorse ZelfWonen. This notice concerns the dataset, not a change
+authors do not endorse zelf-wonen. This notice concerns the dataset, not a change
 to the license of the application's code.
 
 Source: Kaggle archive version 5, `2025-housing-dataset-alldata.csv`, 153 real
@@ -19,9 +19,10 @@ transactions dated 2024-01-31 through 2024-11-27. Retrieved 2026-09-15.
 SHA-256 of the original CSV:
 `a57964f094652d5f0f90c2d14a29e57c2c0740c2ad04fb00386dbf3e4dc526d0`.
 
-Changes: selected model input columns including published coordinates; translated house types; converted
-`retailvalue` from thousands of euros into integer euro cents; namespaced record
-IDs; represented withheld house numbers as null. `zipcode6id` is an anonymized
+Changes: selected model input columns and published coordinates, translated house
+types, converted `retailvalue` from thousands of euros into integer euro cents,
+namespaced record IDs and represented withheld house numbers as null.
+`zipcode6id` is an anonymized
 identifier, **not** a real house number. Asking prices are not used. The older
 synthetic files in the same download archive are not used.
 
@@ -49,13 +50,13 @@ selected. These are aggregate statistics, not individual transaction labels.
 
 ## Asking-price plausibility benchmark
 
-Bron: **Residentievinder (residentievinder.nl)**, asking-price snapshot published
+Source: **Residentievinder (residentievinder.nl)**, asking-price snapshot published
 15 August 2026, observations 18 July–14 August 2026, 338 municipalities.
 [Dataset version 1](https://www.kaggle.com/datasets/dekeijzer/vraagprijs-per-m-per-gemeente-nederland)
 · [Methodology](https://data.residentievinder.nl/prijs-per-m2/over-deze-data/).
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-Changes: retained median asking €/m² and counts; joined municipality names to CBS
+Changes: retained median asking €/m² and counts, and joined municipality names to CBS
 codes, including eight explicit name aliases. Original CSV SHA-256:
 `31821762202714ed3418cda9c37f7a5beacdb44d220ec7332288de4e9552b49d`.
-The benchmark only checks plausibility and widens bounds; it never becomes a
+The benchmark only checks plausibility and widens bounds. It never becomes a
 completed-sale label or adjusts the central estimate. No endorsement implied.
